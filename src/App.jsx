@@ -57,7 +57,7 @@ const ld=async(k,fb)=>{
 const inp={background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"};
 const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:8,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer"});
 
-const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"settings",l:"Ayarlar"}];
+const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"settings",l:"Ayarlar"}];
 
 export default function App(){
 const[view,setV]=useState("lurk");
@@ -295,7 +295,8 @@ return(
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
-{view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO}/>}
+{view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
+{view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
 </div>
 );}
@@ -1181,7 +1182,7 @@ return(
 </div>
 </div>);}
 
-function CariV({cari,setCari,cur,fm,fd,ft,selC,setSelC,stT,setStT,delC,setDelC,msg,T,sb,inp,PO}){
+function CariV({cari,setCari,cur,fm,fd,ft,selC,setSelC,stT,setStT,delC,setDelC,msg,T,sb,inp,PO,setV}){
 const open=cari.filter(c=>!c.settled);const closed=cari.filter(c=>c.settled);
 const openT=open.reduce((s,c)=>s+c.total,0);
 const settle=(id,pt,discAmt)=>{setCari(prev=>prev.map(c=>c.id===id?{...c,settled:true,sAt:new Date().toISOString(),sPt:pt,settleDisc:discAmt||0}:c));setSelC(null);setStT(null);msg("Tahsil edildi");};
@@ -1359,8 +1360,11 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:12}}>
 <input placeholder="Ürün adı" value={mF.name} onChange={e=>setMF(p=>({...p,name:e.target.value}))} style={inp}/>
 <input type="number" placeholder="Fiyat" value={mF.price} onChange={e=>setMF(p=>({...p,price:e.target.value}))} style={inp}/>
-<input placeholder="Kategori" value={mF.cat} onChange={e=>setMF(p=>({...p,cat:e.target.value}))} style={inp} list="mcats"/>
-<datalist id="mcats">{Array.from(new Set(menu.map(m=>m.cat))).map(c=><option key={c} value={c}/>)}</datalist>
+<select value={mF.cat} onChange={e=>{if(e.target.value==="__new__"){const nc=window.prompt("Yeni kategori adı:");if(nc&&nc.trim())setMF(p=>({...p,cat:nc.trim()}));}else{setMF(p=>({...p,cat:e.target.value}));}}} style={inp}>
+<option value="">Kategori seç</option>
+{Array.from(new Set(menu.map(m=>m.cat))).sort().map(c=><option key={c} value={c}>{c}</option>)}
+<option value="__new__">+ Yeni kategori...</option>
+</select>
 </div>
 <div style={{display:"flex",gap:10}}>
 <button onClick={saveMI} style={{...sb(T.accent)}}>{mEid?"Güncelle":"Ekle"}</button>
@@ -1526,11 +1530,6 @@ return(
 
 
   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:12,marginBottom:22}}>
-    <div style={{background:"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:14,padding:"16px 18px",color:"#fff"}}>
-      <div style={{fontSize:11,opacity:0.7,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Toplam</div>
-      <div style={{fontSize:24,fontWeight:800}}>{fm(totalAll,cur)}</div>
-      <div style={{fontSize:11,opacity:0.6,marginTop:4}}>{onlineOrders.length} sipariş</div>
-    </div>
     {PLATFORMS.map(p=>(
       <div key={p.k} style={{background:p.bg,border:"2px solid "+p.color+"33",borderRadius:14,padding:"16px 18px"}}>
         <div style={{fontSize:11,color:p.color,fontWeight:700,marginBottom:6}}>{p.l}</div>
@@ -1538,6 +1537,11 @@ return(
         <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{onlineOrders.filter(o=>o.platform===p.k).length} sipariş</div>
       </div>
     ))}
+    <div style={{background:"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:14,padding:"16px 18px",color:"#fff"}}>
+      <div style={{fontSize:11,opacity:0.7,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Toplam</div>
+      <div style={{fontSize:24,fontWeight:800}}>{fm(totalAll,cur)}</div>
+      <div style={{fontSize:11,opacity:0.6,marginTop:4}}>{onlineOrders.length} sipariş</div>
+    </div>
   </div>
 
   <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
@@ -1789,3 +1793,152 @@ style={{background:T.bg2,border:"1px solid "+(err?T.danger:T.border2),borderRadi
 </div>
 </div>
 );}
+
+function AchievementsV({logs,orders,cari,cur,fm,fd,setV,sb,T}){
+const[filter,setFilter]=useState("all");
+
+// Aggregate metrics from all logs (includes OLD_LOGS imports + live closed days)
+const totalRevenue=logs.reduce((s,l)=>s+(l.inc||0),0);
+const totalDays=logs.length;
+const totalExpense=logs.reduce((s,l)=>s+(l.exp||0),0);
+const totalNet=totalRevenue-totalExpense;
+const totalOrders=logs.reduce((s,l)=>s+(l.count||0),0)+orders.length;
+const bestDay=logs.length>0?logs.reduce((a,b)=>(b.inc||0)>(a.inc||0)?b:a):null;
+const sortedByDate=[...logs].sort((a,b)=>a.date.localeCompare(b.date));
+
+// Monthly totals
+const monthly={};
+logs.forEach(l=>{const m=l.date.slice(0,7);monthly[m]=(monthly[m]||0)+(l.inc||0);});
+const bestMonth=Object.entries(monthly).sort((a,b)=>b[1]-a[1])[0];
+
+// Product totals across all logs with item detail
+const productTotals={};
+logs.forEach(l=>{(l.items||[]).forEach(it=>{productTotals[it.name]=(productTotals[it.name]||0)+it.qty;});});
+const topProduct=Object.entries(productTotals).sort((a,b)=>b[1]-a[1])[0];
+const totalItemsSold=Object.values(productTotals).reduce((s,q)=>s+q,0);
+
+// Cari metrics
+const totalCariHandled=cari.length;
+const totalCariSettled=cari.filter(c=>c.settled).length;
+const biggestCari=cari.length>0?Math.max(...cari.map(c=>c.total)):0;
+
+// Streak: consecutive days with logs (rough, based on calendar gaps)
+let bestStreak=0,curStreak=0,prevDate=null;
+sortedByDate.forEach(l=>{
+  if(prevDate){
+    const diff=(new Date(l.date)-new Date(prevDate))/(1000*60*60*24);
+    curStreak=diff===1?curStreak+1:1;
+  }else{curStreak=1;}
+  bestStreak=Math.max(bestStreak,curStreak);
+  prevDate=l.date;
+});
+
+// Days over thresholds
+const daysOver=(t)=>logs.filter(l=>(l.inc||0)>=t).length;
+
+const firstDate=sortedByDate[0]?.date;
+const daysSinceFirst=firstDate?Math.floor((Date.now()-new Date(firstDate))/(1000*60*60*24)):0;
+
+// Build achievement list: {id, title, desc, done, icon, category}
+const A=[];
+const addRev=(threshold,label)=>A.push({id:"rev_"+threshold,cat:"Ciro",icon:"💰",title:label,desc:`Toplam ${fm(threshold,cur)} ciroya ulaş`,done:totalRevenue>=threshold,progress:Math.min(100,Math.round(totalRevenue/threshold*100))});
+[1000,2500,5000,10000,25000,50000,75000,100000,150000,200000,250000,300000,350000,400000,450000,500000,600000,700000,800000,900000,1000000].forEach(t=>addRev(t,`${fm(t,cur).replace(","+cur.length,"")} Kulübü`));
+
+const addOrderCount=(threshold)=>A.push({id:"ord_"+threshold,cat:"Adisyon",icon:"🧾",title:`${threshold}. Adisyon`,desc:`${threshold} adisyon tamamla`,done:totalOrders>=threshold,progress:Math.min(100,Math.round(totalOrders/threshold*100))});
+[10,25,50,100,150,200,300,400,500,750,1000,1250,1500,2000,2500,3000].forEach(addOrderCount);
+
+const addDayCount=(threshold)=>A.push({id:"day_"+threshold,cat:"Süreklilik",icon:"📅",title:`${threshold} Gün`,desc:`${threshold} gün kapatılmış olsun`,done:totalDays>=threshold,progress:Math.min(100,Math.round(totalDays/threshold*100))});
+[5,10,20,30,45,60,75,90,100,120,150,180,200,250,300,365].forEach(addDayCount);
+
+const addStreak=(threshold)=>A.push({id:"streak_"+threshold,cat:"Süreklilik",icon:"🔥",title:`${threshold} Gün Üst Üste`,desc:`${threshold} gün arka arkaya açık ol`,done:bestStreak>=threshold,progress:Math.min(100,Math.round(bestStreak/threshold*100))});
+[3,5,7,10,14,21,30].forEach(addStreak);
+
+const addBestDay=(threshold)=>A.push({id:"bday_"+threshold,cat:"Rekor",icon:"⚡",title:`Günde ${fm(threshold,cur)}`,desc:`Tek bir günde ${fm(threshold,cur)} ciro yap`,done:bestDay&&(bestDay.inc||0)>=threshold,progress:bestDay?Math.min(100,Math.round((bestDay.inc||0)/threshold*100)):0});
+[1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12500,15000].forEach(addBestDay);
+
+const addMonthRev=(threshold)=>A.push({id:"month_"+threshold,cat:"Aylık",icon:"📈",title:`Ayda ${fm(threshold,cur)}`,desc:`Bir ayda toplam ${fm(threshold,cur)} ciro yap`,done:bestMonth&&bestMonth[1]>=threshold,progress:bestMonth?Math.min(100,Math.round(bestMonth[1]/threshold*100)):0});
+[20000,40000,60000,80000,100000,120000,150000,200000].forEach(addMonthRev);
+
+const addItemsSold=(threshold)=>A.push({id:"items_"+threshold,cat:"Ürün",icon:"☕",title:`${threshold} Ürün Satıldı`,desc:`Toplamda ${threshold} adet ürün satıldı`,done:totalItemsSold>=threshold,progress:Math.min(100,Math.round(totalItemsSold/threshold*100))});
+[50,100,200,300,500,750,1000,1500,2000].forEach(addItemsSold);
+
+A.push({id:"first_day",cat:"Kilometre Taşı",icon:"🎉",title:"İlk Gün",desc:"İlk günü kapat",done:totalDays>=1,progress:totalDays>=1?100:0});
+A.push({id:"first_order",cat:"Kilometre Taşı",icon:"🥇",title:"İlk Adisyon",desc:"İlk adisyonu tamamla",done:totalOrders>=1,progress:totalOrders>=1?100:0});
+A.push({id:"first_cari",cat:"Cari",icon:"📋",title:"İlk Cari",desc:"İlk cari hesabı oluştur",done:totalCariHandled>=1,progress:totalCariHandled>=1?100:0});
+A.push({id:"cari_5",cat:"Cari",icon:"📋",title:"5 Cari Hesap",desc:"5 farklı cari hesabı kullan",done:totalCariHandled>=5,progress:Math.min(100,Math.round(totalCariHandled/5*100))});
+A.push({id:"cari_10",cat:"Cari",icon:"📋",title:"10 Cari Hesap",desc:"10 farklı cari hesabı kullan",done:totalCariHandled>=10,progress:Math.min(100,Math.round(totalCariHandled/10*100))});
+A.push({id:"cari_25",cat:"Cari",icon:"📋",title:"25 Cari Hesap",desc:"25 farklı cari hesabı kullan",done:totalCariHandled>=25,progress:Math.min(100,Math.round(totalCariHandled/25*100))});
+A.push({id:"cari_settled_5",cat:"Cari",icon:"✅",title:"5 Cari Tahsilatı",desc:"5 cari hesabı tahsil et",done:totalCariSettled>=5,progress:Math.min(100,Math.round(totalCariSettled/5*100))});
+A.push({id:"cari_settled_10",cat:"Cari",icon:"✅",title:"10 Cari Tahsilatı",desc:"10 cari hesabı tahsil et",done:totalCariSettled>=10,progress:Math.min(100,Math.round(totalCariSettled/10*100))});
+A.push({id:"big_cari_500",cat:"Cari",icon:"💸",title:"Büyük Hesap",desc:"500 TL üzeri tek cari hesabı",done:biggestCari>=500,progress:Math.min(100,Math.round(biggestCari/500*100))});
+A.push({id:"big_cari_1000",cat:"Cari",icon:"💸",title:"Devasa Hesap",desc:"1.000 TL üzeri tek cari hesabı",done:biggestCari>=1000,progress:Math.min(100,Math.round(biggestCari/1000*100))});
+A.push({id:"top_product",cat:"Ürün",icon:"⭐",title:"Yıldız Ürün",desc:topProduct?`${topProduct[0]} en az 20 kez satıldı`:"En çok satan ürün 20 adede ulaşsın",done:topProduct&&topProduct[1]>=20,progress:topProduct?Math.min(100,Math.round(topProduct[1]/20*100)):0});
+A.push({id:"top_product_50",cat:"Ürün",icon:"⭐",title:"Süper Yıldız",desc:topProduct?`${topProduct[0]} en az 50 kez satıldı`:"En çok satan ürün 50 adede ulaşsın",done:topProduct&&topProduct[1]>=50,progress:topProduct?Math.min(100,Math.round(topProduct[1]/50*100)):0});
+A.push({id:"net_positive_10",cat:"Kâr",icon:"📊",title:"10 Kârlı Gün",desc:"Net kârı pozitif olan 10 gün",done:logs.filter(l=>(l.net||0)>0).length>=10,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/10*100))});
+A.push({id:"net_positive_30",cat:"Kâr",icon:"📊",title:"30 Kârlı Gün",desc:"Net kârı pozitif olan 30 gün",done:logs.filter(l=>(l.net||0)>0).length>=30,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/30*100))});
+A.push({id:"net_positive_50",cat:"Kâr",icon:"📊",title:"50 Kârlı Gün",desc:"Net kârı pozitif olan 50 gün",done:logs.filter(l=>(l.net||0)>0).length>=50,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/50*100))});
+A.push({id:"net_positive_100",cat:"Kâr",icon:"📊",title:"100 Kârlı Gün",desc:"Net kârı pozitif olan 100 gün",done:logs.filter(l=>(l.net||0)>0).length>=100,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/100*100))});
+A.push({id:"total_net_100k",cat:"Kâr",icon:"💎",title:"100.000 TL Net Kâr",desc:"Toplam net kâr 100.000 TL'ye ulaşsın",done:totalNet>=100000,progress:Math.min(100,Math.round(totalNet/100000*100))});
+A.push({id:"total_net_250k",cat:"Kâr",icon:"💎",title:"250.000 TL Net Kâr",desc:"Toplam net kâr 250.000 TL'ye ulaşsın",done:totalNet>=250000,progress:Math.min(100,Math.round(totalNet/250000*100))});
+A.push({id:"days_since_30",cat:"Yaşgünü",icon:"🎂",title:"1 Aylık LURK",desc:"LURK'ün ilk gününden 30 gün geçti",done:daysSinceFirst>=30,progress:Math.min(100,Math.round(daysSinceFirst/30*100))});
+A.push({id:"days_since_90",cat:"Yaşgünü",icon:"🎂",title:"3 Aylık LURK",desc:"LURK'ün ilk gününden 90 gün geçti",done:daysSinceFirst>=90,progress:Math.min(100,Math.round(daysSinceFirst/90*100))});
+A.push({id:"days_since_180",cat:"Yaşgünü",icon:"🎂",title:"6 Aylık LURK",desc:"LURK'ün ilk gününden 180 gün geçti",done:daysSinceFirst>=180,progress:Math.min(100,Math.round(daysSinceFirst/180*100))});
+A.push({id:"days_since_365",cat:"Yaşgünü",icon:"🎂",title:"1 Yıllık LURK",desc:"LURK'ün ilk gününden 365 gün geçti",done:daysSinceFirst>=365,progress:Math.min(100,Math.round(daysSinceFirst/365*100))});
+[3000,4000,5000,6000,7000,8000].forEach(t=>A.push({id:"daysover_"+t,cat:"Rekor",icon:"🚀",title:`${daysOver(t)} Kez ${fm(t,cur)}+`,desc:`${fm(t,cur)} ve üzeri ciro yapılan gün sayısı`,done:daysOver(t)>=1,progress:daysOver(t)>=1?100:0}));
+
+let bonusN=1;
+while(A.length<100){
+  A.push({id:"bonus_"+bonusN,cat:"Bonus",icon:"🎯",title:"Yeni Hedef Yakında",desc:"Daha fazla veri biriktikçe burada yeni başarılar belirecek",done:false,progress:0});
+  bonusN++;
+}
+const achievements=A.slice(0,100);
+
+const doneCount=achievements.filter(a=>a.done).length;
+const categories=["all",...Array.from(new Set(achievements.map(a=>a.cat)))];
+const filtered=filter==="all"?achievements:achievements.filter(a=>a.cat===filter);
+const sortedFiltered=[...filtered].sort((a,b)=>{if(a.done!==b.done)return a.done?-1:1;return (b.progress||0)-(a.progress||0);});
+
+return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
+<div style={{display:"flex",alignItems:"center",gap:12,marginBottom:22}}>
+<button onClick={()=>setV("credit")} style={{...sb(T.bg3),color:T.textSub,padding:"7px 12px"}}>Geri</button>
+<div>
+<h2 style={{margin:0,fontWeight:800,fontSize:20}}>🏆 Başarılar</h2>
+<div style={{fontSize:12,color:T.textSub,marginTop:2}}>LURK'ün tüm geçmişinden otomatik hesaplanıyor</div>
+</div>
+</div>
+
+<div style={{background:"linear-gradient(135deg,#FF9500,#FF6200)",borderRadius:16,padding:"20px 22px",color:"#fff",marginBottom:20}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div>
+<div style={{fontSize:11,opacity:0.85,marginBottom:4,textTransform:"uppercase",letterSpacing:0.5}}>Tamamlanan</div>
+<div style={{fontSize:32,fontWeight:800}}>{doneCount} / {achievements.length}</div>
+</div>
+<div style={{fontSize:48}}>🏆</div>
+</div>
+<div style={{background:"rgba(255,255,255,0.25)",borderRadius:6,height:8,marginTop:14,overflow:"hidden"}}>
+<div style={{background:"#fff",height:"100%",width:Math.round(doneCount/achievements.length*100)+"%",borderRadius:6}}/>
+</div>
+</div>
+
+<div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
+{categories.map(c=>(
+<button key={c} onClick={()=>setFilter(c)} style={{padding:"6px 14px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:filter===c?"#FF9500":T.bg3,color:filter===c?"#fff":T.textSub}}>{c==="all"?"Tümü":c}</button>
+))}
+</div>
+
+<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:10}}>
+{sortedFiltered.map(a=>(
+<div key={a.id} style={{background:a.done?"#fff":T.bg3,borderRadius:14,padding:"14px 16px",opacity:a.done?1:0.6,boxShadow:a.done?T.shadow:"none",position:"relative",overflow:"hidden"}}>
+<div style={{display:"flex",alignItems:"flex-start",gap:10}}>
+<div style={{fontSize:24,filter:a.done?"none":"grayscale(1)"}}>{a.icon}</div>
+<div style={{flex:1,minWidth:0}}>
+<div style={{fontSize:13,fontWeight:700,color:a.done?T.text:T.textSub}}>{a.title}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{a.desc}</div>
+{!a.done&&a.progress>0&&<div style={{background:"rgba(0,0,0,0.08)",borderRadius:4,height:4,marginTop:8,overflow:"hidden"}}><div style={{background:"#FF9500",height:"100%",width:a.progress+"%",borderRadius:4}}/></div>}
+</div>
+{a.done&&<div style={{color:"#FF9500",fontSize:16}}>✓</div>}
+</div>
+</div>
+))}
+</div>
+</div>);}
