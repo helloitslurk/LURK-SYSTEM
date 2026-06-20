@@ -82,6 +82,7 @@ const[gM,setGM]=useState(null);
 const[selLog,setSelLog]=useState(null);
 const[repT,setRepT]=useState("items");
 const[mainT,setMainT]=useState("sales");
+const[installments,setInstallments]=useState([]);
 const[expMon,setExpMon]=useState(null);
 const[expDay,setExpDay]=useState(null);
 const[expF,setExpF]=useState({desc:"",amount:"",cat:"Malzeme",date:tod()});
@@ -102,10 +103,11 @@ const t=await ld("p4t",null);const o=await ld("p4o",[]);const e=await ld("p4e",[
 const m=await ld("p4m",null);const s=await ld("p4s",DS);const d=await ld("p4d",null);
 const l=await ld("p4l",[]);const c=await ld("p4c",[]);const ec=await ld("p4ec",DEC);
 const onl=await ld("p4onl",[]);
+const inst=await ld("p4inst",[]);
 const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
-setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setTbl(t||mkT(cf.tableCount));setOk(true);
+setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setTbl(t||mkT(cf.tableCount));setOk(true);
 })();},[]);
 
 useEffect(()=>{if(ok)sv("p4t",tables);},[tables,ok]);
@@ -118,6 +120,7 @@ useEffect(()=>{if(ok)sv("p4l",logs);},[logs,ok]);
 useEffect(()=>{if(ok)sv("p4c",cari);},[cari,ok]);
 useEffect(()=>{if(ok)sv("p4ec",ecats);},[ecats,ok]);
 useEffect(()=>{if(ok)sv("p4onl",onlineOrders);},[onlineOrders,ok]);
+useEffect(()=>{if(ok)sv("p4inst",installments);},[installments,ok]);
 
 const msg=(m,t="ok")=>{setToast({m,t});setTimeout(()=>setToast(null),2800);};
 const cur=cfg.cur||"TL";
@@ -275,7 +278,7 @@ return(
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T}/>}
 {view==="product-analysis"&&<ProductAnalysisV logs={logs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} inp={inp} T={T}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
-{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV}/>}
+{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} PO={PO}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
@@ -474,7 +477,7 @@ return(<div style={{background:T.bg2,border:"1px solid "+T.border2,borderRadius:
 </div>
 </div>);}
 
-function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV}){
+function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments}){
 const CC=["#2D6A4F","#40916C","#5C4A1E","#2D4A6A","#6B4CA0","#B83232","#8B6914","#1B4332"];
 const[dateFrom,setDateFrom]=useState("");
 const[dateTo,setDateTo]=useState("");
@@ -498,6 +501,56 @@ const lE=exp.filter(e=>inRange(e.date)&&(expDay?e.date===expDay:expMon?e.date.sl
 const ct={};lE.forEach(e=>{if(!ct[e.cat])ct[e.cat]=0;ct[e.cat]+=e.amount;});
 const stot=lE.reduce((s,e)=>s+e.amount,0);
 const ce=Object.entries(ct).sort((a,b)=>b[1]-a[1]);
+
+const[showAddInst,setShowAddInst]=useState(false);
+const[newInst,setNewInst]=useState({name:"",totalAmount:"",count:"1",startDate:tod()});
+const[expandedInstId,setExpandedInstId]=useState(null);
+
+const addInstallment=()=>{
+if(!newInst.name||!newInst.totalAmount||!newInst.count)return;
+const count=parseInt(newInst.count)||1;
+const totalAmount=parseFloat(newInst.totalAmount)||0;
+const perInstallment=Math.round((totalAmount/count)*100)/100;
+const startD=new Date(newInst.startDate);
+const installmentsList=[];
+for(let i=0;i<count;i++){
+const dueDate=new Date(startD);
+dueDate.setMonth(dueDate.getMonth()+i);
+installmentsList.push({id:Date.now()+i+Math.random(),due:dueDate.toISOString().split("T")[0],amount:perInstallment,paid:false});
+}
+setInstallments(prev=>[...prev,{id:Date.now(),name:newInst.name,totalAmount,count,installments:installmentsList,createdAt:new Date().toISOString()}]);
+setNewInst({name:"",totalAmount:"",count:"1",startDate:tod()});
+setShowAddInst(false);
+};
+
+const togglePaid=(planId,instId)=>{
+setInstallments(prev=>prev.map(p=>p.id!==planId?p:{...p,installments:p.installments.map(i=>i.id===instId?{...i,paid:!i.paid}:i)}));
+};
+
+const deletePlan=(planId)=>{
+if(window.confirm("Bu vade planını tamamen silmek istediğine emin misin?")){
+setInstallments(prev=>prev.filter(p=>p.id!==planId));
+}
+};
+
+const daysUntil=(dateStr)=>{
+const today=new Date(tod());
+const target=new Date(dateStr);
+const diffMs=target-today;
+return Math.round(diffMs/(1000*60*60*24));
+};
+
+const allInstallmentRows=[];
+installments.forEach(plan=>{
+plan.installments.forEach(inst=>{
+allInstallmentRows.push({...inst,planId:plan.id,planName:plan.name,planCount:plan.count});
+});
+});
+allInstallmentRows.sort((a,b)=>a.due.localeCompare(b.due));
+const unpaidRows=allInstallmentRows.filter(r=>!r.paid);
+const overdueCount=unpaidRows.filter(r=>daysUntil(r.due)<0).length;
+const upcomingCount=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).length;
+const totalUnpaid=unpaidRows.reduce((s,r)=>s+r.amount,0);
 return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
@@ -509,6 +562,13 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 <button onClick={()=>setV("product-analysis")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:T.accent,border:"none",borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,color:"#fff"}}>
   📊 Ürün Analizi
 </button>
+</div>
+</div>
+
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24,flexWrap:"wrap",gap:10}}>
+<div style={{display:"flex",gap:0,background:"#EFEDE8",borderRadius:10,padding:3,width:"fit-content"}}>
+{[{k:"sales",l:"Satış"},{k:"expenses",l:"Harcama"},{k:"installments",l:"Vadeler"}].map(({k,l})=><button key={k} onClick={()=>setMainT(k)} style={{padding:"8px 20px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:600,fontSize:13,background:mainT===k?"#fff":"#EFEDE8",color:mainT===k?"#2D6A4F":"#6B6860"}}>{l}</button>)}
+</div>
 <div style={{position:"relative"}}>
   <button onClick={()=>setShowDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:rangeLabel?"#EBF5EF":T.bg3,border:"1px solid "+(rangeLabel?"#74C69D":T.border2),borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,color:rangeLabel?"#2D6A4F":T.textSub}}>
     📅 {rangeLabel||"Tarih Aralığı"}
@@ -527,11 +587,6 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
     </div>
   )}
 </div>
-</div>
-</div>
-
-<div style={{display:"flex",gap:0,background:"#EFEDE8",borderRadius:10,padding:3,marginBottom:24,width:"fit-content"}}>
-{[{k:"sales",l:"Satış"},{k:"expenses",l:"Harcama"}].map(({k,l})=><button key={k} onClick={()=>setMainT(k)} style={{padding:"8px 20px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:600,fontSize:13,background:mainT===k?"#fff":"#EFEDE8",color:mainT===k?"#2D6A4F":"#6B6860"}}>{l}</button>)}
 </div>
 {mainT==="sales"&&(filteredLogs.length===0?<div style={{textAlign:"center",padding:"60px 0",color:"#A8A49C"}}>{rangeLabel?"Bu tarih aralığında kayıt yok.":"Kapatılmış gün yok."}</div>
 :<div style={{display:"flex",flexDirection:"column",gap:12}}>
@@ -604,6 +659,79 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 <div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#B83232",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#A8A49C",cursor:"pointer",padding:4,fontSize:16}}>x</button></div>
 </div>)}
 </>}
+</div>}
+
+{mainT==="installments"&&<div>
+<div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
+<button onClick={()=>setShowAddInst(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",background:showAddInst?"#EFEDE8":"#2D6A4F",border:"1px solid "+(showAddInst?"#CCC9C0":"transparent"),borderRadius:9,color:showAddInst?"#555":"#fff",fontWeight:600,fontSize:12,cursor:"pointer"}}>{showAddInst?"İptal":"+ Vade Ekle"}</button>
+</div>
+
+{showAddInst&&<div style={{background:"#fff",border:"1px solid #E4E1DA",borderRadius:12,padding:18,marginBottom:18}}>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+<input placeholder="Ödeme adı (örn: Kira)" value={newInst.name} onChange={e=>setNewInst(p=>({...p,name:e.target.value}))} style={inp} autoFocus/>
+<input type="number" placeholder="Toplam tutar" value={newInst.totalAmount} onChange={e=>setNewInst(p=>({...p,totalAmount:e.target.value}))} style={inp}/>
+<input type="number" placeholder="Taksit sayısı" value={newInst.count} onChange={e=>setNewInst(p=>({...p,count:e.target.value}))} style={inp} min="1"/>
+<input type="date" value={newInst.startDate} onChange={e=>setNewInst(p=>({...p,startDate:e.target.value}))} style={inp}/>
+</div>
+{newInst.totalAmount&&newInst.count&&<div style={{fontSize:12,color:"#6B6860",marginBottom:12}}>Her taksit: {fm(Math.round((parseFloat(newInst.totalAmount)/parseInt(newInst.count||1))*100)/100,cur)} — toplam {newInst.count} ay boyunca aynı günde</div>}
+<button onClick={addInstallment} style={{...sb("#2D6A4F"),fontSize:13,padding:"9px 20px"}}>Ekle</button>
+</div>}
+
+{installments.length>0&&<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:18}}>
+<div style={{background:"#FDF0EF",border:"1px solid #E8BABA",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#B83232",marginBottom:3}}>Gecikmiş</div><div style={{fontSize:18,fontWeight:800,color:"#B83232"}}>{overdueCount}</div></div>
+<div style={{background:"#FFF8E8",border:"1px solid #E8D8A0",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#8B6914",marginBottom:3}}>7 Gün İçinde</div><div style={{fontSize:18,fontWeight:800,color:"#8B6914"}}>{upcomingCount}</div></div>
+<div style={{background:"#EEF2F7",border:"1px solid #9BBAD8",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#2D4A6A",marginBottom:3}}>Kalan Toplam</div><div style={{fontSize:18,fontWeight:800,color:"#2D4A6A"}}>{fm(totalUnpaid,cur)}</div></div>
+</div>}
+
+{installments.length===0?<div style={{textAlign:"center",padding:"60px 0",color:"#A8A49C"}}>Henüz vade kaydı yok.</div>
+:<div style={{display:"flex",flexDirection:"column",gap:10}}>
+{installments.map(plan=>{
+const paidCount=plan.installments.filter(i=>i.paid).length;
+const isExpanded=expandedInstId===plan.id;
+const nextUnpaid=plan.installments.filter(i=>!i.paid).sort((a,b)=>a.due.localeCompare(b.due))[0];
+return(
+<div key={plan.id} style={{background:"#fff",border:"1px solid #E4E1DA",borderRadius:12,padding:"14px 16px"}}>
+<div onClick={()=>setExpandedInstId(isExpanded?null:plan.id)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
+<div>
+<div style={{fontWeight:700,fontSize:14}}>{plan.name}</div>
+<div style={{fontSize:11,color:"#6B6860",marginTop:2}}>{paidCount}/{plan.count} ödendi · {fm(plan.totalAmount,cur)}{nextUnpaid&&<span> · sıradaki: {fd(nextUnpaid.due)}</span>}</div>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+{paidCount===plan.count
+?<span style={{fontSize:11,fontWeight:700,color:"#2D6A4F",background:"#EBF5EF",padding:"3px 10px",borderRadius:20}}>Tamamlandı</span>
+:nextUnpaid&&daysUntil(nextUnpaid.due)<0
+?<span style={{fontSize:11,fontWeight:700,color:"#B83232",background:"#FDF0EF",padding:"3px 10px",borderRadius:20}}>Gecikmiş</span>
+:nextUnpaid&&daysUntil(nextUnpaid.due)<=7
+?<span style={{fontSize:11,fontWeight:700,color:"#8B6914",background:"#FFF8E8",padding:"3px 10px",borderRadius:20}}>Yaklaşıyor</span>
+:<span style={{fontSize:11,fontWeight:700,color:"#6B6860",background:"#EFEDE8",padding:"3px 10px",borderRadius:20}}>Devam Ediyor</span>
+}
+<span style={{color:"#A8A49C",fontSize:11}}>{isExpanded?"▲":"▼"}</span>
+</div>
+</div>
+{isExpanded&&<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid #E4E1DA"}}>
+{plan.installments.map((inst,ii)=>{
+const dd=daysUntil(inst.due);
+const isOverdue=!inst.paid&&dd<0;
+const isUpcoming=!inst.paid&&dd>=0&&dd<=7;
+return(
+<div key={inst.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",marginBottom:6,borderRadius:8,background:isOverdue?"#FDF0EF":isUpcoming?"#FFF8E8":"#F7F6F3"}}>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<input type="checkbox" checked={inst.paid} onChange={()=>togglePaid(plan.id,inst.id)} style={{width:16,height:16,cursor:"pointer"}}/>
+<div>
+<div style={{fontSize:12,fontWeight:600,textDecoration:inst.paid?"line-through":"none",color:inst.paid?"#A8A49C":"#1C1C1A"}}>{ii+1}. Taksit — {fd(inst.due)}</div>
+{!inst.paid&&<div style={{fontSize:10,color:isOverdue?"#B83232":isUpcoming?"#8B6914":"#A8A49C",marginTop:1}}>{isOverdue?`${Math.abs(dd)} gün gecikti`:dd===0?"Bugün":dd===1?"Yarın":`${dd} gün kaldı`}</div>}
+</div>
+</div>
+<div style={{fontWeight:700,fontSize:13,color:inst.paid?"#2D6A4F":"#1C1C1A"}}>{fm(inst.amount,cur)}</div>
+</div>
+);
+})}
+<button onClick={()=>deletePlan(plan.id)} style={{marginTop:8,background:"none",border:"none",color:"#B83232",cursor:"pointer",fontSize:11,fontWeight:600,padding:0}}>Bu vade planını sil</button>
+</div>}
+</div>
+);
+})}
+</div>}
 </div>}
 </div>);}
 
@@ -1312,10 +1440,13 @@ Bu işlem {OLD_LOGS.length} günlük geçmiş satış kaydını mevcut Raporlar 
 );}
 
 function ProductAnalysisV({logs,cur,fm,fd,setV,sb,inp,T}){
-const[dateFrom,setDateFrom]=useState("");
-const[dateTo,setDateTo]=useState("");
+const defaultFrom=(()=>{const d=new Date();d.setDate(d.getDate()-40);return d.toISOString().split("T")[0];})();
+const defaultTo=new Date().toISOString().split("T")[0];
+const[dateFrom,setDateFrom]=useState(defaultFrom);
+const[dateTo,setDateTo]=useState(defaultTo);
 const[showDatePicker,setShowDatePicker]=useState(false);
 const[sortBy,setSortBy]=useState("qty");
+const isDefaultRange=dateFrom===defaultFrom&&dateTo===defaultTo;
 
 const inRange=(date)=>{
   if(!dateFrom&&!dateTo)return true;
@@ -1323,8 +1454,8 @@ const inRange=(date)=>{
   if(dateTo&&date>dateTo)return false;
   return true;
 };
-const rangeLabel=dateFrom||dateTo?`${dateFrom||"..."} → ${dateTo||"..."}`:null;
-const clearRange=()=>{setDateFrom("");setDateTo("");setShowDatePicker(false);};
+const rangeLabel=!isDefaultRange&&(dateFrom||dateTo)?`${dateFrom||"..."} → ${dateTo||"..."}`:null;
+const clearRange=()=>{setDateFrom(defaultFrom);setDateTo(defaultTo);setShowDatePicker(false);};
 
 const relevantLogs=logs.filter(l=>inRange(l.date)&&l.items&&l.items.length>0);
 const daysWithData=relevantLogs.length;
@@ -1366,7 +1497,7 @@ return(<div style={{padding:24,maxWidth:820,margin:"0 auto"}}>
 </div>
 <div style={{position:"relative"}}>
   <button onClick={()=>setShowDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:rangeLabel?"#EBF5EF":T.bg3,border:"1px solid "+(rangeLabel?"#74C69D":T.border2),borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,color:rangeLabel?"#2D6A4F":T.textSub}}>
-    📅 {rangeLabel||"Tarih Aralığı"}
+    📅 {rangeLabel||"Son 41 Gün"}
     {rangeLabel&&<span onClick={e=>{e.stopPropagation();clearRange();}} style={{marginLeft:4,color:"#2D6A4F",fontWeight:800,fontSize:14,lineHeight:1}}>×</span>}
   </button>
   {showDatePicker&&(
@@ -1376,7 +1507,7 @@ return(<div style={{padding:24,maxWidth:820,margin:"0 auto"}}>
       <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Bitiş</div>
       <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{...inp,marginBottom:14}}/>
       <div style={{display:"flex",gap:8}}>
-        <button onClick={clearRange} style={{...sb(T.bg3),flex:1,color:T.textSub,padding:"8px 0",fontSize:12}}>Temizle</button>
+        <button onClick={clearRange} style={{...sb(T.bg3),flex:1,color:T.textSub,padding:"8px 0",fontSize:12}}>Son 41 Gün</button>
         <button onClick={()=>setShowDatePicker(false)} style={{...sb(T.accent),flex:1,padding:"8px 0",fontSize:12}}>Uygula</button>
       </div>
     </div>
