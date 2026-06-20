@@ -121,7 +121,12 @@ useEffect(()=>{if(ok)sv("p4onl",onlineOrders);},[onlineOrders,ok]);
 const msg=(m,t="ok")=>{setToast({m,t});setTimeout(()=>setToast(null),2800);};
 const cur=cfg.cur||"TL";
 
-const openDay=()=>{setDay({oa:new Date().toISOString()});msg("Gün açıldı");};
+const openDay=()=>{
+const td=tod();
+const alreadyClosed=logs.some(l=>l.date===td);
+if(alreadyClosed){msg("Bugün zaten kapatıldı, yarın tekrar açabilirsin","err");return;}
+setDay({oa:new Date().toISOString()});msg("Gün açıldı");
+};
 const closeDay=()=>{
 const td=tod();const to=orders.filter(o=>o.date===td);const te=exp.filter(e=>e.date===td);
 const cash=to.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
@@ -268,7 +273,7 @@ return(
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T}/>}
 {view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog}/>}
-{view==="reports"&&selLog&&<LogV log={selLog} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} T={T} sb={sb}/>}
+{view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} PO={PO}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
 </div>
@@ -585,41 +590,122 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 </div>}
 {lE.map(e=><div key={e.id} style={{background:"#fff",border:"1px solid #E4E1DA",borderRadius:10,padding:"10px 14px",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:600,fontSize:13}}>{e.desc}</div><span style={{fontSize:10,background:"#EFEDE8",padding:"1px 7px",borderRadius:10,color:"#6B6860"}}>{e.cat}</span></div>
-<div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#B83232",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>setExp(prev=>prev.filter(x=>x.id!==e.id))} style={{background:"none",border:"none",color:"#A8A49C",cursor:"pointer",padding:4,fontSize:16}}>x</button></div>
+<div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#B83232",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#A8A49C",cursor:"pointer",padding:4,fontSize:16}}>x</button></div>
 </div>)}
 </>}
 </div>}
 </div>);}
 
-function LogV({log,cur,fm,ft,fdl,repT,setRepT,setSelLog,T,sb}){
-const cg={};(log.items||[]).forEach(it=>{const c=it.cat||"Diger";if(!cg[c])cg[c]=[];cg[c].push(it);});
+function LogV({log,setLogs,ecats,cur,fm,ft,fdl,repT,setRepT,setSelLog,inp,T,sb}){
+const[editMode,setEditMode]=useState(false);
+const[items,setItems]=useState(log.items||[]);
+const[exps,setExps]=useState(log.exps||[]);
+const[showAddExp,setShowAddExp]=useState(false);
+const[newExp,setNewExp]=useState({desc:"",amount:"",cat:ecats[0]||""});
+
+const cg={};items.forEach(it=>{const c=it.cat||"Diger";if(!cg[c])cg[c]=[];cg[c].push(it);});
+
+const recalc=(newItems,newExps)=>{
+const newInc=newItems.reduce((s,i)=>s+i.total,0);
+const newExpTotal=newExps.reduce((s,e)=>s+e.amount,0);
+return{inc:newInc,exp:newExpTotal,net:newInc-newExpTotal};
+};
+
+const saveChanges=()=>{
+const{inc,exp,net}=recalc(items,exps);
+setLogs(prev=>prev.map(l=>l.id===log.id?{...l,items,exps,inc,exp,net}:l));
+setEditMode(false);
+};
+
+const updateItemQty=(name,delta)=>{
+setItems(prev=>prev.map(it=>it.name===name?{...it,qty:Math.max(0,it.qty+delta),total:Math.max(0,it.qty+delta)*it.price}:it).filter(it=>it.qty>0));
+};
+const updateItemPrice=(name,newPrice)=>{
+const p=parseFloat(newPrice)||0;
+setItems(prev=>prev.map(it=>it.name===name?{...it,price:p,total:it.qty*p}:it));
+};
+const deleteItem=(name)=>{
+if(window.confirm("Bu ürünü bu günün raporundan silmek istediğine emin misin?")){
+setItems(prev=>prev.filter(it=>it.name!==name));
+}
+};
+const deleteExp=(id)=>{
+if(window.confirm("Bu gideri silmek istediğine emin misin?")){
+setExps(prev=>prev.filter(e=>e.id!==id));
+}
+};
+const updateExpAmount=(id,newAmt)=>{
+const a=parseFloat(newAmt)||0;
+setExps(prev=>prev.map(e=>e.id===id?{...e,amount:a}:e));
+};
+const addExp=()=>{
+if(!newExp.desc||!newExp.amount)return;
+setExps(prev=>[...prev,{id:Date.now()+Math.random(),...newExp,amount:parseFloat(newExp.amount),date:log.date}]);
+setNewExp({desc:"",amount:"",cat:ecats[0]||""});
+setShowAddExp(false);
+};
+
+const liveTotals=recalc(items,exps);
+
 return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
-<div style={{display:"flex",alignItems:"center",gap:12,marginBottom:22}}>
+<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:22}}>
+<div style={{display:"flex",alignItems:"center",gap:12}}>
 <button onClick={()=>setSelLog(null)} style={{...sb(T.bg3),color:T.textSub,padding:"7px 12px"}}>Geri</button>
 <div><h2 style={{margin:0,fontWeight:800,fontSize:20}}>{fdl(log.date)}</h2><div style={{fontSize:12,color:T.textSub}}>{ft(log.oa)} - {ft(log.ca)}</div></div>
 </div>
-<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,marginBottom:20}}>
-<div style={{background:"#EBF5EF",border:"1px solid #74C69D",borderRadius:12,padding:"16px 18px",gridColumn:"1/-1"}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Toplam Satış</div><div style={{fontSize:32,fontWeight:800,color:T.accentL}}>{fm(log.inc,cur)}</div><div style={{fontSize:12,color:T.textSub,marginTop:4}}>{log.count} adisyon</div></div>
-<div style={{background:"#F5F0E4",border:"1px solid #D4C080",borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:"#7A6428",marginBottom:4}}>Nakit</div><div style={{fontSize:24,fontWeight:800,color:"#5C4A1E"}}>{fm(log.cash||0,cur)}</div>{log.inc>0&&<div style={{fontSize:11,color:T.textSub,marginTop:3}}>%{Math.round((log.cash||0)/log.inc*100)}</div>}</div>
-<div style={{background:"#EEF2F7",border:"1px solid #9BBAD8",borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:"#1A3A5A",marginBottom:4}}>Kart</div><div style={{fontSize:24,fontWeight:800,color:"#2D4A6A"}}>{fm(log.card||0,cur)}</div>{log.inc>0&&<div style={{fontSize:11,color:T.textSub,marginTop:3}}>%{Math.round((log.card||0)/log.inc*100)}</div>}</div>
-<div style={{background:"#FDF0EF",border:"1px solid #E8BABA",borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Gider</div><div style={{fontSize:24,fontWeight:800,color:T.danger}}>{fm(log.exp||0,cur)}</div></div>
-<div style={{background:log.net>=0?"#EBF5EF":"#FDF0EF",border:"1px solid "+(log.net>=0?"#74C69D":"#E8BABA"),borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Net Kâr</div><div style={{fontSize:24,fontWeight:800,color:log.net>=0?T.success:T.danger}}>{fm(log.net,cur)}</div></div>
+{!editMode
+?<button onClick={()=>{setItems(log.items||[]);setExps(log.exps||[]);setEditMode(true);}} style={{...sb(T.bg3),color:T.accentL,border:"1px solid "+T.border2,fontSize:12,padding:"8px 16px"}}>✎ Düzenle</button>
+:<div style={{display:"flex",gap:8}}>
+<button onClick={()=>{setItems(log.items||[]);setExps(log.exps||[]);setEditMode(false);}} style={{...sb(T.bg3),color:T.textSub,fontSize:12,padding:"8px 14px"}}>İptal</button>
+<button onClick={saveChanges} style={{...sb(T.accent),fontSize:12,padding:"8px 16px"}}>Kaydet</button>
+</div>}
 </div>
+
+{editMode&&<div style={{background:"#FFF8E8",border:"1px solid #E8D8A0",borderRadius:10,padding:"10px 14px",marginBottom:16,fontSize:12,color:"#8B6914"}}>
+Düzenleme modundasın. Değişiklikler "Kaydet"e basana kadar uygulanmaz.
+</div>}
+
+<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,marginBottom:20}}>
+<div style={{background:"#EBF5EF",border:"1px solid #74C69D",borderRadius:12,padding:"16px 18px",gridColumn:"1/-1"}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Toplam Satış</div><div style={{fontSize:32,fontWeight:800,color:T.accentL}}>{fm(editMode?liveTotals.inc:log.inc,cur)}</div><div style={{fontSize:12,color:T.textSub,marginTop:4}}>{log.count} adisyon</div></div>
+<div style={{background:"#F5F0E4",border:"1px solid #D4C080",borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:"#7A6428",marginBottom:4}}>Nakit</div><div style={{fontSize:24,fontWeight:800,color:"#5C4A1E"}}>{fm(log.cash||0,cur)}</div></div>
+<div style={{background:"#EEF2F7",border:"1px solid #9BBAD8",borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:"#1A3A5A",marginBottom:4}}>Kart</div><div style={{fontSize:24,fontWeight:800,color:"#2D4A6A"}}>{fm(log.card||0,cur)}</div></div>
+<div style={{background:"#FDF0EF",border:"1px solid #E8BABA",borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Gider</div><div style={{fontSize:24,fontWeight:800,color:T.danger}}>{fm(editMode?liveTotals.exp:log.exp,cur)}</div></div>
+<div style={{background:(editMode?liveTotals.net:log.net)>=0?"#EBF5EF":"#FDF0EF",border:"1px solid "+((editMode?liveTotals.net:log.net)>=0?"#74C69D":"#E8BABA"),borderRadius:12,padding:"16px 18px"}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Net Kâr</div><div style={{fontSize:24,fontWeight:800,color:(editMode?liveTotals.net:log.net)>=0?T.success:T.danger}}>{fm(editMode?liveTotals.net:log.net,cur)}</div></div>
+</div>
+
 <div style={{display:"flex",gap:8,marginBottom:16}}>
 {[{k:"items",l:"Satılan Ürünler"},{k:"guests",l:"Müşteri Raporu"}].map(({k,l})=><button key={k} onClick={()=>setRepT(k)} style={{padding:"8px 18px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,background:repT===k?T.accent:T.bg3,color:repT===k?"#fff":T.textSub}}>{l}</button>)}
 </div>
+
 {repT==="items"&&(Object.keys(cg).length===0?<div style={{color:T.textDim,textAlign:"center",padding:"30px 0"}}>Veri yok.</div>
 :<div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:20,marginBottom:16}}>
-{Object.entries(cg).map(([cat,items])=><div key={cat} style={{marginBottom:16}}>
+{Object.entries(cg).map(([cat,catItems])=><div key={cat} style={{marginBottom:16}}>
 <div style={{fontSize:11,fontWeight:700,color:T.accent,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{cat}</div>
-{items.map(item=><div key={item.name} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:"1px solid "+T.border}}>
-<div style={{display:"flex",alignItems:"center",gap:10}}><span style={{background:T.accent,color:"#fff",fontSize:11,fontWeight:800,padding:"2px 7px",borderRadius:20,minWidth:26,textAlign:"center"}}>{item.qty}</span><span style={{fontSize:13,fontWeight:600}}>{item.name}</span></div>
-<div style={{textAlign:"right"}}><div style={{fontWeight:700,color:T.accentL,fontSize:13}}>{fm(item.total,cur)}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty}</div></div>
+{catItems.map(item=><div key={item.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid "+T.border,gap:8}}>
+<div style={{display:"flex",alignItems:"center",gap:10,flex:1}}>
+{editMode
+?<div style={{display:"flex",alignItems:"center",gap:4}}>
+<button onClick={()=>updateItemQty(item.name,-1)} style={{width:22,height:22,borderRadius:6,border:"1px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,lineHeight:1}}>-</button>
+<span style={{minWidth:22,textAlign:"center",fontWeight:800,fontSize:12}}>{item.qty}</span>
+<button onClick={()=>updateItemQty(item.name,1)} style={{width:22,height:22,borderRadius:6,border:"1px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,lineHeight:1}}>+</button>
+</div>
+:<span style={{background:T.accent,color:"#fff",fontSize:11,fontWeight:800,padding:"2px 7px",borderRadius:20,minWidth:26,textAlign:"center"}}>{item.qty}</span>
+}
+<span style={{fontSize:13,fontWeight:600}}>{item.name}</span>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+{editMode
+?<input type="number" value={item.price} onChange={e=>updateItemPrice(item.name,e.target.value)} style={{width:70,background:T.bg3,border:"1px solid "+T.border2,borderRadius:6,padding:"4px 6px",fontSize:12,textAlign:"right"}}/>
+:<div style={{textAlign:"right"}}><div style={{fontWeight:700,color:T.accentL,fontSize:13}}>{fm(item.total,cur)}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty}</div></div>
+}
+{editMode&&<button onClick={()=>deleteItem(item.name)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:15,padding:2}}>×</button>}
+</div>
 </div>)}
-<div style={{display:"flex",justifyContent:"flex-end",paddingTop:5,fontSize:12,color:T.textSub}}>Toplam: <span style={{fontWeight:700,color:T.accentL,marginLeft:4}}>{fm(items.reduce((s,i)=>s+i.total,0),cur)}</span></div>
+<div style={{display:"flex",justifyContent:"flex-end",paddingTop:5,fontSize:12,color:T.textSub}}>Toplam: <span style={{fontWeight:700,color:T.accentL,marginLeft:4}}>{fm(catItems.reduce((s,i)=>s+i.total,0),cur)}</span></div>
 </div>)}
-<div style={{display:"flex",justifyContent:"space-between",paddingTop:10,borderTop:"2px solid "+T.border2,fontWeight:800,fontSize:15}}><span>Genel</span><span style={{color:T.accentL}}>{fm(log.inc,cur)}</span></div>
+<div style={{display:"flex",justifyContent:"space-between",paddingTop:10,borderTop:"2px solid "+T.border2,fontWeight:800,fontSize:15}}><span>Genel</span><span style={{color:T.accentL}}>{fm(editMode?liveTotals.inc:log.inc,cur)}</span></div>
 </div>)}
+
 {repT==="guests"&&<div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:20}}>
 {(!log.guests||log.guests.length===0)?<div style={{color:T.textDim,textAlign:"center",padding:"30px 0"}}>Müşteri kaydi yok.</div>
 :log.guests.map((g,gi)=><div key={gi} style={{marginBottom:16,paddingBottom:16,borderBottom:"1px solid "+T.border}}>
@@ -633,10 +719,32 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 </div>)}
 </div>)}
 </div>}
-{log.exps&&log.exps.length>0&&<div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:20,marginTop:16}}>
-<h3 style={{margin:"0 0 12px",fontWeight:700,fontSize:14}}>Giderler</h3>
-{log.exps.map(e=><div key={e.id} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"1px solid "+T.border}}><div><div style={{fontSize:13,fontWeight:600}}>{e.desc}</div><div style={{fontSize:11,color:T.textSub}}>{e.cat}</div></div><div style={{fontWeight:700,color:T.danger}}>{fm(e.amount,cur)}</div></div>)}
+
+<div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:20,marginTop:16}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+<h3 style={{margin:0,fontWeight:700,fontSize:14}}>Giderler</h3>
+{editMode&&<button onClick={()=>setShowAddExp(p=>!p)} style={{...sb(T.bg3),color:T.accentL,fontSize:11,padding:"5px 12px"}}>{showAddExp?"İptal":"+ Gider Ekle"}</button>}
+</div>
+{showAddExp&&editMode&&<div style={{background:T.bg3,borderRadius:10,padding:14,marginBottom:14}}>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+<input placeholder="Açıklama" value={newExp.desc} onChange={e=>setNewExp(p=>({...p,desc:e.target.value}))} style={inp}/>
+<input type="number" placeholder="Tutar" value={newExp.amount} onChange={e=>setNewExp(p=>({...p,amount:e.target.value}))} style={inp}/>
+<select value={newExp.cat} onChange={e=>setNewExp(p=>({...p,cat:e.target.value}))} style={inp}>{ecats.map(c=><option key={c}>{c}</option>)}</select>
+</div>
+<button onClick={addExp} style={{...sb(T.accent),fontSize:12,padding:"7px 16px"}}>Ekle</button>
 </div>}
+{exps.length===0?<div style={{color:T.textDim,fontSize:13,textAlign:"center",padding:"16px 0"}}>Gider yok.</div>
+:exps.map(e=><div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:"1px solid "+T.border,gap:8}}>
+<div><div style={{fontSize:13,fontWeight:600}}>{e.desc}</div><div style={{fontSize:11,color:T.textSub}}>{e.cat}</div></div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+{editMode
+?<input type="number" value={e.amount} onChange={ev=>updateExpAmount(e.id,ev.target.value)} style={{width:80,background:T.bg3,border:"1px solid "+T.border2,borderRadius:6,padding:"4px 6px",fontSize:12,textAlign:"right"}}/>
+:<div style={{fontWeight:700,color:T.danger}}>{fm(e.amount,cur)}</div>
+}
+{editMode&&<button onClick={()=>deleteExp(e.id)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:15,padding:2}}>×</button>}
+</div>
+</div>)}
+</div>
 </div>);}
 
 function CariV({cari,setCari,cur,fm,fd,ft,selC,setSelC,stT,setStT,delC,setDelC,msg,T,sb,PO}){
@@ -773,7 +881,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div style={{display:"flex",gap:6}}>
 <button onClick={()=>{setMF({name:item.name,price:String(item.price),cat:item.cat,on:item.on});setMEid(item.id);}} style={{...sb(T.bg3),flex:1,color:T.text,padding:"6px 0",fontSize:11}}>Düzenle</button>
 <button onClick={()=>setMenü(prev=>prev.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{...sb(item.on?T.bg3:T.accent),flex:1,color:item.on?T.textSub:"#fff",padding:"6px 0",fontSize:11}}>{item.on?"Pasif":"Aktif"}</button>
-<button onClick={()=>setMenü(prev=>prev.filter(m=>m.id!==item.id))} style={{background:T.bg3,border:"none",borderRadius:7,padding:"6px 10px",cursor:"pointer",color:T.danger,fontSize:16}}>x</button>
+<button onClick={()=>{if(window.confirm("Bu ürünü silmek istediğine emin misin?")){setMenü(prev=>prev.filter(m=>m.id!==item.id));}}} style={{background:T.bg3,border:"none",borderRadius:7,padding:"6px 10px",cursor:"pointer",color:T.danger,fontSize:16}}>x</button>
 </div>
 </div>)}
 </div>
@@ -785,7 +893,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <button onClick={()=>{const t=newec.trim();if(t&&!ecats.includes(t)){setEc(prev=>[...prev,t]);setNewec("");msg("Eklendi");}}} style={{...sb(T.accent),padding:"9px 14px",flexShrink:0}}>+</button>
 </div>
 <div style={{display:"flex",flexDirection:"column",gap:7}}>
-{ecats.map(cat=>{const used=exp.filter(e=>e.cat===cat).length;return(<div key={cat} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.bg3,borderRadius:9,padding:"10px 14px"}}><div><div style={{fontWeight:600,fontSize:13}}>{cat}</div><div style={{fontSize:10,color:T.textSub,marginTop:2}}>{used} kayıt</div></div><button onClick={()=>{if(used>0){msg("Harcaması var","err");return;}setEc(prev=>prev.filter(c=>c!==cat));msg("Silindi");}} style={{background:"none",border:"none",color:used>0?T.textDim:T.danger,cursor:used>0?"not-allowed":"pointer",padding:4,fontSize:16,opacity:used>0?0.4:1}}>x</button></div>);})}
+{ecats.map(cat=>{const used=exp.filter(e=>e.cat===cat).length;return(<div key={cat} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.bg3,borderRadius:9,padding:"10px 14px"}}><div><div style={{fontWeight:600,fontSize:13}}>{cat}</div><div style={{fontSize:10,color:T.textSub,marginTop:2}}>{used} kayıt</div></div><button onClick={()=>{if(used>0){msg("Harcaması var","err");return;}if(window.confirm("Bu kategoriyi silmek istediğine emin misin?")){setEc(prev=>prev.filter(c=>c!==cat));msg("Silindi");}}} style={{background:"none",border:"none",color:used>0?T.textDim:T.danger,cursor:used>0?"not-allowed":"pointer",padding:4,fontSize:16,opacity:used>0?0.4:1}}>x</button></div>);})}
 </div>
 <div style={{marginTop:14,padding:10,background:T.bg3,borderRadius:8,fontSize:11,color:T.textDim}}>Harcaması olan kategorisi silinemez.</div>
 </div>}
@@ -798,11 +906,13 @@ const PLATFORMS=[
   {k:"ubereats",l:"Uber Eats",color:"#06C167",bg:"#F0FFF6"},
 ];
 const[showForm,setShowForm]=useState(false);
-const[form,setForm]=useState({platform:"yemeksepeti",note:"",amount:"",date:tod()});
+const[form,setForm]=useState({platform:"yemeksepeti",note:"",amount:"",date:tod(),items:[]});
+const[itemInput,setItemInput]=useState({name:"",qty:"1",price:""});
 const[filterP,setFilterP]=useState("all");
 const[dateFrom,setDateFrom]=useState("");
 const[dateTo,setDateTo]=useState("");
 const[showDatePicker,setShowDatePicker]=useState(false);
+const[expandedId,setExpandedId]=useState(null);
 
 const inRange=(date)=>{
   if(!dateFrom&&!dateTo)return true;
@@ -813,10 +923,22 @@ const inRange=(date)=>{
 const rangeLabel=dateFrom||dateTo?`${dateFrom||"..."} → ${dateTo||"..."}`:null;
 const clearRange=()=>{setDateFrom("");setDateTo("");setShowDatePicker(false);};
 
+const addItemToForm=()=>{
+  if(!itemInput.name)return;
+  const qty=parseInt(itemInput.qty)||1;
+  const price=parseFloat(itemInput.price)||0;
+  setForm(p=>({...p,items:[...p.items,{id:Date.now(),name:itemInput.name,qty,price}]}));
+  setItemInput({name:"",qty:"1",price:""});
+};
+const removeItemFromForm=(id)=>{
+  setForm(p=>({...p,items:p.items.filter(i=>i.id!==id)}));
+};
+const itemsTotal=form.items.reduce((s,i)=>s+i.qty*i.price,0);
+
 const addOrder=()=>{
   if(!form.amount||!form.platform)return;
   setOnlineOrders(prev=>[{id:uid(),...form,amount:parseFloat(form.amount),createdAt:new Date().toISOString()},...prev]);
-  setForm(p=>({...p,note:"",amount:"",date:tod()}));
+  setForm({platform:form.platform,note:"",amount:"",date:tod(),items:[]});
   setShowForm(false);
   msg("Sipariş eklendi");
 };
@@ -867,14 +989,46 @@ return(
           <button key={p.k} onClick={()=>setForm(f=>({...f,platform:p.k}))} style={{flex:1,padding:"10px 0",borderRadius:10,border:"2px solid "+(form.platform===p.k?p.color:"#E4E1DA"),background:form.platform===p.k?p.bg:T.bg3,color:form.platform===p.k?p.color:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>{p.l}</button>
         ))}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
         <input placeholder="Not / Sipariş no" value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))} style={inp}/>
-        <input type="number" placeholder={"Tutar ("+cur+")"} value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} style={inp}/>
         <input type="date" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))} style={inp}/>
       </div>
+
+      <div style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:8,textTransform:"uppercase",letterSpacing:0.5}}>Sipariş İçeriği</div>
+      {form.items.length>0&&(
+        <div style={{marginBottom:10}}>
+          {form.items.map(it=>(
+            <div key={it.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:T.bg3,borderRadius:8,padding:"7px 12px",marginBottom:6}}>
+              <span style={{fontSize:12,fontWeight:600}}>{it.name} <span style={{color:T.textSub}}>x{it.qty}</span></span>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:12,color:T.accentL,fontWeight:700}}>{fm(it.qty*it.price,cur)}</span>
+                <button onClick={()=>removeItemFromForm(it.id)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:15,padding:2}}>×</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div style={{display:"flex",gap:6,marginBottom:14}}>
+        <input placeholder="Ürün adı" value={itemInput.name} onChange={e=>setItemInput(p=>({...p,name:e.target.value}))} style={{...inp,flex:2}}/>
+        <input type="number" placeholder="Adet" value={itemInput.qty} onChange={e=>setItemInput(p=>({...p,qty:e.target.value}))} style={{...inp,flex:1}}/>
+        <input type="number" placeholder="Fiyat" value={itemInput.price} onChange={e=>setItemInput(p=>({...p,price:e.target.value}))} style={{...inp,flex:1}}/>
+        <button onClick={addItemToForm} style={{...sb(T.bg3),color:T.accentL,padding:"9px 14px",flexShrink:0}}>+</button>
+      </div>
+
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+        <div style={{fontSize:12,color:T.textSub}}>{form.items.length>0&&`Ürünler toplamı: ${fm(itemsTotal,cur)}`}</div>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <label style={{fontSize:12,color:T.textSub,fontWeight:600}}>Toplam Tutar ({cur})</label>
+          <input type="number" placeholder="0" value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} style={{...inp,width:110}}/>
+        </div>
+      </div>
+      {form.items.length>0&&!form.amount&&(
+        <button onClick={()=>setForm(f=>({...f,amount:String(itemsTotal)}))} style={{fontSize:11,color:T.accentL,background:"none",border:"none",cursor:"pointer",marginBottom:10,padding:0,textDecoration:"underline"}}>Ürün toplamını tutara kopyala</button>
+      )}
       <button onClick={addOrder} style={{...sb(T.accent)}}>Ekle</button>
     </div>
   )}
+
 
   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:12,marginBottom:22}}>
     <div style={{background:"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:14,padding:"16px 18px",color:"#fff"}}>
@@ -906,22 +1060,38 @@ return(
     :<div style={{display:"flex",flexDirection:"column",gap:8}}>
       {filtered.map(o=>{
         const pl=PLATFORMS.find(p=>p.k===o.platform)||PLATFORMS[0];
+        const hasItems=o.items&&o.items.length>0;
+        const isExpanded=expandedId===o.id;
         return(
-          <div key={o.id} style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:"13px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",boxShadow:T.shadow}}>
-            <div style={{display:"flex",alignItems:"center",gap:12}}>
-              <div style={{width:8,height:8,borderRadius:"50%",background:pl.color,flexShrink:0}}/>
-              <div>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontWeight:700,fontSize:13,color:pl.color}}>{pl.l}</span>
-                  {o.note&&<span style={{fontSize:12,color:T.textSub}}>· {o.note}</span>}
+          <div key={o.id} style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:"13px 16px",boxShadow:T.shadow}}>
+            <div onClick={()=>hasItems&&setExpandedId(isExpanded?null:o.id)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:hasItems?"pointer":"default"}}>
+              <div style={{display:"flex",alignItems:"center",gap:12}}>
+                <div style={{width:8,height:8,borderRadius:"50%",background:pl.color,flexShrink:0}}/>
+                <div>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{fontWeight:700,fontSize:13,color:pl.color}}>{pl.l}</span>
+                    {o.note&&<span style={{fontSize:12,color:T.textSub}}>· {o.note}</span>}
+                    {hasItems&&<span style={{fontSize:10,color:T.textSub,background:T.bg3,padding:"1px 7px",borderRadius:10}}>{o.items.length} ürün</span>}
+                  </div>
+                  <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{fd(o.date)} {o.createdAt?ft(o.createdAt):""}</div>
                 </div>
-                <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{fd(o.date)} {o.createdAt?ft(o.createdAt):""}</div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:12}}>
+                <div style={{fontWeight:800,fontSize:15,color:T.text}}>{fm(o.amount,cur)}</div>
+                {hasItems&&<span style={{color:T.textSub,fontSize:11}}>{isExpanded?"▲":"▼"}</span>}
+                <button onClick={(e)=>{e.stopPropagation();if(window.confirm("Bu siparişi silmek istediğine emin misin?")){setOnlineOrders(prev=>prev.filter(x=>x.id!==o.id));}}} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",padding:4,fontSize:16}}>x</button>
               </div>
             </div>
-            <div style={{display:"flex",alignItems:"center",gap:12}}>
-              <div style={{fontWeight:800,fontSize:15,color:T.text}}>{fm(o.amount,cur)}</div>
-              <button onClick={()=>setOnlineOrders(prev=>prev.filter(x=>x.id!==o.id))} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",padding:4,fontSize:16}}>x</button>
-            </div>
+            {isExpanded&&hasItems&&(
+              <div style={{marginTop:12,paddingTop:12,borderTop:"1px solid "+T.border}}>
+                {o.items.map(it=>(
+                  <div key={it.id} style={{display:"flex",justifyContent:"space-between",fontSize:12,padding:"4px 0",color:T.textSub}}>
+                    <span>{it.name} <span style={{color:T.textDim}}>x{it.qty}</span></span>
+                    <span style={{color:T.accentL,fontWeight:600}}>{fm(it.qty*it.price,cur)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
       })}
