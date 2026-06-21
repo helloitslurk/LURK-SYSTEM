@@ -267,6 +267,7 @@ const[disc,setDisc]=useState(null);
 const[pay,setPay]=useState(false);
 const[disM,setDisM]=useState(false);
 const[gM,setGM]=useState(null);
+const[cancelConfirm,setCancelConfirm]=useState(false);
 const[selLog,setSelLog]=useState(null);
 const[repT,setRepT]=useState("items");
 const[mainT,setMainT]=useState("sales");
@@ -368,7 +369,8 @@ setDay(null);setDayCon(false);msg("Gun kapatıldı");};
 const goTbl=(id)=>{if(!day){msg("Önce günü aç","err");return;}if(cfg.requireName){setGM(id);}else doOpen(id,"");};
 const doOpen=(id,g)=>{setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g||t.g}:t));setSel(id);setCat("Tümü");setDisc(null);setPay(false);setGM(null);setV("order");};
 const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const ex=t.order.find(o=>o.id===item.id);const order=ex?t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o):[...t.order,{...item,qty:1}];return{...t,order,s:"o",oa:t.oa||new Date().toISOString()};}));};
-const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;return{...t,order:t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0)};}));};
+const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);if(newOrder.length===0)return{...t,order:newOrder,s:"e",oa:null,g:""};return{...t,order:newOrder};}));};
+const cancelOrder=(tid)=>{setTbl(prev=>prev.map(t=>t.id===tid?{...t,order:[],s:"e",oa:null,g:""}:t));setV("tables");setSel(null);msg("Adisyon iptal edildi","err");};
 const sub=(t)=>t.order.reduce((s,o)=>s+o.price*o.qty,0);
 const fin=(t)=>{const s=sub(t);return disc?disc.after:s;};
 
@@ -476,10 +478,12 @@ return(
 {disM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><DiscM total={sub(curT)} cur={cur} fm={fm} T={T} onApply={d=>{setDisc(d);setDisM(false);}} onClose={()=>setDisM(false)}/></div>}
 {pay&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}><PayM table={curT} disc={disc} cur={cur} fm={fm} T={T} PO={PO} openCari={cari.filter(c=>!c.settled)} onClose={()=>setPay(false)} onDone={closeTbl}/></div>}
 <div style={{padding:16,overflowY:"auto"}}>
+{cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,border:"1px solid "+T.danger,borderRadius:16,padding:28,width:340}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Adisyonu İptal Et</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>{curT.lbl} masasındaki tüm ürünler silinecek ve masa boşalacak. Bu işlem geri alınamaz.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setCancelConfirm(false)} style={{...sb(T.bg3),flex:1,color:T.text}}>Vazgeç</button><button onClick={()=>{setCancelConfirm(false);cancelOrder(curT.id);}} style={{...sb(T.danger),flex:1}}>Evet, İptal Et</button></div></div></div>}
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
 <button onClick={()=>{setV("tables");setSel(null);}} style={{...sb(T.bg3),color:T.textSub,padding:"6px 12px"}}>Masalar</button>
 <div><div style={{fontWeight:700,fontSize:16}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
 {curT.oa&&<span style={{fontSize:11,color:T.textSub,background:T.bg3,padding:"2px 8px",borderRadius:20}}>{ft(curT.oa)}</span>}
+{curT.order.length>0&&<button onClick={()=>setCancelConfirm(true)} style={{marginLeft:"auto",background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>Adisyonu İptal Et</button>}
 </div>
 <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
 {oCats.map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:"4px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:cat===c?T.accent:T.bg3,color:cat===c?"#fff":T.textSub}}>{c}</button>)}
@@ -733,6 +737,21 @@ const inRange=(date)=>{
 const filteredLogs=logs.filter(l=>inRange(l.date));
 const rangeLabel=dateFrom||dateTo?`${dateFrom||"..."} → ${dateTo||"..."}`:null;
 const clearRange=()=>{setDateFrom("");setDateTo("");setShowDatePicker(false);};
+const setQuickRange=(days)=>{
+const to=tod();
+const from=new Date();
+from.setDate(from.getDate()-(days-1));
+setDateFrom(from.toISOString().split("T")[0]);
+setDateTo(to);
+setShowDatePicker(false);
+};
+const setQuickMonth=()=>{
+const now=new Date();
+const from=new Date(now.getFullYear(),now.getMonth(),1);
+setDateFrom(from.toISOString().split("T")[0]);
+setDateTo(tod());
+setShowDatePicker(false);
+};
 
 const MM={};exp.filter(e=>inRange(e.date)).forEach(e=>{const m=e.date.slice(0,7);if(!MM[m])MM[m]={total:0,days:{},cats:{}};MM[m].total+=e.amount;if(!MM[m].days[e.date])MM[m].days[e.date]=0;MM[m].days[e.date]+=e.amount;if(!MM[m].cats[e.cat])MM[m].cats[e.cat]=0;MM[m].cats[e.cat]+=e.amount;});
 const months=Object.keys(MM).sort((a,b)=>b.localeCompare(a));
@@ -808,6 +827,21 @@ const prodInRange=(date)=>{
 };
 const prodRangeLabel=!isProdDefaultRange&&(prodDateFrom||prodDateTo)?`${prodDateFrom||"..."} → ${prodDateTo||"..."}`:null;
 const clearProdRange=()=>{setProdDateFrom(prodDefaultFrom);setProdDateTo(prodDefaultTo);setShowProdDatePicker(false);};
+const setProdQuickRange=(days)=>{
+const to=tod();
+const from=new Date();
+from.setDate(from.getDate()-(days-1));
+setProdDateFrom(from.toISOString().split("T")[0]);
+setProdDateTo(to);
+setShowProdDatePicker(false);
+};
+const setProdQuickMonth=()=>{
+const now=new Date();
+const from=new Date(now.getFullYear(),now.getMonth(),1);
+setProdDateFrom(from.toISOString().split("T")[0]);
+setProdDateTo(tod());
+setShowProdDatePicker(false);
+};
 
 const prodRelevantLogs=logs.filter(l=>prodInRange(l.date)&&l.items&&l.items.length>0);
 const prodDaysWithData=prodRelevantLogs.length;
@@ -851,9 +885,18 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
   </button>
   {showDatePicker&&(
     <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:16,boxShadow:"0 8px 24px rgba(0,0,0,0.12)",zIndex:100,minWidth:260}}>
-      <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Başlangıç</div>
-      <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{...inp,marginBottom:12}}/>
-      <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Bitiş</div>
+      <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
+        <button onClick={()=>setQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 7 Gün</button>
+        <button onClick={()=>setQuickRange(14)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 14 Gün</button>
+        <button onClick={()=>setQuickRange(30)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 1 Ay</button>
+        <button onClick={()=>setQuickRange(90)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 3 Ay</button>
+        <button onClick={setQuickMonth} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Bu Ay</button>
+      </div>
+      <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Özel Aralık</div>
+      <div style={{fontSize:10,color:T.textDim,marginBottom:6}}>Başlangıç</div>
+      <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{...inp,marginBottom:10}}/>
+      <div style={{fontSize:10,color:T.textDim,marginBottom:6}}>Bitiş</div>
       <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{...inp,marginBottom:14}}/>
       <div style={{display:"flex",gap:8}}>
         <button onClick={clearRange} style={{...sb(T.bg3),flex:1,color:T.textSub,padding:"8px 0",fontSize:12}}>Temizle</button>
@@ -1019,9 +1062,18 @@ return(
   </button>
   {showProdDatePicker&&(
     <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:12,padding:16,boxShadow:"0 8px 24px rgba(0,0,0,0.12)",zIndex:100,minWidth:260}}>
-      <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Başlangıç</div>
-      <input type="date" value={prodDateFrom} onChange={e=>setProdDateFrom(e.target.value)} style={{...inp,marginBottom:12}}/>
-      <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Bitiş</div>
+      <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
+        <button onClick={()=>setProdQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#000"}}>Son 7 Gün</button>
+        <button onClick={()=>setProdQuickRange(14)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#000"}}>Son 14 Gün</button>
+        <button onClick={()=>setProdQuickRange(30)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#000"}}>Son 1 Ay</button>
+        <button onClick={()=>setProdQuickRange(90)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#000"}}>Son 3 Ay</button>
+        <button onClick={setProdQuickMonth} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#000"}}>Bu Ay</button>
+      </div>
+      <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Özel Aralık</div>
+      <div style={{fontSize:10,color:"#C7C7CC",marginBottom:6}}>Başlangıç</div>
+      <input type="date" value={prodDateFrom} onChange={e=>setProdDateFrom(e.target.value)} style={{...inp,marginBottom:10}}/>
+      <div style={{fontSize:10,color:"#C7C7CC",marginBottom:6}}>Bitiş</div>
       <input type="date" value={prodDateTo} onChange={e=>setProdDateTo(e.target.value)} style={{...inp,marginBottom:14}}/>
       <div style={{display:"flex",gap:8}}>
         <button onClick={clearProdRange} style={{...sb("rgba(118,118,128,0.12)"),flex:1,color:"#8E8E93",padding:"8px 0",fontSize:12}}>Son 41 Gün</button>
@@ -1407,17 +1459,33 @@ return(
 </div>
 </div>);}
 
-function SettleModal({selC,cur,fm,ft,T,sb,stT,setStT,setSelC,settle}){
+function SettleModal({selC,cur,fm,ft,T,sb,stT,setStT,setSelC,settle,partialPay}){
+const[payMode,setPayMode]=useState("full");
 const[discType,setDiscType]=useState("none");
 const[discVal,setDiscVal]=useState("");
+const[partialAmt,setPartialAmt]=useState("");
 const rawTotal=selC.total;
 const discAmt=discType==="percent"?rawTotal*(parseFloat(discVal)||0)/100:discType==="fixed"?Math.min(parseFloat(discVal)||0,rawTotal):0;
 const afterDisc=rawTotal-discAmt;
+const partialNum=Math.min(parseFloat(partialAmt)||0,rawTotal);
+const remainingAfterPartial=rawTotal-partialNum;
 const adisyonlar=selC.adisyonlar||[{tbl:selC.tbl,items:selC.items||[],total:selC.total,ca:selC.cAt}];
+const pastPayments=selC.payments||[];
+
+const doConfirm=()=>{
+if(!stT)return;
+if(payMode==="partial"){
+if(partialNum<=0)return;
+partialPay(selC.id,partialNum,stT);
+}else{
+settle(selC.id,stT,discAmt);
+}
+};
+
 return(<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,border:"1px solid rgba(175,82,222,0.3)",borderRadius:16,padding:28,width:400,maxHeight:"85vh",overflowY:"auto"}}>
 <div style={{fontWeight:800,fontSize:17,marginBottom:4}}>Cari Tahsil Et</div>
 <div style={{fontSize:13,color:"#AF52DE",fontWeight:600,marginBottom:16}}>{selC.g}</div>
-<div style={{background:T.bg3,borderRadius:10,padding:"10px 14px",marginBottom:14,maxHeight:180,overflowY:"auto"}}>
+<div style={{background:T.bg3,borderRadius:10,padding:"10px 14px",marginBottom:14,maxHeight:160,overflowY:"auto"}}>
 {adisyonlar.map((a,ai)=>(
 <div key={ai} style={{marginBottom:ai<adisyonlar.length-1?10:0}}>
 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
@@ -1429,6 +1497,19 @@ return(<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIn
 </div>
 ))}
 </div>
+
+{pastPayments.length>0&&<div style={{marginBottom:14}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:6}}>Önceki Ödemeler</div>
+<div style={{display:"flex",flexDirection:"column",gap:4}}>
+{pastPayments.map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:T.textSub,background:T.bg3,borderRadius:7,padding:"5px 10px"}}><span>{ft(p.date)} · {p.pt==="cash"?"Nakit":"Kart"}</span><span style={{fontWeight:700,color:"#34C759"}}>{fm(p.amount,cur)}</span></div>)}
+</div>
+</div>}
+
+<div style={{display:"flex",gap:6,marginBottom:14,background:T.bg3,padding:3,borderRadius:9}}>
+{[{k:"full",l:"Tam Tahsil"},{k:"partial",l:"Kısmi Ödeme"}].map(({k,l})=><button key={k} onClick={()=>{setPayMode(k);setStT(null);}} style={{flex:1,padding:"8px 0",borderRadius:7,border:"none",cursor:"pointer",fontWeight:600,fontSize:12,background:payMode===k?"#fff":"transparent",color:payMode===k?"#AF52DE":T.textSub,boxShadow:payMode===k?"0 1px 3px rgba(0,0,0,0.12)":"none"}}>{l}</button>)}
+</div>
+
+{payMode==="full"&&<>
 <div style={{marginBottom:14}}>
 <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>İndirim</div>
 <div style={{display:"flex",gap:6,marginBottom:8}}>
@@ -1444,16 +1525,49 @@ return(<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIn
 {discAmt>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:4}}><span>İndirim</span><span>-{fm(discAmt,cur)}</span></div>}
 <div style={{display:"flex",justifyContent:"space-between",fontSize:18,fontWeight:800,color:"#AF52DE"}}><span>Tahsil Edilecek</span><span>{fm(afterDisc,cur)}</span></div>
 </div>
+</>}
+
+{payMode==="partial"&&<>
+<div style={{marginBottom:14}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Ödenen Tutar</div>
+<input type="number" autoFocus placeholder={`Toplam borç: ${fm(rawTotal,cur)}`} value={partialAmt} onChange={e=>setPartialAmt(e.target.value)} style={{background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"10px 12px",color:T.text,fontSize:15,fontWeight:700,outline:"none",width:"100%",boxSizing:"border-box"}}/>
+</div>
+<div style={{background:"rgba(175,82,222,0.1)",borderRadius:10,padding:"10px 14px",marginBottom:14}}>
+<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:4}}><span>Toplam Borç</span><span>{fm(rawTotal,cur)}</span></div>
+<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#34C759",marginBottom:4}}><span>Şimdi Alınacak</span><span>{fm(partialNum,cur)}</span></div>
+<div style={{display:"flex",justifyContent:"space-between",fontSize:18,fontWeight:800,color:"#AF52DE"}}><span>Kalan Bakiye</span><span>{fm(remainingAfterPartial,cur)}</span></div>
+</div>
+</>}
+
 <div style={{display:"flex",gap:8,marginBottom:14}}>
 {[{k:"cash",l:"Nakit",c:"#FF9500",bg:"rgba(255,149,0,0.1)",bd:"rgba(255,149,0,0.3)"},{k:"card",l:"Kart",c:"#007AFF",bg:"rgba(0,122,255,0.1)",bd:"rgba(0,122,255,0.3)"}].map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setStT(k)} style={{flex:1,padding:"10px 0",borderRadius:8,border:"2px solid "+(stT===k?bd:T.border),background:stT===k?bg:T.bg3,color:stT===k?c:T.textSub,fontWeight:700,fontSize:12,cursor:"pointer"}}>{l}</button>)}
 </div>
-<div style={{display:"flex",gap:10}}><button onClick={()=>{setSelC(null);setStT(null);}} style={{...sb(T.bg3),flex:1,color:T.textSub}}>İptal</button><button onClick={()=>stT&&settle(selC.id,stT,discAmt)} style={{...sb(stT?T.success:T.bg3),flex:2,color:stT?"#fff":T.textDim}}>Tahsil Et{stT?" - "+fm(afterDisc,cur):""}</button></div>
+<div style={{display:"flex",gap:10}}>
+<button onClick={()=>{setSelC(null);setStT(null);}} style={{...sb(T.bg3),flex:1,color:T.textSub}}>İptal</button>
+<button onClick={doConfirm} disabled={!stT||(payMode==="partial"&&partialNum<=0)} style={{...sb(stT&&(payMode==="full"||partialNum>0)?T.success:T.bg3),flex:2,color:stT&&(payMode==="full"||partialNum>0)?"#fff":T.textDim}}>
+{payMode==="partial"?`Ödeme Al${partialNum>0?" - "+fm(partialNum,cur):""}`:`Tahsil Et${stT?" - "+fm(afterDisc,cur):""}`}
+</button>
+</div>
 </div></div>);}
 
 function CariV({cari,setCari,cur,fm,fd,ft,selC,setSelC,stT,setStT,delC,setDelC,msg,T,sb,inp,PO,setV}){
 const open=cari.filter(c=>!c.settled);const closed=cari.filter(c=>c.settled);
 const openT=open.reduce((s,c)=>s+c.total,0);
 const settle=(id,pt,discAmt)=>{setCari(prev=>prev.map(c=>c.id===id?{...c,settled:true,sAt:new Date().toISOString(),sPt:pt,settleDisc:discAmt||0}:c));setSelC(null);setStT(null);msg("Tahsil edildi");};
+const partialPay=(id,amount,pt)=>{
+setCari(prev=>prev.map(c=>{
+if(c.id!==id)return c;
+const newTotal=Math.max(0,c.total-amount);
+const payment={id:Date.now()+Math.random(),amount,pt,date:new Date().toISOString()};
+const newPayments=[...(c.payments||[]),payment];
+if(newTotal<=0){
+return{...c,total:0,settled:true,sAt:new Date().toISOString(),sPt:pt,payments:newPayments};
+}
+return{...c,total:newTotal,payments:newPayments};
+}));
+setSelC(null);setStT(null);
+msg("Kısmi ödeme alındı");
+};
 const del=(id)=>{setCari(prev=>prev.filter(c=>c.id!==id));setDelC(null);msg("Silindi","err");};
 
 const[showManual,setShowManual]=useState(false);
@@ -1503,7 +1617,7 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 </div>}
 
 {delC&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,border:"1px solid "+T.danger,borderRadius:16,padding:28,width:340}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Cari Hesabı Sil</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>Kalıcı olarak silinecek.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setDelC(null)} style={{...sb(T.bg3),flex:1,color:T.text}}>İptal</button><button onClick={()=>del(delC)} style={{...sb(T.danger),flex:1}}>Evet, Sil</button></div></div></div>}
-{selC&&<SettleModal selC={selC} cur={cur} fm={fm} ft={ft} T={T} sb={sb} stT={stT} setStT={setStT} setSelC={setSelC} settle={settle}/>}
+{selC&&<SettleModal selC={selC} cur={cur} fm={fm} ft={ft} T={T} sb={sb} stT={stT} setStT={setStT} setSelC={setSelC} settle={settle} partialPay={partialPay}/>}
 <div style={{background:"rgba(175,82,222,0.1)",border:"1px solid rgba(175,82,222,0.3)",borderRadius:12,padding:"14px 18px",marginBottom:24,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:11,color:"#AF52DE",marginBottom:4}}>Açık Cari</div><div style={{fontSize:26,fontWeight:800,color:"#AF52DE"}}>{fm(openT,cur)}</div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:"#AF52DE"}}>{open.length}</div><div style={{fontSize:11,color:T.textSub}}>hesap</div></div></div>
 {open.length===0?<div style={{textAlign:"center",padding:"30px 0",color:T.textDim,background:T.bg2,borderRadius:12,marginBottom:20}}>Açık hesap yok.</div>
 :<div style={{marginBottom:24}}>{open.map(c=>{
@@ -1648,6 +1762,21 @@ const inRange=(date)=>{
 };
 const rangeLabel=dateFrom||dateTo?`${dateFrom||"..."} → ${dateTo||"..."}`:null;
 const clearRange=()=>{setDateFrom("");setDateTo("");setShowDatePicker(false);};
+const setQuickRange=(days)=>{
+const to=tod();
+const from=new Date();
+from.setDate(from.getDate()-(days-1));
+setDateFrom(from.toISOString().split("T")[0]);
+setDateTo(to);
+setShowDatePicker(false);
+};
+const setQuickMonth=()=>{
+const now=new Date();
+const from=new Date(now.getFullYear(),now.getMonth(),1);
+setDateFrom(from.toISOString().split("T")[0]);
+setDateTo(tod());
+setShowDatePicker(false);
+};
 
 const addItemToForm=()=>{
   if(!itemInput.name)return;
@@ -1690,9 +1819,18 @@ return(
         </button>
         {showDatePicker&&(
           <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:16,boxShadow:"0 8px 24px rgba(0,0,0,0.12)",zIndex:100,minWidth:260}}>
-            <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Başlangıç</div>
-            <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{...inp,marginBottom:12}}/>
-            <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Bitiş</div>
+            <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
+              <button onClick={()=>setQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 7 Gün</button>
+              <button onClick={()=>setQuickRange(14)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 14 Gün</button>
+              <button onClick={()=>setQuickRange(30)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 1 Ay</button>
+              <button onClick={()=>setQuickRange(90)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Son 3 Ay</button>
+              <button onClick={setQuickMonth} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:T.bg3,color:T.text}}>Bu Ay</button>
+            </div>
+            <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Özel Aralık</div>
+            <div style={{fontSize:10,color:T.textDim,marginBottom:6}}>Başlangıç</div>
+            <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{...inp,marginBottom:10}}/>
+            <div style={{fontSize:10,color:T.textDim,marginBottom:6}}>Bitiş</div>
             <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{...inp,marginBottom:14}}/>
             <div style={{display:"flex",gap:8}}>
               <button onClick={clearRange} style={{...sb(T.bg3),flex:1,color:T.textSub,padding:"8px 0",fontSize:12}}>Temizle</button>
