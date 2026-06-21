@@ -80,45 +80,45 @@ const closedFastDays=logs.filter(l=>l.oa&&l.ca&&(new Date(l.ca)-new Date(l.oa))<
 const longDays=logs.filter(l=>l.oa&&l.ca&&(new Date(l.ca)-new Date(l.oa))>14*3600000).length;
 
 const A=[];
-const addRev=(threshold,label)=>A.push({id:"rev_"+threshold,cat:"Ciro",icon:"💰",title:label,desc:`Toplam ${fm(threshold,cur)} ciroya ulaş`,done:totalRevenue>=threshold,progress:Math.min(100,Math.round(totalRevenue/threshold*100))});
+const addRev=(threshold,label)=>A.push({id:"rev_"+threshold,cat:"Ciro",icon:"💰",title:label,desc:`Toplam ${fm(threshold,cur)} ciroya ulaş`,done:totalRevenue>=threshold,progress:Math.min(100,Math.round(totalRevenue/threshold*100)),curVal:totalRevenue,targetVal:threshold,unit:"money"});
 [1000,2500,5000,10000,25000,50000,75000,100000,150000,200000,250000,300000,350000,400000,450000,500000,600000,700000,800000,900000,1000000].forEach(t=>addRev(t,`${fm(t,cur).replace(","+cur.length,"")} Kulübü`));
 
-const addOrderCount=(threshold)=>A.push({id:"ord_"+threshold,cat:"Adisyon",icon:"🧾",title:`${threshold}. Adisyon`,desc:`${threshold} adisyon tamamla`,done:totalOrders>=threshold,progress:Math.min(100,Math.round(totalOrders/threshold*100))});
+const addOrderCount=(threshold)=>A.push({id:"ord_"+threshold,cat:"Adisyon",icon:"🧾",title:`${threshold}. Adisyon`,desc:`${threshold} adisyon tamamla`,done:totalOrders>=threshold,progress:Math.min(100,Math.round(totalOrders/threshold*100)),curVal:totalOrders,targetVal:threshold,unit:"count"});
 [10,25,50,100,150,200,300,400,500,750,1000,1250,1500,2000,2500,3000].forEach(addOrderCount);
 
-const addDayCount=(threshold)=>A.push({id:"day_"+threshold,cat:"Süreklilik",icon:"📅",title:`${threshold} Gün`,desc:`${threshold} gün kapatılmış olsun`,done:totalDays>=threshold,progress:Math.min(100,Math.round(totalDays/threshold*100))});
+const addDayCount=(threshold)=>A.push({id:"day_"+threshold,cat:"Süreklilik",icon:"📅",title:`${threshold} Gün`,desc:`${threshold} gün kapatılmış olsun`,done:totalDays>=threshold,progress:Math.min(100,Math.round(totalDays/threshold*100)),curVal:totalDays,targetVal:threshold,unit:"count"});
 [5,10,20,30,45,60,75,90,100,120,150,180,200,250,300,365].forEach(addDayCount);
 
-const addStreak=(threshold)=>A.push({id:"streak_"+threshold,cat:"Süreklilik",icon:"🔥",title:`${threshold} Gün Üst Üste`,desc:`${threshold} gün arka arkaya açık ol`,done:bestStreak>=threshold,progress:Math.min(100,Math.round(bestStreak/threshold*100))});
+const addStreak=(threshold)=>A.push({id:"streak_"+threshold,cat:"Süreklilik",icon:"🔥",title:`${threshold} Gün Üst Üste`,desc:`${threshold} gün arka arkaya açık ol`,done:bestStreak>=threshold,progress:Math.min(100,Math.round(bestStreak/threshold*100)),curVal:bestStreak,targetVal:threshold,unit:"count"});
 [3,5,7,10,14,21,30].forEach(addStreak);
 
-const addBestDay=(threshold)=>A.push({id:"bday_"+threshold,cat:"Rekor",icon:"⚡",title:`Günde ${fm(threshold,cur)}`,desc:`Tek bir günde ${fm(threshold,cur)} ciro yap`,done:bestDay&&(bestDay.inc||0)>=threshold,progress:bestDay?Math.min(100,Math.round((bestDay.inc||0)/threshold*100)):0});
+const addBestDay=(threshold)=>A.push({id:"bday_"+threshold,cat:"Rekor",icon:"⚡",title:`Günde ${fm(threshold,cur)}`,desc:`Tek bir günde ${fm(threshold,cur)} ciro yap`,done:bestDay&&(bestDay.inc||0)>=threshold,progress:bestDay?Math.min(100,Math.round((bestDay.inc||0)/threshold*100)):0,curVal:bestDay?(bestDay.inc||0):0,targetVal:threshold,unit:"money"});
 [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12500,15000].forEach(addBestDay);
 
-const addMonthRev=(threshold)=>A.push({id:"month_"+threshold,cat:"Aylık",icon:"📈",title:`Ayda ${fm(threshold,cur)}`,desc:`Bir ayda toplam ${fm(threshold,cur)} ciro yap`,done:bestMonth&&bestMonth[1]>=threshold,progress:bestMonth?Math.min(100,Math.round(bestMonth[1]/threshold*100)):0});
+const addMonthRev=(threshold)=>A.push({id:"month_"+threshold,cat:"Aylık",icon:"📈",title:`Ayda ${fm(threshold,cur)}`,desc:`Bir ayda toplam ${fm(threshold,cur)} ciro yap`,done:bestMonth&&bestMonth[1]>=threshold,progress:bestMonth?Math.min(100,Math.round(bestMonth[1]/threshold*100)):0,curVal:bestMonth?bestMonth[1]:0,targetVal:threshold,unit:"money"});
 [20000,40000,60000,80000,100000,120000,150000,200000].forEach(addMonthRev);
 
-const addItemsSold=(threshold)=>A.push({id:"items_"+threshold,cat:"Ürün",icon:"☕",title:`${threshold} Ürün Satıldı`,desc:`Toplamda ${threshold} adet ürün satıldı`,done:totalItemsSold>=threshold,progress:Math.min(100,Math.round(totalItemsSold/threshold*100))});
+const addItemsSold=(threshold)=>A.push({id:"items_"+threshold,cat:"Ürün",icon:"☕",title:`${threshold} Ürün Satıldı`,desc:`Toplamda ${threshold} adet ürün satıldı`,done:totalItemsSold>=threshold,progress:Math.min(100,Math.round(totalItemsSold/threshold*100)),curVal:totalItemsSold,targetVal:threshold,unit:"count"});
 [50,100,200,300,500,750,1000,1500,2000].forEach(addItemsSold);
 
 A.push({id:"first_day",cat:"Kilometre Taşı",icon:"🎉",title:"İlk Gün",desc:"İlk günü kapat",done:totalDays>=1,progress:totalDays>=1?100:0});
 A.push({id:"first_order",cat:"Kilometre Taşı",icon:"🥇",title:"İlk Adisyon",desc:"İlk adisyonu tamamla",done:totalOrders>=1,progress:totalOrders>=1?100:0});
 A.push({id:"first_cari",cat:"Cari",icon:"📋",title:"İlk Cari",desc:"İlk cari hesabı oluştur",done:totalCariHandled>=1,progress:totalCariHandled>=1?100:0});
-A.push({id:"cari_5",cat:"Cari",icon:"📋",title:"5 Cari Hesap",desc:"5 farklı cari hesabı kullan",done:totalCariHandled>=5,progress:Math.min(100,Math.round(totalCariHandled/5*100))});
-A.push({id:"cari_10",cat:"Cari",icon:"📋",title:"10 Cari Hesap",desc:"10 farklı cari hesabı kullan",done:totalCariHandled>=10,progress:Math.min(100,Math.round(totalCariHandled/10*100))});
-A.push({id:"cari_25",cat:"Cari",icon:"📋",title:"25 Cari Hesap",desc:"25 farklı cari hesabı kullan",done:totalCariHandled>=25,progress:Math.min(100,Math.round(totalCariHandled/25*100))});
-A.push({id:"cari_settled_5",cat:"Cari",icon:"✅",title:"5 Cari Tahsilatı",desc:"5 cari hesabı tahsil et",done:totalCariSettled>=5,progress:Math.min(100,Math.round(totalCariSettled/5*100))});
-A.push({id:"cari_settled_10",cat:"Cari",icon:"✅",title:"10 Cari Tahsilatı",desc:"10 cari hesabı tahsil et",done:totalCariSettled>=10,progress:Math.min(100,Math.round(totalCariSettled/10*100))});
+A.push({id:"cari_5",cat:"Cari",icon:"📋",title:"5 Cari Hesap",desc:"5 farklı cari hesabı kullan",done:totalCariHandled>=5,progress:Math.min(100,Math.round(totalCariHandled/5*100)),curVal:totalCariHandled,targetVal:5,unit:"count"});
+A.push({id:"cari_10",cat:"Cari",icon:"📋",title:"10 Cari Hesap",desc:"10 farklı cari hesabı kullan",done:totalCariHandled>=10,progress:Math.min(100,Math.round(totalCariHandled/10*100)),curVal:totalCariHandled,targetVal:10,unit:"count"});
+A.push({id:"cari_25",cat:"Cari",icon:"📋",title:"25 Cari Hesap",desc:"25 farklı cari hesabı kullan",done:totalCariHandled>=25,progress:Math.min(100,Math.round(totalCariHandled/25*100)),curVal:totalCariHandled,targetVal:25,unit:"count"});
+A.push({id:"cari_settled_5",cat:"Cari",icon:"✅",title:"5 Cari Tahsilatı",desc:"5 cari hesabı tahsil et",done:totalCariSettled>=5,progress:Math.min(100,Math.round(totalCariSettled/5*100)),curVal:totalCariSettled,targetVal:5,unit:"count"});
+A.push({id:"cari_settled_10",cat:"Cari",icon:"✅",title:"10 Cari Tahsilatı",desc:"10 cari hesabı tahsil et",done:totalCariSettled>=10,progress:Math.min(100,Math.round(totalCariSettled/10*100)),curVal:totalCariSettled,targetVal:10,unit:"count"});
 A.push({id:"big_cari_500",cat:"Cari",icon:"💸",title:"Büyük Hesap",desc:"500 TL üzeri tek cari hesabı",done:biggestCari>=500,progress:Math.min(100,Math.round(biggestCari/500*100))});
 A.push({id:"big_cari_1000",cat:"Cari",icon:"💸",title:"Devasa Hesap",desc:"1.000 TL üzeri tek cari hesabı",done:biggestCari>=1000,progress:Math.min(100,Math.round(biggestCari/1000*100))});
 A.push({id:"top_product",cat:"Ürün",icon:"⭐",title:"Yıldız Ürün",desc:topProduct?`${topProduct[0]} en az 20 kez satıldı`:"En çok satan ürün 20 adede ulaşsın",done:topProduct&&topProduct[1]>=20,progress:topProduct?Math.min(100,Math.round(topProduct[1]/20*100)):0});
 A.push({id:"top_product_50",cat:"Ürün",icon:"⭐",title:"Süper Yıldız",desc:topProduct?`${topProduct[0]} en az 50 kez satıldı`:"En çok satan ürün 50 adede ulaşsın",done:topProduct&&topProduct[1]>=50,progress:topProduct?Math.min(100,Math.round(topProduct[1]/50*100)):0});
-A.push({id:"net_positive_10",cat:"Kâr",icon:"📊",title:"10 Kârlı Gün",desc:"Net kârı pozitif olan 10 gün",done:logs.filter(l=>(l.net||0)>0).length>=10,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/10*100))});
-A.push({id:"net_positive_30",cat:"Kâr",icon:"📊",title:"30 Kârlı Gün",desc:"Net kârı pozitif olan 30 gün",done:logs.filter(l=>(l.net||0)>0).length>=30,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/30*100))});
-A.push({id:"net_positive_50",cat:"Kâr",icon:"📊",title:"50 Kârlı Gün",desc:"Net kârı pozitif olan 50 gün",done:logs.filter(l=>(l.net||0)>0).length>=50,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/50*100))});
-A.push({id:"net_positive_100",cat:"Kâr",icon:"📊",title:"100 Kârlı Gün",desc:"Net kârı pozitif olan 100 gün",done:logs.filter(l=>(l.net||0)>0).length>=100,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/100*100))});
-A.push({id:"total_net_100k",cat:"Kâr",icon:"💎",title:"100.000 TL Net Kâr",desc:"Toplam net kâr 100.000 TL'ye ulaşsın",done:totalNet>=100000,progress:Math.min(100,Math.round(totalNet/100000*100))});
-A.push({id:"total_net_250k",cat:"Kâr",icon:"💎",title:"250.000 TL Net Kâr",desc:"Toplam net kâr 250.000 TL'ye ulaşsın",done:totalNet>=250000,progress:Math.min(100,Math.round(totalNet/250000*100))});
+A.push({id:"net_positive_10",cat:"Kâr",icon:"📊",title:"10 Kârlı Gün",desc:"Net kârı pozitif olan 10 gün",done:logs.filter(l=>(l.net||0)>0).length>=10,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/10*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:10,unit:"count"});
+A.push({id:"net_positive_30",cat:"Kâr",icon:"📊",title:"30 Kârlı Gün",desc:"Net kârı pozitif olan 30 gün",done:logs.filter(l=>(l.net||0)>0).length>=30,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/30*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:30,unit:"count"});
+A.push({id:"net_positive_50",cat:"Kâr",icon:"📊",title:"50 Kârlı Gün",desc:"Net kârı pozitif olan 50 gün",done:logs.filter(l=>(l.net||0)>0).length>=50,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/50*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:50,unit:"count"});
+A.push({id:"net_positive_100",cat:"Kâr",icon:"📊",title:"100 Kârlı Gün",desc:"Net kârı pozitif olan 100 gün",done:logs.filter(l=>(l.net||0)>0).length>=100,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/100*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:100,unit:"count"});
+A.push({id:"total_net_100k",cat:"Kâr",icon:"💎",title:"100.000 TL Net Kâr",desc:"Toplam net kâr 100.000 TL'ye ulaşsın",done:totalNet>=100000,progress:Math.min(100,Math.round(totalNet/100000*100)),curVal:totalNet,targetVal:100000,unit:"money"});
+A.push({id:"total_net_250k",cat:"Kâr",icon:"💎",title:"250.000 TL Net Kâr",desc:"Toplam net kâr 250.000 TL'ye ulaşsın",done:totalNet>=250000,progress:Math.min(100,Math.round(totalNet/250000*100)),curVal:totalNet,targetVal:250000,unit:"money"});
 A.push({id:"days_since_30",cat:"Yaşgünü",icon:"🎂",title:"1 Aylık LURK",desc:"LURK'ün ilk gününden 30 gün geçti",done:daysSinceFirst>=30,progress:Math.min(100,Math.round(daysSinceFirst/30*100))});
 A.push({id:"days_since_90",cat:"Yaşgünü",icon:"🎂",title:"3 Aylık LURK",desc:"LURK'ün ilk gününden 90 gün geçti",done:daysSinceFirst>=90,progress:Math.min(100,Math.round(daysSinceFirst/90*100))});
 A.push({id:"days_since_180",cat:"Yaşgünü",icon:"🎂",title:"6 Aylık LURK",desc:"LURK'ün ilk gününden 180 gün geçti",done:daysSinceFirst>=180,progress:Math.min(100,Math.round(daysSinceFirst/180*100))});
@@ -137,7 +137,7 @@ const productKeywords=[
 productKeywords.forEach(({kw,label})=>{
   const rev=matchProducts(kw);
   [10000,25000,50000,100000].forEach(t=>{
-    A.push({id:`prodrev_${kw}_${t}`,cat:"Ürün Ustası",icon:"🎯",title:`${label} Ustası`,desc:`Tüm ${label} ürünlerinden toplam ${fm(t,cur)} kazan`,done:rev>=t,progress:Math.min(100,Math.round(rev/t*100))});
+    A.push({id:`prodrev_${kw}_${t}`,cat:"Ürün Ustası",icon:"🎯",title:`${label} Ustası`,desc:`Tüm ${label} ürünlerinden toplam ${fm(t,cur)} kazan`,done:rev>=t,progress:Math.min(100,Math.round(rev/t*100)),curVal:rev,targetVal:t,unit:"money"});
   });
 });
 
@@ -149,10 +149,10 @@ productKeywords.slice(0,6).forEach(({kw,label})=>{
 
 // Installment (vade) achievements
 [1,2,3,5,7,10,15,20].forEach(t=>{
-  A.push({id:`inst_paid_${t}`,cat:"Vadeler",icon:"💳",title:`${t} Vade Kapatıldı`,desc:`Toplam ${t} taksit ödemesini tamamla`,done:paidInstCount>=t,progress:Math.min(100,Math.round(paidInstCount/t*100))});
+  A.push({id:`inst_paid_${t}`,cat:"Vadeler",icon:"💳",title:`${t} Vade Kapatıldı`,desc:`Toplam ${t} taksit ödemesini tamamla`,done:paidInstCount>=t,progress:Math.min(100,Math.round(paidInstCount/t*100)),curVal:paidInstCount,targetVal:t,unit:"count"});
 });
 [1,3,5,10].forEach(t=>{
-  A.push({id:`inst_plan_${t}`,cat:"Vadeler",icon:"🗓️",title:`${t} Plan Tamamlandı`,desc:`${t} vade planını eksiksiz kapat`,done:completedPlanCount>=t,progress:Math.min(100,Math.round(completedPlanCount/t*100))});
+  A.push({id:`inst_plan_${t}`,cat:"Vadeler",icon:"🗓️",title:`${t} Plan Tamamlandı`,desc:`${t} vade planını eksiksiz kapat`,done:completedPlanCount>=t,progress:Math.min(100,Math.round(completedPlanCount/t*100)),curVal:completedPlanCount,targetVal:t,unit:"count"});
 });
 
 // More product variety / breadth achievements
@@ -243,7 +243,7 @@ const ld=async(k,fb)=>{
 const inp={background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"};
 const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:8,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer"});
 
-const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"settings",l:"Ayarlar"}];
+const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
 
 export default function App(){
 const[view,setV]=useState("lurk");
@@ -272,6 +272,7 @@ const[repT,setRepT]=useState("items");
 const[mainT,setMainT]=useState("sales");
 const[installments,setInstallments]=useState([]);
 const[unlocked,setUnlocked]=useState({});
+const[todos,setTodos]=useState([]);
 const[notifications,setNotifications]=useState([]);
 const[expMon,setExpMon]=useState(null);
 const[expDay,setExpDay]=useState(null);
@@ -296,10 +297,11 @@ const onl=await ld("p4onl",[]);
 const inst=await ld("p4inst",[]);
 const unl=await ld("p4unl",{});
 const notif=await ld("p4notif",[]);
+const td_=await ld("p4todo",[]);
 const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
-setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTbl(t||mkT(cf.tableCount));setOk(true);
+setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));setOk(true);
 try{
 const savedAuth=localStorage.getItem("lurk_auth");
 if(!cf.sitePassword||savedAuth===cf.sitePassword){setAuthed(true);}
@@ -320,6 +322,7 @@ useEffect(()=>{if(ok)sv("p4onl",onlineOrders);},[onlineOrders,ok]);
 useEffect(()=>{if(ok)sv("p4inst",installments);},[installments,ok]);
 useEffect(()=>{if(ok)sv("p4unl",unlocked);},[unlocked,ok]);
 useEffect(()=>{if(ok)sv("p4notif",notifications);},[notifications,ok]);
+useEffect(()=>{if(ok)sv("p4todo",todos);},[todos,ok]);
 
 useEffect(()=>{
 if(!ok)return;
@@ -517,6 +520,7 @@ return(
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
+{view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
 </div>
@@ -2066,7 +2070,10 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div style={{flex:1,minWidth:0}}>
 <div style={{fontSize:13,fontWeight:700,color:a.done?T.text:T.textSub}}>{a.title}</div>
 <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{a.desc}</div>
-{!a.done&&a.progress>0&&<div style={{background:"rgba(0,0,0,0.08)",borderRadius:4,height:4,marginTop:8,overflow:"hidden"}}><div style={{background:"#FF9500",height:"100%",width:a.progress+"%",borderRadius:4}}/></div>}
+{!a.done&&a.progress>0&&<>
+<div style={{background:"rgba(0,0,0,0.08)",borderRadius:4,height:4,marginTop:8,overflow:"hidden"}}><div style={{background:"#FF9500",height:"100%",width:a.progress+"%",borderRadius:4}}/></div>
+{a.targetVal!=null&&<div style={{fontSize:10,color:"#FF9500",marginTop:4,fontWeight:600}}>{a.unit==="money"?`${fm(a.curVal||0,cur)} / ${fm(a.targetVal,cur)}`:`${a.curVal||0} / ${a.targetVal}`} (%{a.progress})</div>}
+</>}
 {a.done&&unlocked[a.id]&&<div style={{fontSize:10,color:"#FF9500",marginTop:4,fontWeight:600}}>{fd(unlocked[a.id])} tarihinde kazanıldı</div>}
 </div>
 {a.done&&<div style={{color:"#FF9500",fontSize:16}}>✓</div>}
@@ -2111,6 +2118,70 @@ return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 <div style={{fontSize:11,color:T.textDim,marginTop:6}}>{fd(n.date)} · {ft(n.date)}</div>
 </div>
 {!n.read&&<div style={{width:8,height:8,borderRadius:"50%",background:"#FF9500",flexShrink:0,marginTop:4}}/>}
+</div>
+))}
+</div>
+)}
+</div>);}
+
+function TodoV({todos,setTodos,fd,sb,inp,T}){
+const[newTodo,setNewTodo]=useState("");
+const[filter,setFilter]=useState("active");
+
+const addTodo=()=>{
+if(!newTodo.trim())return;
+setTodos(prev=>[{id:Date.now()+Math.random(),text:newTodo.trim(),done:false,createdAt:new Date().toISOString()},...prev]);
+setNewTodo("");
+};
+
+const toggleTodo=(id)=>setTodos(prev=>prev.map(t=>t.id===id?{...t,done:!t.done,doneAt:!t.done?new Date().toISOString():null}:t));
+const deleteTodo=(id)=>setTodos(prev=>prev.filter(t=>t.id!==id));
+const clearDone=()=>{if(window.confirm("Tamamlanan tüm görevleri silmek istediğine emin misin?"))setTodos(prev=>prev.filter(t=>!t.done));};
+
+const activeTodos=todos.filter(t=>!t.done);
+const doneTodos=todos.filter(t=>t.done);
+const filtered=filter==="active"?activeTodos:filter==="done"?doneTodos:todos;
+
+return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
+<div style={{marginBottom:22}}>
+<h2 style={{margin:0,fontWeight:800,fontSize:20}}>📝 Yapılacaklar</h2>
+<div style={{fontSize:12,color:T.textSub,marginTop:2}}>{activeTodos.length} aktif görev{doneTodos.length>0?`, ${doneTodos.length} tamamlandı`:""}</div>
+</div>
+
+<div style={{display:"flex",gap:8,marginBottom:18}}>
+<input
+placeholder="Yeni görev ekle... (örn: Sosyal medya planı hazırla)"
+value={newTodo}
+onChange={e=>setNewTodo(e.target.value)}
+onKeyDown={e=>{if(e.key==="Enter")addTodo();}}
+style={{...inp,flex:1}}
+autoFocus
+/>
+<button onClick={addTodo} style={{...sb("#34C759"),padding:"0 20px"}}>Ekle</button>
+</div>
+
+<div style={{display:"flex",gap:6,marginBottom:18}}>
+{[{k:"active",l:`Aktif (${activeTodos.length})`},{k:"done",l:`Tamamlandı (${doneTodos.length})`},{k:"all",l:"Tümü"}].map(({k,l})=>(
+<button key={k} onClick={()=>setFilter(k)} style={{padding:"6px 14px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:filter===k?"#34C759":T.bg3,color:filter===k?"#fff":T.textSub}}>{l}</button>
+))}
+{doneTodos.length>0&&<button onClick={clearDone} style={{padding:"6px 14px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:"transparent",color:T.danger,marginLeft:"auto"}}>Tamamlananları Temizle</button>}
+</div>
+
+{filtered.length===0?(
+<div style={{textAlign:"center",padding:"50px 0",color:T.textDim}}>
+<div style={{fontSize:28,marginBottom:8}}>✅</div>
+<div>{filter==="done"?"Henüz tamamlanan görev yok.":filter==="active"?"Aktif görev yok, harika!":"Henüz görev eklemedin."}</div>
+</div>
+):(
+<div style={{display:"flex",flexDirection:"column",gap:8}}>
+{filtered.map(t=>(
+<div key={t.id} style={{display:"flex",alignItems:"center",gap:12,background:T.bg2,borderRadius:12,padding:"12px 14px",boxShadow:T.shadow}}>
+<input type="checkbox" checked={t.done} onChange={()=>toggleTodo(t.id)} style={{width:18,height:18,cursor:"pointer",flexShrink:0,accentColor:"#34C759"}}/>
+<div style={{flex:1,minWidth:0}}>
+<div style={{fontSize:14,fontWeight:500,color:t.done?T.textDim:T.text,textDecoration:t.done?"line-through":"none"}}>{t.text}</div>
+<div style={{fontSize:10,color:T.textDim,marginTop:2}}>{t.done&&t.doneAt?`${fd(t.doneAt)} tarihinde tamamlandı`:`${fd(t.createdAt)} tarihinde eklendi`}</div>
+</div>
+<button onClick={()=>deleteTodo(t.id)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:12,fontWeight:600,padding:"4px 8px",flexShrink:0}}>Sil</button>
 </div>
 ))}
 </div>
