@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 const T={bg:"#F2F2F7",bg2:"#FFFFFF",bg3:"rgba(118,118,128,0.12)",border:"rgba(0,0,0,0.08)",border2:"rgba(60,60,67,0.18)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#8E8E93",textDim:"#C7C7CC",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 1px 2px rgba(0,0,0,0.04)",shadowM:"0 8px 30px rgba(0,0,0,0.12)"};
 
@@ -483,7 +484,7 @@ return(
 <button onClick={()=>{setV("tables");setSel(null);}} style={{...sb(T.bg3),color:T.textSub,padding:"6px 12px"}}>Masalar</button>
 <div><div style={{fontWeight:700,fontSize:16}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
 {curT.oa&&<span style={{fontSize:11,color:T.textSub,background:T.bg3,padding:"2px 8px",borderRadius:20}}>{ft(curT.oa)}</span>}
-{curT.order.length>0&&<button onClick={()=>setCancelConfirm(true)} style={{marginLeft:"auto",background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>Adisyonu İptal Et</button>}
+{(curT.order.length>0||curT.s==="o")&&<button onClick={()=>setCancelConfirm(true)} style={{marginLeft:"auto",background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>Adisyonu İptal Et</button>}
 </div>
 <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
 {oCats.map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:"4px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:cat===c?T.accent:T.bg3,color:cat===c?"#fff":T.textSub}}>{c}</button>)}
@@ -1110,6 +1111,25 @@ return(
 
 <div style={{display:"flex",gap:8,marginBottom:16}}>
 {[{k:"qty",l:"Adete Göre"},{k:"revenue",l:"Ciroya Göre"}].map(({k,l})=><button key={k} onClick={()=>setProdSortBy(k)} style={{padding:"8px 18px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,background:prodSortBy===k?"#34C759":"rgba(118,118,128,0.12)",color:prodSortBy===k?"#fff":"#8E8E93"}}>{l}</button>)}
+</div>
+
+<div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:14,padding:"20px 16px 8px",marginBottom:16}}>
+<div style={{fontWeight:700,fontSize:14,marginBottom:14,paddingLeft:4}}>En Çok Satanlar — Grafik</div>
+<ResponsiveContainer width="100%" height={Math.max(220,prodSorted.slice(0,10).length*38)}>
+<BarChart data={prodSorted.slice(0,10).map(p=>({name:p.name.length>14?p.name.slice(0,13)+"…":p.name,fullName:p.name,value:prodSortBy==="qty"?p.qty:p.revenue}))} layout="vertical" margin={{top:0,right:24,left:0,bottom:0}}>
+<CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" horizontal={false}/>
+<XAxis type="number" tick={{fontSize:11,fill:"#8E8E93"}} axisLine={false} tickLine={false} tickFormatter={v=>prodSortBy==="qty"?v:(v>=1000?(v/1000).toFixed(0)+"k":v)}/>
+<YAxis type="category" dataKey="name" width={110} tick={{fontSize:12,fill:"#000",fontWeight:600}} axisLine={false} tickLine={false}/>
+<Tooltip
+formatter={(value)=>prodSortBy==="qty"?[value+" adet","Satış"]:[fm(value,cur),"Ciro"]}
+labelFormatter={(label,payload)=>payload&&payload[0]?payload[0].payload.fullName:label}
+contentStyle={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,fontSize:12,boxShadow:"0 4px 16px rgba(0,0,0,0.1)"}}
+/>
+<Bar dataKey="value" radius={[0,6,6,0]} maxBarSize={22}>
+{prodSorted.slice(0,10).map((p,i)=><Cell key={i} fill={i===0?"#34C759":i<3?"#5FD584":"#A8E8BC"}/>)}
+</Bar>
+</BarChart>
+</ResponsiveContainer>
 </div>
 
 <div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:14,padding:20,marginBottom:20}}>
