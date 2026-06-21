@@ -1407,6 +1407,49 @@ return(
 </div>
 </div>);}
 
+function SettleModal({selC,cur,fm,ft,T,sb,stT,setStT,setSelC,settle}){
+const[discType,setDiscType]=useState("none");
+const[discVal,setDiscVal]=useState("");
+const rawTotal=selC.total;
+const discAmt=discType==="percent"?rawTotal*(parseFloat(discVal)||0)/100:discType==="fixed"?Math.min(parseFloat(discVal)||0,rawTotal):0;
+const afterDisc=rawTotal-discAmt;
+const adisyonlar=selC.adisyonlar||[{tbl:selC.tbl,items:selC.items||[],total:selC.total,ca:selC.cAt}];
+return(<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,border:"1px solid rgba(175,82,222,0.3)",borderRadius:16,padding:28,width:400,maxHeight:"85vh",overflowY:"auto"}}>
+<div style={{fontWeight:800,fontSize:17,marginBottom:4}}>Cari Tahsil Et</div>
+<div style={{fontSize:13,color:"#AF52DE",fontWeight:600,marginBottom:16}}>{selC.g}</div>
+<div style={{background:T.bg3,borderRadius:10,padding:"10px 14px",marginBottom:14,maxHeight:180,overflowY:"auto"}}>
+{adisyonlar.map((a,ai)=>(
+<div key={ai} style={{marginBottom:ai<adisyonlar.length-1?10:0}}>
+<div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+<span style={{fontSize:11,color:"#AF52DE",fontWeight:700}}>{a.tbl} - {ft(a.ca)}</span>
+<span style={{fontSize:12,fontWeight:700,color:"#AF52DE"}}>{fm(a.total,cur)}</span>
+</div>
+{(a.items||[]).map((it,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,padding:"1px 0",color:T.textSub}}><span>{it.name} x{it.qty}</span><span>{fm((it.price||0)*(it.qty||1),cur)}</span></div>)}
+{ai<adisyonlar.length-1&&<div style={{borderBottom:"0.5px solid "+T.border,marginTop:6}}/>}
+</div>
+))}
+</div>
+<div style={{marginBottom:14}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>İndirim</div>
+<div style={{display:"flex",gap:6,marginBottom:8}}>
+{[{k:"none",l:"Yok"},{k:"percent",l:"Yüzde %"},{k:"fixed",l:"Tutar"}].map(({k,l})=><button key={k} onClick={()=>{setDiscType(k);setDiscVal("");}} style={{flex:1,padding:"6px 0",borderRadius:7,border:"1px solid "+(discType===k?T.accent:T.border),background:discType===k?T.accent:T.bg3,color:discType===k?"#fff":T.textSub,fontWeight:600,fontSize:11,cursor:"pointer"}}>{l}</button>)}
+</div>
+{discType!=="none"&&<>
+<input type="number" autoFocus placeholder={discType==="percent"?"0-100":"Tutar"} value={discVal} onChange={e=>setDiscVal(e.target.value)} style={{background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"8px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:6}}/>
+{discAmt>0&&<div style={{fontSize:11,color:T.textSub}}>İndirim: -{fm(discAmt,cur)}</div>}
+</>}
+</div>
+<div style={{background:"rgba(175,82,222,0.1)",borderRadius:10,padding:"10px 14px",marginBottom:14}}>
+{discAmt>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:4}}><span>Ara toplam</span><span>{fm(rawTotal,cur)}</span></div>}
+{discAmt>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:4}}><span>İndirim</span><span>-{fm(discAmt,cur)}</span></div>}
+<div style={{display:"flex",justifyContent:"space-between",fontSize:18,fontWeight:800,color:"#AF52DE"}}><span>Tahsil Edilecek</span><span>{fm(afterDisc,cur)}</span></div>
+</div>
+<div style={{display:"flex",gap:8,marginBottom:14}}>
+{[{k:"cash",l:"Nakit",c:"#FF9500",bg:"rgba(255,149,0,0.1)",bd:"rgba(255,149,0,0.3)"},{k:"card",l:"Kart",c:"#007AFF",bg:"rgba(0,122,255,0.1)",bd:"rgba(0,122,255,0.3)"}].map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setStT(k)} style={{flex:1,padding:"10px 0",borderRadius:8,border:"2px solid "+(stT===k?bd:T.border),background:stT===k?bg:T.bg3,color:stT===k?c:T.textSub,fontWeight:700,fontSize:12,cursor:"pointer"}}>{l}</button>)}
+</div>
+<div style={{display:"flex",gap:10}}><button onClick={()=>{setSelC(null);setStT(null);}} style={{...sb(T.bg3),flex:1,color:T.textSub}}>İptal</button><button onClick={()=>stT&&settle(selC.id,stT,discAmt)} style={{...sb(stT?T.success:T.bg3),flex:2,color:stT?"#fff":T.textDim}}>Tahsil Et{stT?" - "+fm(afterDisc,cur):""}</button></div>
+</div></div>);}
+
 function CariV({cari,setCari,cur,fm,fd,ft,selC,setSelC,stT,setStT,delC,setDelC,msg,T,sb,inp,PO,setV}){
 const open=cari.filter(c=>!c.settled);const closed=cari.filter(c=>c.settled);
 const openT=open.reduce((s,c)=>s+c.total,0);
@@ -1460,48 +1503,7 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 </div>}
 
 {delC&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,border:"1px solid "+T.danger,borderRadius:16,padding:28,width:340}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Cari Hesabı Sil</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>Kalıcı olarak silinecek.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setDelC(null)} style={{...sb(T.bg3),flex:1,color:T.text}}>İptal</button><button onClick={()=>del(delC)} style={{...sb(T.danger),flex:1}}>Evet, Sil</button></div></div></div>}
-{selC&&(()=>{
-const[discType,setDiscType]=useState("none");
-const[discVal,setDiscVal]=useState("");
-const rawTotal=selC.total;
-const discAmt=discType==="percent"?rawTotal*(parseFloat(discVal)||0)/100:discType==="fixed"?Math.min(parseFloat(discVal)||0,rawTotal):0;
-const afterDisc=rawTotal-discAmt;
-return(<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,border:"1px solid rgba(175,82,222,0.3)",borderRadius:16,padding:28,width:400,maxHeight:"85vh",overflowY:"auto"}}>
-<div style={{fontWeight:800,fontSize:17,marginBottom:4}}>Cari Tahsil Et</div>
-<div style={{fontSize:13,color:"#AF52DE",fontWeight:600,marginBottom:16}}>{selC.g}</div>
-<div style={{background:T.bg3,borderRadius:10,padding:"10px 14px",marginBottom:14,maxHeight:180,overflowY:"auto"}}>
-{(selC.adisyonlar||[{tbl:selC.tbl,items:selC.items,total:selC.total,ca:selC.cAt}]).map((a,ai)=>(
-<div key={ai} style={{marginBottom:ai<(selC.adisyonlar||[selC]).length-1?10:0}}>
-<div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-<span style={{fontSize:11,color:"#AF52DE",fontWeight:700}}>{a.tbl} - {ft(a.ca)}</span>
-<span style={{fontSize:12,fontWeight:700,color:"#AF52DE"}}>{fm(a.total,cur)}</span>
-</div>
-{a.items.map((it,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,padding:"1px 0",color:T.textSub}}><span>{it.name} x{it.qty}</span><span>{fm(it.price*it.qty,cur)}</span></div>)}
-{ai<(selC.adisyonlar||[selC]).length-1&&<div style={{borderBottom:"0.5px solid "+T.border,marginTop:6}}/>}
-</div>
-))}
-</div>
-<div style={{marginBottom:14}}>
-<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>İndirim</div>
-<div style={{display:"flex",gap:6,marginBottom:8}}>
-{[{k:"none",l:"Yok"},{k:"percent",l:"Yüzde %"},{k:"fixed",l:"Tutar"}].map(({k,l})=><button key={k} onClick={()=>{setDiscType(k);setDiscVal("");}} style={{flex:1,padding:"6px 0",borderRadius:7,border:"1px solid "+(discType===k?T.accent:T.border),background:discType===k?T.accent:T.bg3,color:discType===k?"#fff":T.textSub,fontWeight:600,fontSize:11,cursor:"pointer"}}>{l}</button>)}
-</div>
-{discType!=="none"&&<>
-<input type="number" autoFocus placeholder={discType==="percent"?"0-100":"Tutar"} value={discVal} onChange={e=>setDiscVal(e.target.value)} style={{background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"8px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:6}}/>
-{discAmt>0&&<div style={{fontSize:11,color:T.textSub}}>İndirim: -{fm(discAmt,cur)}</div>}
-</>}
-</div>
-<div style={{background:"rgba(175,82,222,0.1)",borderRadius:10,padding:"10px 14px",marginBottom:14}}>
-{discAmt>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:4}}><span>Ara toplam</span><span>{fm(rawTotal,cur)}</span></div>}
-{discAmt>0&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:4}}><span>İndirim</span><span>-{fm(discAmt,cur)}</span></div>}
-<div style={{display:"flex",justifyContent:"space-between",fontSize:18,fontWeight:800,color:"#AF52DE"}}><span>Tahsil Edilecek</span><span>{fm(afterDisc,cur)}</span></div>
-</div>
-<div style={{display:"flex",gap:8,marginBottom:14}}>
-{[{k:"cash",l:"Nakit",c:"#FF9500",bg:"rgba(255,149,0,0.1)",bd:"rgba(255,149,0,0.3)"},{k:"card",l:"Kart",c:"#007AFF",bg:"rgba(0,122,255,0.1)",bd:"rgba(0,122,255,0.3)"}].map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setStT(k)} style={{flex:1,padding:"10px 0",borderRadius:8,border:"2px solid "+(stT===k?bd:T.border),background:stT===k?bg:T.bg3,color:stT===k?c:T.textSub,fontWeight:700,fontSize:12,cursor:"pointer"}}>{l}</button>)}
-</div>
-<div style={{display:"flex",gap:10}}><button onClick={()=>{setSelC(null);setStT(null);}} style={{...sb(T.bg3),flex:1,color:T.textSub}}>İptal</button><button onClick={()=>stT&&settle(selC.id,stT,discAmt)} style={{...sb(stT?T.success:T.bg3),flex:2,color:stT?"#fff":T.textDim}}>Tahsil Et{stT?" - "+fm(afterDisc,cur):""}</button></div>
-</div></div>);
-})()}
+{selC&&<SettleModal selC={selC} cur={cur} fm={fm} ft={ft} T={T} sb={sb} stT={stT} setStT={setStT} setSelC={setSelC} settle={settle}/>}
 <div style={{background:"rgba(175,82,222,0.1)",border:"1px solid rgba(175,82,222,0.3)",borderRadius:12,padding:"14px 18px",marginBottom:24,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:11,color:"#AF52DE",marginBottom:4}}>Açık Cari</div><div style={{fontSize:26,fontWeight:800,color:"#AF52DE"}}>{fm(openT,cur)}</div></div><div style={{textAlign:"right"}}><div style={{fontSize:22,fontWeight:800,color:"#AF52DE"}}>{open.length}</div><div style={{fontSize:11,color:T.textSub}}>hesap</div></div></div>
 {open.length===0?<div style={{textAlign:"center",padding:"30px 0",color:T.textDim,background:T.bg2,borderRadius:12,marginBottom:20}}>Açık hesap yok.</div>
 :<div style={{marginBottom:24}}>{open.map(c=>{
