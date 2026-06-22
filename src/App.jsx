@@ -244,9 +244,13 @@ const ld=async(k,fb)=>{
 const inp={background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"};
 const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:8,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer"});
 
-const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
+const NAV=venue==="lurk"
+?[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}]
+:[{k:"lurk",l:"TACO"},{k:"tacoentry",l:"Günlük Giriş"},{k:"reports",l:"Raporlar"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
 
 export default function App(){
+const[venue,setVenue]=useState(()=>{try{return localStorage.getItem("lurk_venue")||"lurk";}catch{return"lurk";}});
+const vk=(k)=>(venue==="lurk"?"lurk_":"tt_")+k;
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
@@ -292,39 +296,56 @@ const[mCat,setMCat]=useState("Tümü");
 const[newec,setNewec]=useState("");
 
 useEffect(()=>{(async()=>{
-const t=await ld("p4t",null);const o=await ld("p4o",[]);const e=await ld("p4e",[]);
-const m=await ld("p4m",null);const s=await ld("p4s",DS);const d=await ld("p4d",null);
-const l=await ld("p4l",[]);const c=await ld("p4c",[]);const ec=await ld("p4ec",DEC);
-const onl=await ld("p4onl",[]);
-const inst=await ld("p4inst",[]);
-const unl=await ld("p4unl",{});
-const notif=await ld("p4notif",[]);
-const td_=await ld("p4todo",[]);
+setOk(false);setAuthed(false);setAuthChecked(false);
+// Migration: eski p4... anahtarlarını lurk_... formatına taşı (bir kez)
+if(venue==="lurk"){
+const oldKeys=["t","o","e","m","s","d","l","c","ec","onl","inst","unl","notif","todo"];
+for(const k of oldKeys){
+const newVal=await ld("lurk_"+k,null);
+if(newVal===null||newVal===undefined){
+const oldVal=await ld("p4"+k,null);
+if(oldVal!==null&&oldVal!==undefined){
+await sv("lurk_"+k,oldVal);
+}
+}
+}
+}
+const prefix=venue==="lurk"?"lurk_":"tt_";
+const kk=(k)=>prefix+k;
+const t=await ld(kk("t"),null);const o=await ld(kk("o"),[]);const e=await ld(kk("e"),[]);
+const m=await ld(kk("m"),null);const s=await ld(kk("s"),DS);const d=await ld(kk("d"),null);
+const l=await ld(kk("l"),[]);const c=await ld(kk("c"),[]);const ec=await ld(kk("ec"),DEC);
+const onl=await ld(kk("onl"),[]);
+const inst=await ld(kk("inst"),[]);
+const unl=await ld(kk("unl"),{});
+const notif=await ld(kk("notif"),[]);
+const td_=await ld(kk("todo"),[]);
 const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
 setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));setOk(true);
 try{
-const savedAuth=localStorage.getItem("lurk_auth");
-if(!cf.sitePassword||savedAuth===cf.sitePassword){setAuthed(true);}
+const savedAuth=localStorage.getItem("lurk_venue_auth_"+venue);
+const cfAuth=cf.sitePassword;
+if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 }catch{setAuthed(true);}
 setAuthChecked(true);
-})();},[]);
+})();},[venue]);
 
-useEffect(()=>{if(ok)sv("p4t",tables);},[tables,ok]);
-useEffect(()=>{if(ok)sv("p4o",orders);},[orders,ok]);
-useEffect(()=>{if(ok)sv("p4e",exp);},[exp,ok]);
-useEffect(()=>{if(ok)sv("p4m",menu);},[menu,ok]);
-useEffect(()=>{if(ok)sv("p4s",cfg);},[cfg,ok]);
-useEffect(()=>{if(ok)sv("p4d",day);},[day,ok]);
-useEffect(()=>{if(ok)sv("p4l",logs);},[logs,ok]);
-useEffect(()=>{if(ok)sv("p4c",cari);},[cari,ok]);
-useEffect(()=>{if(ok)sv("p4ec",ecats);},[ecats,ok]);
-useEffect(()=>{if(ok)sv("p4onl",onlineOrders);},[onlineOrders,ok]);
-useEffect(()=>{if(ok)sv("p4inst",installments);},[installments,ok]);
-useEffect(()=>{if(ok)sv("p4unl",unlocked);},[unlocked,ok]);
-useEffect(()=>{if(ok)sv("p4notif",notifications);},[notifications,ok]);
-useEffect(()=>{if(ok)sv("p4todo",todos);},[todos,ok]);
+useEffect(()=>{if(ok)sv(vk("t"),tables);},[tables,ok]);
+useEffect(()=>{if(ok)sv(vk("o"),orders);},[orders,ok]);
+useEffect(()=>{if(ok)sv(vk("e"),exp);},[exp,ok]);
+useEffect(()=>{if(ok)sv(vk("m"),menu);},[menu,ok]);
+useEffect(()=>{if(ok)sv(vk("s"),cfg);},[cfg,ok]);
+useEffect(()=>{if(ok)sv(vk("d"),day);},[day,ok]);
+useEffect(()=>{if(ok)sv(vk("l"),logs);},[logs,ok]);
+useEffect(()=>{if(ok)sv(vk("c"),cari);},[cari,ok]);
+useEffect(()=>{if(ok)sv(vk("ec"),ecats);},[ecats,ok]);
+useEffect(()=>{if(ok)sv(vk("onl"),onlineOrders);},[onlineOrders,ok]);
+useEffect(()=>{if(ok)sv(vk("inst"),installments);},[installments,ok]);
+useEffect(()=>{if(ok)sv(vk("unl"),unlocked);},[unlocked,ok]);
+useEffect(()=>{if(ok)sv(vk("notif"),notifications);},[notifications,ok]);
+useEffect(()=>{if(ok)sv(vk("todo"),todos);},[todos,ok]);
 
 useEffect(()=>{
 if(!ok)return;
@@ -421,7 +442,7 @@ const go=(k)=>{setV(k);setSel(null);setSelLog(null);};
 
 if(!ok||!authChecked)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg}}>Yükleniyor...</div>;
 
-if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} T={T}/>;
+if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} venue={venue} T={T}/>;
 
 return(
 <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:T.bg,minHeight:"100vh",color:T.text}}>
@@ -430,7 +451,10 @@ return(
 
 <nav style={{background:"rgba(255,255,255,0.82)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"0.5px solid rgba(0,0,0,0.08)",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60,position:"sticky",top:0,zIndex:50}}>
 <div style={{display:"flex",alignItems:"center",gap:14}}>
-<span style={{fontWeight:700,fontSize:18,letterSpacing:-0.4,color:T.text}}>{cfg.name}</span>
+<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:8}}>
+<span style={{fontWeight:700,fontSize:18,letterSpacing:-0.4,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{venue==="lurk"?"LURK.":"Taco n Tortilla"}</span>
+<span style={{fontSize:10,color:T.textSub,background:T.bg3,padding:"2px 7px",borderRadius:10,fontWeight:600}}>↓ değiştir</span>
+</button>
 {day?<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(52,199,89,0.12)",borderRadius:20,padding:"4px 10px 4px 8px"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.success,display:"inline-block"}}/><span style={{fontSize:11,color:T.success,fontWeight:600}}>AÇIK {ft(day.oa)}</span></div>
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:11,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
@@ -446,10 +470,10 @@ return(
 </nav>
 
 {view!=="lurk"&&<div style={{padding:"24px 24px 0",maxWidth:860,margin:"0 auto"}}>
-<div style={{fontSize:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</div>
+<div style={{fontSize:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{venue==="lurk"?"LURK.":"Taco n Tortilla"}</div>
 </div>}
 
-{view==="lurk"&&<LurkV setV={setV} T={T}/>}
+{view==="lurk"&&<LurkV setV={setV} venue={venue} setVenue={setVenue} T={T}/>}
 {view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon}/>}
 
 {view==="tables"&&(
@@ -526,6 +550,7 @@ return(
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
 {view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T}/>}
+{view==="tacoentry"&&<TacoEntryV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} tod={tod} menu={menu} ecats={ecats} inp={inp} sb={sb} T={T}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
 </div>
@@ -764,6 +789,7 @@ const stot=lE.reduce((s,e)=>s+e.amount,0);
 const ce=Object.entries(ct).sort((a,b)=>b[1]-a[1]);
 
 const[showAddInst,setShowAddInst]=useState(false);
+const[partialInstForm,setPartialInstForm]=useState(null);
 const[newInst,setNewInst]=useState({name:"",totalAmount:"",count:"1",startDate:tod()});
 const[expandedInstId,setExpandedInstId]=useState(null);
 
@@ -785,7 +811,21 @@ setShowAddInst(false);
 };
 
 const togglePaid=(planId,instId)=>{
-setInstallments(prev=>prev.map(p=>p.id!==planId?p:{...p,installments:p.installments.map(i=>i.id===instId?{...i,paid:!i.paid}:i)}));
+setInstallments(prev=>prev.map(p=>p.id!==planId?p:{...p,installments:p.installments.map(i=>i.id===instId?{...i,paid:!i.paid,paidAt:!i.paid?new Date().toISOString():null}:i)}));
+};
+
+const partialPayInst=(planId,instId,amount)=>{
+if(!amount||amount<=0)return;
+setInstallments(prev=>prev.map(p=>{
+if(p.id!==planId)return p;
+return{...p,installments:p.installments.map(i=>{
+if(i.id!==instId)return i;
+const newAmount=Math.max(0,i.amount-amount);
+const payments=[...(i.payments||[]),{id:Date.now()+Math.random(),amount,date:new Date().toISOString()}];
+if(newAmount<=0)return{...i,amount:0,paid:true,paidAt:new Date().toISOString(),payments};
+return{...i,amount:newAmount,payments};
+})};
+}));
 };
 
 const deletePlan=(planId)=>{
@@ -1032,16 +1072,27 @@ return(
 const dd=daysUntil(inst.due);
 const isOverdue=!inst.paid&&dd<0;
 const isUpcoming=!inst.paid&&dd>=0&&dd<=7;
+const isPartialOpen=partialInstForm&&partialInstForm.planId===plan.id&&partialInstForm.instId===inst.id;
 return(
-<div key={inst.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",marginBottom:6,borderRadius:8,background:isOverdue?"rgba(255,59,48,0.1)":isUpcoming?"rgba(255,149,0,0.1)":"#F7F6F3"}}>
+<div key={inst.id} style={{marginBottom:8}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",borderRadius:8,background:isOverdue?"rgba(255,59,48,0.1)":isUpcoming?"rgba(255,149,0,0.1)":"rgba(118,118,128,0.06)"}}>
 <div style={{display:"flex",alignItems:"center",gap:10}}>
 <input type="checkbox" checked={inst.paid} onChange={()=>togglePaid(plan.id,inst.id)} style={{width:16,height:16,cursor:"pointer"}}/>
 <div>
 <div style={{fontSize:12,fontWeight:600,textDecoration:inst.paid?"line-through":"none",color:inst.paid?"#C7C7CC":"#000000"}}>{ii+1}. Taksit — {fd(inst.due)}</div>
 {!inst.paid&&<div style={{fontSize:10,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":"#C7C7CC",marginTop:1}}>{isOverdue?`${Math.abs(dd)} gün gecikti`:dd===0?"Bugün":dd===1?"Yarın":`${dd} gün kaldı`}</div>}
+{inst.payments&&inst.payments.length>0&&<div style={{fontSize:10,color:"#34C759",marginTop:2}}>↓ {inst.payments.length} kısmi ödeme yapıldı</div>}
 </div>
 </div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
 <div style={{fontWeight:700,fontSize:13,color:inst.paid?"#34C759":"#000000"}}>{fm(inst.amount,cur)}</div>
+{!inst.paid&&<button onClick={()=>setPartialInstForm(isPartialOpen?null:{planId:plan.id,instId:inst.id,value:""})} style={{background:"none",border:"0.5px solid rgba(0,122,255,0.4)",color:"#007AFF",borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:600,cursor:"pointer"}}>{isPartialOpen?"İptal":"Kısmi Öde"}</button>}
+</div>
+</div>
+{isPartialOpen&&<div style={{display:"flex",gap:8,padding:"8px 10px",background:"rgba(0,122,255,0.06)",borderRadius:8,marginTop:4,alignItems:"center"}}>
+<input type="number" autoFocus placeholder={`Maks: ${fm(inst.amount,cur)}`} value={partialInstForm.value} onChange={e=>setPartialInstForm(p=>({...p,value:e.target.value}))} style={{...inp,flex:1,padding:"7px 10px",fontSize:12}} onKeyDown={e=>{if(e.key==="Enter"){const amt=parseFloat(partialInstForm.value);if(amt>0){partialPayInst(plan.id,inst.id,Math.min(amt,inst.amount));setPartialInstForm(null);}}}}/>
+<button onClick={()=>{const amt=parseFloat(partialInstForm.value);if(amt>0){partialPayInst(plan.id,inst.id,Math.min(amt,inst.amount));setPartialInstForm(null);}}} style={{...sb("#007AFF"),padding:"7px 16px",fontSize:12,fontWeight:700,whiteSpace:"nowrap"}}>Uygula</button>
+</div>}
 </div>
 );
 })}
@@ -2083,17 +2134,32 @@ Bu işlem {OLD_LOGS.length} günlük geçmiş satış kaydını mevcut Raporlar 
 </div>
 );}
 
-function LurkV({setV,T}){
+function LurkV({setV,venue,setVenue,T}){
+const venues=[
+{id:"lurk",name:"LURK.",sub:"",color:"#34C759",bg:"rgba(52,199,89,0.08)"},
+{id:"tt",name:"Taco n Tortilla",sub:"",color:"#FF9500",bg:"rgba(255,149,0,0.08)"},
+];
 return(
 <div style={{minHeight:"calc(100vh - 64px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
-<div style={{textAlign:"center"}}>
-<h1 style={{fontSize:96,fontWeight:800,letterSpacing:-2,margin:0,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</h1>
-<button onClick={()=>setV("home")} style={{marginTop:32,background:T.accent,border:"none",color:"#fff",borderRadius:10,padding:"13px 32px",fontWeight:600,fontSize:14,cursor:"pointer"}}>Login</button>
+<div style={{textAlign:"center",width:"100%",maxWidth:480}}>
+<div style={{fontSize:13,color:T.textSub,fontWeight:500,marginBottom:24,textTransform:"uppercase",letterSpacing:1}}>Mekan Seç</div>
+<div style={{display:"flex",flexDirection:"column",gap:14}}>
+{venues.map(v=>(
+<button key={v.id} onClick={()=>{if(venue!==v.id)setVenue(v.id);else setV("home");}} style={{background:venue===v.id?v.bg:"#fff",border:`2px solid ${venue===v.id?v.color:"rgba(0,0,0,0.08)"}`,borderRadius:18,padding:"22px 28px",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",justifyContent:"space-between",boxShadow:"0 1px 4px rgba(0,0,0,0.06)",transition:"all 0.15s"}}>
+<div>
+<div style={{fontSize:22,fontWeight:800,letterSpacing:-0.5,color:venue===v.id?v.color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{v.name}</div>
+{v.sub&&<div style={{fontSize:12,color:T.textSub,marginTop:3}}>{v.sub}</div>}</div>
+{venue===v.id&&<div style={{background:v.color,color:"#fff",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:700}}>Giriş →</div>}
+</button>
+))}
+</div>
+<div style={{marginTop:32,color:T.textDim,fontSize:12}}>Her mekanın verileri birbirinden bağımsız tutulur.</div>
 </div>
 </div>
 );}
 
-function LoginV({cfg,setCfg,setAuthed,T}){
+function LoginV({cfg,setCfg,setAuthed,venue,T}){
+const authKey="lurk_venue_auth_"+(venue||"lurk");
 const[pw,setPw]=useState("");
 const[err,setErr]=useState(false);
 const[mode,setMode]=useState("login");
@@ -2103,7 +2169,7 @@ const[resetDone,setResetDone]=useState(false);
 
 const tryLogin=()=>{
 if(pw===cfg.sitePassword){
-try{localStorage.setItem("lurk_auth",pw);}catch{}
+try{localStorage.setItem(authKey,pw);}catch{}
 setAuthed(true);
 }else{
 setErr(true);
@@ -2114,8 +2180,8 @@ const tryRecover=async()=>{
 if(recoveryAnswer.trim().toLowerCase()===( cfg.recoveryA||"").trim().toLowerCase()&&cfg.recoveryA){
 const newCfg={...cfg,sitePassword:"",recoveryQ:"",recoveryA:""};
 setCfg(newCfg);
-await sv("p4s",newCfg);
-try{localStorage.removeItem("lurk_auth");}catch{}
+await sv(vk("s"),newCfg);
+try{localStorage.removeItem(authKey);}catch{}
 setResetDone(true);
 }else{
 setRecoveryErr(true);
@@ -2346,4 +2412,153 @@ autoFocus
 ))}
 </div>
 )}
+</div>);}
+
+function TacoEntryV({logs,setLogs,cur,fm,fd,tod,menu,ecats,inp,sb,T}){
+const[date,setDate]=useState(tod());
+const[cash,setCash]=useState("");
+const[card,setCard]=useState("");
+const[items,setItems]=useState([]);
+const[expenses,setExpenses]=useState([]);
+const[expDesc,setExpDesc]=useState("");
+const[expAmt,setExpAmt]=useState("");
+const[expCat,setExpCat]=useState(ecats[0]||"Malzeme");
+const[itemSearch,setItemSearch]=useState("");
+const[saved,setSaved]=useState(false);
+
+const totalInc=(parseFloat(cash)||0)+(parseFloat(card)||0);
+const totalExp=expenses.reduce((s,e)=>s+e.amount,0);
+const totalItems=items.reduce((s,i)=>s+i.qty,0);
+
+const filteredMenu=(menu||[]).filter(m=>m.on!==false&&m.name.toLowerCase().includes(itemSearch.toLowerCase()));
+const cats=["Tümü",...Array.from(new Set((menu||[]).map(m=>m.cat)))];
+const[mCat,setMCat]=useState("Tümü");
+const catMenu=filteredMenu.filter(m=>mCat==="Tümü"||m.cat===mCat);
+
+const addItem=(menuItem)=>{
+setItems(prev=>{
+const ex=prev.find(i=>i.name===menuItem.name);
+if(ex)return prev.map(i=>i.name===menuItem.name?{...i,qty:i.qty+1}:i);
+return[...prev,{name:menuItem.name,qty:1,price:menuItem.price,cat:menuItem.cat}];
+});
+};
+const chItemQ=(name,d)=>{
+setItems(prev=>prev.map(i=>i.name===name?{...i,qty:i.qty+d}:i).filter(i=>i.qty>0));
+};
+const addExp=()=>{
+if(!expDesc||!expAmt)return;
+setExpenses(prev=>[...prev,{id:Date.now()+Math.random(),desc:expDesc,amount:parseFloat(expAmt)||0,cat:expCat}]);
+setExpDesc("");setExpAmt("");
+};
+
+const saveDay=()=>{
+if(!cash&&!card&&items.length===0){return;}
+const inc=totalInc;
+const exp=totalExp;
+const logItems=items.map(i=>({name:i.name,qty:i.qty,total:i.price*i.qty,price:i.price,cat:i.cat}));
+const logExps=expenses.map(e=>({...e,date}));
+const newLog={
+id:Date.now()+Math.random(),
+date,
+oa:"09:00",
+ca:new Date().toISOString(),
+inc,
+exp,
+net:inc-exp,
+cash:parseFloat(cash)||0,
+card:parseFloat(card)||0,
+count:totalItems,
+items:logItems,
+guests:[],
+exps:logExps,
+manual:true,
+};
+setLogs(prev=>{
+const filtered=prev.filter(l=>l.date!==date);
+return[newLog,...filtered].sort((a,b)=>b.date.localeCompare(a.date));
+});
+setSaved(true);
+setTimeout(()=>setSaved(false),3000);
+};
+
+const existing=logs.find(l=>l.date===date);
+
+return(<div style={{padding:24,maxWidth:760,margin:"0 auto"}}>
+<div style={{marginBottom:22}}>
+<h2 style={{margin:0,fontWeight:800,fontSize:20}}>Günlük Giriş</h2>
+<div style={{fontSize:12,color:T.textSub,marginTop:2}}>Gün sonu nakit, kart, ürün ve giderleri gir</div>
+</div>
+
+{existing&&<div style={{background:"rgba(255,149,0,0.1)",border:"0.5px solid rgba(255,149,0,0.4)",borderRadius:12,padding:"10px 16px",marginBottom:16,fontSize:12,color:"#FF9500",fontWeight:600}}>
+⚠ {fd(date)} için daha önce giriş yapılmış — kaydetmek üzerine yazar.
+</div>}
+
+{saved&&<div style={{background:"rgba(52,199,89,0.12)",border:"0.5px solid #8FE3A8",borderRadius:12,padding:"10px 16px",marginBottom:16,fontSize:12,color:"#34C759",fontWeight:700}}>
+✓ {fd(date)} kaydedildi!
+</div>}
+
+<div style={{background:T.bg2,borderRadius:14,padding:20,marginBottom:16,boxShadow:T.shadow}}>
+<div style={{fontWeight:700,fontSize:14,marginBottom:14}}>Tarih & Tahsilat</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
+<div><label style={{fontSize:11,color:T.textSub,display:"block",marginBottom:5}}>Tarih</label><input type="date" value={date} onChange={e=>{setDate(e.target.value);setSaved(false);}} style={inp}/></div>
+<div><label style={{fontSize:11,color:T.textSub,display:"block",marginBottom:5}}>Nakit ({cur})</label><input type="number" placeholder="0" value={cash} onChange={e=>setCash(e.target.value)} style={inp}/></div>
+<div><label style={{fontSize:11,color:T.textSub,display:"block",marginBottom:5}}>Kart ({cur})</label><input type="number" placeholder="0" value={card} onChange={e=>setCard(e.target.value)} style={inp}/></div>
+</div>
+{totalInc>0&&<div style={{marginTop:12,display:"flex",gap:16,padding:"10px 14px",background:T.bg3,borderRadius:10}}>
+<div><span style={{fontSize:11,color:T.textSub}}>Toplam: </span><span style={{fontWeight:800,color:T.accent,fontSize:15}}>{fm(totalInc,cur)}</span></div>
+<div><span style={{fontSize:11,color:T.textSub}}>Net: </span><span style={{fontWeight:800,color:totalInc-totalExp>=0?T.accent:T.danger,fontSize:15}}>{fm(totalInc-totalExp,cur)}</span></div>
+</div>}
+</div>
+
+<div style={{background:T.bg2,borderRadius:14,padding:20,marginBottom:16,boxShadow:T.shadow}}>
+<div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Satılan Ürünler {totalItems>0&&<span style={{fontSize:12,color:T.textSub,fontWeight:400}}>({totalItems} adet, {fm(items.reduce((s,i)=>s+i.price*i.qty,0),cur)})</span>}</div>
+<input placeholder="Ürün ara..." value={itemSearch} onChange={e=>setItemSearch(e.target.value)} style={{...inp,marginBottom:10}}/>
+<div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+{cats.map(c=><button key={c} onClick={()=>setMCat(c)} style={{padding:"5px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:mCat===c?T.accent:T.bg3,color:mCat===c?"#fff":T.textSub}}>{c}</button>)}
+</div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:8,marginBottom:16,maxHeight:200,overflowY:"auto"}}>
+{catMenu.map(m=>{
+const inCart=items.find(i=>i.name===m.name);
+return(<button key={m.name} onClick={()=>addItem(m)} style={{background:inCart?"rgba(52,199,89,0.1)":T.bg3,border:"0.5px solid "+(inCart?"#8FE3A8":T.border),borderRadius:10,padding:"10px 12px",cursor:"pointer",textAlign:"left"}}>
+<div style={{fontSize:12,fontWeight:600,color:T.text}}>{m.name}</div>
+<div style={{fontSize:11,color:T.accent,marginTop:2}}>{fm(m.price,cur)}</div>
+{inCart&&<div style={{fontSize:11,fontWeight:800,color:"#34C759",marginTop:2}}>× {inCart.qty}</div>}
+</button>);})}
+</div>
+{items.length>0&&<div style={{display:"flex",flexDirection:"column",gap:6,borderTop:"0.5px solid "+T.border,paddingTop:12}}>
+{items.map(i=><div key={i.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<span style={{fontSize:13,fontWeight:600}}>{i.name}</span>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<button onClick={()=>chItemQ(i.name,-1)} style={{...sb(T.bg3),color:T.text,width:28,height:28,borderRadius:8,padding:0}}>−</button>
+<span style={{fontWeight:700,minWidth:24,textAlign:"center"}}>{i.qty}</span>
+<button onClick={()=>chItemQ(i.name,1)} style={{...sb(T.accent),color:"#fff",width:28,height:28,borderRadius:8,padding:0}}>+</button>
+<span style={{fontSize:12,color:T.textSub,minWidth:70,textAlign:"right"}}>{fm(i.price*i.qty,cur)}</span>
+</div>
+</div>)}
+</div>}
+</div>
+
+<div style={{background:T.bg2,borderRadius:14,padding:20,marginBottom:20,boxShadow:T.shadow}}>
+<div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Giderler {totalExp>0&&<span style={{fontSize:12,color:T.textSub,fontWeight:400}}>({fm(totalExp,cur)})</span>}</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr auto auto",gap:8,marginBottom:12,alignItems:"end"}}>
+<div><label style={{fontSize:11,color:T.textSub,display:"block",marginBottom:4}}>Açıklama</label><input placeholder="Malzeme, kira..." value={expDesc} onChange={e=>setExpDesc(e.target.value)} style={inp}/></div>
+<div><label style={{fontSize:11,color:T.textSub,display:"block",marginBottom:4}}>Tutar</label><input type="number" placeholder="0" value={expAmt} onChange={e=>setExpAmt(e.target.value)} style={inp}/></div>
+<div><label style={{fontSize:11,color:T.textSub,display:"block",marginBottom:4}}>Kategori</label>
+<select value={expCat} onChange={e=>setExpCat(e.target.value)} style={inp}>
+{ecats.map(c=><option key={c} value={c}>{c}</option>)}
+</select></div>
+<button onClick={addExp} style={{...sb(T.accent),padding:"9px 16px",height:40}}>Ekle</button>
+</div>
+{expenses.map(e=><div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:"0.5px solid "+T.border}}>
+<span style={{fontSize:13}}>{e.desc} <span style={{fontSize:11,color:T.textSub}}>({e.cat})</span></span>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<span style={{fontWeight:700,color:T.danger,fontSize:13}}>{fm(e.amount,cur)}</span>
+<button onClick={()=>setExpenses(prev=>prev.filter(x=>x.id!==e.id))} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:11}}>✕</button>
+</div>
+</div>)}
+</div>
+
+<button onClick={saveDay} style={{...sb(T.accent),width:"100%",padding:"14px 0",fontSize:15,fontWeight:700}}>
+{saved?"✓ Kaydedildi":"Günü Kaydet"}
+</button>
 </div>);}
