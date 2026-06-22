@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 const T={bg:"#F2F2F7",bg2:"#FFFFFF",bg3:"rgba(118,118,128,0.12)",border:"rgba(0,0,0,0.08)",border2:"rgba(60,60,67,0.18)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#8E8E93",textDim:"#C7C7CC",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 1px 2px rgba(0,0,0,0.04)",shadowM:"0 8px 30px rgba(0,0,0,0.12)"};
 
@@ -332,20 +331,20 @@ if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 setAuthChecked(true);
 })();},[venue]);
 
-useEffect(()=>{if(ok)sv(vk("t"),tables);},[tables,ok]);
-useEffect(()=>{if(ok)sv(vk("o"),orders);},[orders,ok]);
-useEffect(()=>{if(ok)sv(vk("e"),exp);},[exp,ok]);
-useEffect(()=>{if(ok)sv(vk("m"),menu);},[menu,ok]);
-useEffect(()=>{if(ok)sv(vk("s"),cfg);},[cfg,ok]);
-useEffect(()=>{if(ok)sv(vk("d"),day);},[day,ok]);
-useEffect(()=>{if(ok)sv(vk("l"),logs);},[logs,ok]);
-useEffect(()=>{if(ok)sv(vk("c"),cari);},[cari,ok]);
-useEffect(()=>{if(ok)sv(vk("ec"),ecats);},[ecats,ok]);
-useEffect(()=>{if(ok)sv(vk("onl"),onlineOrders);},[onlineOrders,ok]);
-useEffect(()=>{if(ok)sv(vk("inst"),installments);},[installments,ok]);
-useEffect(()=>{if(ok)sv(vk("unl"),unlocked);},[unlocked,ok]);
-useEffect(()=>{if(ok)sv(vk("notif"),notifications);},[notifications,ok]);
-useEffect(()=>{if(ok)sv(vk("todo"),todos);},[todos,ok]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"t",tables);},[tables,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"o",orders);},[orders,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"e",exp);},[exp,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"m",menu);},[menu,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"s",cfg);},[cfg,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"d",day);},[day,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"l",logs);},[logs,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"c",cari);},[cari,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"ec",ecats);},[ecats,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"onl",onlineOrders);},[onlineOrders,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"inst",installments);},[installments,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"unl",unlocked);},[unlocked,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"notif",notifications);},[notifications,ok,venue]);
+useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"todo",todos);},[todos,ok,venue]);
 
 useEffect(()=>{
 if(!ok)return;
@@ -442,7 +441,7 @@ const go=(k)=>{setV(k);setSel(null);setSelLog(null);};
 
 if(!ok||!authChecked)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg}}>Yükleniyor...</div>;
 
-if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} venue={venue} T={T}/>;
+if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} venue={venue} venuePfx={venue==="lurk"?"lurk_":"tt_"} T={T}/>;
 
 return(
 <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:T.bg,minHeight:"100vh",color:T.text}}>
@@ -1164,23 +1163,33 @@ return(
 {[{k:"qty",l:"Adete Göre"},{k:"revenue",l:"Ciroya Göre"}].map(({k,l})=><button key={k} onClick={()=>setProdSortBy(k)} style={{padding:"8px 18px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,background:prodSortBy===k?"#34C759":"rgba(118,118,128,0.12)",color:prodSortBy===k?"#fff":"#8E8E93"}}>{l}</button>)}
 </div>
 
-<div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:14,padding:"20px 16px 8px",marginBottom:16}}>
-<div style={{fontWeight:700,fontSize:14,marginBottom:14,paddingLeft:4}}>En Çok Satanlar — Grafik</div>
-<ResponsiveContainer width="100%" height={Math.max(220,prodSorted.slice(0,10).length*38)}>
-<BarChart data={prodSorted.slice(0,10).map(p=>({name:p.name.length>14?p.name.slice(0,13)+"…":p.name,fullName:p.name,value:prodSortBy==="qty"?p.qty:p.revenue}))} layout="vertical" margin={{top:0,right:24,left:0,bottom:0}}>
-<CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" horizontal={false}/>
-<XAxis type="number" tick={{fontSize:11,fill:"#8E8E93"}} axisLine={false} tickLine={false} tickFormatter={v=>prodSortBy==="qty"?v:(v>=1000?(v/1000).toFixed(0)+"k":v)}/>
-<YAxis type="category" dataKey="name" width={110} tick={{fontSize:12,fill:"#000",fontWeight:600}} axisLine={false} tickLine={false}/>
-<Tooltip
-formatter={(value)=>prodSortBy==="qty"?[value+" adet","Satış"]:[fm(value,cur),"Ciro"]}
-labelFormatter={(label,payload)=>payload&&payload[0]?payload[0].payload.fullName:label}
-contentStyle={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,fontSize:12,boxShadow:"0 4px 16px rgba(0,0,0,0.1)"}}
-/>
-<Bar dataKey="value" radius={[0,6,6,0]} maxBarSize={22}>
-{prodSorted.slice(0,10).map((p,i)=><Cell key={i} fill={i===0?"#34C759":i<3?"#5FD584":"#A8E8BC"}/>)}
-</Bar>
-</BarChart>
-</ResponsiveContainer>
+<div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:14,padding:"20px 20px 12px",marginBottom:16}}>
+<div style={{fontWeight:700,fontSize:14,marginBottom:16,paddingLeft:4}}>En Çok Satanlar — Grafik</div>
+<div style={{display:"flex",flexDirection:"column",gap:10}}>
+{prodSorted.slice(0,10).map((p,i)=>{
+const val=prodSortBy==="qty"?p.qty:p.revenue;
+const barPct=prodMaxVal>0?Math.round(val/prodMaxVal*100):0;
+const label=prodSortBy==="qty"?p.qty+" adet":fm(p.revenue,cur);
+const barColor=i===0?"#34C759":i<3?"#5FD584":"#A8E8BC";
+return(
+<div key={p.name} style={{display:"flex",alignItems:"center",gap:10}}>
+<div style={{width:110,fontSize:11,fontWeight:600,color:i===0?"#000":"#3C3C43",textAlign:"right",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",flexShrink:0}}>{p.name}</div>
+<div style={{flex:1,background:"rgba(118,118,128,0.1)",borderRadius:6,height:22,overflow:"hidden",position:"relative"}}>
+<div style={{background:barColor,height:"100%",width:barPct+"%",borderRadius:6,transition:"width 0.4s ease",display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:6}}>
+{barPct>25&&<span style={{fontSize:10,fontWeight:700,color:"#fff"}}>{label}</span>}
+</div>
+{barPct<=25&&<span style={{position:"absolute",left:"calc("+barPct+"% + 8px)",top:"50%",transform:"translateY(-50%)",fontSize:10,fontWeight:700,color:"#3C3C43",whiteSpace:"nowrap"}}>{label}</span>}
+</div>
+<div style={{width:22,fontSize:11,color:"#8E8E93",flexShrink:0,textAlign:"right"}}>{i+1}</div>
+</div>
+);
+})}
+</div>
+<div style={{display:"flex",justifyContent:"space-between",marginTop:12,paddingLeft:120}}>
+<span style={{fontSize:10,color:"#8E8E93"}}>0</span>
+<span style={{fontSize:10,color:"#8E8E93"}}>{prodSortBy==="qty"?Math.round(prodMaxVal/2)+" adet":fm(prodMaxVal/2,cur)}</span>
+<span style={{fontSize:10,color:"#8E8E93"}}>{prodSortBy==="qty"?prodMaxVal+" adet":fm(prodMaxVal,cur)}</span>
+</div>
 </div>
 
 <div style={{background:"#fff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:14,padding:20,marginBottom:20}}>
@@ -2158,7 +2167,7 @@ return(
 </div>
 );}
 
-function LoginV({cfg,setCfg,setAuthed,venue,T}){
+function LoginV({cfg,setCfg,setAuthed,venue,venuePfx,T}){
 const authKey="lurk_venue_auth_"+(venue||"lurk");
 const[pw,setPw]=useState("");
 const[err,setErr]=useState(false);
@@ -2180,7 +2189,7 @@ const tryRecover=async()=>{
 if(recoveryAnswer.trim().toLowerCase()===( cfg.recoveryA||"").trim().toLowerCase()&&cfg.recoveryA){
 const newCfg={...cfg,sitePassword:"",recoveryQ:"",recoveryA:""};
 setCfg(newCfg);
-await sv(vk("s"),newCfg);
+await sv((venuePfx||"lurk_")+"s",newCfg);
 try{localStorage.removeItem(authKey);}catch{}
 setResetDone(true);
 }else{
