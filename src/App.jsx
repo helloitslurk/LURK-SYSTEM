@@ -245,11 +245,7 @@ const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:8
 
 
 export default function App(){
-const[venue,setVenue]=useState(()=>{try{return localStorage.getItem("lurk_venue")||"lurk";}catch{return"lurk";}});
-const vk=(k)=>(venue==="lurk"?"lurk_":"tt_")+k;
-const NAV=venue==="lurk"
-?[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}]
-:[{k:"lurk",l:"TACO"},{k:"tacoentry",l:"Günlük Giriş"},{k:"reports",l:"Raporlar"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
+const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
@@ -279,6 +275,8 @@ const[installments,setInstallments]=useState([]);
 const[unlocked,setUnlocked]=useState({});
 const[todos,setTodos]=useState([]);
 const[notifications,setNotifications]=useState([]);
+const[tacoLogs,setTacoLogs]=useState([]);
+const[tacoMenu,setTacoMenu]=useState([]);
 const[expMon,setExpMon]=useState(null);
 const[expDay,setExpDay]=useState(null);
 const[expF,setExpF]=useState({desc:"",amount:"",cat:"Malzeme",date:tod()});
@@ -295,56 +293,55 @@ const[mCat,setMCat]=useState("Tümü");
 const[newec,setNewec]=useState("");
 
 useEffect(()=>{(async()=>{
-setOk(false);setAuthed(false);setAuthChecked(false);
 // Migration: eski p4... anahtarlarını lurk_... formatına taşı (bir kez)
-if(venue==="lurk"){
 const oldKeys=["t","o","e","m","s","d","l","c","ec","onl","inst","unl","notif","todo"];
 for(const k of oldKeys){
 const newVal=await ld("lurk_"+k,null);
 if(newVal===null||newVal===undefined){
 const oldVal=await ld("p4"+k,null);
-if(oldVal!==null&&oldVal!==undefined){
-await sv("lurk_"+k,oldVal);
+if(oldVal!==null&&oldVal!==undefined){await sv("lurk_"+k,oldVal);}
 }
 }
-}
-}
-const prefix=venue==="lurk"?"lurk_":"tt_";
-const kk=(k)=>prefix+k;
-const t=await ld(kk("t"),null);const o=await ld(kk("o"),[]);const e=await ld(kk("e"),[]);
-const m=await ld(kk("m"),null);const s=await ld(kk("s"),DS);const d=await ld(kk("d"),null);
-const l=await ld(kk("l"),[]);const c=await ld(kk("c"),[]);const ec=await ld(kk("ec"),DEC);
-const onl=await ld(kk("onl"),[]);
-const inst=await ld(kk("inst"),[]);
-const unl=await ld(kk("unl"),{});
-const notif=await ld(kk("notif"),[]);
-const td_=await ld(kk("todo"),[]);
+const t=await ld("lurk_t",null);const o=await ld("lurk_o",[]);const e=await ld("lurk_e",[]);
+const m=await ld("lurk_m",null);const s=await ld("lurk_s",DS);const d=await ld("lurk_d",null);
+const l=await ld("lurk_l",[]);const c=await ld("lurk_c",[]);const ec=await ld("lurk_ec",DEC);
+const onl=await ld("lurk_onl",[]);
+const inst=await ld("lurk_inst",[]);
+const unl=await ld("lurk_unl",{});
+const notif=await ld("lurk_notif",[]);
+const td_=await ld("lurk_todo",[]);
+const tl=await ld("tt_l",[]);
+const tm=await ld("tt_m",null);
 const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
-setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));setOk(true);
+setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
+setTacoLogs(tl);setTacoMenu(tm||[]);
+setOk(true);
 try{
-const savedAuth=localStorage.getItem("lurk_venue_auth_"+venue);
+const savedAuth=localStorage.getItem("lurk_auth");
 const cfAuth=cf.sitePassword;
 if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 }catch{setAuthed(true);}
 setAuthChecked(true);
-})();},[venue]);
+})();},[]);
 
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"t",tables);},[tables,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"o",orders);},[orders,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"e",exp);},[exp,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"m",menu);},[menu,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"s",cfg);},[cfg,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"d",day);},[day,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"l",logs);},[logs,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"c",cari);},[cari,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"ec",ecats);},[ecats,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"onl",onlineOrders);},[onlineOrders,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"inst",installments);},[installments,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"unl",unlocked);},[unlocked,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"notif",notifications);},[notifications,ok,venue]);
-useEffect(()=>{if(ok)sv((venue==="lurk"?"lurk_":"tt_")+"todo",todos);},[todos,ok,venue]);
+useEffect(()=>{if(ok)sv("lurk_t",tables);},[tables,ok]);
+useEffect(()=>{if(ok)sv("lurk_o",orders);},[orders,ok]);
+useEffect(()=>{if(ok)sv("lurk_e",exp);},[exp,ok]);
+useEffect(()=>{if(ok)sv("lurk_m",menu);},[menu,ok]);
+useEffect(()=>{if(ok)sv("lurk_s",cfg);},[cfg,ok]);
+useEffect(()=>{if(ok)sv("lurk_d",day);},[day,ok]);
+useEffect(()=>{if(ok)sv("lurk_l",logs);},[logs,ok]);
+useEffect(()=>{if(ok)sv("lurk_c",cari);},[cari,ok]);
+useEffect(()=>{if(ok)sv("lurk_ec",ecats);},[ecats,ok]);
+useEffect(()=>{if(ok)sv("lurk_onl",onlineOrders);},[onlineOrders,ok]);
+useEffect(()=>{if(ok)sv("lurk_inst",installments);},[installments,ok]);
+useEffect(()=>{if(ok)sv("lurk_unl",unlocked);},[unlocked,ok]);
+useEffect(()=>{if(ok)sv("lurk_notif",notifications);},[notifications,ok]);
+useEffect(()=>{if(ok)sv("lurk_todo",todos);},[todos,ok]);
+useEffect(()=>{if(ok)sv("tt_l",tacoLogs);},[tacoLogs,ok]);
+useEffect(()=>{if(ok)sv("tt_m",tacoMenu);},[tacoMenu,ok]);
 
 useEffect(()=>{
 if(!ok)return;
@@ -441,7 +438,7 @@ const go=(k)=>{setV(k);setSel(null);setSelLog(null);};
 
 if(!ok||!authChecked)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg}}>Yükleniyor...</div>;
 
-if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} venue={venue} venuePfx={venue==="lurk"?"lurk_":"tt_"} T={T}/>;
+if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} T={T}/>;
 
 return(
 <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:T.bg,minHeight:"100vh",color:T.text}}>
@@ -450,10 +447,7 @@ return(
 
 <nav style={{background:"rgba(255,255,255,0.82)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderBottom:"0.5px solid rgba(0,0,0,0.08)",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60,position:"sticky",top:0,zIndex:50}}>
 <div style={{display:"flex",alignItems:"center",gap:14}}>
-<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex",alignItems:"center",gap:8}}>
-<span style={{fontWeight:700,fontSize:18,letterSpacing:-0.4,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{venue==="lurk"?"LURK.":"Taco n Tortilla"}</span>
-<span style={{fontSize:10,color:T.textSub,background:T.bg3,padding:"2px 7px",borderRadius:10,fontWeight:600}}>↓ değiştir</span>
-</button>
+<span style={{fontWeight:700,fontSize:18,letterSpacing:-0.4,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</span>
 {day?<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(52,199,89,0.12)",borderRadius:20,padding:"4px 10px 4px 8px"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.success,display:"inline-block"}}/><span style={{fontSize:11,color:T.success,fontWeight:600}}>AÇIK {ft(day.oa)}</span></div>
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:11,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
@@ -469,10 +463,10 @@ return(
 </nav>
 
 {view!=="lurk"&&<div style={{padding:"24px 24px 0",maxWidth:860,margin:"0 auto"}}>
-<div style={{fontSize:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{venue==="lurk"?"LURK.":"Taco n Tortilla"}</div>
+<div style={{fontSize:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</div>
 </div>}
 
-{view==="lurk"&&<LurkV setV={setV} venue={venue} setVenue={setVenue} T={T}/>}
+{view==="lurk"&&<LurkV setV={setV} T={T}/>}
 {view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon}/>}
 
 {view==="tables"&&(
@@ -544,12 +538,11 @@ return(
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
-{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments}/>}
+{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
 {view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T}/>}
-{view==="tacoentry"&&<TacoEntryV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} tod={tod} menu={menu} ecats={ecats} inp={inp} sb={sb} T={T}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
 </div>
@@ -747,7 +740,7 @@ return(<div style={{background:T.bg2,border:"0.5px solid "+T.border2,borderRadiu
 </div>
 </div>);}
 
-function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments}){
+function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu}){
 const CC=["#34C759","#34C759","#FF9500","#007AFF","#AF52DE","#FF3B30","#FF9500","#248A3D"];
 const[dateFrom,setDateFrom]=useState("");
 const[dateTo,setDateTo]=useState("");
@@ -916,7 +909,7 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24,flexWrap:"wrap",gap:10}}>
 <div style={{display:"flex",gap:0,background:"rgba(118,118,128,0.12)",borderRadius:10,padding:3,width:"fit-content"}}>
-{[{k:"sales",l:"Satış"},{k:"expenses",l:"Harcama"},{k:"installments",l:"Vadeler"},{k:"products",l:"Ürün Analizi"}].map(({k,l})=><button key={k} onClick={()=>setMainT(k)} style={{padding:"7px 18px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:13,background:mainT===k?"#fff":"transparent",color:mainT===k?"#000":"#8E8E93",boxShadow:mainT===k?"0 1px 3px rgba(0,0,0,0.12)":"none"}}>{l}</button>)}
+{[{k:"sales",l:"Satış"},{k:"expenses",l:"Harcama"},{k:"installments",l:"Vadeler"},{k:"products",l:"Ürün Analizi"},{k:"taco",l:"Taco & Tortilla"}].map(({k,l})=><button key={k} onClick={()=>setMainT(k)} style={{padding:"7px 18px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:13,background:mainT===k?"#fff":"transparent",color:mainT===k?"#000":"#8E8E93",boxShadow:mainT===k?"0 1px 3px rgba(0,0,0,0.12)":"none"}}>{l}</button>)}
 </div>
 <div style={{position:"relative"}}>
   <button onClick={()=>setShowDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:rangeLabel?"rgba(52,199,89,0.12)":T.bg3,border:"1px solid "+(rangeLabel?"#8FE3A8":T.border2),borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,color:rangeLabel?"#34C759":T.textSub}}>
@@ -1240,6 +1233,8 @@ return(
 )}
 </div>
 )}
+
+{mainT==="taco"&&<TacoEntryV logs={tacoLogs} setLogs={setTacoLogs} cur={cur} fm={fm} fd={fd} tod={tod} menu={tacoMenu} setMenu={setTacoMenu} ecats={ecats} inp={inp} sb={sb} T={T}/>}
 </div>);}
 
 function LogV({log,setLogs,ecats,cur,fm,ft,fdl,repT,setRepT,setSelLog,inp,T,sb,orders,setOrd}){
@@ -2143,32 +2138,18 @@ Bu işlem {OLD_LOGS.length} günlük geçmiş satış kaydını mevcut Raporlar 
 </div>
 );}
 
-function LurkV({setV,venue,setVenue,T}){
-const venues=[
-{id:"lurk",name:"LURK.",sub:"",color:"#34C759",bg:"rgba(52,199,89,0.08)"},
-{id:"tt",name:"Taco n Tortilla",sub:"",color:"#FF9500",bg:"rgba(255,149,0,0.08)"},
-];
+function LurkV({setV,T}){
 return(
 <div style={{minHeight:"calc(100vh - 64px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
-<div style={{textAlign:"center",width:"100%",maxWidth:480}}>
-<div style={{fontSize:13,color:T.textSub,fontWeight:500,marginBottom:24,textTransform:"uppercase",letterSpacing:1}}>Mekan Seç</div>
-<div style={{display:"flex",flexDirection:"column",gap:14}}>
-{venues.map(v=>(
-<button key={v.id} onClick={()=>{if(venue!==v.id)setVenue(v.id);else setV("home");}} style={{background:venue===v.id?v.bg:"#fff",border:`2px solid ${venue===v.id?v.color:"rgba(0,0,0,0.08)"}`,borderRadius:18,padding:"22px 28px",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",justifyContent:"space-between",boxShadow:"0 1px 4px rgba(0,0,0,0.06)",transition:"all 0.15s"}}>
-<div>
-<div style={{fontSize:22,fontWeight:800,letterSpacing:-0.5,color:venue===v.id?v.color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{v.name}</div>
-{v.sub&&<div style={{fontSize:12,color:T.textSub,marginTop:3}}>{v.sub}</div>}</div>
-{venue===v.id&&<div style={{background:v.color,color:"#fff",borderRadius:20,padding:"6px 16px",fontSize:12,fontWeight:700}}>Giriş →</div>}
-</button>
-))}
-</div>
-<div style={{marginTop:32,color:T.textDim,fontSize:12}}>Her mekanın verileri birbirinden bağımsız tutulur.</div>
+<div style={{textAlign:"center"}}>
+<h1 style={{fontSize:96,fontWeight:800,letterSpacing:-2,margin:0,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</h1>
+<button onClick={()=>setV("home")} style={{marginTop:32,background:T.accent,border:"none",color:"#fff",borderRadius:10,padding:"13px 32px",fontWeight:600,fontSize:14,cursor:"pointer"}}>Sisteme Gir</button>
 </div>
 </div>
 );}
 
-function LoginV({cfg,setCfg,setAuthed,venue,venuePfx,T}){
-const authKey="lurk_venue_auth_"+(venue||"lurk");
+function LoginV({cfg,setCfg,setAuthed,T}){
+const authKey="lurk_auth";
 const[pw,setPw]=useState("");
 const[err,setErr]=useState(false);
 const[mode,setMode]=useState("login");
@@ -2189,7 +2170,7 @@ const tryRecover=async()=>{
 if(recoveryAnswer.trim().toLowerCase()===( cfg.recoveryA||"").trim().toLowerCase()&&cfg.recoveryA){
 const newCfg={...cfg,sitePassword:"",recoveryQ:"",recoveryA:""};
 setCfg(newCfg);
-await sv((venuePfx||"lurk_")+"s",newCfg);
+await sv("lurk_s",newCfg);
 try{localStorage.removeItem(authKey);}catch{}
 setResetDone(true);
 }else{
@@ -2201,7 +2182,7 @@ if(mode==="recover"){
 return(
 <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:T.bg,fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:340}}>
-<h1 style={{fontSize:40,fontWeight:800,letterSpacing:-1,margin:"0 0 28px",color:T.text}}>LURK.</h1>
+<h1 style={{fontSize:40,fontWeight:800,letterSpacing:-1,margin:"0 0 28px",color:T.text}}>NICCHIA.</h1>
 {resetDone?(
 <>
 <div style={{fontSize:14,fontWeight:600,color:T.success,marginBottom:8}}>✓ Şifre sıfırlandı</div>
@@ -2237,7 +2218,7 @@ style={{background:T.bg2,border:"1px solid "+(recoveryErr?T.danger:T.border2),bo
 return(
 <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:T.bg,fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:320}}>
-<h1 style={{fontSize:56,fontWeight:800,letterSpacing:-1,margin:"0 0 32px",color:T.text}}>LURK.</h1>
+<h1 style={{fontSize:56,fontWeight:800,letterSpacing:-1,margin:"0 0 32px",color:T.text}}>NICCHIA.</h1>
 <input
 type="password"
 autoFocus
@@ -2423,7 +2404,7 @@ autoFocus
 )}
 </div>);}
 
-function TacoEntryV({logs,setLogs,cur,fm,fd,tod,menu,ecats,inp,sb,T}){
+function TacoEntryV({logs,setLogs,cur,fm,fd,tod,menu,setMenu,ecats,inp,sb,T}){
 const[date,setDate]=useState(tod());
 const[cash,setCash]=useState("");
 const[card,setCard]=useState("");
