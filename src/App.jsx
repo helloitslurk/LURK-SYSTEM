@@ -243,13 +243,13 @@ const ld=async(k,fb)=>{
 const inp={background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"};
 const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:8,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer"});
 
-const NAV=venue==="lurk"
-?[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}]
-:[{k:"lurk",l:"TACO"},{k:"tacoentry",l:"Günlük Giriş"},{k:"reports",l:"Raporlar"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
 
 export default function App(){
 const[venue,setVenue]=useState(()=>{try{return localStorage.getItem("lurk_venue")||"lurk";}catch{return"lurk";}});
 const vk=(k)=>(venue==="lurk"?"lurk_":"tt_")+k;
+const NAV=venue==="lurk"
+?[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}]
+:[{k:"lurk",l:"TACO"},{k:"tacoentry",l:"Günlük Giriş"},{k:"reports",l:"Raporlar"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
