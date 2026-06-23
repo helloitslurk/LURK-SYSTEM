@@ -318,7 +318,9 @@ const tm=await ld("tt_m",null);
 const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
-setDay(d);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
+const today=new Date().toISOString().split("T")[0];
+const validDay=d&&d.oa&&d.oa.split("T")[0]===today?d:null;
+setDay(validDay);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
 setTacoLogs(tl);setTacoMenu(tm||[]);
 setOk(true);
 try{
@@ -459,7 +461,7 @@ return(
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.8)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:16,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{l}</button>)}
+{NAV.filter(({k})=>k!=="achievements").map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.8)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:16,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"NICCHIA":l}</button>)}
 <button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.8)":"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:16,marginBottom:4,textAlign:"left"}}>
 🔔 Bildirimler
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
@@ -812,6 +814,7 @@ const stot=lE.reduce((s,e)=>s+e.amount,0);
 const ce=Object.entries(ct).sort((a,b)=>b[1]-a[1]);
 
 const[showAddInst,setShowAddInst]=useState(false);
+const[openSalesMonth,setOpenSalesMonth]=useState(null);
 const[partialInstForm,setPartialInstForm]=useState(null);
 const[newInst,setNewInst]=useState({name:"",totalAmount:"",count:"1",startDate:tod()});
 const[expandedInstId,setExpandedInstId]=useState(null);
@@ -975,14 +978,14 @@ if(filteredLogs.length===0)return <div style={{textAlign:"center",padding:"60px 
 const salesByMonth={};
 filteredLogs.forEach(log=>{const m=log.date.slice(0,7);if(!salesByMonth[m])salesByMonth[m]=[];salesByMonth[m].push(log);});
 const sortedMonths=Object.keys(salesByMonth).sort((a,b)=>b.localeCompare(a));
-const[openSalesMonth,setOpenSalesMonth]=useState(sortedMonths[0]||null);
+const curOpen=openSalesMonth||(sortedMonths[0]||null);
 const monthName=(m)=>{const[y,mo]=m.split("-");const names=["","Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];return names[parseInt(mo)]+" "+y;};
 return(<div style={{display:"flex",flexDirection:"column",gap:10}}>
 {sortedMonths.map(m=>{
 const mLogs=salesByMonth[m];
 const mTotal=mLogs.reduce((s,l)=>s+(l.inc||0),0);
 const mNet=mLogs.reduce((s,l)=>s+(l.net||0),0);
-const isOpen=openSalesMonth===m;
+const isOpen=curOpen===m;
 return(<div key={m} style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.06),0 0 0 0.5px rgba(255,255,255,0.5) inset",overflow:"hidden"}}>
 <button onClick={()=>setOpenSalesMonth(isOpen?null:m)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
 <div><div style={{fontWeight:700,fontSize:16,color:"#000"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{mLogs.length} gün kapatıldı</div></div>
@@ -2427,7 +2430,6 @@ value={newTodo}
 onChange={e=>setNewTodo(e.target.value)}
 onKeyDown={e=>{if(e.key==="Enter")addTodo();}}
 style={{...inp,flex:1}}
-autoFocus
 />
 <button onClick={addTodo} style={{...sb("#34C759"),padding:"0 20px"}}>Ekle</button>
 </div>
