@@ -978,7 +978,7 @@ if(filteredLogs.length===0)return <div style={{textAlign:"center",padding:"60px 
 const salesByMonth={};
 filteredLogs.forEach(log=>{const m=log.date.slice(0,7);if(!salesByMonth[m])salesByMonth[m]=[];salesByMonth[m].push(log);});
 const sortedMonths=Object.keys(salesByMonth).sort((a,b)=>b.localeCompare(a));
-const curOpen=openSalesMonth||(sortedMonths[0]||null);
+const curOpen=openSalesMonth;
 const monthName=(m)=>{const[y,mo]=m.split("-");const names=["","Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];return names[parseInt(mo)]+" "+y;};
 return(<div style={{display:"flex",flexDirection:"column",gap:10}}>
 {sortedMonths.map(m=>{
