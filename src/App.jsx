@@ -13,253 +13,161 @@ const MENU=[
 
 const OLD_LOGS=[{"id":"old_0_1767696480","date":"2026-01-06","oa":"2026-01-06T10:48:00","ca":"2026-01-07T00:59:00","inc":4070,"exp":0,"net":4070,"cash":200,"card":3870,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_1_1767791520","date":"2026-01-07","oa":"2026-01-07T13:12:00","ca":"2026-01-08T11:55:00","inc":810,"exp":0,"net":810,"cash":300,"card":510,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_2_1767877620","date":"2026-01-08","oa":"2026-01-08T13:07:00","ca":"2026-01-08T22:24:00","inc":450,"exp":0,"net":450,"cash":0,"card":450,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_3_1767963780","date":"2026-01-09","oa":"2026-01-09T13:03:00","ca":"2026-01-10T11:09:00","inc":3020,"exp":0,"net":3020,"cash":620,"card":2400,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_4_1768043340","date":"2026-01-10","oa":"2026-01-10T11:09:00","ca":"2026-01-10T23:59:00","inc":2020,"exp":0,"net":2020,"cash":150,"card":1870,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_5_1768138680","date":"2026-01-11","oa":"2026-01-11T13:38:00","ca":"2026-01-12T00:28:00","inc":1410,"exp":0,"net":1410,"cash":0,"card":1410,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_6_1768177680","date":"2026-01-12","oa":"2026-01-12T00:28:00","ca":"2026-01-12T22:34:00","inc":2525,"exp":0,"net":2525,"cash":120,"card":2405,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_7_1768305300","date":"2026-01-13","oa":"2026-01-13T11:55:00","ca":"2026-01-13T23:01:00","inc":1990,"exp":0,"net":1990,"cash":540,"card":1450,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_8_1768390980","date":"2026-01-14","oa":"2026-01-14T11:43:00","ca":"2026-01-15T10:17:00","inc":1250,"exp":0,"net":1250,"cash":200,"card":1050,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_9_1768476060","date":"2026-01-15","oa":"2026-01-15T11:21:00","ca":"2026-01-16T00:25:00","inc":1330,"exp":0,"net":1330,"cash":680,"card":650,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_10_1768523160","date":"2026-01-16","oa":"2026-01-16T00:26:00","ca":"2026-01-17T02:45:00","inc":1730,"exp":0,"net":1730,"cash":840,"card":890,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_11_1768647360","date":"2026-01-17","oa":"2026-01-17T10:56:00","ca":"2026-01-18T12:45:00","inc":1160,"exp":0,"net":1160,"cash":500,"card":660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_12_1768749720","date":"2026-01-18","oa":"2026-01-18T15:22:00","ca":"2026-01-18T22:10:00","inc":870,"exp":0,"net":870,"cash":400,"card":470,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_13_1768820760","date":"2026-01-19","oa":"2026-01-19T11:06:00","ca":"2026-01-19T23:05:00","inc":3140,"exp":0,"net":3140,"cash":1470,"card":1670,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_14_1768931280","date":"2026-01-20","oa":"2026-01-20T17:48:00","ca":"2026-01-21T10:05:00","inc":1180,"exp":0,"net":1180,"cash":580,"card":600,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_15_1768989900","date":"2026-01-21","oa":"2026-01-21T10:05:00","ca":"2026-01-21T22:36:00","inc":2410,"exp":0,"net":2410,"cash":750,"card":1660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_16_1769077080","date":"2026-01-22","oa":"2026-01-22T10:18:00","ca":"2026-01-22T22:07:00","inc":880,"exp":0,"net":880,"cash":120,"card":760,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_17_1769198460","date":"2026-01-23","oa":"2026-01-23T20:01:00","ca":"2026-01-24T07:19:00","inc":1170,"exp":0,"net":1170,"cash":0,"card":1170,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_18_1769262540","date":"2026-01-24","oa":"2026-01-24T13:49:00","ca":"2026-01-25T12:49:00","inc":610,"exp":0,"net":610,"cash":0,"card":610,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_19_1769360400","date":"2026-01-25","oa":"2026-01-25T17:00:00","ca":"2026-01-25T21:37:00","inc":2050,"exp":0,"net":2050,"cash":350,"card":1700,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_20_1769423580","date":"2026-01-26","oa":"2026-01-26T10:33:00","ca":"2026-01-26T22:05:00","inc":1465,"exp":0,"net":1465,"cash":300,"card":1165,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_21_1769509440","date":"2026-01-27","oa":"2026-01-27T10:24:00","ca":"2026-01-27T23:01:00","inc":1910,"exp":0,"net":1910,"cash":0,"card":1910,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_22_1769603820","date":"2026-01-28","oa":"2026-01-28T12:37:00","ca":"2026-01-29T10:21:00","inc":1525,"exp":0,"net":1525,"cash":0,"card":1525,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_23_1769682060","date":"2026-01-29","oa":"2026-01-29T10:21:00","ca":"2026-01-29T23:32:00","inc":2495,"exp":0,"net":2495,"cash":730,"card":1765,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_24_1769775540","date":"2026-01-30","oa":"2026-01-30T12:19:00","ca":"2026-01-30T21:20:00","inc":1970,"exp":0,"net":1970,"cash":750,"card":1220,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_25_1769855640","date":"2026-01-31","oa":"2026-01-31T10:34:00","ca":"2026-01-31T21:49:00","inc":1230,"exp":0,"net":1230,"cash":680,"card":550,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_26_1769972760","date":"2026-02-01","oa":"2026-02-01T19:06:00","ca":"2026-02-01T20:40:00","inc":940,"exp":0,"net":940,"cash":100,"card":840,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_27_1770045660","date":"2026-02-02","oa":"2026-02-02T15:21:00","ca":"2026-02-02T23:24:00","inc":960,"exp":0,"net":960,"cash":100,"card":860,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_28_1770122460","date":"2026-02-03","oa":"2026-02-03T12:41:00","ca":"2026-02-03T21:31:00","inc":890,"exp":0,"net":890,"cash":200,"card":690,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_29_1770207660","date":"2026-02-04","oa":"2026-02-04T12:21:00","ca":"2026-02-05T00:56:00","inc":800,"exp":0,"net":800,"cash":350,"card":450,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_30_1770285660","date":"2026-02-05","oa":"2026-02-05T10:01:00","ca":"2026-02-05T21:33:00","inc":1870,"exp":0,"net":1870,"cash":500,"card":1370,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_31_1770468720","date":"2026-02-07","oa":"2026-02-07T12:52:00","ca":"2026-02-08T01:35:00","inc":1430,"exp":0,"net":1430,"cash":200,"card":1230,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_32_1770552720","date":"2026-02-08","oa":"2026-02-08T12:12:00","ca":"2026-02-08T20:12:00","inc":2235,"exp":0,"net":2235,"cash":465,"card":1770,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_33_1770655620","date":"2026-02-09","oa":"2026-02-09T16:47:00","ca":"2026-02-09T23:29:00","inc":810,"exp":0,"net":810,"cash":0,"card":810,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_34_1770726120","date":"2026-02-10","oa":"2026-02-10T12:22:00","ca":"2026-02-10T22:49:00","inc":1550,"exp":0,"net":1550,"cash":450,"card":1100,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_35_1770806580","date":"2026-02-11","oa":"2026-02-11T10:43:00","ca":"2026-02-12T10:50:00","inc":1530,"exp":280,"net":1250,"cash":340,"card":1190,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_36_1770899580","date":"2026-02-12","oa":"2026-02-12T12:33:00","ca":"2026-02-13T00:50:00","inc":670,"exp":0,"net":670,"cash":0,"card":670,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_37_1770982980","date":"2026-02-13","oa":"2026-02-13T11:43:00","ca":"2026-02-13T22:40:00","inc":2190,"exp":0,"net":2190,"cash":425,"card":1765,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_38_1771071660","date":"2026-02-14","oa":"2026-02-14T12:21:00","ca":"2026-02-15T10:11:00","inc":660,"exp":0,"net":660,"cash":0,"card":660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_39_1771188060","date":"2026-02-15","oa":"2026-02-15T20:41:00","ca":"2026-02-16T00:03:00","inc":160,"exp":0,"net":160,"cash":0,"card":160,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_40_1771242960","date":"2026-02-16","oa":"2026-02-16T11:56:00","ca":"2026-02-17T14:07:00","inc":1710,"exp":0,"net":1710,"cash":780,"card":930,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_41_1771337280","date":"2026-02-17","oa":"2026-02-17T14:08:00","ca":"2026-02-17T23:35:00","inc":800,"exp":0,"net":800,"cash":0,"card":800,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_42_1771410540","date":"2026-02-18","oa":"2026-02-18T10:29:00","ca":"2026-02-18T21:23:00","inc":720,"exp":0,"net":720,"cash":420,"card":300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_43_1771499040","date":"2026-02-19","oa":"2026-02-19T11:04:00","ca":"2026-02-20T14:40:00","inc":1950,"exp":0,"net":1950,"cash":100,"card":1850,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_44_1771598400","date":"2026-02-20","oa":"2026-02-20T14:40:00","ca":"2026-02-20T22:38:00","inc":2610,"exp":0,"net":2610,"cash":320,"card":2290,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_45_1771666560","date":"2026-02-21","oa":"2026-02-21T09:36:00","ca":"2026-02-21T22:13:00","inc":1440,"exp":0,"net":1440,"cash":530,"card":910,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_46_1771759920","date":"2026-02-22","oa":"2026-02-22T11:32:00","ca":"2026-02-23T11:43:00","inc":2395,"exp":0,"net":2395,"cash":240,"card":2155,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_47_1771846980","date":"2026-02-23","oa":"2026-02-23T11:43:00","ca":"2026-02-24T02:27:00","inc":900,"exp":0,"net":900,"cash":320,"card":580,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_48_1771936020","date":"2026-02-24","oa":"2026-02-24T12:27:00","ca":"2026-02-25T10:32:00","inc":1630,"exp":0,"net":1630,"cash":0,"card":1630,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_49_1772017260","date":"2026-02-25","oa":"2026-02-25T11:01:00","ca":"2026-02-25T20:21:00","inc":640,"exp":0,"net":640,"cash":0,"card":640,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_50_1772101680","date":"2026-02-26","oa":"2026-02-26T10:28:00","ca":"2026-02-27T11:42:00","inc":530,"exp":0,"net":530,"cash":0,"card":530,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_51_1772197200","date":"2026-02-27","oa":"2026-02-27T13:00:00","ca":"2026-02-27T21:41:00","inc":590,"exp":0,"net":590,"cash":250,"card":340,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_52_1772285160","date":"2026-02-28","oa":"2026-02-28T13:26:00","ca":"2026-03-01T14:08:00","inc":270,"exp":0,"net":270,"cash":150,"card":120,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_53_1772374080","date":"2026-03-01","oa":"2026-03-01T14:08:00","ca":"2026-03-01T23:24:00","inc":3620,"exp":0,"net":3620,"cash":320,"card":3300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_54_1772454720","date":"2026-03-02","oa":"2026-03-02T12:32:00","ca":"2026-03-03T11:25:00","inc":1460,"exp":0,"net":1460,"cash":330,"card":1130,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_55_1772537100","date":"2026-03-03","oa":"2026-03-03T11:25:00","ca":"2026-03-03T23:52:00","inc":1920,"exp":0,"net":1920,"cash":140,"card":1780,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_56_1772623560","date":"2026-03-04","oa":"2026-03-04T11:26:00","ca":"2026-03-05T11:08:00","inc":1550,"exp":0,"net":1550,"cash":220,"card":1330,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_57_1772708880","date":"2026-03-05","oa":"2026-03-05T11:08:00","ca":"2026-03-05T22:43:00","inc":960,"exp":0,"net":960,"cash":480,"card":480,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_58_1772806260","date":"2026-03-06","oa":"2026-03-06T14:11:00","ca":"2026-03-06T22:01:00","inc":690,"exp":0,"net":690,"cash":180,"card":510,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_59_1772884500","date":"2026-03-07","oa":"2026-03-07T11:55:00","ca":"2026-03-08T11:51:00","inc":1130,"exp":0,"net":1130,"cash":670,"card":460,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_60_1772970660","date":"2026-03-08","oa":"2026-03-08T11:51:00","ca":"2026-03-08T23:07:00","inc":2360,"exp":0,"net":2360,"cash":700,"card":1660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_61_1773066060","date":"2026-03-09","oa":"2026-03-09T14:21:00","ca":"2026-03-10T01:34:00","inc":2660,"exp":0,"net":2660,"cash":570,"card":2090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_62_1773151860","date":"2026-03-10","oa":"2026-03-10T14:11:00","ca":"2026-03-10T22:08:00","inc":1970,"exp":0,"net":1970,"cash":180,"card":1790,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_63_1773222060","date":"2026-03-11","oa":"2026-03-11T09:41:00","ca":"2026-03-11T22:05:00","inc":1420,"exp":0,"net":1420,"cash":0,"card":1420,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_64_1773314700","date":"2026-03-12","oa":"2026-03-12T11:25:00","ca":"2026-03-12T23:30:00","inc":2150,"exp":0,"net":2150,"cash":530,"card":1620,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_65_1773400800","date":"2026-03-13","oa":"2026-03-13T11:20:00","ca":"2026-03-14T12:11:00","inc":850,"exp":0,"net":850,"cash":250,"card":600,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_66_1773501960","date":"2026-03-14","oa":"2026-03-14T15:26:00","ca":"2026-03-14T19:56:00","inc":1660,"exp":0,"net":1660,"cash":350,"card":1310,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_67_1773575220","date":"2026-03-15","oa":"2026-03-15T11:47:00","ca":"2026-03-15T21:02:00","inc":2130,"exp":0,"net":2130,"cash":300,"card":1830,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_68_1773658680","date":"2026-03-16","oa":"2026-03-16T10:58:00","ca":"2026-03-16T23:05:00","inc":1330,"exp":0,"net":1330,"cash":0,"card":1330,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_69_1773744780","date":"2026-03-17","oa":"2026-03-17T10:53:00","ca":"2026-03-18T09:39:00","inc":1440,"exp":0,"net":1440,"cash":0,"card":1440,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_70_1773829320","date":"2026-03-18","oa":"2026-03-18T10:22:00","ca":"2026-03-18T21:59:00","inc":1080,"exp":0,"net":1080,"cash":160,"card":920,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_71_1773918240","date":"2026-03-19","oa":"2026-03-19T11:04:00","ca":"2026-03-20T11:43:00","inc":1210,"exp":0,"net":1210,"cash":330,"card":880,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_72_1774095180","date":"2026-03-21","oa":"2026-03-21T12:13:00","ca":"2026-03-21T21:02:00","inc":2300,"exp":0,"net":2300,"cash":930,"card":1370,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_73_1774178880","date":"2026-03-22","oa":"2026-03-22T11:28:00","ca":"2026-03-22T19:53:00","inc":5020,"exp":0,"net":5020,"cash":740,"card":4280,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_74_1774275720","date":"2026-03-23","oa":"2026-03-23T14:22:00","ca":"2026-03-23T21:58:00","inc":1240,"exp":0,"net":1240,"cash":200,"card":1040,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_75_1774352400","date":"2026-03-24","oa":"2026-03-24T11:40:00","ca":"2026-03-24T21:28:00","inc":1270,"exp":0,"net":1270,"cash":750,"card":520,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_76_1774439100","date":"2026-03-25","oa":"2026-03-25T11:45:00","ca":"2026-03-25T21:45:00","inc":2740,"exp":0,"net":2740,"cash":0,"card":2740,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_77_1774522560","date":"2026-03-26","oa":"2026-03-26T10:56:00","ca":"2026-03-27T07:52:00","inc":1620,"exp":0,"net":1620,"cash":100,"card":1520,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_78_1774598160","date":"2026-03-27","oa":"2026-03-27T07:56:00","ca":"2026-03-27T20:57:00","inc":2485,"exp":0,"net":2485,"cash":270,"card":2215,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_79_1774704480","date":"2026-03-28","oa":"2026-03-28T13:28:00","ca":"2026-03-29T06:20:00","inc":470,"exp":0,"net":470,"cash":170,"card":300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_80_1774796100","date":"2026-03-29","oa":"2026-03-29T14:55:00","ca":"2026-03-29T22:35:00","inc":2005,"exp":0,"net":2005,"cash":100,"card":1905,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_81_1774857360","date":"2026-03-30","oa":"2026-03-30T07:56:00","ca":"2026-03-31T10:34:00","inc":2250,"exp":0,"net":2250,"cash":290,"card":1960,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_82_1774978980","date":"2026-03-31","oa":"2026-03-31T17:43:00","ca":"2026-04-01T09:48:00","inc":1230,"exp":0,"net":1230,"cash":140,"card":1090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_83_1775037000","date":"2026-04-01","oa":"2026-04-01T09:50:00","ca":"2026-04-01T22:53:00","inc":3645,"exp":0,"net":3645,"cash":345,"card":3300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_84_1775135940","date":"2026-04-02","oa":"2026-04-02T13:19:00","ca":"2026-04-02T23:12:00","inc":2890,"exp":0,"net":2890,"cash":150,"card":2740,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_85_1775211900","date":"2026-04-03","oa":"2026-04-03T10:25:00","ca":"2026-04-03T22:36:00","inc":2160,"exp":0,"net":2160,"cash":700,"card":1460,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_86_1775303580","date":"2026-04-04","oa":"2026-04-04T11:53:00","ca":"2026-04-05T11:49:00","inc":1790,"exp":0,"net":1790,"cash":110,"card":1680,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_87_1775397780","date":"2026-04-05","oa":"2026-04-05T14:03:00","ca":"2026-04-05T22:17:00","inc":3550,"exp":0,"net":3550,"cash":290,"card":3260,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_88_1775470680","date":"2026-04-06","oa":"2026-04-06T10:18:00","ca":"2026-04-06T22:22:00","inc":8710,"exp":0,"net":8710,"cash":2530,"card":6180,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_89_1775561040","date":"2026-04-07","oa":"2026-04-07T11:24:00","ca":"2026-04-07T21:10:00","inc":2430,"exp":0,"net":2430,"cash":500,"card":1930,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_90_1775646060","date":"2026-04-08","oa":"2026-04-08T11:01:00","ca":"2026-04-08T23:12:00","inc":1800,"exp":0,"net":1800,"cash":540,"card":1260,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_91_1775740440","date":"2026-04-09","oa":"2026-04-09T13:14:00","ca":"2026-04-09T22:05:00","inc":2290,"exp":0,"net":2290,"cash":230,"card":2060,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_92_1775827320","date":"2026-04-10","oa":"2026-04-10T13:22:00","ca":"2026-04-11T11:35:00","inc":750,"exp":0,"net":750,"cash":0,"card":750,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_93_1775910120","date":"2026-04-11","oa":"2026-04-11T12:22:00","ca":"2026-04-12T12:03:00","inc":2450,"exp":0,"net":2450,"cash":220,"card":2230,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_94_1775995980","date":"2026-04-12","oa":"2026-04-12T12:13:00","ca":"2026-04-12T22:24:00","inc":2650,"exp":0,"net":2650,"cash":500,"card":2150,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_95_1776083280","date":"2026-04-13","oa":"2026-04-13T12:28:00","ca":"2026-04-13T20:52:00","inc":2240,"exp":0,"net":2240,"cash":150,"card":2090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_96_1776164520","date":"2026-04-14","oa":"2026-04-14T11:02:00","ca":"2026-04-14T22:30:00","inc":4350,"exp":0,"net":4350,"cash":250,"card":4100,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_97_1776249960","date":"2026-04-15","oa":"2026-04-15T10:46:00","ca":"2026-04-16T12:23:00","inc":2130,"exp":0,"net":2130,"cash":400,"card":1730,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_98_1776342180","date":"2026-04-16","oa":"2026-04-16T12:23:00","ca":"2026-04-16T21:59:00","inc":1570,"exp":0,"net":1570,"cash":200,"card":1370,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_99_1776426720","date":"2026-04-17","oa":"2026-04-17T11:52:00","ca":"2026-04-17T21:48:00","inc":1410,"exp":0,"net":1410,"cash":0,"card":1410,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_100_1776527880","date":"2026-04-18","oa":"2026-04-18T15:58:00","ca":"2026-04-19T02:44:00","inc":1060,"exp":0,"net":1060,"cash":50,"card":1010,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_101_1776596040","date":"2026-04-19","oa":"2026-04-19T10:54:00","ca":"2026-04-19T20:38:00","inc":5870,"exp":0,"net":5870,"cash":1200,"card":4670,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_102_1776682680","date":"2026-04-20","oa":"2026-04-20T10:58:00","ca":"2026-04-20T22:29:00","inc":2710,"exp":0,"net":2710,"cash":620,"card":2090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_103_1776774840","date":"2026-04-21","oa":"2026-04-21T12:34:00","ca":"2026-04-21T21:04:00","inc":2450,"exp":0,"net":2450,"cash":500,"card":1950,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_104_1776860280","date":"2026-04-22","oa":"2026-04-22T12:18:00","ca":"2026-04-22T21:30:00","inc":1625,"exp":0,"net":1625,"cash":435,"card":1190,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_105_1776948240","date":"2026-04-23","oa":"2026-04-23T12:44:00","ca":"2026-04-23T22:55:00","inc":4330,"exp":0,"net":4330,"cash":300,"card":4030,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_106_1777033320","date":"2026-04-24","oa":"2026-04-24T12:22:00","ca":"2026-04-24T22:29:00","inc":3200,"exp":0,"net":3200,"cash":870,"card":2330,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_107_1777116540","date":"2026-04-25","oa":"2026-04-25T11:29:00","ca":"2026-04-25T21:50:00","inc":3120,"exp":0,"net":3120,"cash":550,"card":2570,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_108_1777211760","date":"2026-04-26","oa":"2026-04-26T13:56:00","ca":"2026-04-27T10:54:00","inc":2860,"exp":0,"net":2860,"cash":230,"card":2630,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_109_1777287900","date":"2026-04-27","oa":"2026-04-27T11:05:00","ca":"2026-04-27T22:31:00","inc":2130,"exp":0,"net":2130,"cash":100,"card":2030,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_110_1777382880","date":"2026-04-28","oa":"2026-04-28T13:28:00","ca":"2026-04-28T21:18:00","inc":1430,"exp":0,"net":1430,"cash":300,"card":1130,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_111_1777465620","date":"2026-04-29","oa":"2026-04-29T12:27:00","ca":"2026-04-29T22:04:00","inc":4060,"exp":0,"net":4060,"cash":950,"card":3110,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_112_1777551000","date":"2026-04-30","oa":"2026-04-30T12:10:00","ca":"2026-04-30T23:44:00","inc":5790,"exp":0,"net":5790,"cash":440,"card":5350,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_113_1777639440","date":"2026-05-01","oa":"2026-05-01T12:44:00","ca":"2026-05-01T21:48:00","inc":3865,"exp":0,"net":3865,"cash":490,"card":3375,"count":11,"items":[{"name":"filtre kahve","qty":8,"total":1140,"price":142.5,"cat":"Diger"},{"name":"americano","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"250g FILTER","qty":1,"total":500,"price":500.0,"cat":"Diger"},{"name":"latte","qty":2,"total":360,"price":180.0,"cat":"Diger"},{"name":"bitki çayı","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"soft cookie","qty":1,"total":175,"price":175.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_114_1777727160","date":"2026-05-02","oa":"2026-05-02T13:06:00","ca":"2026-05-02T22:20:00","inc":3940,"exp":0,"net":3940,"cash":680,"card":3260,"count":12,"items":[{"name":"salted caramel latte","qty":4,"total":1000,"price":250.0,"cat":"Diger"},{"name":"latte","qty":4,"total":720,"price":180.0,"cat":"Diger"},{"name":"americano","qty":3,"total":470,"price":156.67,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"kış lattesi","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cappuccino","qty":1,"total":180,"price":180.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_115_1777810500","date":"2026-05-03","oa":"2026-05-03T12:15:00","ca":"2026-05-03T21:33:00","inc":2870,"exp":0,"net":2870,"cash":400,"card":2470,"count":10,"items":[{"name":"vanilla matcha latte","qty":3,"total":770,"price":256.67,"cat":"Diger"},{"name":"filtre kahve","qty":3,"total":420,"price":140.0,"cat":"Diger"},{"name":"(a) servis","qty":1,"total":350,"price":350.0,"cat":"Diger"},{"name":"sahlep","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_116_1777901100","date":"2026-05-04","oa":"2026-05-04T13:25:00","ca":"2026-05-04T21:25:00","inc":1340,"exp":0,"net":1340,"cash":50,"card":1290,"count":4,"items":[{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":7,"total":350,"price":50.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"sıcak çikolata","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_117_1777983060","date":"2026-05-05","oa":"2026-05-05T12:11:00","ca":"2026-05-05T21:16:00","inc":1990,"exp":0,"net":1990,"cash":150,"card":1840,"count":7,"items":[{"name":"americano","qty":3,"total":470,"price":156.67,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_118_1778070780","date":"2026-05-06","oa":"2026-05-06T12:33:00","ca":"2026-05-07T15:26:00","inc":4520,"exp":0,"net":4520,"cash":550,"card":3970,"count":9,"items":[{"name":"vanilya latte","qty":4,"total":840,"price":210.0,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":760,"price":152.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":10,"total":450,"price":45.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_119_1778167560","date":"2026-05-07","oa":"2026-05-07T15:26:00","ca":"2026-05-08T00:03:00","inc":3600,"exp":0,"net":3600,"cash":420,"card":3180,"count":10,"items":[{"name":"salted caramel latte","qty":3,"total":790,"price":263.33,"cat":"Diger"},{"name":"strawberry matcha latte","qty":2,"total":560,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"(a) servis","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_120_1778252040","date":"2026-05-08","oa":"2026-05-08T14:54:00","ca":"2026-05-08T22:21:00","inc":4240,"exp":0,"net":4240,"cash":630,"card":3610,"count":12,"items":[{"name":"strawberry matcha latte","qty":3,"total":820,"price":273.33,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"(a) servis","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"bitki çayı","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_121_1778337600","date":"2026-05-09","oa":"2026-05-09T14:40:00","ca":"2026-05-09T21:54:00","inc":2810,"exp":0,"net":2810,"cash":150,"card":2660,"count":9,"items":[{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_122_1778419140","date":"2026-05-10","oa":"2026-05-10T13:19:00","ca":"2026-05-10T23:10:00","inc":3680,"exp":0,"net":3680,"cash":330,"card":3350,"count":8,"items":[{"name":"vanilla matcha latte","qty":3,"total":810,"price":270.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"filtre kahve","qty":3,"total":480,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":450,"price":50.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"flatwhite","qty":1,"total":170,"price":170.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_123_1778502360","date":"2026-05-11","oa":"2026-05-11T12:26:00","ca":"2026-05-11T22:12:00","inc":4120,"exp":0,"net":4120,"cash":420,"card":3700,"count":12,"items":[{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"filtre kahve","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"latte","qty":3,"total":560,"price":186.67,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"Churchill","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"+vegan süt","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_124_1778591820","date":"2026-05-12","oa":"2026-05-12T13:17:00","ca":"2026-05-12T23:15:00","inc":5310,"exp":0,"net":5310,"cash":450,"card":4860,"count":11,"items":[{"name":"latte","qty":5,"total":960,"price":192.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":800,"price":160.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"sigaralık filtre","qty":8,"total":400,"price":50.0,"cat":"Diger"},{"name":"(a) servis","qty":1,"total":350,"price":350.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_125_1778668740","date":"2026-05-13","oa":"2026-05-13T10:39:00","ca":"2026-05-13T23:11:00","inc":4370,"exp":0,"net":4370,"cash":100,"card":4270,"count":10,"items":[{"name":"americano","qty":7,"total":1190,"price":170.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":470,"price":235.0,"cat":"Diger"},{"name":"bitki çayı","qty":3,"total":450,"price":150.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_126_1778751000","date":"2026-05-14","oa":"2026-05-14T09:30:00","ca":"2026-05-14T23:58:00","inc":3970,"exp":0,"net":3970,"cash":90,"card":3880,"count":9,"items":[{"name":"latte","qty":5,"total":940,"price":188.0,"cat":"Diger"},{"name":"americano","qty":5,"total":850,"price":170.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":720,"price":144.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":500,"price":250.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_127_1778846220","date":"2026-05-15","oa":"2026-05-15T11:57:00","ca":"2026-05-15T21:53:00","inc":3020,"exp":0,"net":3020,"cash":800,"card":2220,"count":10,"items":[{"name":"strawberry matcha latte","qty":3,"total":820,"price":273.33,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"americano","qty":2,"total":340,"price":170.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"kış lattesi","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_128_1778937360","date":"2026-05-16","oa":"2026-05-16T13:16:00","ca":"2026-05-17T10:47:00","inc":1910,"exp":0,"net":1910,"cash":0,"card":1910,"count":5,"items":[{"name":"salted caramel latte","qty":3,"total":770,"price":256.67,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_129_1779014820","date":"2026-05-17","oa":"2026-05-17T10:47:00","ca":"2026-05-17T22:19:00","inc":6970,"exp":0,"net":6970,"cash":50,"card":6920,"count":12,"items":[{"name":"strawberry matcha latte","qty":4,"total":1120,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":4,"total":1080,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":4,"total":1020,"price":255.0,"cat":"Diger"},{"name":"filtre kahve","qty":7,"total":1000,"price":142.86,"cat":"Diger"},{"name":"americano","qty":4,"total":680,"price":170.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":12,"total":600,"price":50.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"tiramisu","qty":1,"total":290,"price":290.0,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_130_1779096900","date":"2026-05-18","oa":"2026-05-18T09:35:00","ca":"2026-05-18T22:11:00","inc":4050,"exp":0,"net":4050,"cash":1280,"card":2770,"count":9,"items":[{"name":"latte","qty":8,"total":1560,"price":195.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"mocha","qty":2,"total":480,"price":240.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"tiramisu","qty":1,"total":290,"price":290.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_131_1779188400","date":"2026-05-19","oa":"2026-05-19T11:00:00","ca":"2026-05-19T22:06:00","inc":7580,"exp":0,"net":7580,"cash":700,"card":6880,"count":11,"items":[{"name":"filtre kahve","qty":9,"total":1380,"price":153.33,"cat":"Diger"},{"name":"americano","qty":5,"total":880,"price":176.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"matcha latte","qty":3,"total":750,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":14,"total":700,"price":50.0,"cat":"Diger"},{"name":"berry matcha latte","qty":2,"total":560,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_132_1779275400","date":"2026-05-20","oa":"2026-05-20T11:10:00","ca":"2026-05-20T22:48:00","inc":2900,"exp":0,"net":2900,"cash":50,"card":2850,"count":11,"items":[{"name":"strawberry matcha latte","qty":2,"total":560,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"tiramisu","qty":1,"total":290,"price":290.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"mocha","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"americano","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_133_1779360480","date":"2026-05-21","oa":"2026-05-21T10:48:00","ca":"2026-05-21T21:40:00","inc":1985,"exp":0,"net":1985,"cash":300,"card":1685,"count":9,"items":[{"name":"soft cookie","qty":2,"total":350,"price":175.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"apple & ginger matcha latte","qty":1,"total":260,"price":260.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"americano","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"+vegan süt","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_134_1779452580","date":"2026-05-22","oa":"2026-05-22T12:23:00","ca":"2026-05-22T22:52:00","inc":3570,"exp":0,"net":3570,"cash":0,"card":3570,"count":8,"items":[{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":3,"total":810,"price":270.0,"cat":"Diger"},{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":500,"price":250.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_135_1779535440","date":"2026-05-23","oa":"2026-05-23T11:24:00","ca":"2026-05-23T21:30:00","inc":2500,"exp":0,"net":2500,"cash":0,"card":2500,"count":9,"items":[{"name":"filtre kahve","qty":4,"total":600,"price":150.0,"cat":"Diger"},{"name":"latte","qty":3,"total":580,"price":193.33,"cat":"Diger"},{"name":"soft cookie","qty":2,"total":350,"price":175.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"Churchill","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_136_1779629400","date":"2026-05-24","oa":"2026-05-24T13:30:00","ca":"2026-05-25T09:20:00","inc":3270,"exp":0,"net":3270,"cash":100,"card":3170,"count":8,"items":[{"name":"filtre kahve","qty":5,"total":760,"price":152.0,"cat":"Diger"},{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"latte","qty":3,"total":560,"price":186.67,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":450,"price":50.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"Churchill","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_137_1779705720","date":"2026-05-25","oa":"2026-05-25T10:42:00","ca":"2026-05-26T13:29:00","inc":2860,"exp":0,"net":2860,"cash":830,"card":2030,"count":8,"items":[{"name":"filtre kahve","qty":5,"total":780,"price":156.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"espresso","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_138_1779807360","date":"2026-05-26","oa":"2026-05-26T14:56:00","ca":"2026-05-26T21:28:00","inc":1470,"exp":0,"net":1470,"cash":390,"card":1080,"count":5,"items":[{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"latte","qty":2,"total":390,"price":195.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_139_1779966540","date":"2026-05-28","oa":"2026-05-28T11:09:00","ca":"2026-05-29T11:57:00","inc":3210,"exp":0,"net":3210,"cash":850,"card":2360,"count":7,"items":[{"name":"vanilla matcha latte","qty":3,"total":810,"price":270.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":720,"price":144.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":420,"price":46.67,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"americano","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_140_1780055820","date":"2026-05-29","oa":"2026-05-29T11:57:00","ca":"2026-05-30T11:06:00","inc":3720,"exp":0,"net":3720,"cash":980,"card":2740,"count":8,"items":[{"name":"salted caramel latte","qty":5,"total":1270,"price":254.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":780,"price":156.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_141_1780139160","date":"2026-05-30","oa":"2026-05-30T11:06:00","ca":"2026-05-31T13:35:00","inc":2640,"exp":0,"net":2640,"cash":100,"card":2540,"count":7,"items":[{"name":"americano","qty":5,"total":850,"price":170.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":450,"price":50.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_142_1780234680","date":"2026-05-31","oa":"2026-05-31T13:38:00","ca":"2026-05-31T23:55:00","inc":5030,"exp":0,"net":5030,"cash":250,"card":4780,"count":12,"items":[{"name":"filtre kahve","qty":8,"total":1180,"price":147.5,"cat":"Diger"},{"name":"salted caramel latte","qty":3,"total":790,"price":263.33,"cat":"Diger"},{"name":"sigaralık filtre","qty":15,"total":750,"price":50.0,"cat":"Diger"},{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cappuccino","qty":1,"total":180,"price":180.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780322820","date":"2026-06-01","oa":"2026-06-01T14:07:00","ca":"2026-06-02T11:21:00","inc":3020,"exp":0,"net":3020,"cash":400,"card":2620,"count":7,"items":[{"name":"latte","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"americano","qty":4,"total":680,"price":170.0,"cat":"Diger"},{"name":"filtre kahve","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"espresso","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780399320","date":"2026-06-02","oa":"2026-06-02T11:22:00","ca":"2026-06-03T10:59:00","inc":2970,"exp":0,"net":2970,"cash":300,"card":2670,"count":9,"items":[{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":780,"price":156.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"americano","qty":1,"total":170,"price":170.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780486260","date":"2026-06-03","oa":"2026-06-03T11:31:00","ca":"2026-06-03T23:00:00","inc":4330,"exp":0,"net":4330,"cash":800,"card":3530,"count":10,"items":[{"name":"ice tea","qty":7,"total":1400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":800,"price":160.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"mevsim meyvelerinden matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780577520","date":"2026-06-04","oa":"2026-06-04T12:52:00","ca":"2026-06-05T14:50:00","inc":4400,"exp":0,"net":4400,"cash":650,"card":3750,"count":10,"items":[{"name":"filtre kahve","qty":6,"total":960,"price":160.0,"cat":"Diger"},{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":3,"total":790,"price":263.33,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"americano","qty":3,"total":520,"price":173.33,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"soda","qty":2,"total":180,"price":90.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"cappuccino","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"+vegan süt","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780682820","date":"2026-06-05","oa":"2026-06-05T18:07:00","ca":"2026-06-05T23:31:00","inc":2210,"exp":0,"net":2210,"cash":410,"card":1800,"count":6,"items":[{"name":"salted caramel latte","qty":3,"total":750,"price":250.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780746360","date":"2026-06-06","oa":"2026-06-06T11:46:00","ca":"2026-06-07T15:59:00","inc":2720,"exp":0,"net":2720,"cash":600,"card":2120,"count":7,"items":[{"name":"americano","qty":5,"total":850,"price":170.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"matcha latte","qty":2,"total":460,"price":230.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780847940","date":"2026-06-07","oa":"2026-06-07T15:59:00","ca":"2026-06-08T11:23:00","inc":1290,"exp":0,"net":1290,"cash":820,"card":470,"count":5,"items":[{"name":"americano","qty":2,"total":340,"price":170.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780917780","date":"2026-06-08","oa":"2026-06-08T11:23:00","ca":"2026-06-09T11:29:00","inc":4470,"exp":0,"net":4470,"cash":400,"card":4070,"count":7,"items":[{"name":"ice tea","qty":8,"total":1600,"price":200.0,"cat":"Diger"},{"name":"americano","qty":8,"total":1340,"price":167.5,"cat":"Diger"},{"name":"matcha latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781005500","date":"2026-06-09","oa":"2026-06-09T11:45:00","ca":"2026-06-10T10:25:00","inc":2500,"exp":0,"net":2500,"cash":400,"card":2100,"count":5,"items":[{"name":"ice tea","qty":6,"total":1200,"price":200.0,"cat":"Diger"},{"name":"americano","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":6,"total":300,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781088540","date":"2026-06-10","oa":"2026-06-10T10:49:00","ca":"2026-06-11T01:54:00","inc":3430,"exp":0,"net":3430,"cash":0,"card":3430,"count":6,"items":[{"name":"ice tea","qty":7,"total":1400,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":3,"total":750,"price":250.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":6,"total":300,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781184720","date":"2026-06-11","oa":"2026-06-11T13:32:00","ca":"2026-06-11T17:42:00","inc":1050,"exp":0,"net":1050,"cash":180,"card":870,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781272080","date":"2026-06-12","oa":"2026-06-12T13:48:00","ca":"2026-06-14T15:51:00","inc":550,"exp":0,"net":550,"cash":300,"card":250,"count":2,"items":[{"name":"vanilla matcha latte","qty":1,"total":300,"price":300.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true}];
 const DS={name:"Restoran",tableCount:10,cur:"TL",requireName:false,sitePassword:"",recoveryQ:"",recoveryA:"",monthlyGoal:0,weeklyGoal:0};
-
-function buildAchievements({logs,orders,cari,installments,cur,fm}){
-const totalRevenue=logs.reduce((s,l)=>s+(l.inc||0),0);
-const totalDays=logs.length;
-const totalExpense=logs.reduce((s,l)=>s+(l.exp||0),0);
-const totalNet=totalRevenue-totalExpense;
-const totalOrders=logs.reduce((s,l)=>s+(l.count||0),0)+orders.length;
-const bestDay=logs.length>0?logs.reduce((a,b)=>(b.inc||0)>(a.inc||0)?b:a):null;
-const sortedByDate=[...logs].sort((a,b)=>a.date.localeCompare(b.date));
-
-const monthly={};
-logs.forEach(l=>{const m=l.date.slice(0,7);monthly[m]=(monthly[m]||0)+(l.inc||0);});
-const bestMonth=Object.entries(monthly).sort((a,b)=>b[1]-a[1])[0];
-
-const productTotals={};
-const productRevenue={};
-logs.forEach(l=>{(l.items||[]).forEach(it=>{
-  productTotals[it.name]=(productTotals[it.name]||0)+it.qty;
-  productRevenue[it.name]=(productRevenue[it.name]||0)+(it.total!=null?it.total:it.qty*(it.price||0));
-});});
-const topProduct=Object.entries(productTotals).sort((a,b)=>b[1]-a[1])[0];
-const topRevProduct=Object.entries(productRevenue).sort((a,b)=>b[1]-a[1])[0];
-const totalItemsSold=Object.values(productTotals).reduce((s,q)=>s+q,0);
-const uniqueProductCount=Object.keys(productTotals).length;
-
-const matchProducts=(keyword)=>Object.entries(productRevenue).filter(([name])=>name.toLowerCase().includes(keyword)).reduce((s,[,v])=>s+v,0);
-const matchProductsQty=(keyword)=>Object.entries(productTotals).filter(([name])=>name.toLowerCase().includes(keyword)).reduce((s,[,v])=>s+v,0);
-
-const totalCariHandled=cari.length;
-const totalCariSettled=cari.filter(c=>c.settled).length;
-const biggestCari=cari.length>0?Math.max(...cari.map(c=>c.total)):0;
-const manualCariCount=cari.filter(c=>c.tbl==="Manuel").length;
-
-const inst=installments||[];
-const allInstRows=[];
-inst.forEach(plan=>(plan.installments||[]).forEach(i=>allInstRows.push(i)));
-const paidInstCount=allInstRows.filter(i=>i.paid).length;
-const completedPlanCount=inst.filter(plan=>(plan.installments||[]).length>0&&plan.installments.every(i=>i.paid)).length;
-
-let bestStreak=0,curStreak=0,prevDate=null;
-sortedByDate.forEach(l=>{
-  if(prevDate){
-    const diff=(new Date(l.date)-new Date(prevDate))/(1000*60*60*24);
-    curStreak=diff===1?curStreak+1:1;
-  }else{curStreak=1;}
-  bestStreak=Math.max(bestStreak,curStreak);
-  prevDate=l.date;
-});
-
-const daysOver=(t)=>logs.filter(l=>(l.inc||0)>=t).length;
-const firstDate=sortedByDate[0]?.date;
-const daysSinceFirst=firstDate?Math.floor((Date.now()-new Date(firstDate))/(1000*60*60*24)):0;
-
-// Fun/quirky metrics
-const fridayThe13th=logs.filter(l=>{const d=new Date(l.date);return d.getDate()===13&&d.getDay()===5;}).length;
-const weekendDays=logs.filter(l=>{const d=new Date(l.date);return d.getDay()===0||d.getDay()===6;}).length;
-const mondayDays=logs.filter(l=>{const d=new Date(l.date);return d.getDay()===1;}).length;
-const lowExpenseDays=logs.filter(l=>(l.exp||0)===0&&(l.inc||0)>0).length;
-const cashHeavyDays=logs.filter(l=>l.cash>0&&l.card>0&&l.cash>l.card*3).length;
-const cardHeavyDays=logs.filter(l=>l.cash>0&&l.card>0&&l.card>l.cash*3).length;
-const roundNumberDays=logs.filter(l=>l.inc>0&&l.inc%1000===0).length;
-const bigSpreadDays=logs.filter(l=>(l.items||[]).length>=10).length;
-const singleItemDays=logs.filter(l=>(l.items||[]).length===1).length;
-const closedFastDays=logs.filter(l=>l.oa&&l.ca&&(new Date(l.ca)-new Date(l.oa))<3600000).length;
-const longDays=logs.filter(l=>l.oa&&l.ca&&(new Date(l.ca)-new Date(l.oa))>14*3600000).length;
-
-const A=[];
-const revTitles={1000:"İlk Adım",2500:"Küçük Ama Önemli",5000:"5K Kulübüne Hoş Geldin",10000:"İki Haneli Binler",25000:"Çeyrek Yüz Bin",50000:"Yarım Yüz Bin",75000:"75K — Neredeyse",100000:"100K Efendisi",150000:"Yüz Elli Bin TL",200000:"İki Yüz Bin TL",250000:"Çeyrek Milyon",300000:"Üç Yüz Bin TL",350000:"350K ve Hâlâ Devam",400000:"Dört Yüz Bin TL",450000:"Neredeyse Yarı Milyon",500000:"Yarım Milyon",600000:"600K Efsanesi",700000:"Yedi Yüz Bin TL",800000:"800K Kule",900000:"Dokuzyüz Bin TL",1000000:"Milyoner"};
-const revDescs={1000:"Her şey bu ilk binle başladı.",2500:"İşler umduğundan iyi gidiyor.",5000:"Bir haftalık emek kristalleşiyor.",10000:"Artık 5 haneli bir işletme.",25000:"Beşte biri geride kaldı.",50000:"Yarı yol. Henüz daha başlıyorsun.",75000:"Büyük hedefe az kaldı.",100000:"Toplam ciro 100.000 TL'yi aştı. Bu bir dönüm noktası.",150000:"Bir buçuk yüz bin TL. Çoğu buraya kadar bile gelemez.",200000:"200.000 TL. Rakam konuşuyor.",250000:"Çeyrek milyon. Gerçekten.",300000:"Üç yüz bin. Bu bir masal değil.",350000:"Neredeyse en tepede.",400000:"400K. Her kahvenin, her günün karşılığı.",450000:"Son düzlük.",500000:"Yarım milyon TL. Kafe değil, bir güç.",600000:"600K. Kimse bu kadar güvenmemişti, ama sen güvendin.",700000:"700.000 TL. Sayılar artık soyut hissettiriyor.",800000:"800K — zirve yakın.",900000:"900.000 TL. Son viraj.",1000000:"1.000.000 TL. Bu sistemde sadece biri var."};
-const addRev=(threshold,label)=>A.push({id:"rev_"+threshold,cat:"Ciro",icon:"💰",title:revTitles[threshold]||label,desc:revDescs[threshold]||`Toplam ${fm(threshold,cur)} ciroya ulaş`,done:totalRevenue>=threshold,progress:Math.min(100,Math.round(totalRevenue/threshold*100)),curVal:totalRevenue,targetVal:threshold,unit:"money"});
-[1000,2500,5000,10000,25000,50000,75000,100000,150000,200000,250000,300000,350000,400000,450000,500000,600000,700000,800000,900000,1000000].forEach(t=>addRev(t,`${fm(t,cur)} Kulübü`));
-
-const ordTitles={10:"İlk 10",25:"Bir Yuvarlamaca",50:"50 Hasret",100:"Üç Haneli",150:"Yüz Elli Masa",200:"İki Yüz Gülüş",300:"Üç Yüz Hikâye",400:"Dört Yüz Teşekkür",500:"Beş Yüz Bağ",750:"Yediyüzelli Esinti",1000:"Bininci Masa",1250:"Bin İki Yüz Elli",1500:"Bin Beş Yüz Anı",2000:"İki Bin",2500:"İki Bin Beş Yüz",3000:"Üç Bin Saat Emek"};
-const ordDescs={10:"İlk 10 adisyon — her serüven böyle başlar.",25:"25 masa, 25 farklı an.",50:"50 adisyon. Artık bir ritim var.",100:"100 masa servis edildi. Çevrendekilerin haberi bile yok.",150:"150 adisyon — bir yerde bir şeyler doğru gidiyor.",200:"200 hikâye dinledin, farkında olmadan.",300:"300 masa. Bu artık bir yer, bir yuva.",400:"400 teşekkür, 400 'afiyet olsun'.",500:"500 masa. Yarım bine yaklaşmak ayrı bir duygu.",750:"750 adisyon. Artık rakamlar değil, yüzler geliyor aklına.",1000:"1000 masa. Bu kafeyi seçen bin kişi, bin karar.",1250:"Bin iki yüz elli. Sayıyı bilenler azalmaya başladı.",1500:"1500 adisyon. Bu sayıda insan seni tercih etti.",2000:"2000. İki bin anın birikimi.",2500:"İki bin beş yüz. Durma.",3000:"3000 adisyon. Bu artık bir dükkân değil, bir karakter."};
-const addOrderCount=(threshold)=>A.push({id:"ord_"+threshold,cat:"Adisyon",icon:"🧾",title:ordTitles[threshold]||`${threshold}. Adisyon`,desc:ordDescs[threshold]||`${threshold} adisyon tamamla`,done:totalOrders>=threshold,progress:Math.min(100,Math.round(totalOrders/threshold*100)),curVal:totalOrders,targetVal:threshold,unit:"count"});
-[10,25,50,100,150,200,300,400,500,750,1000,1250,1500,2000,2500,3000].forEach(addOrderCount);
-
-const dayTitles={5:"Beş Günlük Alışkanlık",10:"Onuncu Kapanış",20:"Yirmi Gün Sonra",30:"Bir Ay Geçti",45:"Kırk Beş Gün Inat",60:"İki Ay Sabır",75:"Çeyrek Yıl",90:"Üç Ay Doldu",100:"Yüzüncü Gün",120:"Dört Ay",150:"Beş Ay Gün Sayım",180:"Altı Ay — Yarı Yıl",200:"İki Yüzüncü Gün",250:"İki Yüz Elli Gün",300:"On Aylık Yolculuk",365:"Bir Tam Yıl"};
-const dayDescs={5:"İlk beş gün geride. Bırakmadın.",10:"Onuncu kapanış. Her gün bir seçimdi.",20:"Yirmi gün oldu. Artık bir alışkanlık var.",30:"Bir ay bitti. Durmuş olabilirdin, durmadın.",45:"45 gün. Çoğu insan bunun yarısında vazgeçer.",60:"İki ay. Hâlâ buradasın. Bu bir karakter meselesi.",75:"Yüzde yirmi biri geride kaldı.",90:"Üç ay. Bu artık ciddi bir iş.",100:"100 gün. Yüzde yüz commit.",120:"Dört ay boyunca her gün bir karar aldın.",150:"Beş ay. Artık o 'yeni açılan kafe' değilsin.",180:"Altı ay. Yarı yıl. Mevsimler değişti, sen kaldın.",200:"İki yüz gün. Sayıyı unuttun, devam ettin.",250:"İki yüz elli gün. Bu artık bir alışkanlık değil, kimlik.",300:"On ay. Neredeyse bir yıl. Neredeyse bir efsane.",365:"Bir tam yıl. Dört mevsim, on iki ay, üç yüz altmış beş karar."};
-const addDayCount=(threshold)=>A.push({id:"day_"+threshold,cat:"Süreklilik",icon:"📅",title:dayTitles[threshold]||`${threshold} Gün`,desc:dayDescs[threshold]||`${threshold} gün kapatılmış olsun`,done:totalDays>=threshold,progress:Math.min(100,Math.round(totalDays/threshold*100)),curVal:totalDays,targetVal:threshold,unit:"count"});
-[5,10,20,30,45,60,75,90,100,120,150,180,200,250,300,365].forEach(addDayCount);
-
-const streakTitles={3:"Üç Günlük Ateş",5:"Beş Günlük Alev",7:"Tam Bir Hafta",10:"On Gün Kesintisiz",14:"İki Hafta Tek Nefes",21:"Üç Hafta Inat",30:"Bir Ay Durmadan"};
-const streakDescs={3:"Üç gün arka arkaya. Artık kıvılcım var.",5:"Beş gün aralıksız. Bu tesadüf değil.",7:"Tam bir hafta — Pazartesi'den Pazar'a.",10:"On gün hiç ara vermeden. Bu bir ritim.",14:"İki hafta. Yorgunluk varsa da görünmüyor.",21:"Yirmi bir gün — psikologlara göre alışkanlık buradan başlar.",30:"Otuz gün. Bir ay durmadın. Bu artık bir karakter."};
-const addStreak=(threshold)=>A.push({id:"streak_"+threshold,cat:"Süreklilik",icon:"🔥",title:streakTitles[threshold]||`${threshold} Gün Üst Üste`,desc:streakDescs[threshold]||`${threshold} gün arka arkaya açık ol`,done:bestStreak>=threshold,progress:Math.min(100,Math.round(bestStreak/threshold*100)),curVal:bestStreak,targetVal:threshold,unit:"count"});
-[3,5,7,10,14,21,30].forEach(addStreak);
-
-const bdayTitles={1000:"İlk Bin TL'lik Gün",2000:"İki Bin Gün",3000:"Üç Binli Gün",4000:"Dört Bin — Sıradan Değil",5000:"Beş Binlik Gün",6000:"Altı Bin TL Günlük Rekor",7000:"Yedi Bin — Haftanın En İyisi",8000:"Sekiz Bin TL",9000:"Dokuza Yakın",10000:"On Binlik Gün",12500:"On İki Bin Beş Yüz",15000:"Günlük On Beş Bin TL"};
-const bdayDescs={1000:"Bir gün, bin TL. Başlangıçlar güzeldir.",2000:"Tek bir günde iki bin TL — artık hızlanıyorsun.",3000:"3.000 TL tek günde. Çoğu bu çizgiye ulaşamaz.",4000:"Dört bin. Bu artık rekor konuşması.",5000:"Beş bin TL'lik gün — bunu hak ettin.",6000:"Altı bin. O gün her şey yolundaydı.",7000:"Yedi bin TL — haftanın en güçlü günü olabilir.",8000:"Sekiz bin. Şans değil, sistem.",9000:"Dokuza dayandı. Gerçekten.",10000:"On bin TL tek günde. Tarihe geçti.",12500:"On iki bin beş yüz. Bu artık masal gibi geliyor.",15000:"On beş bin TL. Bu sistemi geçen tek gün."};
-const addBestDay=(threshold)=>A.push({id:"bday_"+threshold,cat:"Rekor",icon:"⚡",title:bdayTitles[threshold]||`Günde ${fm(threshold,cur)}`,desc:bdayDescs[threshold]||`Tek bir günde ${fm(threshold,cur)} ciro yap`,done:bestDay&&(bestDay.inc||0)>=threshold,progress:bestDay?Math.min(100,Math.round((bestDay.inc||0)/threshold*100)):0,curVal:bestDay?(bestDay.inc||0):0,targetVal:threshold,unit:"money"});
-[1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12500,15000].forEach(addBestDay);
-
-const monthTitles={20000:"Yirmi Binlik Ay",40000:"Kırk Bin TL'lik Ay",60000:"Altmış Bin",80000:"Seksen Bin",100000:"Altın Ay — 100K",120000:"Yüz Yirmi Bin",150000:"Ay Rekoru: 150K",200000:"İki Yüz Binlik Ay"};
-const monthDescs={20000:"Bir ayda yirmi bin TL. İyi bir başlangıç.",40000:"Kırk bin TL — aylık hedef gerçek oldu.",60000:"Altmış bin TL'lik ay. Her gün sayılmış.",80000:"Seksen bin. En iyi ayına yaklaşıyorsun.",100000:"Tek ayda 100.000 TL. Bu kafenin altın ayı.",120000:"Yüz yirmi bin. Standartlar yükseliyor.",150000:"Bir ayda yüz elli bin TL. Buraya kadar mı? Hayır.",200000:"İki yüz bin TL'lik ay. Bu artık kurumsal bir şey."};
-const addMonthRev=(threshold)=>A.push({id:"month_"+threshold,cat:"Aylık",icon:"📈",title:monthTitles[threshold]||`Ayda ${fm(threshold,cur)}`,desc:monthDescs[threshold]||`Bir ayda toplam ${fm(threshold,cur)} ciro yap`,done:bestMonth&&bestMonth[1]>=threshold,progress:bestMonth?Math.min(100,Math.round(bestMonth[1]/threshold*100)):0,curVal:bestMonth?bestMonth[1]:0,targetVal:threshold,unit:"money"});
-[20000,40000,60000,80000,100000,120000,150000,200000].forEach(addMonthRev);
-
-const itemTitles={50:"İlk Elli Fincan",100:"Yüzüncü Servis",200:"İki Yüz Bardak",300:"Üç Yüz Sipariş",500:"Beş Yüz Servis",750:"Yediyüz Elli Ürün",1000:"Bininci Dokunuş",1500:"Bin Beş Yüz Anı",2000:"İki Bin Servis"};
-const itemDescs={50:"İlk elli ürün — eller henüz çalışıyor, ritim kuruluyor.",100:"100 servis. Artık el kasları hatırlıyor.",200:"İki yüz ürün. Her biri ayrı bir anda hazırlandı.",300:"Üç yüz servis. Bu sayıda bardak yıkandı, bu kadar gülümseme verildi.",500:"Beş yüz ürün. Yorgunluk anların içinde eridi.",750:"Yediyüz elli ürün — artık ustasın.",1000:"Bin ürün elinden geçti. Bininci dokunuş.",1500:"Bin beş yüz servis. Bu kadar insan seni tercih etti.",2000:"İki bin ürün. Bu artık bir marka hikâyesi."};
-const addItemsSold=(threshold)=>A.push({id:"items_"+threshold,cat:"Ürün",icon:"☕",title:itemTitles[threshold]||`${threshold} Ürün Satıldı`,desc:itemDescs[threshold]||`Toplamda ${threshold} adet ürün satıldı`,done:totalItemsSold>=threshold,progress:Math.min(100,Math.round(totalItemsSold/threshold*100)),curVal:totalItemsSold,targetVal:threshold,unit:"count"});
-[50,100,200,300,500,750,1000,1500,2000].forEach(addItemsSold);
-
-A.push({id:"first_day",cat:"Kilometre Taşı",icon:"🎉",title:"İlk Gün",desc:"İlk günü kapat",done:totalDays>=1,progress:totalDays>=1?100:0});
-A.push({id:"first_order",cat:"Kilometre Taşı",icon:"🥇",title:"İlk Adisyon",desc:"İlk adisyonu tamamla",done:totalOrders>=1,progress:totalOrders>=1?100:0});
-A.push({id:"first_cari",cat:"Cari",icon:"📋",title:"İlk Veresiye",desc:"Güven ilişkisi başladı — ilk cari hesap açıldı.",done:totalCariHandled>=1,progress:totalCariHandled>=1?100:0});
-A.push({id:"cari_5",cat:"Cari",icon:"📋",title:"Beş Güvenen",desc:"5 farklı cari hesabı kullan",done:totalCariHandled>=5,progress:Math.min(100,Math.round(totalCariHandled/5*100)),curVal:totalCariHandled,targetVal:5,unit:"count"});
-A.push({id:"cari_10",cat:"Cari",icon:"📋",title:"On Sadık Müşteri",desc:"10 farklı cari hesabı kullan",done:totalCariHandled>=10,progress:Math.min(100,Math.round(totalCariHandled/10*100)),curVal:totalCariHandled,targetVal:10,unit:"count"});
-A.push({id:"cari_25",cat:"Cari",icon:"📋",title:"Yirmi Beş Bağ",desc:"25 farklı cari hesabı kullan",done:totalCariHandled>=25,progress:Math.min(100,Math.round(totalCariHandled/25*100)),curVal:totalCariHandled,targetVal:25,unit:"count"});
-A.push({id:"cari_settled_5",cat:"Cari",icon:"✅",title:"Beş Borç Kapandı",desc:"Beş hesap ödendi — güven döngüsü tamamlandı.",done:totalCariSettled>=5,progress:Math.min(100,Math.round(totalCariSettled/5*100)),curVal:totalCariSettled,targetVal:5,unit:"count"});
-A.push({id:"cari_settled_10",cat:"Cari",icon:"✅",title:"On Hesap Kapandı",desc:"On kişi güvendi, on kişi geri döndü.",done:totalCariSettled>=10,progress:Math.min(100,Math.round(totalCariSettled/10*100)),curVal:totalCariSettled,targetVal:10,unit:"count"});
-A.push({id:"big_cari_500",cat:"Cari",icon:"💸",title:"Yarım Bin TL Güven",desc:"Biri sana 500 TL üzeri veresiye bıraktı. Bu kolay olmaz.",done:biggestCari>=500,progress:Math.min(100,Math.round(biggestCari/500*100))});
-A.push({id:"big_cari_1000",cat:"Cari",icon:"💸",title:"Bin TL Veren Güven",desc:"1.000 TL üzeri tek hesap. Bu bir alışveriş değil, bir ilişki.",done:biggestCari>=1000,progress:Math.min(100,Math.round(biggestCari/1000*100))});
-A.push({id:"top_product",cat:"Ürün",icon:"⭐",title:"Yıldız Ürün",desc:topProduct?`${topProduct[0]} en az 20 kez satıldı`:"En çok satan ürün 20 adede ulaşsın",done:topProduct&&topProduct[1]>=20,progress:topProduct?Math.min(100,Math.round(topProduct[1]/20*100)):0});
-A.push({id:"top_product_50",cat:"Ürün",icon:"⭐",title:"Süper Yıldız",desc:topProduct?`${topProduct[0]} en az 50 kez satıldı`:"En çok satan ürün 50 adede ulaşsın",done:topProduct&&topProduct[1]>=50,progress:topProduct?Math.min(100,Math.round(topProduct[1]/50*100)):0});
-A.push({id:"net_positive_10",cat:"Kâr",icon:"📊",title:"İlk On Artı Gün",desc:"On gün net kâr pozitif kapandı. Para sayılabilir hale geldi.",done:logs.filter(l=>(l.net||0)>0).length>=10,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/10*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:10,unit:"count"});
-A.push({id:"net_positive_30",cat:"Kâr",icon:"📊",title:"Bir Ay Artı",desc:"Otuz günün hepsi kârlı kapandı. Bu tesadüf değil.",done:logs.filter(l=>(l.net||0)>0).length>=30,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/30*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:30,unit:"count"});
-A.push({id:"net_positive_50",cat:"Kâr",icon:"📊",title:"Elli Güçlü Gün",desc:"Elli gün net pozitif. Bu artık bir işletme.",done:logs.filter(l=>(l.net||0)>0).length>=50,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/50*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:50,unit:"count"});
-A.push({id:"net_positive_100",cat:"Kâr",icon:"📊",title:"Yüz Gün Kârlı",desc:"Yüz gün boyunca her gün kazandın. Bu çok nadir.",done:logs.filter(l=>(l.net||0)>0).length>=100,progress:Math.min(100,Math.round(logs.filter(l=>(l.net||0)>0).length/100*100)),curVal:logs.filter(l=>(l.net||0)>0).length,targetVal:100,unit:"count"});
-A.push({id:"total_net_100k",cat:"Kâr",icon:"💎",title:"Yüz Bin TL Kâr",desc:"Toplam net kâr 100.000 TL'ye ulaşsın",done:totalNet>=100000,progress:Math.min(100,Math.round(totalNet/100000*100)),curVal:totalNet,targetVal:100000,unit:"money"});
-A.push({id:"total_net_250k",cat:"Kâr",icon:"💎",title:"Çeyrek Milyon Kâr",desc:"Toplam net kâr 250.000 TL'ye ulaşsın",done:totalNet>=250000,progress:Math.min(100,Math.round(totalNet/250000*100)),curVal:totalNet,targetVal:250000,unit:"money"});
-A.push({id:"days_since_30",cat:"Yaşgünü",icon:"🎂",title:"LURK — 1. Ay",desc:"İlk ayı atlattın. Bu en zor kısımdı.",done:daysSinceFirst>=30,progress:Math.min(100,Math.round(daysSinceFirst/30*100))});
-A.push({id:"days_since_90",cat:"Yaşgünü",icon:"🎂",title:"LURK — 3. Ay",desc:"90 gün. Bir mevsim geçti. Kafe hâlâ ayakta.",done:daysSinceFirst>=90,progress:Math.min(100,Math.round(daysSinceFirst/90*100))});
-A.push({id:"days_since_180",cat:"Yaşgünü",icon:"🎂",title:"LURK — 6. Ay",desc:"Yarı yıl. Kim 'olmaz' dediyse haksız çıktı.",done:daysSinceFirst>=180,progress:Math.min(100,Math.round(daysSinceFirst/180*100))});
-A.push({id:"days_since_365",cat:"Yaşgünü",icon:"🎂",title:"LURK — 1. Yıl",desc:"Bir tam yıl. Her gün bir seçimdi ve hep doğrusunu seçtin.",done:daysSinceFirst>=365,progress:Math.min(100,Math.round(daysSinceFirst/365*100))});
-[3000,4000,5000,6000,7000,8000].forEach(t=>A.push({id:"daysover_"+t,cat:"Rekor",icon:"🚀",title:`${daysOver(t)} Kez ${fm(t,cur)}+`,desc:`${fm(t,cur)} ve üzeri ciro yapılan gün sayısı`,done:daysOver(t)>=1,progress:daysOver(t)>=1?100:0}));
-
-// ===== NEW: 100 additional achievements =====
-
-// Product-specific revenue achievements (matcha, kahve, latte, etc.)
-const productKeywords=[
-  {kw:"matcha",label:"Matcha"},{kw:"latte",label:"Latte"},{kw:"americano",label:"Americano"},
-  {kw:"filtre",label:"Filtre Kahve"},{kw:"espresso",label:"Espresso"},{kw:"cappuccino",label:"Cappuccino"},
-  {kw:"çay",label:"Çay"},{kw:"limonata",label:"Limonata"},{kw:"soğuk",label:"Soğuk İçecekler"},
-  {kw:"cookie",label:"Cookie"},{kw:"kek",label:"Kek"},{kw:"sandviç",label:"Sandviç"},
-];
-productKeywords.forEach(({kw,label})=>{
-  const rev=matchProducts(kw);
-  [10000,25000,50000,100000].forEach(t=>{
-    A.push({id:`prodrev_${kw}_${t}`,cat:"Ürün Ustası",icon:"🎯",title:`${label} Ustası`,desc:`Tüm ${label} ürünlerinden toplam ${fm(t,cur)} kazan`,done:rev>=t,progress:Math.min(100,Math.round(rev/t*100)),curVal:rev,targetVal:t,unit:"money"});
-  });
-});
-
-// Product quantity-based fun achievements
-productKeywords.slice(0,6).forEach(({kw,label})=>{
-  const qty=matchProductsQty(kw);
-  A.push({id:`prodqty_${kw}_100`,cat:"Ürün Ustası",icon:"🔁",title:`${label} Bağımlısı Yarattın`,desc:`${label} ürünlerinden toplam 100 adet sat`,done:qty>=100,progress:Math.min(100,Math.round(qty/100*100))});
-});
-
-// Installment (vade) achievements
-[1,2,3,5,7,10,15,20].forEach(t=>{
-  A.push({id:`inst_paid_${t}`,cat:"Vadeler",icon:"💳",title:`${t} Vade Kapatıldı`,desc:`Toplam ${t} taksit ödemesini tamamla`,done:paidInstCount>=t,progress:Math.min(100,Math.round(paidInstCount/t*100)),curVal:paidInstCount,targetVal:t,unit:"count"});
-});
-[1,3,5,10].forEach(t=>{
-  A.push({id:`inst_plan_${t}`,cat:"Vadeler",icon:"🗓️",title:`${t} Plan Tamamlandı`,desc:`${t} vade planını eksiksiz kapat`,done:completedPlanCount>=t,progress:Math.min(100,Math.round(completedPlanCount/t*100)),curVal:completedPlanCount,targetVal:t,unit:"count"});
-});
-
-// More product variety / breadth achievements
-[5,10,15,20,30].forEach(t=>{
-  A.push({id:`uniqprod_${t}`,cat:"Ürün Ustası",icon:"📜",title:`${t} Farklı Ürün`,desc:`Menünden ${t} farklı ürün en az bir kez satılsın`,done:uniqueProductCount>=t,progress:Math.min(100,Math.round(uniqueProductCount/t*100))});
-});
-
-// Top revenue product achievement
-A.push({id:"top_rev_product",cat:"Ürün Ustası",icon:"👑",title:"Kralın Tacı",desc:topRevProduct?`En çok kazandıran ürünün: ${topRevProduct[0]}`:"En çok kazandıran ürünü belirle",done:!!topRevProduct,progress:topRevProduct?100:0});
-
-// Fun / surprise achievements
-A.push({id:"fun_friday13",cat:"Sürpriz",icon:"🖤",title:"Cuma 13 — Hiçbir Şey Olmadı",desc:"Cuma 13'te kapıyı açtın. Batıl inanç yenildi.",done:fridayThe13th>=1,progress:fridayThe13th>=1?100:0});
-A.push({id:"fun_weekend_10",cat:"Sürpriz",icon:"🎉",title:"Pazar Sabahı İşçisi",desc:"On hafta sonu günü. Herkes dinlenirken sen oradaydın.",done:weekendDays>=10,progress:Math.min(100,Math.round(weekendDays/10*100))});
-A.push({id:"fun_weekend_25",cat:"Sürpriz",icon:"🎊",title:"Hafta Sonu Efsanesi",desc:"25 hafta sonu günü. Şehir uykudayken LURK açıktı.",done:weekendDays>=25,progress:Math.min(100,Math.round(weekendDays/25*100))});
-A.push({id:"fun_monday_10",cat:"Sürpriz",icon:"😴",title:"Pazartesi Mi? Fark Etmez.",desc:"On Pazartesi açık kaldın. Takvim değişiyor, sen değişmiyorsun.",done:mondayDays>=10,progress:Math.min(100,Math.round(mondayDays/10*100))});
-A.push({id:"fun_lowexp_5",cat:"Sürpriz",icon:"🪙",title:"Masrafsız Gün",desc:"5 gün hiç harcama yapmadan kapandı",done:lowExpenseDays>=5,progress:Math.min(100,Math.round(lowExpenseDays/5*100))});
-A.push({id:"fun_lowexp_15",cat:"Sürpriz",icon:"🪙",title:"Sıfır Harcama — On Beş Kez",desc:"15 gün hiç harcama yapmadan kapandı",done:lowExpenseDays>=15,progress:Math.min(100,Math.round(lowExpenseDays/15*100))});
-A.push({id:"fun_cashheavy_5",cat:"Sürpriz",icon:"💵",title:"Nakit Kral",desc:"Beş gün nakit, kart ödemelerini üç kat geçti.",done:cashHeavyDays>=5,progress:Math.min(100,Math.round(cashHeavyDays/5*100))});
-A.push({id:"fun_cardheavy_5",cat:"Sürpriz",icon:"💳",title:"Kartsız Yaşanmaz",desc:"5 gün kart ödemeleri nakdi 3 kat geçti",done:cardHeavyDays>=5,progress:Math.min(100,Math.round(cardHeavyDays/5*100))});
-A.push({id:"fun_round_1",cat:"Sürpriz",icon:"🎯",title:"Tam İsabet",desc:"Bir günü tam yuvarlak bir rakamla kapat (örn: 3.000,00 TL)",done:roundNumberDays>=1,progress:roundNumberDays>=1?100:0});
-A.push({id:"fun_round_3",cat:"Sürpriz",icon:"🎯",title:"Tam İsabet x3",desc:"3 günü tam yuvarlak rakamla kapat",done:roundNumberDays>=3,progress:Math.min(100,Math.round(roundNumberDays/3*100))});
-A.push({id:"fun_bigspread_10",cat:"Sürpriz",icon:"🍽️",title:"Geniş Menü Günü",desc:"Bir günde 10+ farklı ürün satıldı, 10 kez",done:bigSpreadDays>=10,progress:Math.min(100,Math.round(bigSpreadDays/10*100))});
-A.push({id:"fun_single_5",cat:"Sürpriz",icon:"🎈",title:"Sakin Gün",desc:"5 gün sadece tek çeşit ürün satıldı",done:singleItemDays>=5,progress:Math.min(100,Math.round(singleItemDays/5*100))});
-A.push({id:"fun_closedfast_3",cat:"Sürpriz",icon:"⚡",title:"Hızlı Kapanış",desc:"Bir saatten kısa sürede açılıp kapanan gün, 3 kez",done:closedFastDays>=3,progress:Math.min(100,Math.round(closedFastDays/3*100))});
-A.push({id:"fun_longday_5",cat:"Sürpriz",icon:"🌙",title:"14 Saat Açık",desc:"14 saatten uzun açık kalan gün, 5 kez",done:longDays>=5,progress:Math.min(100,Math.round(longDays/5*100))});
-A.push({id:"fun_longday_15",cat:"Sürpriz",icon:"🌙",title:"15 Kez 14 Saat Açık",desc:"14 saatten uzun açık kalan gün, 15 kez",done:longDays>=15,progress:Math.min(100,Math.round(longDays/15*100))});
-A.push({id:"fun_manual_cari_5",cat:"Sürpriz",icon:"✍️",title:"El Yazısı Defter",desc:"5 manuel cari kaydı oluştur",done:manualCariCount>=5,progress:Math.min(100,Math.round(manualCariCount/5*100))});
-A.push({id:"fun_manual_cari_10",cat:"Sürpriz",icon:"✍️",title:"Eski Usül Muhasebe",desc:"10 manuel cari kaydı oluştur",done:manualCariCount>=10,progress:Math.min(100,Math.round(manualCariCount/10*100))});
-A.push({id:"fun_topproduct_revenue",cat:"Sürpriz",icon:"🏅",title:"Gizli Şampiyon",desc:topRevProduct?`${topRevProduct[0]} tek başına en çok kazandıran ürün oldu`:"En çok kazandıran ürün belirlensin",done:!!topRevProduct,progress:topRevProduct?100:0});
-A.push({id:"fun_streak_legend",cat:"Sürpriz",icon:"🏆",title:"45 Günlük Ateş",desc:"45 gün üst üste hiç ara vermeden açık ol",done:bestStreak>=45,progress:Math.min(100,Math.round(bestStreak/45*100))});
-A.push({id:"fun_revenue_perday",cat:"Sürpriz",icon:"📐",title:"Tutarlı Makine",desc:"Günlük ortalama ciro 2.500 TL üzerinde. Artık güvenilir bir işletme.",done:totalDays>0&&(totalRevenue/totalDays)>=2500,progress:totalDays>0?Math.min(100,Math.round((totalRevenue/totalDays)/2500*100)):0});
-A.push({id:"fun_revenue_perday_high",cat:"Sürpriz",icon:"📐",title:"Zirve İstikrarı",desc:"Günlük ortalama 4.000 TL üzerinde. Bu çıta çok yüksek.",done:totalDays>0&&(totalRevenue/totalDays)>=4000,progress:totalDays>0?Math.min(100,Math.round((totalRevenue/totalDays)/4000*100)):0});
-
-// More order/day combos for breadth
-[40,60,80,110,175,225,275,350,450,550,650,850,1100,1350,1750,2250,2750].forEach(t=>addOrderCount(t));
-[8,15,25,35,55,70,85,110,135,160,210,275].forEach(t=>addDayCount(t));
-[1500,3500,5500,6500,7500,9500,11000,13000,17500,20000].forEach(t=>addBestDay(t));
-[15000,30000,45000,55000,65000,90000,110000,130000,170000,250000].forEach(t=>addMonthRev(t));
-
-let bonusN=1;
-while(A.length<200){
-  A.push({id:"bonus_"+bonusN,cat:"Bonus",icon:"🎯",title:"Yeni Hedef Yakında",desc:"Daha fazla veri biriktikçe burada yeni başarılar belirecek",done:false,progress:0});
-  bonusN++;
-}
-return A.slice(0,200);
-}
-const DEC=["Buz","Su","Kahve","Matcha","Fatura","Take Away Malz.","Süt","Meyve","Kırtasiye / Nalbur","Yaşar Amca","Alkol","Market","Ekipman"];
+const DEC=["Malzeme","Kira","Personel","Fatura","Diğer"];
 const PO=[{k:"cash",l:"Nakit",c:"#FF9500",bg:"rgba(255,149,0,0.1)",bd:"rgba(255,149,0,0.3)"},{k:"card",l:"Kart",c:"#007AFF",bg:"rgba(0,122,255,0.1)",bd:"rgba(0,122,255,0.3)"},{k:"credit",l:"Cari",c:"#AF52DE",bg:"rgba(175,82,222,0.1)",bd:"rgba(175,82,222,0.3)"}];
-
-const mkT=(n)=>Array.from({length:n},(_,i)=>({id:i+1,s:"e",order:[],oa:null,lbl:"Masa "+(i+1),g:""}));
-const fm=(n,c="TL")=>Number(n).toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+c;
-const fd=(d)=>new Date(d).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric"});
-const fdl=(d)=>new Date(d).toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-const ft=(d)=>new Date(d).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+const mkT=(n)=>Array.from({length:n||10},(_,i)=>({id:i+1,lbl:"Masa "+(i+1),s:"e",order:[],oa:null,g:""}));
+const fm=(v,c)=>(+v||0).toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+(c||"TL");
+const fd=(d)=>{if(!d)return"";try{const dt=new Date(d);return dt.toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"});}catch{return d;}};
+const fdl=(d)=>{if(!d)return"";try{const dt=new Date(d+"T12:00:00");return dt.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});}catch{return d;}};
+const ft=(d)=>{if(!d)return"";try{return new Date(d).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});}catch{return"";}};
 const tod=()=>new Date().toISOString().split("T")[0];
-const uid=()=>Date.now()+Math.random();
+const uid=()=>Math.random().toString(36).slice(2);
 const SUPABASE_URL="https://dpucptcrxoddfpvaqsdl.supabase.co";
 const SUPABASE_KEY="sb_publishable_YiTDrcX7nnotBkoWqEWaHQ_tYHlT3NK";
-
 const sv=async(k,v)=>{
   try{
     await fetch(SUPABASE_URL+"/rest/v1/app_storage",{
       method:"POST",
-      headers:{
-        "apikey":SUPABASE_KEY,
-        "Authorization":"Bearer "+SUPABASE_KEY,
-        "Content-Type":"application/json",
-        "Prefer":"resolution=merge-duplicates",
-      },
-      body:JSON.stringify({key:k,value:v}),
+      headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates"},
+      body:JSON.stringify({key:k,value:JSON.stringify(v)})
     });
-  }catch{}
+  }catch(e){console.error("sv error",e);}
 };
 const ld=async(k,fb)=>{
   try{
     const r=await fetch(SUPABASE_URL+"/rest/v1/app_storage?key=eq."+k+"&select=value",{
-      headers:{
-        "apikey":SUPABASE_KEY,
-        "Authorization":"Bearer "+SUPABASE_KEY,
-      },
+      headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}
     });
-    const j=await r.json();
-    if(j&&j.length>0)return j[0].value;
+    const d=await r.json();
+    if(d&&d[0]&&d[0].value!==undefined)return JSON.parse(d[0].value);
     return fb;
-  }catch{return fb;}
+  }catch(e){return fb;}
 };
 
 const inp={background:"rgba(255,255,255,0.6)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
 const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:10,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer",boxShadow:"0 1px 3px rgba(0,0,0,0.08),0 0 0 0.5px rgba(255,255,255,0.4) inset"});
+const buildAchievements=()=>[];
 
+// --- ROZETLER ---
+function buildBadges({logs,orders,cari,installments,fm,cur}){
+  const allLogs=[...logs];
+  const allOrders=[...orders];
+
+  // Toplam ciro (tüm zamanlar)
+  const totalRev=allLogs.reduce((s,l)=>s+(l.inc||0),0);
+
+  // Toplam ürün sayısı (tüm zamanlar)
+  const totalItems=allLogs.reduce((s,l)=>s+allLogs.reduce((_,__)=>_,0),0);
+  const totalItemsSold=allLogs.reduce((s,l)=>s+(l.items||[]).reduce((ss,it)=>ss+(it.qty||0),0),0);
+
+  // Günlük en iyi
+  const bestDayInc=allLogs.length>0?Math.max(...allLogs.map(l=>l.inc||0)):0;
+
+  // Haftalık en iyi (Pazartesi-Pazar bazlı)
+  const weekMap={};
+  allLogs.forEach(l=>{
+    const d=new Date(l.date+"T12:00:00");
+    const dow=d.getDay();
+    const diff=dow===0?-6:1-dow;
+    const mon=new Date(d);mon.setDate(d.getDate()+diff);
+    const wk=mon.toISOString().split("T")[0];
+    if(!weekMap[wk])weekMap[wk]=0;
+    weekMap[wk]+=(l.inc||0);
+  });
+  const bestWeekRev=Object.values(weekMap).length>0?Math.max(...Object.values(weekMap)):0;
+
+  // Aylık en iyi
+  const monthMap={};
+  allLogs.forEach(l=>{
+    const m=l.date.slice(0,7);
+    if(!monthMap[m])monthMap[m]={inc:0,items:{}};
+    monthMap[m].inc+=(l.inc||0);
+    (l.items||[]).forEach(it=>{
+      const cat=(it.cat||"").toLowerCase();
+      if(!monthMap[m].items[cat])monthMap[m].items[cat]=0;
+      monthMap[m].items[cat]+=(it.qty||0);
+    });
+  });
+  const bestMonthInc=Object.values(monthMap).length>0?Math.max(...Object.values(monthMap).map(m=>m.inc)):0;
+  const bestMonthMatcha=Object.values(monthMap).length>0?Math.max(...Object.values(monthMap).map(m=>m.items["matcha"]||0)):0;
+  const bestMonthKahve=Object.values(monthMap).length>0?Math.max(...Object.values(monthMap).map(m=>(m.items["kahve"]||0)+(m.items["coffee"]||0))):0;
+
+  // Cari hesap sayısı (toplam açılmış)
+  const totalCari=(cari||[]).length;
+
+  // Vade ödenen taksit sayısı
+  const paidInstCount=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>i.paid).length,0);
+
+  // Yuvarlak gün kapanışı
+  const roundDayCount=allLogs.filter(l=>(l.inc||0)>0&&(l.inc||0)%1000===0).length;
+
+  // Sabah 10:00 öncesi açılış sayısı
+  const earlyOpenCount=allLogs.filter(l=>{
+    if(!l.oa)return false;
+    try{const h=new Date(l.oa).getHours();return h<10;}catch{return false;}
+  }).length;
+
+  // Sıfır harcama günü sayısı
+  const zeroExpCount=allLogs.filter(l=>(l.exp||0)===0&&(l.inc||0)>0).length;
+
+  // Tek günde farklı ürün çeşidi
+  const maxDiffItems=allLogs.length>0?Math.max(...allLogs.map(l=>(l.items||[]).length)):0;
+
+  const B=[
+    // --- CİRO ---
+    {id:"rev_500k",icon:"💰",title:"Yarım Milyon",desc:"Tüm zamanlarda toplam 500.000 TL satışa ulaştın.",done:totalRev>=500000,progress:Math.min(100,Math.round(totalRev/500000*100)),curVal:totalRev,targetVal:500000,unit:"money",repeatable:false},
+    {id:"rev_750k",icon:"💎",title:"750 Bin TL",desc:"Tüm zamanlarda toplam 750.000 TL satışa ulaştın.",done:totalRev>=750000,progress:Math.min(100,Math.round(totalRev/750000*100)),curVal:totalRev,targetVal:750000,unit:"money",repeatable:false},
+    {id:"rev_1m",icon:"🏅",title:"Milyoner",desc:"Tüm zamanlarda toplam 1.000.000 TL satışa ulaştın.",done:totalRev>=1000000,progress:Math.min(100,Math.round(totalRev/1000000*100)),curVal:totalRev,targetVal:1000000,unit:"money",repeatable:false},
+
+    // --- GÜNLÜK REKOR ---
+    {id:"day_5k",icon:"⚡",title:"Beş Binlik Gün",desc:"Tek bir günde 5.000 TL satış yaptın.",done:bestDayInc>=5000,progress:Math.min(100,Math.round(bestDayInc/5000*100)),curVal:bestDayInc,targetVal:5000,unit:"money",repeatable:false},
+    {id:"day_10k",icon:"🔥",title:"On Binlik Gün",desc:"Tek bir günde 10.000 TL satış yaptın.",done:bestDayInc>=10000,progress:Math.min(100,Math.round(bestDayInc/10000*100)),curVal:bestDayInc,targetVal:10000,unit:"money",repeatable:false},
+
+    // --- HAFTALIK ---
+    {id:"week_30k",icon:"📅",title:"30K Hafta",desc:"Aynı hafta içinde 30.000 TL satış yaptın.",done:bestWeekRev>=30000,progress:Math.min(100,Math.round(bestWeekRev/30000*100)),curVal:bestWeekRev,targetVal:30000,unit:"money",repeatable:false},
+
+    // --- AYLIK ---
+    {id:"month_150k",icon:"📈",title:"150K Ay",desc:"Bir ay içinde 150.000 TL satış yaptın.",done:bestMonthInc>=150000,progress:Math.min(100,Math.round(bestMonthInc/150000*100)),curVal:bestMonthInc,targetVal:150000,unit:"money",repeatable:false},
+    {id:"month_200k",icon:"🚀",title:"200K Ay",desc:"Bir ay içinde 200.000 TL satış yaptın.",done:bestMonthInc>=200000,progress:Math.min(100,Math.round(bestMonthInc/200000*100)),curVal:bestMonthInc,targetVal:200000,unit:"money",repeatable:false},
+
+    // --- ÜRÜN ---
+    {id:"items_1000",icon:"☕",title:"Bin Servis",desc:"Tüm zamanlar boyunca toplam 1.000 ürün sattın.",done:totalItemsSold>=1000,progress:Math.min(100,Math.round(totalItemsSold/1000*100)),curVal:totalItemsSold,targetVal:1000,unit:"count",repeatable:false},
+    {id:"items_2000",icon:"☕",title:"İki Bin Servis",desc:"Tüm zamanlar boyunca toplam 2.000 ürün sattın.",done:totalItemsSold>=2000,progress:Math.min(100,Math.round(totalItemsSold/2000*100)),curVal:totalItemsSold,targetVal:2000,unit:"count",repeatable:false},
+    {id:"items_5000",icon:"🏭",title:"Beş Bin Servis",desc:"Tüm zamanlar boyunca toplam 5.000 ürün sattın.",done:totalItemsSold>=5000,progress:Math.min(100,Math.round(totalItemsSold/5000*100)),curVal:totalItemsSold,targetVal:5000,unit:"count",repeatable:false},
+
+    // --- MATCHA ---
+    {id:"matcha_100",icon:"🍵",title:"100 Matcha",desc:"Bir ayda 100 matcha ürünü sattın.",done:bestMonthMatcha>=100,progress:Math.min(100,Math.round(bestMonthMatcha/100*100)),curVal:bestMonthMatcha,targetVal:100,unit:"count",repeatable:false},
+    {id:"matcha_250",icon:"🍵",title:"250 Matcha",desc:"Bir ayda 250 matcha ürünü sattın.",done:bestMonthMatcha>=250,progress:Math.min(100,Math.round(bestMonthMatcha/250*100)),curVal:bestMonthMatcha,targetVal:250,unit:"count",repeatable:false},
+
+    // --- KAHVE ---
+    {id:"kahve_100",icon:"☕",title:"100 Kahve",desc:"Bir ayda 100 kahve ürünü sattın.",done:bestMonthKahve>=100,progress:Math.min(100,Math.round(bestMonthKahve/100*100)),curVal:bestMonthKahve,targetVal:100,unit:"count",repeatable:false},
+    {id:"kahve_250",icon:"☕",title:"250 Kahve",desc:"Bir ayda 250 kahve ürünü sattın.",done:bestMonthKahve>=250,progress:Math.min(100,Math.round(bestMonthKahve/250*100)),curVal:bestMonthKahve,targetVal:250,unit:"count",repeatable:false},
+    {id:"kahve_500",icon:"☕",title:"500 Kahve",desc:"Bir ayda 500 kahve ürünü sattın.",done:bestMonthKahve>=500,progress:Math.min(100,Math.round(bestMonthKahve/500*100)),curVal:bestMonthKahve,targetVal:500,unit:"count",repeatable:false},
+
+    // --- GÜN ÇEŞİTLİLİĞİ ---
+    {id:"items_diff_10",icon:"🎯",title:"10 Farklı Ürün",desc:"Bir günde 10 farklı ürün sattın.",done:maxDiffItems>=10,progress:Math.min(100,Math.round(maxDiffItems/10*100)),curVal:maxDiffItems,targetVal:10,unit:"count",repeatable:false},
+    {id:"items_diff_20",icon:"🎯",title:"20 Farklı Ürün",desc:"Bir günde 20 farklı ürün sattın.",done:maxDiffItems>=20,progress:Math.min(100,Math.round(maxDiffItems/20*100)),curVal:maxDiffItems,targetVal:20,unit:"count",repeatable:false},
+
+    // --- CARİ ---
+    {id:"cari_10",icon:"📋",title:"On Cari Hesap",desc:"Toplam 10 farklı cari hesap açtın.",done:totalCari>=10,progress:Math.min(100,Math.round(totalCari/10*100)),curVal:totalCari,targetVal:10,unit:"count",repeatable:false},
+
+    // --- VADE ---
+    {id:"inst_1",icon:"📌",title:"İlk Vade Ödemesi",desc:"Bir vade ödemesi tamamladın.",done:paidInstCount>=1,progress:Math.min(100,Math.round(paidInstCount/1*100)),curVal:paidInstCount,targetVal:1,unit:"count",repeatable:false},
+    {id:"inst_5",icon:"📌",title:"5 Vade Ödemesi",desc:"Beş vade ödemesi tamamladın.",done:paidInstCount>=5,progress:Math.min(100,Math.round(paidInstCount/5*100)),curVal:paidInstCount,targetVal:5,unit:"count",repeatable:false},
+    {id:"inst_10",icon:"📌",title:"10 Vade Ödemesi",desc:"On vade ödemesi tamamladın.",done:paidInstCount>=10,progress:Math.min(100,Math.round(paidInstCount/10*100)),curVal:paidInstCount,targetVal:10,unit:"count",repeatable:false},
+    {id:"inst_20",icon:"📌",title:"20 Vade Ödemesi",desc:"Yirmi vade ödemesi tamamladın.",done:paidInstCount>=20,progress:Math.min(100,Math.round(paidInstCount/20*100)),curVal:paidInstCount,targetVal:20,unit:"count",repeatable:false},
+
+    // --- TEKRARLANABILIR ---
+    {id:"round_day",icon:"🎱",title:"Yuvarlak Gün",desc:"Bir günü tam yuvarlak rakamla kapattın (örn: 3.000 TL).",done:roundDayCount>0,count:roundDayCount,repeatable:true},
+    {id:"early_open",icon:"🌅",title:"Erken Kalkan",desc:"Sabah 10:00'dan önce açtın.",done:earlyOpenCount>0,count:earlyOpenCount,repeatable:true},
+    {id:"zero_exp",icon:"🪙",title:"Masrafsız Gün",desc:"Hiç harcama yapmadan günü kapattın.",done:zeroExpCount>0,count:zeroExpCount,repeatable:true},
+  ];
+
+  return B;
+}
 
 export default function App(){
-const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"credit",l:"Cari"},{k:"achievements",l:"Başarılar"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
+const NAV=[{k:"lurk",l:"LURK"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"online",l:"Online"},{k:"reports",l:"Raporlar"},{k:"achievements",l:"Rozetler"},{k:"todo",l:"Yapılacaklar"},{k:"settings",l:"Ayarlar"}];
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
@@ -365,7 +273,7 @@ useEffect(()=>{if(ok)sv("tt_m",tacoMenu);},[tacoMenu,ok]);
 useEffect(()=>{
 if(!ok)return;
 const curCur=cfg.cur||"TL";
-const achievements=buildAchievements({logs,orders,cari,installments,cur:curCur,fm});
+const achievements=buildBadges({logs,orders,cari,installments,cur:curCur,fm});
 const newlyDone=achievements.filter(a=>a.done&&!unlocked[a.id]);
 if(newlyDone.length>0){
 const now=new Date().toISOString();
@@ -496,12 +404,13 @@ return(
 </div>
 {!isMobile&&<div style={{display:"flex",alignItems:"center",gap:10}}>
 <div style={{display:"flex",gap:2,background:"rgba(255,255,255,0.35)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",padding:3,borderRadius:9,border:"0.5px solid rgba(255,255,255,0.6)",overflowX:"auto",maxWidth:"calc(100vw - 200px)"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>go(k)} style={{padding:"6px 12px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:12,background:view===k?"rgba(255,255,255,0.9)":"transparent",color:view===k?T.text:T.textSub,opacity:view===k?1:0.75,boxShadow:view===k?"0 1px 3px rgba(0,0,0,0.12)":"none",transition:"all 0.15s",whiteSpace:"nowrap"}}>{k==="achievements"?"🏆 Başarılar":k==="todo"?"✅ Yapılacaklar":l}</button>)}
+{NAV.map(({k,l})=><button key={k} onClick={()=>go(k)} style={{padding:"6px 12px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:12,background:view===k?"rgba(255,255,255,0.9)":"transparent",color:view===k?T.text:T.textSub,opacity:view===k?1:0.75,boxShadow:view===k?"0 1px 3px rgba(0,0,0,0.12)":"none",transition:"all 0.15s",whiteSpace:"nowrap"}}>{k==="achievements"?"🎖 Rozetler":k==="todo"?"✅ Yapılacaklar":l}</button>)}
 </div>
 <button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:view==="notifications"?"#fff":"rgba(118,118,128,0.12)",boxShadow:view==="notifications"?"0 1px 3px rgba(0,0,0,0.12)":"none",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>
 🔔
 {notifications.filter(n=>!n.read).length>0&&<span style={{position:"absolute",top:2,right:2,minWidth:16,height:16,borderRadius:8,background:"#FF3B30",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>{notifications.filter(n=>!n.read).length>9?"9+":notifications.filter(n=>!n.read).length}</span>}
 </button>
+<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setAuthChecked(false);setV("lurk");}} style={{padding:"6px 14px",borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"none",color:"#FF3B30",fontSize:12,fontWeight:600,cursor:"pointer"}}>Çıkış</button>
 </div>}
 {isMobile&&<button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(118,118,128,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
 🔔
@@ -513,7 +422,7 @@ return(
 <div style={{fontSize:isMobile?18:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</div>
 </div>}
 
-{view==="lurk"&&<LurkV setV={setV} T={T}/>}
+{view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile}/>}
 {view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile}/>}
 
 {view==="tables"&&(
@@ -585,7 +494,7 @@ return(
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
-{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu}/>}
+{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
@@ -617,7 +526,10 @@ const dayOfMonth=now.getDate();
 const daysLeftMonth=daysInMonth-dayOfMonth;
 const monthPct=monthlyGoal>0?Math.min(100,Math.round(monthlyRev/monthlyGoal*100)):0;
 const monthNeededPerDay=monthlyGoal>0&&daysLeftMonth>0?Math.max(0,(monthlyGoal-monthlyRev)/daysLeftMonth):0;
-const weekStart=new Date(now);weekStart.setDate(now.getDate()-now.getDay()+1);
+const weekStart=new Date(now);
+const dow=now.getDay();
+const diffToMon=dow===0?-6:1-dow;
+weekStart.setDate(now.getDate()+diffToMon);
 const weekStartStr=weekStart.toISOString().split("T")[0];
 const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
 const weekEndStr=weekEnd.toISOString().split("T")[0];
@@ -694,16 +606,6 @@ return(
 <div style={{display:"flex",gap:6,alignItems:"flex-end",height:90}}>
 {l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{fontSize:9,color:"#8E8E93",textAlign:"center"}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.3)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":"#8E8E93",fontWeight:isT?700:400}}>{d.lbl}</div></div>);})}
 </div>
-</div>
-<div style={{background:"#fff",borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><div style={{fontWeight:600,fontSize:15}}>Son Adisyonlar</div><span style={{fontSize:11,color:"#8E8E93"}}>{rec.length} işlem</span></div>
-{rec.length===0?<div style={{color:"#C7C7CC",fontSize:13,textAlign:"center",padding:"20px 0"}}>Bugün adisyon yok</div>
-:<div style={{display:"flex",flexDirection:"column",gap:0,maxHeight:200,overflowY:"auto"}}>
-{rec.map((o,oi)=><div key={o.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 4px",borderBottom:oi<rec.length-1?"0.5px solid rgba(0,0,0,0.08)":"none"}}>
-<div><div style={{fontSize:13,fontWeight:500}}>{o.tn}{o.g&&<span style={{color:"#34C759",marginLeft:6,fontSize:11}}>{o.g}</span>}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:1}}>{ft(o.ca)}</div></div>
-<div style={{textAlign:"right"}}><div style={{fontSize:14,fontWeight:600,color:"#34C759"}}>{fm(o.total,cur)}</div><div style={{fontSize:10,color:"#8E8E93"}}>{o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":"Cari"}</div></div>
-</div>)}
-</div>}
 </div>
 </div>
 {openT.length>0&&<div style={{background:"#fff",borderRadius:16,padding:20,marginTop:16,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
@@ -842,7 +744,7 @@ return(<div style={{background:T.bg2,border:"0.5px solid "+T.border2,borderRadiu
 </div>
 </div>);}
 
-function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu}){
+function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari}){
 const CC=["#34C759","#34C759","#FF9500","#007AFF","#AF52DE","#FF3B30","#FF9500","#248A3D"];
 const[dateFrom,setDateFrom]=useState("");
 const[dateTo,setDateTo]=useState("");
@@ -1012,9 +914,9 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24,flexWrap:"wrap",gap:10}}>
 <div style={{display:"flex",gap:0,background:"rgba(118,118,128,0.12)",borderRadius:10,padding:3,width:"fit-content"}}>
-{[{k:"sales",l:"Satış"},{k:"expenses",l:"Harcama"},{k:"installments",l:"Vadeler"},{k:"products",l:"Ürün Analizi"},{k:"taco",l:"Taco & Tortilla"}].map(({k,l})=><button key={k} onClick={()=>setMainT(k)} style={{padding:"7px 18px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:13,background:mainT===k?"#fff":"transparent",color:mainT===k?"#000":"#8E8E93",boxShadow:mainT===k?"0 1px 3px rgba(0,0,0,0.12)":"none"}}>{l}</button>)}
+{[{k:"sales",l:"Satış"},{k:"expenses",l:"Harcama"},{k:"installments",l:"Vadeler"},{k:"credit",l:"Cari"},{k:"products",l:"Ürün Analizi"},{k:"taco",l:"Taco & Tortilla"}].map(({k,l})=><button key={k} onClick={()=>setMainT(k)} style={{padding:"7px 18px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:13,background:mainT===k?"#fff":"transparent",color:mainT===k?"#000":"#8E8E93",boxShadow:mainT===k?"0 1px 3px rgba(0,0,0,0.12)":"none"}}>{l}</button>)}
 </div>
-{mainT!=="products"&&mainT!=="taco"&&mainT!=="installments"&&<div style={{position:"relative"}}>
+{mainT!=="products"&&mainT!=="taco"&&mainT!=="installments"&&mainT!=="credit"&&<div style={{position:"relative"}}>
   <button onClick={()=>setShowDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:rangeLabel?"rgba(52,199,89,0.12)":T.bg3,border:"1px solid "+(rangeLabel?"#8FE3A8":T.border2),borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,color:rangeLabel?"#34C759":T.textSub}}>
     📅 {rangeLabel||"Tarih Aralığı"}
     {rangeLabel&&<span onClick={e=>{e.stopPropagation();clearRange();}} style={{marginLeft:4,color:"#34C759",fontWeight:800,fontSize:14,lineHeight:1}}>×</span>}
@@ -1362,6 +1264,7 @@ return(
 </div>
 )}
 
+{mainT==="credit"&&<CariInReportsV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp}/>}
 {mainT==="taco"&&<TacoTabV tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} cur={cur} fm={fm} fd={fd} fdl={fdl} tod={tod} inp={inp} sb={sb} T={T}/>}
 </div>);}
 
@@ -1869,11 +1772,12 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 </div>
 <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:6}}>Hedef Takibi</div>
-<div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Bugün sayfasında aylık ve haftalık hedefinize göre ilerlemenizi görir.</div>
+<div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Bugün sayfasında aylık ve haftalık hedefe göre ilerlemenizi takip edebilirsiniz.</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Aylık Hedef ({cur})</label><input type="number" min="0" placeholder="örn: 80000" value={cfgF.monthlyGoal||""} onChange={e=>setCfgF(p=>({...p,monthlyGoal:parseFloat(e.target.value)||0}))} style={inp}/></div>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Haftalık Hedef ({cur})</label><input type="number" min="0" placeholder="örn: 20000" value={cfgF.weeklyGoal||""} onChange={e=>setCfgF(p=>({...p,weeklyGoal:parseFloat(e.target.value)||0}))} style={inp}/></div>
 </div>
+<button onClick={saveCfg} style={{...sb(T.accent),marginTop:14,padding:"10px 22px",fontSize:13}}>Hedefleri Güncelle</button>
 </div>
 <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:14}}>Adisyon Ayarları</div>
@@ -2274,13 +2178,171 @@ Bu işlem {OLD_LOGS.length} günlük geçmiş satış kaydını mevcut Raporlar 
 </div>
 );}
 
-function LurkV({setV,T}){
+function LurkV({setV,T,logs,orders,cfg,cari,installments,unlocked,fm,fd,cur,day,ft,tod,isMobile}){
+const now=new Date();
+const allLogs=logs||[];
+const allOrders=orders||[];
+
+// Toplam ciro
+const totalRev=allLogs.reduce((s,l)=>s+(l.inc||0),0);
+
+// Bu ay
+const thisMonth=now.toISOString().slice(0,7);
+const monthlyRev=allLogs.filter(l=>l.date&&l.date.startsWith(thisMonth)).reduce((s,l)=>s+(l.inc||0),0);
+
+// Bu hafta
+const dow=now.getDay();const diffToMon=dow===0?-6:1-dow;
+const weekStart=new Date(now);weekStart.setDate(now.getDate()+diffToMon);
+const weekStartStr=weekStart.toISOString().split("T")[0];
+const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
+const weekEndStr=weekEnd.toISOString().split("T")[0];
+const weeklyRev=allLogs.filter(l=>l.date&&l.date>=weekStartStr&&l.date<=weekEndStr).reduce((s,l)=>s+(l.inc||0),0);
+
+// Hedefler
+const monthlyGoal=cfg?.monthlyGoal||0;
+const weeklyGoal=cfg?.weeklyGoal||0;
+const monthPct=monthlyGoal>0?Math.min(100,Math.round(monthlyRev/monthlyGoal*100)):0;
+const weekPct=weeklyGoal>0?Math.min(100,Math.round(weeklyRev/weeklyGoal*100)):0;
+
+// Rozetler
+const badges=buildBadges({logs:allLogs,orders:allOrders,cari,installments,fm,cur});
+const earnedBadges=badges.filter(b=>b.done);
+const latestBadges=earnedBadges.sort((a,b)=>{
+  const da=unlocked?.[a.id],db=unlocked?.[b.id];
+  if(da&&db)return new Date(db)-new Date(da);
+  return 0;
+}).slice(0,4);
+
+// Açık cari
+const openCari=(cari||[]).filter(c=>!c.settled);
+const openCariTotal=openCari.reduce((s,c)=>s+c.total,0);
+
+// Günlük bilgi
+const daysOpen=allLogs.length;
+const avgDaily=daysOpen>0?Math.round(totalRev/daysOpen):0;
+
+// Son 7 gün çubukları
+const l7=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);const ds=d.toISOString().split("T")[0];return{date:ds,lbl:d.toLocaleDateString("tr-TR",{weekday:"short"}),inc:allLogs.filter(l=>l.date===ds).reduce((s,l)=>s+(l.inc||0),0)};});
+const mx=Math.max(...l7.map(d=>d.inc),1);
+
 return(
-<div style={{minHeight:"calc(100vh - 64px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
-<div style={{textAlign:"center"}}>
-<h1 style={{fontSize:81,fontWeight:800,letterSpacing:-2,margin:0,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</h1>
-<button onClick={()=>setV("home")} style={{marginTop:32,background:T.accent,border:"none",color:"#fff",borderRadius:10,padding:"13px 32px",fontWeight:600,fontSize:14,cursor:"pointer"}}>Sisteme Gir</button>
+<div style={{minHeight:"calc(100vh - 60px)",padding:isMobile?"16px":"28px 32px",maxWidth:1000,margin:"0 auto"}}>
+
+{/* Header */}
+<div style={{marginBottom:28}}>
+<h1 style={{fontSize:isMobile?32:48,fontWeight:800,letterSpacing:-1.5,margin:"0 0 6px",color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</h1>
+<div style={{fontSize:13,color:T.textSub}}>
+{now.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+{day&&<span style={{marginLeft:12,background:"rgba(52,199,89,0.12)",color:"#34C759",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● AÇIK {ft(day.oa)}</span>}
+{!day&&<span style={{marginLeft:12,background:"rgba(255,59,48,0.1)",color:"#FF3B30",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● KAPALI</span>}
 </div>
+</div>
+
+<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr",gap:12,marginBottom:20}}>
+
+{/* Bu Hafta */}
+{weeklyGoal>0?<div style={{background:"linear-gradient(135deg,#1C1C1E,#2C2C2E)",borderRadius:18,padding:"22px 24px",color:"#fff"}}>
+<div style={{fontSize:11,opacity:0.5,marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>Bu Hafta</div>
+<div style={{fontSize:isMobile?28:32,fontWeight:800,letterSpacing:-1,marginBottom:4}}>{fm(weeklyRev,cur)}</div>
+<div style={{background:"rgba(255,255,255,0.15)",borderRadius:6,height:5,overflow:"hidden",marginBottom:5}}>
+<div style={{height:"100%",width:weekPct+"%",borderRadius:6,background:weekPct>=100?"#34C759":weekPct>=70?"#FF9500":"#FF3B30"}}/>
+</div>
+<div style={{fontSize:11,opacity:0.6}}>/ {fm(weeklyGoal,cur)} · %{weekPct}{weekPct>=100?" 🎯":""}</div>
+</div>
+:<div style={{background:"linear-gradient(135deg,#1C1C1E,#2C2C2E)",borderRadius:18,padding:"22px 24px",color:"#fff"}}>
+<div style={{fontSize:11,opacity:0.5,marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>Bu Hafta</div>
+<div style={{fontSize:isMobile?28:32,fontWeight:800,letterSpacing:-1,marginBottom:8}}>{fm(weeklyRev,cur)}</div>
+<button onClick={()=>setV("settings")} style={{fontSize:11,color:"rgba(255,255,255,0.5)",background:"none",border:"none",cursor:"pointer",padding:0,fontWeight:600}}>Hedef belirle →</button>
+</div>}
+
+{/* Bu Ay */}
+{monthlyGoal>0?<div style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:18,padding:"22px 24px"}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Bu Ay</div>
+<div style={{fontSize:24,fontWeight:800,color:monthPct>=100?"#34C759":"#000",marginBottom:4}}>{fm(monthlyRev,cur)}</div>
+<div style={{background:"rgba(118,118,128,0.12)",borderRadius:6,height:5,overflow:"hidden",marginBottom:5}}>
+<div style={{height:"100%",width:monthPct+"%",borderRadius:6,background:monthPct>=100?"#34C759":monthPct>=70?"#FF9500":"#FF3B30"}}/>
+</div>
+<div style={{fontSize:11,color:T.textSub}}>/ {fm(monthlyGoal,cur)} · %{monthPct}{monthPct>=100?" 🎯":""}</div>
+</div>
+:<div style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:18,padding:"22px 24px"}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Bu Ay</div>
+<div style={{fontSize:24,fontWeight:800,marginBottom:8}}>{fm(monthlyRev,cur)}</div>
+<button onClick={()=>setV("settings")} style={{fontSize:11,color:"#34C759",background:"none",border:"none",cursor:"pointer",padding:0,fontWeight:600}}>Hedef belirle →</button>
+</div>}
+
+{/* Tüm Zamanlar - ikincil */}
+<div style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:18,padding:"22px 24px"}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Tüm Zamanlar</div>
+<div style={{fontSize:24,fontWeight:800,color:T.text,marginBottom:4}}>{fm(totalRev,cur)}</div>
+<div style={{fontSize:11,color:T.textDim}}>{daysOpen} gün · 6 Oca 2026'dan itibaren</div>
+</div>
+</div>
+
+<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12,marginBottom:20}}>
+
+{/* Son 7 Gün Grafik */}
+<div style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:18,padding:"22px 24px"}}>
+<div style={{fontWeight:700,fontSize:14,marginBottom:18,color:T.text}}>Son 7 Gün</div>
+<div style={{display:"flex",gap:6,alignItems:"flex-end",height:80}}>
+{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*80,4):2;const isT=d.date===tod();return(
+<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+<div style={{fontSize:9,color:"#8E8E93",textAlign:"center",height:14,overflow:"visible",whiteSpace:"nowrap"}}>{d.inc>0?fm(d.inc,cur).split(" ")[0]:""}</div>
+<div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.3)",borderRadius:"4px 4px 0 0"}}/>
+<div style={{fontSize:10,color:isT?"#34C759":"#8E8E93",fontWeight:isT?700:400}}>{d.lbl}</div>
+</div>);})}
+</div>
+</div>
+
+{/* Rozetler özet */}
+<div style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:18,padding:"22px 24px"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+<div style={{fontWeight:700,fontSize:14,color:T.text}}>Rozetler</div>
+<button onClick={()=>setV("achievements")} style={{fontSize:11,color:"#FF9500",background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Tümünü gör →</button>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+<div style={{fontSize:28,fontWeight:800,color:"#FF9500"}}>{earnedBadges.length}</div>
+<div>
+<div style={{fontSize:12,fontWeight:600,color:T.text}}>kazanıldı</div>
+<div style={{fontSize:11,color:T.textSub}}>{badges.length} rozetten</div>
+</div>
+<div style={{flex:1,background:"rgba(118,118,128,0.12)",borderRadius:6,height:6,overflow:"hidden",marginLeft:4}}>
+<div style={{height:"100%",width:Math.round(earnedBadges.length/badges.length*100)+"%",background:"#FF9500",borderRadius:6}}/>
+</div>
+</div>
+{latestBadges.length>0&&<div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+{latestBadges.map(b=>(
+<div key={b.id} style={{background:"rgba(255,149,0,0.1)",border:"0.5px solid rgba(255,149,0,0.3)",borderRadius:10,padding:"6px 10px",display:"flex",alignItems:"center",gap:6}}>
+<span style={{fontSize:16}}>{b.icon}</span>
+<span style={{fontSize:11,fontWeight:600,color:"#FF9500"}}>{b.title}</span>
+</div>
+))}
+</div>}
+{latestBadges.length===0&&<div style={{fontSize:12,color:T.textDim,textAlign:"center",padding:"10px 0"}}>Henüz rozet kazanılmadı.</div>}
+</div>
+</div>
+
+{/* Açık Cari + Hızlı Erişim */}
+<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
+{openCari.length>0&&<div style={{background:"rgba(175,82,222,0.1)",border:"1px solid rgba(175,82,222,0.25)",borderRadius:18,padding:"18px 22px",cursor:"pointer"}} onClick={()=>setV("reports")}>
+<div style={{fontSize:11,color:"#AF52DE",fontWeight:600,marginBottom:4,textTransform:"uppercase",letterSpacing:0.5}}>Açık Cari</div>
+<div style={{fontSize:24,fontWeight:800,color:"#AF52DE"}}>{fm(openCariTotal,cur)}</div>
+<div style={{fontSize:11,color:"#AF52DE",opacity:0.7,marginTop:4}}>{openCari.length} hesap bekliyor</div>
+</div>}
+
+<div style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.8)",borderRadius:18,padding:"18px 22px"}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>Hızlı Erişim</div>
+<div style={{display:"flex",flexDirection:"column",gap:8}}>
+{[{k:"home",l:"Bugün",icon:"📊"},{k:"tables",l:"Masalar",icon:"🪑"},{k:"reports",l:"Raporlar",icon:"📈"},{k:"settings",l:"Ayarlar",icon:"⚙️"}].map(({k,l,icon})=>(
+<button key={k} onClick={()=>setV(k)} style={{display:"flex",alignItems:"center",gap:10,background:"none",border:"none",cursor:"pointer",textAlign:"left",padding:"6px 0",borderBottom:"0.5px solid rgba(0,0,0,0.05)"}}>
+<span style={{fontSize:16}}>{icon}</span>
+<span style={{fontSize:13,fontWeight:600,color:T.text}}>{l}</span>
+<span style={{marginLeft:"auto",color:T.textDim,fontSize:14}}>›</span>
+</button>
+))}
+</div>
+</div>
+</div>
+
 </div>
 );}
 
@@ -2372,66 +2434,54 @@ style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(20px)",WebkitBac
 );}
 
 function AchievementsV({logs,orders,cari,installments,unlocked,cur,fm,fd,setV,sb,T}){
-const[filter,setFilter]=useState("all");
-
-const achievements=buildAchievements({logs,orders,cari,installments,cur,fm});
-const doneCount=achievements.filter(a=>a.done).length;
-const categories=["all",...Array.from(new Set(achievements.map(a=>a.cat)))];
-const filtered=filter==="all"?achievements:achievements.filter(a=>a.cat===filter);
-// Not-yet-completed achievements first (closest to completion at top), completed ones appended at the end with unlock date
-const notDone=filtered.filter(a=>!a.done).sort((a,b)=>(b.progress||0)-(a.progress||0));
-const done=filtered.filter(a=>a.done).sort((a,b)=>{
+const badges=buildBadges({logs,orders,cari,installments,cur,fm});
+const doneCount=badges.filter(b=>b.done).length;
+const total=badges.length;
+const notDone=badges.filter(b=>!b.done).sort((a,b)=>(b.progress||0)-(a.progress||0));
+const done=badges.filter(b=>b.done).sort((a,b)=>{
   const da=unlocked[a.id],db=unlocked[b.id];
   if(da&&db)return new Date(db)-new Date(da);
-  if(da)return -1;
-  if(db)return 1;
   return 0;
 });
-const sortedFiltered=[...notDone,...done];
-
+const sorted=[...done,...notDone];
 return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
-<div style={{marginBottom:22}}>
-<h2 style={{margin:0,fontWeight:800,fontSize:20}}>🏆 Başarılar</h2>
-<div style={{fontSize:12,color:T.textSub,marginTop:2}}>LURK'ün tüm geçmişinden otomatik hesaplanıyor</div>
+<div style={{marginBottom:20}}>
+<h2 style={{margin:0,fontWeight:800,fontSize:22}}>🎖 Rozetler</h2>
+<div style={{fontSize:12,color:T.textSub,marginTop:3}}>Verilerinden otomatik hesaplanıyor</div>
 </div>
-
-<div style={{background:"linear-gradient(135deg,#FF9500,#FF6200)",borderRadius:16,padding:"20px 22px",color:"#fff",marginBottom:20}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div style={{background:"linear-gradient(135deg,#1C1C1E,#2C2C2E)",borderRadius:18,padding:"20px 24px",color:"#fff",marginBottom:24,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div>
-<div style={{fontSize:11,opacity:0.85,marginBottom:4,textTransform:"uppercase",letterSpacing:0.5}}>Tamamlanan</div>
-<div style={{fontSize:32,fontWeight:800}}>{doneCount} / {achievements.length}</div>
+<div style={{fontSize:11,opacity:0.6,marginBottom:4,textTransform:"uppercase",letterSpacing:1}}>Kazanılan Rozet</div>
+<div style={{fontSize:38,fontWeight:800,letterSpacing:-1}}>{doneCount}<span style={{fontSize:20,opacity:0.5,fontWeight:400}}> / {total}</span></div>
 </div>
-<div style={{fontSize:48}}>🏆</div>
+<div style={{textAlign:"right"}}>
+<div style={{fontSize:11,opacity:0.6,marginBottom:8}}>İlerleme</div>
+<div style={{width:120,background:"rgba(255,255,255,0.15)",borderRadius:6,height:8,overflow:"hidden"}}>
+<div style={{background:"#FF9500",height:"100%",width:Math.round(doneCount/total*100)+"%",borderRadius:6,transition:"width 0.8s ease"}}/>
 </div>
-<div style={{background:"rgba(255,255,255,0.25)",borderRadius:6,height:8,marginTop:14,overflow:"hidden"}}>
-<div style={{background:"#fff",height:"100%",width:Math.round(doneCount/achievements.length*100)+"%",borderRadius:6}}/>
+<div style={{fontSize:11,opacity:0.6,marginTop:4}}>%{Math.round(doneCount/total*100)}</div>
 </div>
 </div>
-
-<div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
-{categories.map(c=>(
-<button key={c} onClick={()=>setFilter(c)} style={{padding:"6px 14px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:filter===c?"#FF9500":T.bg3,color:filter===c?"#fff":T.textSub}}>{c==="all"?"Tümü":c}</button>
-))}
-</div>
-
-<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:10}}>
-{sortedFiltered.map(a=>(
-<div key={a.id} style={{background:a.done?"#fff":T.bg3,borderRadius:14,padding:"14px 16px",opacity:a.done?1:0.6,boxShadow:a.done?T.shadow:"none",position:"relative",overflow:"hidden"}}>
-<div style={{display:"flex",alignItems:"flex-start",gap:10}}>
-<div style={{fontSize:24,filter:a.done?"none":"grayscale(1)"}}>{a.icon}</div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
+{sorted.map(b=>{
+const isUnlocked=b.done;
+const unlockedAt=unlocked[b.id];
+return(
+<div key={b.id} style={{background:isUnlocked?"rgba(255,255,255,0.85)":"rgba(255,255,255,0.35)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:isUnlocked?"0.5px solid rgba(255,149,0,0.3)":"0.5px solid rgba(255,255,255,0.5)",borderRadius:16,padding:"18px 16px",boxShadow:isUnlocked?"0 4px 16px rgba(255,149,0,0.12),0 2px 4px rgba(0,0,0,0.06)":"none",position:"relative",overflow:"hidden",opacity:isUnlocked?1:0.55}}>
+{isUnlocked&&<div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#FF9500,#FF6200)",borderRadius:"16px 16px 0 0"}}/>}
+<div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+<div style={{fontSize:28,filter:isUnlocked?"none":"grayscale(1) opacity(0.4)",flexShrink:0,marginTop:2}}>{b.icon}</div>
 <div style={{flex:1,minWidth:0}}>
-<div style={{fontSize:13,fontWeight:700,color:a.done?T.text:T.textSub}}>{a.title}</div>
-<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{a.desc}</div>
-{!a.done&&a.progress>0&&<>
-<div style={{background:"rgba(0,0,0,0.08)",borderRadius:4,height:4,marginTop:8,overflow:"hidden"}}><div style={{background:"#FF9500",height:"100%",width:a.progress+"%",borderRadius:4}}/></div>
-{a.targetVal!=null&&<div style={{fontSize:10,color:"#FF9500",marginTop:4,fontWeight:600}}>{a.unit==="money"?`${fm(a.curVal||0,cur)} / ${fm(a.targetVal,cur)}`:`${a.curVal||0} / ${a.targetVal}`} (%{a.progress})</div>}
-</>}
-{a.done&&unlocked[a.id]&&<div style={{fontSize:10,color:"#FF9500",marginTop:4,fontWeight:600}}>{fd(unlocked[a.id])} tarihinde kazanıldı</div>}
+<div style={{fontSize:14,fontWeight:700,color:isUnlocked?"#000":"#8E8E93",marginBottom:3}}>{b.title}</div>
+<div style={{fontSize:11,color:isUnlocked?"#6C6C70":"#AEAEB2",lineHeight:1.4}}>{b.desc}</div>
+{b.repeatable&&isUnlocked&&<div style={{marginTop:8,display:"inline-flex",alignItems:"center",gap:4,background:"rgba(255,149,0,0.12)",borderRadius:20,padding:"3px 10px"}}><span style={{fontSize:13,fontWeight:800,color:"#FF9500"}}>{b.count}</span><span style={{fontSize:10,color:"#FF9500",fontWeight:600}}>kez kazanıldı</span></div>}
+{!isUnlocked&&(b.progress||0)>0&&<><div style={{background:"rgba(0,0,0,0.08)",borderRadius:4,height:4,marginTop:10,overflow:"hidden"}}><div style={{background:"#FF9500",height:"100%",width:(b.progress||0)+"%",borderRadius:4}}/></div><div style={{fontSize:10,color:"#FF9500",marginTop:4,fontWeight:600}}>{b.unit==="money"?`${fm(b.curVal||0,cur)} / ${fm(b.targetVal,cur)}`:`${b.curVal||0} / ${b.targetVal}`} · %{b.progress}</div></>}
+{isUnlocked&&!b.repeatable&&unlockedAt&&<div style={{fontSize:10,color:"#FF9500",marginTop:6,fontWeight:600}}>{fd(unlockedAt)} tarihinde kazanıldı</div>}
 </div>
-{a.done&&<div style={{color:"#FF9500",fontSize:16}}>✓</div>}
+{isUnlocked&&!b.repeatable&&<div style={{fontSize:18,color:"#FF9500",flexShrink:0}}>✦</div>}
 </div>
 </div>
-))}
+);})}
 </div>
 </div>);}
 
@@ -2779,5 +2829,67 @@ return(<div key={m} style={{background:"rgba(255,255,255,0.68)",backdropFilter:"
 </div>)}
 </div>}
 </div>);})}
+</div>}
+</div>);}
+
+function CariInReportsV({cari,setCari,cur,fm,fd,ft,T,sb,inp}){
+const[selC,setSelC]=useState(null);
+const[stT,setStT]=useState(null);
+const[delC,setDelC]=useState(null);
+const[showManual,setShowManual]=useState(false);
+const[manualForm,setManualForm]=useState({name:"",amount:"",note:""});
+const[partialInstForm,setPartialInstForm]=useState(null);
+
+const open=(cari||[]).filter(c=>!c.settled);
+const closed=(cari||[]).filter(c=>c.settled);
+const openT=open.reduce((s,c)=>s+c.total,0);
+
+const settle=(id,pt,discAmt)=>{setCari(prev=>prev.map(c=>c.id===id?{...c,settled:true,sAt:new Date().toISOString(),sPt:pt,settleDisc:discAmt||0}:c));setSelC(null);setStT(null);};
+const partialPay=(id,amount,pt)=>{setCari(prev=>prev.map(c=>{if(c.id!==id)return c;const newTotal=Math.max(0,c.total-amount);const payment={id:Date.now()+Math.random(),amount,pt,date:new Date().toISOString()};const newPayments=[...(c.payments||[]),payment];if(newTotal<=0)return{...c,total:0,settled:true,sAt:new Date().toISOString(),sPt:pt,payments:newPayments};return{...c,total:newTotal,payments:newPayments};}));setSelC(null);setStT(null);};
+const del=(id)=>{setCari(prev=>prev.filter(c=>c.id!==id));setDelC(null);};
+const addManualCari=()=>{if(!manualForm.name.trim()||!manualForm.amount)return;const amt=parseFloat(manualForm.amount)||0;const now=new Date().toISOString();setCari(prev=>[{id:Date.now()+Math.random(),g:manualForm.name.trim(),tbl:"Manuel",items:manualForm.note?[{name:manualForm.note,qty:1,price:amt}]:[],sub:amt,da:0,total:amt,oa:now,cAt:now,date:now.split("T")[0],settled:false},...prev]);setManualForm({name:"",amount:"",note:""});setShowManual(false);};
+
+return(<div style={{paddingTop:8}}>
+{selC&&<SettleModal selC={selC} cur={cur} fm={fm} ft={ft} T={T} sb={sb} stT={stT} setStT={setStT} setSelC={setSelC} settle={settle} partialPay={partialPay}/>}
+{delC&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:"rgba(255,255,255,0.9)",backdropFilter:"blur(20px)",borderRadius:16,padding:24,width:320}}><div style={{fontWeight:700,fontSize:15,color:T.danger,marginBottom:10}}>Cari Hesabı Sil</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 16px"}}>Kalıcı olarak silinecek.</p><div style={{display:"flex",gap:8}}><button onClick={()=>setDelC(null)} style={{...sb(T.bg3),flex:1,color:T.text}}>İptal</button><button onClick={()=>del(delC)} style={{...sb(T.danger),flex:1}}>Sil</button></div></div></div>}
+
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+<div style={{background:"rgba(175,82,222,0.1)",border:"1px solid rgba(175,82,222,0.3)",borderRadius:12,padding:"12px 16px",flex:1,marginRight:12}}>
+<div style={{fontSize:11,color:"#AF52DE",marginBottom:2}}>Açık Cari Toplam</div>
+<div style={{fontSize:22,fontWeight:800,color:"#AF52DE"}}>{fm(openT,cur)}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{open.length} açık hesap</div>
+</div>
+<button onClick={()=>setShowManual(p=>!p)} style={{...sb("rgba(175,82,222,0.15)"),color:"#AF52DE",border:"1px solid rgba(175,82,222,0.3)"}}>+ Manuel Ekle</button>
+</div>
+
+{showManual&&<div style={{background:"rgba(175,82,222,0.08)",border:"1px solid rgba(175,82,222,0.3)",borderRadius:12,padding:16,marginBottom:16}}>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+<div><label style={{display:"block",fontSize:11,color:"#AF52DE",fontWeight:600,marginBottom:4}}>İsim</label><input autoFocus placeholder="Örn: Ahmet Yılmaz" value={manualForm.name} onChange={e=>setManualForm(p=>({...p,name:e.target.value}))} style={inp}/></div>
+<div><label style={{display:"block",fontSize:11,color:"#AF52DE",fontWeight:600,marginBottom:4}}>Bakiye ({cur})</label><input type="number" placeholder="0" value={manualForm.amount} onChange={e=>setManualForm(p=>({...p,amount:e.target.value}))} style={inp}/></div>
+</div>
+<input placeholder="Not (opsiyonel)" value={manualForm.note} onChange={e=>setManualForm(p=>({...p,note:e.target.value}))} style={{...inp,marginBottom:10}}/>
+<button onClick={addManualCari} style={{...sb("#AF52DE")}}>Ekle</button>
+</div>}
+
+{open.length===0?<div style={{textAlign:"center",padding:"30px 0",color:T.textDim,background:T.bg2,borderRadius:12,marginBottom:16}}>Açık cari hesap yok.</div>
+:<div style={{marginBottom:20}}>{open.map(c=>(<div key={c.id} style={{background:"rgba(255,255,255,0.7)",backdropFilter:"blur(16px)",border:"1.5px solid rgba(175,82,222,0.25)",borderRadius:12,padding:"14px 16px",marginBottom:10}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+<div><div style={{fontWeight:700,fontSize:15}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>{fd(c.date)} · {c.tbl}</div></div>
+<div style={{fontWeight:800,fontSize:18,color:"#AF52DE"}}>{fm(c.total,cur)}</div>
+</div>
+{(c.payments||[]).length>0&&<div style={{fontSize:11,color:"#34C759",marginBottom:8}}>↓ {c.payments.length} kısmi ödeme yapıldı</div>}
+<div style={{display:"flex",gap:8}}>
+<button onClick={()=>{setSelC(c);setStT(null);}} style={{...sb("rgba(175,82,222,0.15)"),flex:2,color:"#AF52DE",border:"1px solid rgba(175,82,222,0.3)",fontSize:12}}>Tahsil Et</button>
+<button onClick={()=>setDelC(c.id)} style={{...sb("rgba(255,59,48,0.1)"),color:T.danger,border:"1px solid rgba(255,59,48,0.2)",fontSize:12}}>Sil</button>
+</div>
+</div>))}
+</div>}
+
+{closed.length>0&&<div>
+<div style={{fontWeight:700,fontSize:13,color:T.textSub,marginBottom:10}}>Tahsil Edilenler ({closed.length})</div>
+{closed.map(c=><div key={c.id} style={{display:"flex",justifyContent:"space-between",padding:"10px 14px",borderRadius:10,background:T.bg3,marginBottom:6}}>
+<div><div style={{fontSize:13,fontWeight:600,color:T.textSub,textDecoration:"line-through"}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textDim}}>{c.sAt?fd(c.sAt):""}</div></div>
+<div style={{fontSize:13,fontWeight:700,color:"#34C759"}}>{fm(c.total,cur)}</div>
+</div>)}
 </div>}
 </div>);}
