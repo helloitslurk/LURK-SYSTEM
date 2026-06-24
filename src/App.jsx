@@ -410,12 +410,15 @@ return(
 🔔
 {notifications.filter(n=>!n.read).length>0&&<span style={{position:"absolute",top:2,right:2,minWidth:16,height:16,borderRadius:8,background:"#FF3B30",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>{notifications.filter(n=>!n.read).length>9?"9+":notifications.filter(n=>!n.read).length}</span>}
 </button>
-<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setAuthChecked(false);setV("lurk");}} style={{padding:"6px 14px",borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"none",color:"#FF3B30",fontSize:12,fontWeight:600,cursor:"pointer"}}>Çıkış</button>
+<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title="Güvenli Çıkış">🔒</button>
 </div>}
-{isMobile&&<button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(118,118,128,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+{isMobile&&<div style={{display:"flex",alignItems:"center",gap:8}}>
+<button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(118,118,128,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
 🔔
 {notifications.filter(n=>!n.read).length>0&&<span style={{position:"absolute",top:2,right:2,minWidth:16,height:16,borderRadius:8,background:"#FF3B30",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>{notifications.filter(n=>!n.read).length>9?"9+":notifications.filter(n=>!n.read).length}</span>}
-</button>}
+</button>
+<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title="Güvenli Çıkış">🔒</button>
+</div>}
 </nav>
 
 {view!=="lurk"&&<div style={{padding:isMobile?"16px 16px 0":"24px 24px 0",maxWidth:860,margin:"0 auto"}}>
