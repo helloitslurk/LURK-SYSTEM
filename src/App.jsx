@@ -1874,6 +1874,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Aylık Hedef ({cur})</label><input type="number" min="0" placeholder="örn: 80000" value={cfgF.monthlyGoal||""} onChange={e=>setCfgF(p=>({...p,monthlyGoal:parseFloat(e.target.value)||0}))} style={inp}/></div>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Haftalık Hedef ({cur})</label><input type="number" min="0" placeholder="örn: 20000" value={cfgF.weeklyGoal||""} onChange={e=>setCfgF(p=>({...p,weeklyGoal:parseFloat(e.target.value)||0}))} style={inp}/></div>
 </div>
+</div>
 <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:14}}>Adisyon Ayarları</div>
 <label style={{display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
