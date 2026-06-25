@@ -189,6 +189,7 @@ const[cari,setCari]=useState([]);
 const[ecats,setEc]=useState(DEC);
 const[ok,setOk]=useState(false);
 const loadedRef=useRef(false);
+const mountedRef=useRef(false);
 const[toast,setToast]=useState(null);
 const[onlineOrders,setOnlineOrders]=useState([]);
 const[cat,setCat]=useState("Tümü");
@@ -247,12 +248,16 @@ const tm=await ld("tt_m",null);
 const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
+const finalEc=isOldEc?DEC:ec;
+// Eğer Supabase'de boş yazılmışsa DEC ile geri yaz
+if(!ec||ec.length===0){sv("lurk_ec",DEC);}
 const today=new Date().toISOString().split("T")[0];
 const validDay=d&&d.oa&&d.oa.split("T")[0]===today?d:null;
-setDay(validDay);setLogs(l);setCari(c);setEc(isOldEc?DEC:ec);setOnlineOrders(onl);setInstallments(inst);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
+setDay(validDay);setLogs(l);setCari(c||[]);setEc(finalEc);setOnlineOrders(onl);setInstallments(inst||[]);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
 setTacoLogs((tl||[]).filter(l=>l.type==="income"||l.type==="expense"));setTacoMenu(tm||[]);
 setOk(true);
-setTimeout(()=>{loadedRef.current=true;},100);
+// Bir sonraki render'da save'lere izin ver
+requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
 try{
 const savedAuth=localStorage.getItem("lurk_auth");
 const cfAuth=cf.sitePassword;
