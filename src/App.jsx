@@ -965,6 +965,23 @@ const prodTotalRevenue=productList.reduce((s,p)=>s+p.revenue,0);
 const prodSorted=[...productList].sort((a,b)=>prodSortBy==="qty"?b.qty-a.qty:b.revenue-a.revenue);
 const prodMaxVal=prodSorted.length>0?(prodSortBy==="qty"?prodSorted[0].qty:prodSorted[0].revenue):1;
 const prodBottomSorted=[...productList].sort((a,b)=>prodSortBy==="qty"?a.qty-b.qty:a.revenue-b.revenue).slice(0,5);
+
+// Müşteri verileri
+const custMap={};
+(orders||[]).filter(o=>o.g&&o.g.trim()&&o.g!=="--").forEach(o=>{
+  const name=o.g.trim();
+  const month=o.date?o.date.slice(0,7):"";
+  if(!custMap[name])custMap[name]={name,total:0,count:0,visits:new Set(),months:{},lastVisit:"",items:{}};
+  custMap[name].total+=o.total||0;
+  custMap[name].count++;
+  custMap[name].visits.add(o.date);
+  if(o.date>custMap[name].lastVisit)custMap[name].lastVisit=o.date;
+  if(month){if(!custMap[name].months[month])custMap[name].months[month]=0;custMap[name].months[month]+=o.total||0;}
+  (o.items||[]).forEach(it=>{if(!custMap[name].items[it.name])custMap[name].items[it.name]=0;custMap[name].items[it.name]+=it.qty||0;});
+});
+const custList=Object.values(custMap).map(c=>({...c,visits:c.visits.size,avgOrder:c.count>0?c.total/c.count:0})).sort((a,b)=>b.total-a.total);
+const totalCustCount=custList.length;
+const totalCustRev=custList.reduce((s,c)=>s+c.total,0);
 return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 
 {/* Header — Rozetler tarzı koyu banner */}
@@ -979,13 +996,14 @@ return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 </div>
 
 {/* Sekme stat kartları */}
-<div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:0,marginBottom:0}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:0,marginBottom:0}}>
 {[
 {k:"sales",l:"Satış",val:filteredLogs.reduce((s,l)=>s+(l.inc||0),0),sub:filteredLogs.length+" gün",color:"#34C759"},
 {k:"expenses",l:"Harcama",val:exp.reduce((s,e)=>s+e.amount,0),sub:exp.length+" kayıt",color:"#FF3B30"},
 {k:"installments",l:"Vadeler",val:(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0),sub:(installments||[]).length+" plan",color:"#FF9500"},
 {k:"credit",l:"Cari",val:(cari||[]).filter(c=>!c.settled).reduce((s,c)=>s+c.total,0),sub:(cari||[]).filter(c=>!c.settled).length+" açık",color:"#AF52DE"},
 {k:"products",l:"Ürün",val:prodTotalQty,sub:prodDaysWithData+" gün",color:"#3A9EFF",unit:"count"},
+{k:"customers",l:"Müşteri",val:totalCustCount,sub:totalCustRev>0?fm(totalCustRev,cur):"kayıt yok",color:"#F59E0B",unit:"count"},
 {k:"taco",l:"Taco",val:0,sub:"gelir & gider",color:"#FF6B35"},
 ].map(({k,l,val,sub,color,unit})=>{
 const isActive=mainT===k;
@@ -1364,6 +1382,7 @@ return(
 </div>
 )}
 
+{mainT==="customers"&&<CustomersV orders={orders} custList={custList} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>}
 {mainT==="credit"&&<CariInReportsV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp}/>}
 {mainT==="taco"&&<TacoTabV tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} cur={cur} fm={fm} fd={fd} fdl={fdl} tod={tod} inp={inp} sb={sb} T={T}/>}
 </div>
@@ -3021,6 +3040,140 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </div>);})}
 </div>}
 </div>);}
+
+function CustomersV({orders,custList,cur,fm,fd,T,inp}){
+const[selCust,setSelCust]=useState(null);
+const[sortBy,setSortBy]=useState("total");
+const[search,setSearch]=useState("");
+
+const sorted=[...custList]
+  .filter(c=>!search||c.name.toLowerCase().includes(search.toLowerCase()))
+  .sort((a,b)=>sortBy==="total"?b.total-a.total:sortBy==="visits"?b.visits-a.visits:b.avgOrder-a.avgOrder);
+
+const months=(cust)=>Object.entries(cust.months).sort((a,b)=>b[0].localeCompare(a[0]));
+const monthName=(m)=>{const[y,mo]=m.split("-");const n=["","Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];return n[parseInt(mo)]+" "+y;};
+const topItem=(cust)=>{const e=Object.entries(cust.items||{}).sort((a,b)=>b[1]-a[1]);return e[0]?e[0][0]:null;};
+const maxTotal=sorted.length>0?sorted[0].total:1;
+
+if(selCust){
+  const cust=custList.find(c=>c.name===selCust);
+  if(!cust)return null;
+  const custOrders=(orders||[]).filter(o=>o.g===cust.name).sort((a,b)=>b.date.localeCompare(a.date));
+  return(
+  <div>
+  <button onClick={()=>setSelCust(null)} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:20,padding:0}}>← Tüm Müşteriler</button>
+  <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:24}}>
+  <div style={{width:56,height:56,borderRadius:"50%",background:"rgba(245,158,11,0.15)",border:"2px solid rgba(245,158,11,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:"#F59E0B",textAlign:"center",padding:"0 4px",lineHeight:1.2}}>{cust.name.split(" ")[0]}</div>
+  <div><div style={{fontSize:22,fontWeight:800,color:T.text}}>{cust.name}</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>İlk ziyaret: {fd(Object.keys(cust.months||{}).sort()[0]?.slice(0,7)+"-01"||"")}</div></div>
+  </div>
+  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:20}}>
+  <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"16px 18px"}}>
+  <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Toplam Harcama</div>
+  <div style={{fontSize:20,fontWeight:800,color:"#F59E0B"}}>{fm(cust.total,cur)}</div>
+  </div>
+  <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"16px 18px"}}>
+  <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Ziyaret</div>
+  <div style={{fontSize:20,fontWeight:800,color:T.text}}>{cust.visits} gün</div>
+  <div style={{fontSize:11,color:T.textSub}}>{cust.count} adisyon</div>
+  </div>
+  <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"16px 18px"}}>
+  <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Ort. Adisyon</div>
+  <div style={{fontSize:20,fontWeight:800,color:T.text}}>{fm(Math.round(cust.avgOrder),cur)}</div>
+  </div>
+  </div>
+  {Object.keys(cust.items||{}).length>0&&<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"18px 20px",marginBottom:16}}>
+  <div style={{fontSize:12,fontWeight:700,color:T.textSub,marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>En Çok Sipariş Ettiği</div>
+  <div style={{display:"flex",flexDirection:"column",gap:8}}>
+  {Object.entries(cust.items).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([name,qty])=>(
+  <div key={name} style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+  <span style={{fontSize:13,color:T.text}}>{name}</span>
+  <span style={{fontSize:13,fontWeight:700,color:"#F59E0B"}}>{qty} adet</span>
+  </div>
+  ))}
+  </div>
+  </div>}
+  <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"18px 20px",marginBottom:16}}>
+  <div style={{fontSize:12,fontWeight:700,color:T.textSub,marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>Aylık Harcama</div>
+  {months(cust).map(([m,val])=>(
+  <div key={m} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"0.5px solid "+T.border}}>
+  <span style={{fontSize:13,color:T.text}}>{monthName(m)}</span>
+  <span style={{fontSize:14,fontWeight:700,color:"#F59E0B"}}>{fm(val,cur)}</span>
+  </div>
+  ))}
+  </div>
+  <div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"18px 20px"}}>
+  <div style={{fontSize:12,fontWeight:700,color:T.textSub,marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>Son Adisyonlar</div>
+  {custOrders.slice(0,10).map(o=>(
+  <div key={o.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:"0.5px solid "+T.border}}>
+  <div><div style={{fontSize:13,color:T.text}}>{fd(o.date)} · {o.tn}</div><div style={{fontSize:11,color:T.textSub}}>{(o.items||[]).map(i=>i.name).join(", ").slice(0,40)}</div></div>
+  <span style={{fontSize:14,fontWeight:700,color:T.text,marginLeft:12}}>{fm(o.total,cur)}</span>
+  </div>
+  ))}
+  </div>
+  </div>
+  );
+}
+
+return(
+<div>
+{custList.length===0?(
+<div style={{textAlign:"center",padding:"60px 0",color:T.textDim}}>
+<div style={{fontSize:32,marginBottom:10}}>👥</div>
+<div style={{fontSize:14}}>Henüz isimli müşteri kaydı yok.</div>
+<div style={{fontSize:12,color:T.textDim,marginTop:6}}>Adisyon kapatırken müşteri adı girilirse burada görünür.</div>
+</div>
+):(
+<>
+<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:20}}>
+<div style={{background:"rgba(245,158,11,0.1)",border:"1px solid rgba(245,158,11,0.25)",borderRadius:12,padding:"14px 16px"}}>
+<div style={{fontSize:10,color:"#F59E0B",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Müşteri Sayısı</div>
+<div style={{fontSize:24,fontWeight:800,color:"#F59E0B"}}>{custList.length}</div>
+</div>
+<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:"14px 16px"}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Toplam Harcama</div>
+<div style={{fontSize:18,fontWeight:800,color:T.text}}>{fm(custList.reduce((s,c)=>s+c.total,0),cur)}</div>
+</div>
+<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:"14px 16px"}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Ort. Harcama</div>
+<div style={{fontSize:18,fontWeight:800,color:T.text}}>{fm(Math.round(custList.reduce((s,c)=>s+c.total,0)/custList.length),cur)}</div>
+</div>
+</div>
+<div style={{display:"flex",gap:8,marginBottom:16}}>
+<input placeholder="Müşteri ara..." value={search} onChange={e=>setSearch(e.target.value)} style={{...inp,flex:1}}/>
+<div style={{display:"flex",gap:6}}>
+{[{k:"total",l:"Harcama"},{k:"visits",l:"Ziyaret"},{k:"avgOrder",l:"Ort."}].map(({k,l})=>(
+<button key={k} onClick={()=>setSortBy(k)} style={{padding:"8px 12px",borderRadius:8,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:sortBy===k?"#F59E0B":T.bg3,color:sortBy===k?"#000":T.textSub,whiteSpace:"nowrap"}}>{l}</button>
+))}
+</div>
+</div>
+<div style={{display:"flex",flexDirection:"column",gap:8}}>
+{sorted.map((c,i)=>{
+const barPct=maxTotal>0?c.total/maxTotal*100:0;
+const top=topItem(c);
+return(
+<button key={c.name} onClick={()=>setSelCust(c.name)} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:"14px 16px",cursor:"pointer",textAlign:"left",width:"100%",position:"relative",overflow:"hidden"}}>
+<div style={{position:"absolute",bottom:0,left:0,height:2,width:barPct+"%",background:"rgba(245,158,11,0.4)",borderRadius:"0 2px 0 0"}}/>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+<div style={{display:"flex",alignItems:"center",gap:12}}>
+<div style={{width:36,height:36,borderRadius:"50%",background:"rgba(245,158,11,0.12)",border:"1.5px solid rgba(245,158,11,0.25)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:800,color:"#F59E0B",flexShrink:0}}>{c.name.split(" ")[0]}</div>
+<div>
+<div style={{fontSize:14,fontWeight:700,color:T.text}}>{c.name}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{c.visits} gün · {c.count} adisyon{top?" · ☕ "+top:""}</div>
+</div>
+</div>
+<div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
+<div style={{fontSize:16,fontWeight:800,color:"#F59E0B"}}>{fm(c.total,cur)}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:1}}>ort. {fm(Math.round(c.avgOrder),cur)}</div>
+</div>
+</div>
+</button>
+);})}
+</div>
+</>
+)}
+</div>
+);
+}
 
 function CariInReportsV({cari,setCari,cur,fm,fd,ft,T,sb,inp}){
 const[selC,setSelC]=useState(null);
