@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const T={bg:"#0D0D0D",bg2:"#161616",bg3:"#1E1E1E",border:"rgba(255,255,255,0.08)",border2:"rgba(255,255,255,0.12)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#F0F0F0",textSub:"#888",textDim:"#444",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 12px rgba(0,0,0,0.4),0 0 0 0.5px rgba(255,255,255,0.06) inset",shadowM:"0 8px 32px rgba(0,0,0,0.6),0 0 0 0.5px rgba(255,255,255,0.06) inset",glass:"rgba(255,255,255,0.05)"};
 
@@ -188,7 +188,7 @@ const[logs,setLogs]=useState([]);
 const[cari,setCari]=useState([]);
 const[ecats,setEc]=useState(DEC);
 const[ok,setOk]=useState(false);
-const loadedRef=React.useRef(false);
+const loadedRef=useRef(false);
 const[toast,setToast]=useState(null);
 const[onlineOrders,setOnlineOrders]=useState([]);
 const[cat,setCat]=useState("Tümü");
