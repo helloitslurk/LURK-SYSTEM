@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-const T={bg:"#0D0D0D",bg2:"#161616",bg3:"#1E1E1E",border:"rgba(255,255,255,0.08)",border2:"rgba(255,255,255,0.12)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#F0F0F0",textSub:"#888",textDim:"#444",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 12px rgba(0,0,0,0.4),0 0 0 0.5px rgba(255,255,255,0.06) inset",shadowM:"0 8px 32px rgba(0,0,0,0.6),0 0 0 0.5px rgba(255,255,255,0.06) inset",glass:"rgba(255,255,255,0.05)"};
+const DARK={bg:"#0D0D0D",bg2:"#161616",bg3:"#1E1E1E",border:"rgba(255,255,255,0.08)",border2:"rgba(255,255,255,0.12)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#F0F0F0",textSub:"#888",textDim:"#444",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 12px rgba(0,0,0,0.4),0 0 0 0.5px rgba(255,255,255,0.06) inset",shadowM:"0 8px 32px rgba(0,0,0,0.6),0 0 0 0.5px rgba(255,255,255,0.06) inset",glass:"rgba(255,255,255,0.05)",isDark:true};
+
+const LIGHT={bg:"#F2F2F7",bg2:"rgba(255,255,255,0.9)",bg3:"rgba(118,118,128,0.12)",border:"rgba(60,60,67,0.12)",border2:"rgba(60,60,67,0.2)",accent:"#34C759",accentL:"#248A3D",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#6C6C70",textDim:"#AEAEB2",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 8px rgba(0,0,0,0.08),0 0 0 0.5px rgba(255,255,255,0.5) inset",shadowM:"0 8px 32px rgba(0,0,0,0.12),0 0 0 0.5px rgba(255,255,255,0.4) inset",glass:"rgba(255,255,255,0.7)",isDark:false};
 
 const MENU=[
 {id:101,name:"sigaralık filtre",price:50,cat:"Kahve",on:true},{id:102,name:"filtre kahve",price:140,cat:"Kahve",on:true},{id:103,name:"americano",price:150,cat:"Kahve",on:true},{id:104,name:"latte",price:180,cat:"Kahve",on:true},{id:105,name:"salted caramel latte",price:250,cat:"Kahve",on:true},{id:106,name:"cortado",price:150,cat:"Kahve",on:true},{id:107,name:"flatwhite",price:170,cat:"Kahve",on:true},{id:108,name:"süt reçelli latte",price:250,cat:"Kahve",on:true},{id:109,name:"mocha",price:230,cat:"Kahve",on:true},{id:110,name:"vanilya latte",price:200,cat:"Kahve",on:true},{id:111,name:"kış lattesi",price:200,cat:"Kahve",on:true},{id:112,name:"v60",price:220,cat:"Kahve",on:true},{id:113,name:"espresso",price:140,cat:"Kahve",on:true},{id:114,name:"cappuccino",price:180,cat:"Kahve",on:true},
@@ -44,8 +46,6 @@ const ld=async(k,fb)=>{
   }catch(e){return fb;}
 };
 
-const inp={background:"rgba(255,255,255,0.07)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
-const sb=(bg,col="#fff")=>({background:bg,border:"none",color:col,borderRadius:10,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)"});
 const buildAchievements=()=>[];
 
 // --- ROZETLER ---
@@ -173,7 +173,12 @@ function buildBadges({logs,orders,cari,installments,fm,cur}){
 }
 
 export default function App(){
-const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"settings",l:"Ayarlar"}];
+const[darkMode,setDarkMode]=useState(()=>{try{return localStorage.getItem("nicchia_theme")!=="light";}catch{return true;}});
+const T=darkMode?DARK:LIGHT;
+const inp={background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
+const sb=(bg,col)=>({background:bg,border:"none",color:col||(T.isDark?"#fff":T.text),borderRadius:10,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer",boxShadow:T.isDark?"0 2px 8px rgba(0,0,0,0.4)":"0 1px 4px rgba(0,0,0,0.1)"});
+const toggleTheme=()=>{setDarkMode(p=>{const next=!p;try{localStorage.setItem("nicchia_theme",next?"dark":"light");}catch{}return next;});};
+const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"settings",l:"Ayarlar"}];
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
@@ -403,7 +408,7 @@ if(!ok||!authChecked)return <div style={{display:"flex",alignItems:"center",just
 if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} T={T}/>;
 
 return(
-<div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:"#0D0D0D",minHeight:"100vh",color:T.text}}>
+<div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:T.bg,minHeight:"100vh",color:T.text}}>
 
 {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",zIndex:9999,background:toast.t==="ok"?"rgba(52,199,89,0.12)":"#FDEFED",color:toast.t==="ok"?T.success:T.danger,border:"1px solid "+(toast.t==="ok"?"#8FE3A8":"rgba(255,59,48,0.3)"),padding:"10px 20px",borderRadius:20,fontWeight:600,fontSize:13,whiteSpace:"nowrap"}}>{toast.m}</div>}
 
@@ -418,7 +423,7 @@ return(
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:16,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"Dashboard":l}</button>)}
+{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:16,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":l}</button>)}
 <button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:16,marginBottom:4,textAlign:"left"}}>
 🔔 Bildirimler
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
@@ -446,6 +451,7 @@ return(
 {notifications.filter(n=>!n.read).length>0&&<span style={{position:"absolute",top:2,right:2,minWidth:16,height:16,borderRadius:8,background:"#FF3B30",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>{notifications.filter(n=>!n.read).length>9?"9+":notifications.filter(n=>!n.read).length}</span>}
 </button>
 <button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title="Güvenli Çıkış">🔒</button>
+<button onClick={toggleTheme} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:darkMode?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title={darkMode?"Aydınlık Tema":"Karanlık Tema"}>{darkMode?"☀️":"🌙"}</button>
 </div>}
 {isMobile&&<div style={{display:"flex",alignItems:"center",gap:8}}>
 <button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(118,118,128,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
@@ -454,15 +460,16 @@ return(
 </button>
 <button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title="Güvenli Çıkış">🔒</button>
 </div>}
+<button onClick={toggleTheme} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:darkMode?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title={darkMode?"Aydınlık Tema":"Karanlık Tema"}>{darkMode?"☀️":"🌙"}</button>
 </nav>
 
 {view!=="lurk"&&<div style={{padding:isMobile?"16px 16px 0":"24px 24px 0",maxWidth:860,margin:"0 auto"}}>
-<div style={{fontSize:isMobile?18:22,fontWeight:800,letterSpacing:-0.5,color:"#fff",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</div>
+<div style={{fontSize:isMobile?18:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</div>
 </div>}
 
 {gM&&view!=="order"&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>{setGM(null);setSel(null);}} T={T}/></div>}
 
-{view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile}/>}
+{view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile} T={T}/>}
 {view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile}/>}
 
 {view==="tables"&&(
@@ -506,7 +513,7 @@ return(
 {fMenü.map(item=><button key={item.id} onClick={()=>addItem(curT.id,item)} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"left",color:T.text}}><div style={{fontWeight:600,fontSize:11,marginBottom:4}}>{item.name}</div><div style={{fontWeight:800,fontSize:13,color:T.accentL}}>{fm(item.price,cur)}</div></button>)}
 </div>
 </div>
-<div style={{background:"#111",borderLeft:"0.5px solid rgba(255,255,255,0.08)",display:"flex",flexDirection:"column"}}>
+<div style={{background:T.isDark?"#111":T.bg2,borderLeft:"0.5px solid rgba(255,255,255,0.08)",display:"flex",flexDirection:"column"}}>
 <div style={{padding:"12px 16px",borderBottom:"0.5px solid "+T.border,fontWeight:700,fontSize:13,color:T.accentL,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <span>Sipariş</span>
 <button onClick={()=>setGM(curT.id)} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:6,padding:"3px 8px",color:T.textSub,cursor:"pointer",fontSize:11}}>{curT.g||"Müşteri"}</button>
@@ -534,7 +541,7 @@ return(
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T} cfg={cfg}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
-{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari}/>}
+{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
@@ -544,7 +551,7 @@ return(
 </div>
 );}
 
-function HomeV({tables,orders,exp,todO,todI,day,cari,cfg,cur,fm,ft,fd,tod,setV,openDay,closeDay,dayCon,setDayCon,isMobile}){
+function HomeV({tables,orders,exp,todO,todI,day,cari,cfg,cur,fm,ft,fd,tod,setV,openDay,closeDay,dayCon,setDayCon,isMobile,T=DARK}){
 const now=new Date();
 const cash=todO.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const card=todO.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
@@ -582,7 +589,7 @@ return(
 <div style={{padding:isMobile?"16px":"28px",maxWidth:980,margin:"0 auto"}}>
 
 {monthlyGoal>0&&<div style={{marginBottom:20}}>
-{<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",boxShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>
+{<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",boxShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
 <div style={{fontSize:11,color:"#8E8E93",fontWeight:600}}>Aylık Hedef</div>
 <div style={{fontSize:11,fontWeight:700,color:monthPct>=100?"#34C759":monthPct>=70?"#FF9500":"#FF3B30"}}>{monthPct}%</div>
@@ -607,7 +614,7 @@ return(
 </div>
 <div style={{display:"flex",gap:10}}>
 {!day?<button onClick={openDay} style={{background:"#34C759",border:"none",color:"#fff",padding:"12px 22px",borderRadius:12,fontWeight:600,fontSize:14,cursor:"pointer"}}>Günü Aç</button>
-:dayCon?<div style={{display:"flex",gap:8,alignItems:"center",background:"#1a1a1a",borderRadius:12,padding:"8px 14px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><span style={{fontSize:12,color:"#8E8E93"}}>Günü kapat?</span><button onClick={()=>setDayCon(false)} style={{background:"rgba(118,118,128,0.12)",border:"none",color:"#F0F0F0",borderRadius:8,padding:"7px 12px",fontWeight:600,fontSize:12,cursor:"pointer"}}>İptal</button><button onClick={closeDay} style={{background:"#FF3B30",border:"none",color:"#fff",borderRadius:8,padding:"7px 14px",fontWeight:600,fontSize:12,cursor:"pointer"}}>Evet</button></div>
+:dayCon?<div style={{display:"flex",gap:8,alignItems:"center",background:T.isDark?"#1a1a1a":T.bg2,borderRadius:12,padding:"8px 14px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><span style={{fontSize:12,color:"#8E8E93"}}>Günü kapat?</span><button onClick={()=>setDayCon(false)} style={{background:"rgba(118,118,128,0.12)",border:"none",color:"#F0F0F0",borderRadius:8,padding:"7px 12px",fontWeight:600,fontSize:12,cursor:"pointer"}}>İptal</button><button onClick={closeDay} style={{background:"#FF3B30",border:"none",color:"#fff",borderRadius:8,padding:"7px 14px",fontWeight:600,fontSize:12,cursor:"pointer"}}>Evet</button></div>
 :<button onClick={()=>setDayCon(true)} style={{background:"rgba(118,118,128,0.12)",border:"none",color:"#FF9500",padding:"12px 18px",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer"}}>Günü Kapat</button>}
 </div>
 </div>
@@ -617,22 +624,22 @@ return(
 <div style={{fontSize:36,fontWeight:700,letterSpacing:-1}}>{fm(todI,cur)}</div>
 <div style={{fontSize:12,opacity:0.8,marginTop:6}}>{todO.length} adisyon</div>
 </div>
-<div style={{background:"#1a1a1a",borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Nakit</div><div style={{fontSize:22,fontWeight:700,color:"#F0F0F0"}}>{fm(cash,cur)}</div>{todI>0&&<div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>%{Math.round(cash/todI*100)}</div>}</div>
-<div style={{background:"#1a1a1a",borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Kart</div><div style={{fontSize:22,fontWeight:700,color:"#007AFF"}}>{fm(card,cur)}</div>{todI>0&&<div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>%{Math.round(card/todI*100)}</div>}</div>
-{cred>0&&<div style={{background:"#1a1a1a",borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(cred,cur)}</div></div>}
-<div style={{background:"#1a1a1a",borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Dolu Masa</div><div style={{fontSize:22,fontWeight:700,color:"#F0F0F0"}}>{openT.length}<span style={{fontSize:14,fontWeight:400,color:"#8E8E93"}}> / {tables.length}</span></div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{fm(openT.reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0),cur)} açık</div></div>
-<div style={{background:"#1a1a1a",borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Harcama</div><div style={{fontSize:22,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>Net: <span style={{color:todI-todE>=0?"#34C759":"#FF3B30",fontWeight:600}}>{fm(todI-todE,cur)}</span></div></div>
-{oCari.length>0&&<div style={{background:"#1a1a1a",borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Açık Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(oCari.reduce((s,c)=>s+c.total,0),cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{oCari.length} bekliyor</div></div>}
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Nakit</div><div style={{fontSize:22,fontWeight:700,color:"#F0F0F0"}}>{fm(cash,cur)}</div>{todI>0&&<div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>%{Math.round(cash/todI*100)}</div>}</div>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Kart</div><div style={{fontSize:22,fontWeight:700,color:"#007AFF"}}>{fm(card,cur)}</div>{todI>0&&<div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>%{Math.round(card/todI*100)}</div>}</div>
+{cred>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(cred,cur)}</div></div>}
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Dolu Masa</div><div style={{fontSize:22,fontWeight:700,color:"#F0F0F0"}}>{openT.length}<span style={{fontSize:14,fontWeight:400,color:"#8E8E93"}}> / {tables.length}</span></div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{fm(openT.reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0),cur)} açık</div></div>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Harcama</div><div style={{fontSize:22,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>Net: <span style={{color:todI-todE>=0?"#34C759":"#FF3B30",fontWeight:600}}>{fm(todI-todE,cur)}</span></div></div>
+{oCari.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Açık Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(oCari.reduce((s,c)=>s+c.total,0),cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{oCari.length} bekliyor</div></div>}
 </div>
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?12:16}}>
-<div style={{background:"#1a1a1a",borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
 <div style={{fontWeight:600,fontSize:15,marginBottom:18}}>Son 7 Gün</div>
 <div style={{display:"flex",gap:6,alignItems:"flex-end",height:90}}>
 {l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{fontSize:9,color:"#8E8E93",textAlign:"center"}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":"#8E8E93",fontWeight:isT?700:400}}>{d.lbl}</div></div>);})}
 </div>
 </div>
 </div>
-{openT.length>0&&<div style={{background:"#1a1a1a",borderRadius:16,padding:20,marginTop:16,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
+{openT.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,marginTop:16,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><div style={{fontWeight:600,fontSize:15}}>Açık Masalar</div><button onClick={()=>setV("tables")} style={{fontSize:13,color:"#34C759",background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Tümü</button></div>
 <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:8}}>
 {openT.map(t=>{const tot=t.order.reduce((s,o)=>s+o.price*o.qty,0);const dur=t.oa?Math.floor((Date.now()-new Date(t.oa))/60000):0;return(<div key={t.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:"rgba(52,199,89,0.1)",borderRadius:12}}><div><span style={{fontWeight:600,fontSize:14}}>{t.lbl}</span>{t.g&&<div style={{fontSize:11,color:"#34C759",marginTop:1}}>{t.g}</div>}<div style={{fontSize:11,color:"#8E8E93",marginTop:1}}>{dur}dk - {t.order.length} kalem</div></div><div style={{fontWeight:700,color:"#34C759",fontSize:15}}>{fm(tot,cur)}</div></div>);})}
@@ -643,7 +650,7 @@ return(
 
 function GuestM({req,onOk,onSkip,T}){
 const[n,setN]=useState("");
-return(<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:16,padding:28,width:320}}>
+return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:16,padding:28,width:320}}>
 <div style={{fontWeight:800,fontSize:17,marginBottom:16}}>Müşteri Adı</div>
 <input autoFocus placeholder="Müşteri adi..." value={n} onChange={e=>setN(e.target.value)} onKeyDown={e=>e.key==="Enter"&&n.trim()&&onOk(n.trim())} style={{background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"9px 12px",color:T.text,fontSize:14,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:16}}/>
 <div style={{display:"flex",gap:10}}>
@@ -658,7 +665,7 @@ const[val,setVal]=useState("");
 const nv=parseFloat(val)||0;
 const da=type==="percent"?total*(nv/100):Math.min(nv,total);
 const af=total-da;
-return(<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:16,padding:28,width:340}}>
+return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:16,padding:28,width:340}}>
 <div style={{fontWeight:800,fontSize:17,marginBottom:16}}>İndirim</div>
 <div style={{display:"flex",gap:8,marginBottom:14}}>
 {[{k:"percent",l:"Yüzde (%)"},{k:"fixed",l:"Tutar"}].map(({k,l})=><button key={k} onClick={()=>{setType(k);setVal("");}} style={{flex:1,padding:"8px",borderRadius:8,border:"2px solid "+(type===k?T.accent:T.border),background:type===k?T.accentD:T.bg3,color:type===k?"#fff":T.textSub,fontWeight:700,fontSize:12,cursor:"pointer"}}>{l}</button>)}
@@ -726,7 +733,7 @@ const splits=result?.splits||null;
 const closeTable=result?.closeTable??true;
 const atot=lines.reduce((s,l)=>s+(parseFloat(l.amount)||0),0);
 const rem=fin-atot;
-return(<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"90vh",overflowY:"auto"}}>
+return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"90vh",overflowY:"auto"}}>
 <div style={{padding:"18px 20px",borderBottom:"0.5px solid "+T.border,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:800,fontSize:17}}>Ödeme Al</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>{table.lbl} - <span style={{color:T.accentL,fontWeight:700}}>{fm(fin,cur)}</span></div></div>
 <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:T.textSub}}>x</button>
@@ -799,7 +806,7 @@ return(<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.
 </div>
 </div>);}
 
-function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari}){
+function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari,T=DARK}){
 const CC=["#34C759","#34C759","#FF9500","#007AFF","#AF52DE","#FF3B30","#FF9500","#248A3D"];
 const[dateFrom,setDateFrom]=useState("");
 const[dateTo,setDateTo]=useState("");
@@ -902,7 +909,9 @@ allInstallmentRows.push({...inst,planId:plan.id,planName:plan.name,planCount:pla
 allInstallmentRows.sort((a,b)=>a.due.localeCompare(b.due));
 const unpaidRows=allInstallmentRows.filter(r=>!r.paid);
 const overdueCount=unpaidRows.filter(r=>daysUntil(r.due)<0).length;
+const overdueTotal=unpaidRows.filter(r=>daysUntil(r.due)<0).reduce((s,r)=>s+r.amount,0);
 const upcomingCount=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).length;
+const upcomingTotal=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).reduce((s,r)=>s+r.amount,0);
 const totalUnpaid=unpaidRows.reduce((s,r)=>s+r.amount,0);
 
 const[prodSortBy,setProdSortBy]=useState("qty");
@@ -959,12 +968,12 @@ const prodBottomSorted=[...productList].sort((a,b)=>prodSortBy==="qty"?a.qty-b.q
 return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 
 {/* Header — Rozetler tarzı koyu banner */}
-<div style={{background:"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)",borderBottom:"1px solid #222",padding:"28px 28px 0",marginBottom:0}}>
+<div style={{background:T.isDark?"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)":"linear-gradient(180deg,#fff 0%,#F2F2F7 100%)",borderBottom:"1px solid "+(T.isDark?"#222":"rgba(60,60,67,0.12)"),padding:"28px 28px 0",marginBottom:0}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:24}}>
 <div>
 <h2 style={{margin:0,fontSize:26,fontWeight:800,letterSpacing:-0.5,color:"#fff"}}>Raporlar</h2>
 </div>
-<button onClick={()=>setV("import-old")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:"#111",border:"1px solid #2a2a4e",borderRadius:9,cursor:"pointer",fontSize:11,fontWeight:600,color:"#6B7FFF"}}>
+<button onClick={()=>setV("import-old")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:T.isDark?"#111":T.bg2,border:"1px solid #2a2a4e",borderRadius:9,cursor:"pointer",fontSize:11,fontWeight:600,color:"#6B7FFF"}}>
 📁 Before NICCHIA
 </button>
 </div>
@@ -992,7 +1001,7 @@ return(
   transition:"all 0.15s",
   minWidth:0,
 }}>
-<div style={{fontSize:9,color:isActive?color:"#444",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{l}</div>
+<div style={{fontSize:9,color:isActive?color:T.textDim,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{l}</div>
 <div style={{fontSize:15,fontWeight:800,color:isActive?"#fff":"#555",letterSpacing:-0.3,marginBottom:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
 {unit==="count"?val.toLocaleString("tr-TR"):fm(val,cur)}
 </div>
@@ -1005,24 +1014,24 @@ return(
 {/* Tarih aralığı */}
 {mainT!=="products"&&mainT!=="taco"&&mainT!=="installments"&&mainT!=="credit"&&<div style={{padding:"14px 28px",borderBottom:"1px solid #1a1a1a",display:"flex",justifyContent:"flex-end"}}>
 <div style={{position:"relative"}}>
-  <button onClick={()=>setShowDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",background:rangeLabel?"rgba(52,199,89,0.1)":"#1a1a1a",border:"1px solid "+(rangeLabel?"#34C75966":"#2a2a2a"),borderRadius:8,cursor:"pointer",fontSize:12,fontWeight:600,color:rangeLabel?"#34C759":"#555"}}>
+  <button onClick={()=>setShowDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",background:rangeLabel?"rgba(52,199,89,0.1)":T.isDark?"#1a1a1a":T.bg2,border:"1px solid "+(rangeLabel?"#34C75966":"#2a2a2a"),borderRadius:8,cursor:"pointer",fontSize:12,fontWeight:600,color:rangeLabel?"#34C759":"#555"}}>
     📅 {rangeLabel||"Tarih Aralığı"}
     {rangeLabel&&<span onClick={e=>{e.stopPropagation();clearRange();}} style={{marginLeft:4,color:"#34C759",fontWeight:800,fontSize:14,lineHeight:1}}>×</span>}
   </button>
   {showDatePicker&&(
-    <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"#1a1a1a",border:"1px solid #2a2a2a",borderRadius:12,padding:16,boxShadow:"0 8px 32px rgba(0,0,0,0.6)",zIndex:100,minWidth:260}}>
-      <div style={{fontSize:11,color:"#666",fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
+    <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:T.isDark?"#1a1a1a":T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:16,boxShadow:"0 8px 32px rgba(0,0,0,0.6)",zIndex:100,minWidth:260}}>
+      <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
-        <button onClick={()=>setQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:"#ccc"}}>Son 7 Gün</button>
-        <button onClick={()=>setQuickRange(14)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:"#ccc"}}>Son 14 Gün</button>
-        <button onClick={()=>setQuickRange(30)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:"#ccc"}}>Son 1 Ay</button>
-        <button onClick={()=>setQuickRange(90)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:"#ccc"}}>Son 3 Ay</button>
-        <button onClick={setQuickMonth} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:"#ccc"}}>Bu Ay</button>
+        <button onClick={()=>setQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:T.textSub}}>Son 7 Gün</button>
+        <button onClick={()=>setQuickRange(14)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:T.textSub}}>Son 14 Gün</button>
+        <button onClick={()=>setQuickRange(30)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:T.textSub}}>Son 1 Ay</button>
+        <button onClick={()=>setQuickRange(90)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:T.textSub}}>Son 3 Ay</button>
+        <button onClick={setQuickMonth} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"#2a2a2a",color:T.textSub}}>Bu Ay</button>
       </div>
-      <div style={{fontSize:11,color:"#666",fontWeight:600,marginBottom:8}}>Özel Aralık</div>
-      <div style={{fontSize:10,color:"#444",marginBottom:6}}>Başlangıç</div>
+      <div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:8}}>Özel Aralık</div>
+      <div style={{fontSize:10,color:T.textDim,marginBottom:6}}>Başlangıç</div>
       <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{...inp,marginBottom:10}}/>
-      <div style={{fontSize:10,color:"#444",marginBottom:6}}>Bitiş</div>
+      <div style={{fontSize:10,color:T.textDim,marginBottom:6}}>Bitiş</div>
       <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{...inp,marginBottom:14}}/>
       <div style={{display:"flex",gap:8}}>
         <button onClick={clearRange} style={{...sb(T.bg3),flex:1,color:T.textSub,padding:"8px 0",fontSize:12}}>Temizle</button>
@@ -1048,7 +1057,7 @@ const mLogs=salesByMonth[m];
 const mTotal=mLogs.reduce((s,l)=>s+(l.inc||0),0);
 const mNet=mLogs.reduce((s,l)=>s+(l.net||0),0);
 const isOpen=curOpen===m;
-return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",overflow:"hidden"}}>
+return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",overflow:"hidden"}}>
 <button onClick={()=>setOpenSalesMonth(isOpen?null:m)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
 <div><div style={{fontWeight:700,fontSize:16,color:"#F0F0F0"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{mLogs.length} gün kapatıldı</div></div>
 <div style={{display:"flex",alignItems:"center",gap:16}}>
@@ -1057,7 +1066,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 </div>
 </button>
 {isOpen&&<div style={{borderTop:"0.5px solid rgba(0,0,0,0.08)",display:"flex",flexDirection:"column",gap:0}}>
-{mLogs.map((log,i)=><button key={log.id} onClick={()=>setSelLog(log)} style={{background:i%2===0?"#1a1a1a":"#161616",border:"none",borderBottom:i<mLogs.length-1?"0.5px solid rgba(0,0,0,0.06)":"none",padding:"14px 20px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+{mLogs.map((log,i)=><button key={log.id} onClick={()=>setSelLog(log)} style={{background:i%2===0?T.isDark?"#1a1a1a":T.bg2:T.bg2,border:"none",borderBottom:i<mLogs.length-1?"0.5px solid rgba(0,0,0,0.06)":"none",padding:"14px 20px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:600,fontSize:14}}>{fdl(log.date)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:1}}>{ft(log.oa)} - {ft(log.ca)} · {log.count} adisyon</div></div>
 <div style={{textAlign:"right",display:"flex",alignItems:"center",gap:12}}>
 <div><div style={{fontWeight:700,fontSize:15,color:"#34C759"}}>{fm(log.inc,cur)}</div><div style={{fontSize:11,color:log.net>=0?"#34C759":"#FF3B30"}}>Net: {fm(log.net,cur)}</div></div>
@@ -1072,7 +1081,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
 <button onClick={()=>setShowEF(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",background:showEF?"rgba(118,118,128,0.12)":"#34C759",border:"1px solid "+(showEF?"rgba(60,60,67,0.18)":"transparent"),borderRadius:9,color:showEF?"#555":"#fff",fontWeight:600,fontSize:12,cursor:"pointer"}}>{showEF?"İptal":"+ Harcama Ekle"}</button>
 </div>
-{showEF&&<div style={{background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
+{showEF&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
 <input placeholder="Açıklama" value={expF.desc} onChange={e=>setExpF(p=>({...p,desc:e.target.value}))} style={inp} autoFocus/>
 <input type="number" placeholder="Tutar" value={expF.amount} onChange={e=>setExpF(p=>({...p,amount:e.target.value}))} style={inp}/>
@@ -1086,7 +1095,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 {expDay&&<button onClick={()=>setExpDay(null)} style={{fontSize:11,background:"rgba(118,118,128,0.12)",border:"1px solid rgba(60,60,67,0.18)",borderRadius:6,padding:"3px 10px",color:"#8E8E93",cursor:"pointer"}}>{fmtM(expMon)}</button>}
 </div>}
 {!expMon&&(exp.length===0?<div style={{textAlign:"center",padding:"60px 0",color:"#C7C7CC"}}>Harcama yok.</div>
-:<div>{months.map(m=>{const md=MM[m];return(<button key={m} onClick={()=>{setExpMon(m);setExpDay(null);}} style={{width:"100%",background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:"16px 18px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",marginBottom:10,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+:<div>{months.map(m=>{const md=MM[m];return(<button key={m} onClick={()=>{setExpMon(m);setExpDay(null);}} style={{width:"100%",background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:"16px 18px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",marginBottom:10,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:700,fontSize:15}}>{fmtM(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{Object.keys(md.days).length} gun - {exp.filter(e=>e.date.slice(0,7)===m).length} kayıt</div></div>
 <div style={{display:"flex",alignItems:"center",gap:12}}><div style={{fontWeight:800,fontSize:18,color:"#FF3B30"}}>{fm(md.total,cur)}</div><span style={{color:"#8E8E93"}}>&rsaquo;</span></div>
 </button>);})}</div>)}
@@ -1095,7 +1104,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 <div><div style={{fontSize:11,color:"#8E8E93",marginBottom:3}}>{fmtM(expMon)}</div><div style={{fontSize:24,fontWeight:800,color:"#FF3B30"}}>{fm(sMD.total,cur)}</div></div>
 <div style={{fontSize:12,color:"#8E8E93"}}>{Object.keys(sMD.days).length} gun</div>
 </div>
-<div style={{background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
 <div style={{fontSize:11,fontWeight:700,color:"#8E8E93",marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>Kategori</div>
 {Object.entries(sMD.cats).sort((a,b)=>b[1]-a[1]).map(([cat,amt],ci)=>{const pct=sMD.total>0?Math.round(amt/sMD.total*100):0;return(<div key={cat} style={{marginBottom:14}}>
 <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:10,height:10,borderRadius:"50%",background:CC[ci%CC.length]}}/><span style={{fontSize:13}}>{cat}</span></div><div style={{display:"flex",gap:10}}><span style={{fontSize:13,fontWeight:700,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{fontSize:12,color:"#8E8E93",minWidth:32,textAlign:"right"}}>%{pct}</span></div></div>
@@ -1103,7 +1112,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 </div>);})}
 </div>
 <div style={{fontSize:11,fontWeight:700,color:"#8E8E93",textTransform:"uppercase",letterSpacing:0.5,marginBottom:10}}>Günlere Göre</div>
-{Object.entries(sMD.days).sort((a,b)=>b[0].localeCompare(a[0])).map(([day2,amt])=><button key={day2} onClick={()=>setExpDay(day2)} style={{width:"100%",background:"#1a1a1a",border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"12px 16px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+{Object.entries(sMD.days).sort((a,b)=>b[0].localeCompare(a[0])).map(([day2,amt])=><button key={day2} onClick={()=>setExpDay(day2)} style={{width:"100%",background:T.isDark?"#1a1a1a":T.bg2,border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"12px 16px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:600,fontSize:13}}>{fd(day2)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{exp.filter(e=>e.date===day2).length} kayıt</div></div>
 <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontWeight:700,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{color:"#8E8E93"}}>&rsaquo;</span></div>
 </button>)}
@@ -1113,13 +1122,13 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 <div><div style={{fontSize:11,color:"#8E8E93",marginBottom:3}}>{fd(expDay)}</div><div style={{fontSize:22,fontWeight:800,color:"#FF3B30"}}>{fm(stot,cur)}</div></div>
 <div style={{fontSize:12,color:"#8E8E93"}}>{lE.length} kayıt</div>
 </div>
-{ce.length>0&&<div style={{background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:16,marginBottom:14}}>
+{ce.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:16,marginBottom:14}}>
 {ce.map(([cat,amt],ci)=>{const pct=stot>0?Math.round(amt/stot*100):0;return(<div key={cat} style={{marginBottom:10}}>
 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><div style={{display:"flex",alignItems:"center",gap:7}}><div style={{width:8,height:8,borderRadius:"50%",background:CC[ci%CC.length]}}/><span style={{fontSize:12}}>{cat}</span></div><div style={{display:"flex",gap:8}}><span style={{fontSize:12,fontWeight:600,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{fontSize:11,color:"#8E8E93"}}>%{pct}</span></div></div>
 <div style={{height:5,background:"rgba(118,118,128,0.12)",borderRadius:10,overflow:"hidden"}}><div style={{height:"100%",width:pct+"%",background:CC[ci%CC.length],borderRadius:10}}/></div>
 </div>);})}
 </div>}
-{lE.map(e=><div key={e.id} style={{background:"#1a1a1a",border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"10px 14px",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+{lE.map(e=><div key={e.id} style={{background:T.isDark?"#1a1a1a":T.bg2,border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"10px 14px",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:600,fontSize:13}}>{e.desc}</div><span style={{fontSize:10,background:"rgba(118,118,128,0.12)",padding:"1px 7px",borderRadius:10,color:"#8E8E93"}}>{e.cat}</span></div>
 <div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#FF3B30",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#C7C7CC",cursor:"pointer",padding:4,fontSize:16}}>x</button></div>
 </div>)}
@@ -1131,7 +1140,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 <button onClick={()=>setShowAddInst(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",background:showAddInst?"rgba(118,118,128,0.12)":"#34C759",border:"1px solid "+(showAddInst?"rgba(60,60,67,0.18)":"transparent"),borderRadius:9,color:showAddInst?"#555":"#fff",fontWeight:600,fontSize:12,cursor:"pointer"}}>{showAddInst?"İptal":"+ Vade Ekle"}</button>
 </div>
 
-{showAddInst&&<div style={{background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
+{showAddInst&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
 <input placeholder="Ödeme adı (örn: Kira)" value={newInst.name} onChange={e=>setNewInst(p=>({...p,name:e.target.value}))} style={inp} autoFocus/>
 <input type="number" placeholder="Toplam tutar" value={newInst.totalAmount} onChange={e=>setNewInst(p=>({...p,totalAmount:e.target.value}))} style={inp}/>
@@ -1143,8 +1152,8 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(20px)",Web
 </div>}
 
 {installments.length>0&&<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:18}}>
-<div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#FF3B30",marginBottom:3}}>Gecikmiş</div><div style={{fontSize:18,fontWeight:800,color:"#FF3B30"}}>{overdueCount}</div></div>
-<div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#FF9500",marginBottom:3}}>7 Gün İçinde</div><div style={{fontSize:18,fontWeight:800,color:"#FF9500"}}>{upcomingCount}</div></div>
+<div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#FF3B30",marginBottom:3}}>Gecikmiş</div><div style={{fontSize:overdueTotal>0?15:18,fontWeight:800,color:"#FF3B30",lineHeight:1.2}}>{overdueTotal>0?fm(overdueTotal,cur):overdueCount}</div>{overdueTotal>0&&<div style={{fontSize:10,color:"rgba(255,59,48,0.6)",marginTop:2}}>{overdueCount} taksit</div>}</div>
+<div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#FF9500",marginBottom:3}}>7 Gün İçinde</div><div style={{fontSize:upcomingTotal>0?15:18,fontWeight:800,color:"#FF9500",lineHeight:1.2}}>{upcomingTotal>0?fm(upcomingTotal,cur):upcomingCount}</div>{upcomingTotal>0&&<div style={{fontSize:10,color:"rgba(255,149,0,0.6)",marginTop:2}}>{upcomingCount} taksit</div>}</div>
 <div style={{background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#007AFF",marginBottom:3}}>Kalan Toplam</div><div style={{fontSize:18,fontWeight:800,color:"#007AFF"}}>{fm(totalUnpaid,cur)}</div></div>
 </div>}
 
@@ -1162,7 +1171,7 @@ const paidCount=plan.installments.filter(i=>i.paid).length;
 const isExpanded=expandedInstId===plan.id;
 const nextUnpaid=plan.installments.filter(i=>!i.paid).sort((a,b)=>a.due.localeCompare(b.due))[0];
 return(
-<div key={plan.id} style={{background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:"14px 16px"}}>
+<div key={plan.id} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:"14px 16px"}}>
 <div onClick={()=>setExpandedInstId(isExpanded?null:plan.id)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
 <div>
 <div style={{fontWeight:700,fontSize:14}}>{plan.name}</div>
@@ -1188,21 +1197,21 @@ const isUpcoming=!inst.paid&&dd>=0&&dd<=7;
 const isPartialOpen=partialInstForm&&partialInstForm.planId===plan.id&&partialInstForm.instId===inst.id;
 return(
 <div key={inst.id} style={{marginBottom:8}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",borderRadius:8,background:isOverdue?"rgba(255,59,48,0.1)":isUpcoming?"rgba(255,149,0,0.1)":"rgba(118,118,128,0.06)"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",borderRadius:8,background:isOverdue?"rgba(255,59,48,0.15)":isUpcoming?"rgba(255,149,0,0.15)":T.bg3}}>
 <div style={{display:"flex",alignItems:"center",gap:10}}>
 <input type="checkbox" checked={inst.paid} onChange={()=>togglePaid(plan.id,inst.id)} style={{width:16,height:16,cursor:"pointer"}}/>
 <div>
-<div style={{fontSize:12,fontWeight:600,textDecoration:inst.paid?"line-through":"none",color:inst.paid?"#C7C7CC":"#000000"}}>{ii+1}. Taksit — {fd(inst.due)}</div>
-{!inst.paid&&<div style={{fontSize:10,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":"#C7C7CC",marginTop:1}}>{isOverdue?`${Math.abs(dd)} gün gecikti`:dd===0?"Bugün":dd===1?"Yarın":`${dd} gün kaldı`}</div>}
+<div style={{fontSize:12,fontWeight:600,textDecoration:inst.paid?"line-through":"none",color:inst.paid?"#555":"#e0e0e0"}}>{ii+1}. Taksit — {fd(inst.due)}</div>
+{!inst.paid&&<div style={{fontSize:10,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":"#666",marginTop:1}}>{isOverdue?`${Math.abs(dd)} gün gecikti`:dd===0?"Bugün":dd===1?"Yarın":`${dd} gün kaldı`}</div>}
 {inst.payments&&inst.payments.length>0&&<div style={{fontSize:10,color:"#34C759",marginTop:2}}>↓ {inst.payments.length} kısmi ödeme yapıldı</div>}
 </div>
 </div>
 <div style={{display:"flex",alignItems:"center",gap:8}}>
-<div style={{fontWeight:700,fontSize:13,color:inst.paid?"#34C759":"#000000"}}>{fm(inst.amount,cur)}</div>
+<div style={{fontWeight:700,fontSize:13,color:inst.paid?"#34C759":"#fff"}}>{fm(inst.amount,cur)}</div>
 {!inst.paid&&<button onClick={()=>setPartialInstForm(isPartialOpen?null:{planId:plan.id,instId:inst.id,value:""})} style={{background:"none",border:"0.5px solid rgba(0,122,255,0.4)",color:"#007AFF",borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:600,cursor:"pointer"}}>{isPartialOpen?"İptal":"Kısmi Öde"}</button>}
 </div>
 </div>
-{isPartialOpen&&<div style={{display:"flex",gap:8,padding:"8px 10px",background:"rgba(0,122,255,0.06)",borderRadius:8,marginTop:4,alignItems:"center"}}>
+{isPartialOpen&&<div style={{display:"flex",gap:8,padding:"8px 10px",background:"rgba(0,122,255,0.12)",borderRadius:8,marginTop:4,border:"1px solid rgba(0,122,255,0.2)",alignItems:"center"}}>
 <input type="number" autoFocus placeholder={`Maks: ${fm(inst.amount,cur)}`} value={partialInstForm.value} onChange={e=>setPartialInstForm(p=>({...p,value:e.target.value}))} style={{...inp,flex:1,padding:"7px 10px",fontSize:12}} onKeyDown={e=>{if(e.key==="Enter"){const amt=parseFloat(partialInstForm.value);if(amt>0){partialPayInst(plan.id,inst.id,Math.min(amt,inst.amount));setPartialInstForm(null);}}}}/>
 <button onClick={()=>{const amt=parseFloat(partialInstForm.value);if(amt>0){partialPayInst(plan.id,inst.id,Math.min(amt,inst.amount));setPartialInstForm(null);}}} style={{...sb("#007AFF"),padding:"7px 16px",fontSize:12,fontWeight:700,whiteSpace:"nowrap"}}>Uygula</button>
 </div>}
@@ -1226,7 +1235,7 @@ return(
     {prodRangeLabel&&<span onClick={e=>{e.stopPropagation();clearProdRange();}} style={{marginLeft:4,color:"#34C759",fontWeight:800,fontSize:14,lineHeight:1}}>×</span>}
   </button>
   {showProdDatePicker&&(
-    <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:16,boxShadow:"0 8px 24px rgba(0,0,0,0.12)",zIndex:100,minWidth:260}}>
+    <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:16,boxShadow:"0 8px 24px rgba(0,0,0,0.12)",zIndex:100,minWidth:260}}>
       <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
       <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
         <button onClick={()=>setProdQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#F0F0F0"}}>Son 7 Gün</button>
@@ -1277,7 +1286,7 @@ return(
 {[{k:"qty",l:"Adete Göre"},{k:"revenue",l:"Ciroya Göre"}].map(({k,l})=><button key={k} onClick={()=>setProdSortBy(k)} style={{padding:"8px 18px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,background:prodSortBy===k?"#34C759":"rgba(118,118,128,0.12)",color:prodSortBy===k?"#fff":"#8E8E93"}}>{l}</button>)}
 </div>
 
-<div style={{background:"#1a1a1a",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:"20px 20px 12px",marginBottom:16}}>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:"20px 20px 12px",marginBottom:16}}>
 <div style={{fontWeight:700,fontSize:14,marginBottom:16,paddingLeft:4}}>En Çok Satanlar — Grafik</div>
 <div style={{display:"flex",flexDirection:"column",gap:10}}>
 {prodSorted.slice(0,10).map((p,i)=>{
@@ -1292,7 +1301,7 @@ return(
 <div style={{background:barColor,height:"100%",width:barPct+"%",borderRadius:6,transition:"width 0.4s ease",display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:6}}>
 {barPct>25&&<span style={{fontSize:10,fontWeight:700,color:"#fff"}}>{label}</span>}
 </div>
-{barPct<=25&&<span style={{position:"absolute",left:"calc("+barPct+"% + 8px)",top:"50%",transform:"translateY(-50%)",fontSize:10,fontWeight:700,color:"#3C3C43",whiteSpace:"nowrap"}}>{label}</span>}
+{barPct<=25&&<span style={{position:"absolute",left:"calc("+barPct+"% + 8px)",top:"50%",transform:"translateY(-50%)",fontSize:10,fontWeight:700,color:T.textSub,whiteSpace:"nowrap"}}>{label}</span>}
 </div>
 <div style={{width:22,fontSize:11,color:"#8E8E93",flexShrink:0,textAlign:"right"}}>{i+1}</div>
 </div>
@@ -1306,7 +1315,7 @@ return(
 </div>
 </div>
 
-<div style={{background:"#1a1a1a",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:20,marginBottom:20}}>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:20,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,marginBottom:14}}>En Çok Satanlar</div>
 <div style={{display:"flex",flexDirection:"column",gap:10}}>
 {prodSorted.map((p,i)=>{
@@ -1335,7 +1344,7 @@ return(
 </div>
 </div>
 
-<div style={{background:"#1a1a1a",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:20}}>
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:20}}>
 <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>En Az Satanlar</div>
 <div style={{fontSize:11,color:"#8E8E93",marginBottom:14}}>Menüden çıkarmayı veya kampanya yapmayı düşünebileceğin ürünler</div>
 <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -1854,7 +1863,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 {[{k:"general",l:"Genel"},{k:"menu",l:"Menü"},{k:"ecats",l:"Harcama Kategorileri"}].map(({k,l})=><button key={k} onClick={()=>setStab(k)} style={{padding:"9px 20px",borderRadius:9,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,background:stab===k?T.accent:"#1E1E1E",color:stab===k?"#fff":T.textSub}}>{l}</button>)}
 </div>
 {stab==="general"&&<>
-<div style={{background:"#161616",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:16}}>
+<div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:16}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:16}}>İşletme Bilgileri</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>İşletme Adı</label><input value={cfgF.name} onChange={e=>setCfgF(p=>({...p,name:e.target.value}))} style={inp}/></div>
@@ -1862,7 +1871,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Masa Sayısı</label><input type="number" min="1" max="50" value={cfgF.tableCount} onChange={e=>setCfgF(p=>({...p,tableCount:e.target.value}))} style={{...inp,maxWidth:100}}/></div>
 </div>
 </div>
-<div style={{background:"#161616",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
+<div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:6}}>Online Sipariş Platformları</div>
 <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Pasif platformlar Online sayfasında görünmez, geçmiş veriler silinmez.</div>
 {[{k:"yemeksepeti",l:"Yemeksepeti",color:"#FA0050"},{k:"getir",l:"Getir",color:"#5C3EBC"},{k:"ubereats",l:"Uber Eats",color:"#06C167"}].map(p=>{
@@ -1879,7 +1888,7 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 </div>);})}
 <button onClick={saveCfg} style={{...sb(T.accent),marginTop:14,padding:"10px 22px",fontSize:13}}>Kaydet</button>
 </div>
-<div style={{background:"#161616",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
+<div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:6}}>Hedef Takibi</div>
 <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Bugün sayfasında aylık ve haftalık hedefe göre ilerlemenizi takip edebilirsiniz.</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
@@ -1888,14 +1897,14 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 </div>
 <button onClick={saveCfg} style={{...sb(T.accent),marginTop:14,padding:"10px 22px",fontSize:13}}>Hedefleri Güncelle</button>
 </div>
-<div style={{background:"#161616",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
+<div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:14}}>Adisyon Ayarları</div>
 <label style={{display:"flex",alignItems:"center",gap:12,cursor:"pointer"}}>
-<div onClick={()=>setCfgF(p=>({...p,requireName:!p.requireName}))} style={{width:44,height:24,borderRadius:12,background:cfgF.requireName?T.accent:T.bg3,border:"0.5px solid "+T.border2,position:"relative",cursor:"pointer"}}><div style={{position:"absolute",top:3,left:cfgF.requireName?22:3,width:16,height:16,borderRadius:"50%",background:"#1a1a1a"}}/></div>
+<div onClick={()=>setCfgF(p=>({...p,requireName:!p.requireName}))} style={{width:44,height:24,borderRadius:12,background:cfgF.requireName?T.accent:T.bg3,border:"0.5px solid "+T.border2,position:"relative",cursor:"pointer"}}><div style={{position:"absolute",top:3,left:cfgF.requireName?22:3,width:16,height:16,borderRadius:"50%",background:T.isDark?"#1a1a1a":T.bg2}}/></div>
 <div><div style={{fontWeight:600,fontSize:13}}>Müşteri Adı Zorunlu</div><div style={{fontSize:11,color:T.textSub}}>Adisyon açılırken isim istenir</div></div>
 </label>
 </div>
-<div style={{background:"#161616",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
+<div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:6}}>Site Şifresi</div>
 <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Belirlersen, siteye giren herkesten bu şifre istenir. Boş bırakırsan site herkese açık kalır.</div>
 <div style={{maxWidth:280,marginBottom:16}}>
@@ -2190,7 +2199,7 @@ return(
 </div>
 );}
 
-function ImportOldV({logs,setLogs,cur,fm,fd,setV,sb,T}){
+function ImportOldV({logs,setLogs,cur,fm,fd,setV,sb,T=DARK}){
 const alreadyImported=logs.some(l=>l.imported);
 const importedCount=logs.filter(l=>l.imported).length;
 const importedTotal=logs.filter(l=>l.imported).reduce((s,l)=>s+l.inc,0);
@@ -2328,8 +2337,6 @@ const overdueCount=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filte
 }).length,0);
 
 const NAV_CARDS=[
-  {k:"tables", label:"Masalar", sub:day?"Gün açık":"Gün kapalı", accent:"#34C759",
-   stat:null, icon:"🪑"},
   {k:"online", label:"Online Siparişler", sub:"Yemeksepeti · Getir · Uber", accent:"#FF6B35",
    stat:null, icon:"📦"},
   {k:"reports", label:"Raporlar", sub:openCari>0?`${openCari} açık cari`:"Satış & harcama", accent:"#3A9EFF",
@@ -2345,8 +2352,8 @@ return(
 
 {/* Header */}
 <div style={{marginBottom:28}}>
-<h1 style={{fontSize:isMobile?28:42,fontWeight:800,letterSpacing:-1,margin:"0 0 6px",color:"#fff",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</h1>
-<div style={{fontSize:13,color:"#555"}}>
+<h1 style={{fontSize:isMobile?28:42,fontWeight:800,letterSpacing:-1,margin:"0 0 6px",color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</h1>
+<div style={{fontSize:13,color:T.textSub}}>
 {now.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}
 {day&&<span style={{marginLeft:12,background:"rgba(52,199,89,0.15)",color:"#34C759",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● AÇIK {ft(day.oa)}</span>}
 {!day&&<span style={{marginLeft:12,background:"rgba(255,59,48,0.1)",color:"#FF3B30",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● KAPALI</span>}
@@ -2356,7 +2363,7 @@ return(
 {/* Hedef kartları */}
 <div style={{marginBottom:16}}>
 <div style={{display:"flex",justifyContent:"flex-end",marginBottom:8}}>
-<button onClick={()=>setHideAmounts(p=>!p)} style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",color:"#444",fontSize:11,fontWeight:600,padding:"4px 8px",borderRadius:8,letterSpacing:0.3}}>
+<button onClick={()=>setHideAmounts(p=>!p)} style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:11,fontWeight:600,padding:"4px 8px",borderRadius:8,letterSpacing:0.3}}>
 {hideAmounts
   ?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
   :<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -2365,32 +2372,32 @@ return(
 </button>
 </div>
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
-{weeklyGoal>0?<div style={{background:"linear-gradient(135deg,#1C1C1E,#2C2C2E)",borderRadius:18,padding:"22px 24px",color:"#fff",border:"1px solid #2a2a2a"}}>
-<div style={{fontSize:11,color:"#555",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
+{weeklyGoal>0?<div style={{background:T.isDark?"linear-gradient(135deg,#1C1C1E,#2C2C2E)":"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:18,padding:"22px 24px",color:"#fff",border:"1px solid "+T.border}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
 <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:-0.5,marginBottom:4,fontVariantNumeric:"tabular-nums"}}>{mask(fm(weeklyRev,cur))}</div>
 <div style={{background:"rgba(255,255,255,0.1)",borderRadius:4,height:5,overflow:"hidden",marginBottom:5}}>
 {!hideAmounts&&<div style={{height:"100%",width:weekPct+"%",background:weekPct>=100?"#34C759":weekPct>=70?"#FF9500":"#FF3B30",borderRadius:4,transition:"width 0.8s"}}/>}
 {hideAmounts&&<div style={{height:"100%",width:"100%",background:"#2a2a2a",borderRadius:4}}/>}
 </div>
-<div style={{fontSize:11,color:"#555"}}>{hideAmounts?"/ ••••••":("/ "+fm(weeklyGoal,cur)+" · %"+weekPct+(weekPct>=100?" 🎯":""))}</div>
-</div>:<div style={{background:"#111",borderRadius:18,padding:"22px 24px",border:"1px solid #1e1e1e",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-<div style={{fontSize:11,color:"#444",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
-<div style={{fontSize:isMobile?24:28,fontWeight:800,color:"#333",marginBottom:8}}>{mask(fm(weeklyRev,cur))}</div>
-<button onClick={()=>setV("settings")} style={{fontSize:11,color:"#555",background:"none",border:"1px solid #222",borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
+<div style={{fontSize:11,color:T.textSub}}>{hideAmounts?"/ ••••••":("/ "+fm(weeklyGoal,cur)+" · %"+weekPct+(weekPct>=100?" 🎯":""))}</div>
+</div>:<div style={{background:T.isDark?"#111":T.bg2,borderRadius:18,padding:"22px 24px",border:"1px solid "+T.border,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+<div style={{fontSize:11,color:T.textDim,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
+<div style={{fontSize:isMobile?24:28,fontWeight:800,color:T.textDim,marginBottom:8}}>{mask(fm(weeklyRev,cur))}</div>
+<button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
 </div>}
 
-{monthlyGoal>0?<div style={{background:"linear-gradient(135deg,#1C1C1E,#2C2C2E)",borderRadius:18,padding:"22px 24px",color:"#fff",border:"1px solid #2a2a2a"}}>
-<div style={{fontSize:11,color:"#555",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
+{monthlyGoal>0?<div style={{background:T.isDark?"linear-gradient(135deg,#1C1C1E,#2C2C2E)":"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:18,padding:"22px 24px",color:"#fff",border:"1px solid "+T.border}}>
+<div style={{fontSize:11,color:T.textSub,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
 <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:-0.5,marginBottom:4,fontVariantNumeric:"tabular-nums"}}>{mask(fm(monthlyRev,cur))}</div>
 <div style={{background:"rgba(255,255,255,0.1)",borderRadius:4,height:5,overflow:"hidden",marginBottom:5}}>
 {!hideAmounts&&<div style={{height:"100%",width:monthPct+"%",background:monthPct>=100?"#34C759":monthPct>=70?"#FF9500":"#FF3B30",borderRadius:4,transition:"width 0.8s"}}/>}
 {hideAmounts&&<div style={{height:"100%",width:"100%",background:"#2a2a2a",borderRadius:4}}/>}
 </div>
-<div style={{fontSize:11,color:"#555"}}>{hideAmounts?"/ ••••••":("/ "+fm(monthlyGoal,cur)+" · %"+monthPct+(monthPct>=100?" 🎯":""))}</div>
-</div>:<div style={{background:"#111",borderRadius:18,padding:"22px 24px",border:"1px solid #1e1e1e",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-<div style={{fontSize:11,color:"#444",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
-<div style={{fontSize:isMobile?24:28,fontWeight:800,color:"#333",marginBottom:8}}>{mask(fm(monthlyRev,cur))}</div>
-<button onClick={()=>setV("settings")} style={{fontSize:11,color:"#555",background:"none",border:"1px solid #222",borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
+<div style={{fontSize:11,color:T.textSub}}>{hideAmounts?"/ ••••••":("/ "+fm(monthlyGoal,cur)+" · %"+monthPct+(monthPct>=100?" 🎯":""))}</div>
+</div>:<div style={{background:T.isDark?"#111":T.bg2,borderRadius:18,padding:"22px 24px",border:"1px solid "+T.border,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+<div style={{fontSize:11,color:T.textDim,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
+<div style={{fontSize:isMobile?24:28,fontWeight:800,color:T.textDim,marginBottom:8}}>{mask(fm(monthlyRev,cur))}</div>
+<button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
 </div>}
 </div>
 </div>
@@ -2399,8 +2406,8 @@ return(
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(5,1fr)",gap:12}}>
 {NAV_CARDS.map(card=>(
 <button key={card.k} onClick={()=>setV(card.k)} style={{
-  background:"#111",
-  border:"1px solid #1e1e1e",
+  background:T.isDark?"#111":T.bg2,
+  border:"1px solid "+T.border,
   borderRadius:18,
   padding:"20px 18px",
   cursor:"pointer",
@@ -2432,8 +2439,8 @@ return(
 
 {/* Label */}
 <div>
-<div style={{fontSize:13,fontWeight:700,color:"#ccc",marginBottom:3}}>{card.label}</div>
-<div style={{fontSize:11,color:"#444"}}>{card.sub}</div>
+<div style={{fontSize:13,fontWeight:700,color:T.textSub,marginBottom:3}}>{card.label}</div>
+<div style={{fontSize:11,color:T.textDim}}>{card.sub}</div>
 </div>
 </button>
 ))}
@@ -2474,7 +2481,7 @@ setRecoveryErr(true);
 
 if(mode==="recover"){
 return(
-<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:"#0D0D0D",fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
+<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:T.bg,fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:340}}>
 <h1 style={{fontSize:40,fontWeight:800,letterSpacing:-1,margin:"0 0 28px",color:T.text}}>NICCHIA.</h1>
 {resetDone?(
@@ -2510,7 +2517,7 @@ style={{background:T.bg2,border:"1px solid "+(recoveryErr?T.danger:T.border2),bo
 }
 
 return(
-<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:"#0D0D0D",fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
+<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:T.bg,fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:320}}>
 <h1 style={{fontSize:56,fontWeight:800,letterSpacing:-1,margin:"0 0 32px",color:T.text}}>NICCHIA.</h1>
 <input
@@ -2575,26 +2582,26 @@ const BADGE_STYLE={
 };
 
 return(
-<div style={{minHeight:"calc(100vh - 60px)",background:"#0D0D0D",color:"#fff",padding:"0 0 60px"}}>
+<div style={{minHeight:"calc(100vh - 60px)",background:T.bg,color:"#fff",padding:"0 0 60px"}}>
 
 {/* Header banner */}
-<div style={{background:"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)",borderBottom:"1px solid #222",padding:"28px 28px 24px"}}>
+<div style={{background:T.isDark?"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)":"linear-gradient(180deg,#fff 0%,#F2F2F7 100%)",borderBottom:"1px solid "+(T.isDark?"#222":"rgba(60,60,67,0.12)"),padding:"28px 28px 24px"}}>
 <div style={{maxWidth:920,margin:"0 auto"}}>
 <h2 style={{margin:"0 0 20px",fontSize:28,fontWeight:800,letterSpacing:-0.5,color:"#fff"}}>Rozetler</h2>
 
 {/* Progress bar büyük */}
 <div style={{display:"flex",alignItems:"center",gap:16}}>
-<div style={{flex:1,background:"#1a1a1a",borderRadius:4,height:8,overflow:"hidden",border:"1px solid #222"}}>
+<div style={{flex:1,background:T.isDark?"#1a1a1a":T.bg2,borderRadius:4,height:8,overflow:"hidden",border:"1px solid "+T.border}}>
 <div style={{height:"100%",width:pct+"%",background:"linear-gradient(90deg,#C0922A,#F59E0B)",borderRadius:4,transition:"width 1s ease"}}/>
 </div>
 <div style={{fontSize:13,fontWeight:700,color:"#C0922A",minWidth:80,textAlign:"right"}}>{doneCount} / {total} rozet</div>
 </div>
 <div style={{display:"flex",gap:20,marginTop:16}}>
-<div><div style={{fontSize:24,fontWeight:800,color:"#C0922A"}}>{pct}%</div><div style={{fontSize:11,color:"#555",marginTop:1}}>tamamlandı</div></div>
+<div><div style={{fontSize:24,fontWeight:800,color:"#C0922A"}}>{pct}%</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>tamamlandı</div></div>
 <div style={{width:1,background:"#222"}}/>
-<div><div style={{fontSize:24,fontWeight:800,color:"#fff"}}>{doneCount}</div><div style={{fontSize:11,color:"#555",marginTop:1}}>kazanıldı</div></div>
+<div><div style={{fontSize:24,fontWeight:800,color:"#fff"}}>{doneCount}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>kazanıldı</div></div>
 <div style={{width:1,background:"#222"}}/>
-<div><div style={{fontSize:24,fontWeight:800,color:"#555"}}>{total-doneCount}</div><div style={{fontSize:11,color:"#555",marginTop:1}}>kilitli</div></div>
+<div><div style={{fontSize:24,fontWeight:800,color:T.textSub}}>{total-doneCount}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>kilitli</div></div>
 </div>
 </div>
 </div>
@@ -2613,7 +2620,7 @@ return(
 <div style={{position:"relative",width:96,height:96}}>
 <div style={{
   width:96,height:96,borderRadius:"50%",
-  background:isUnlocked?"#1a1a1a":"#111",
+  background:isUnlocked?T.bg2:T.bg3,
   border:`2.5px solid ${isUnlocked?st.color:"#2a2a2a"}`,
   display:"flex",alignItems:"center",justifyContent:"center",
   boxShadow:isUnlocked?`0 0 0 1px ${st.color}22, 0 8px 24px ${st.color}33`:"none",
@@ -2622,7 +2629,7 @@ return(
 }}>
 {isUnlocked
   ?<span style={{fontSize:40,lineHeight:1,display:"block",filter:`drop-shadow(0 0 8px ${st.color}88)`}}>{st.icon}</span>
-  :<span style={{fontSize:30,color:"#333",fontWeight:900,fontFamily:"monospace",lineHeight:1,display:"inline-block"}}>🔒</span>
+  :<span style={{fontSize:30,color:T.textDim,fontWeight:900,fontFamily:"monospace",lineHeight:1,display:"inline-block"}}>🔒</span>
 }
 </div>
 
@@ -2653,12 +2660,12 @@ return(
 {isUnlocked&&!b.repeatable&&unlockedAt&&<div style={{fontSize:10,color:st.color,fontWeight:500}}>{fd(unlockedAt)}</div>}
 {isUnlocked&&b.repeatable&&<div style={{fontSize:10,color:st.color,fontWeight:500}}>{b.count} kez</div>}
 {!isUnlocked&&(b.progress||0)>0&&<div>
-<div style={{width:"100%",height:3,background:"#1a1a1a",borderRadius:2,overflow:"hidden",marginBottom:3}}>
+<div style={{width:"100%",height:3,background:T.isDark?"#1a1a1a":T.bg2,borderRadius:2,overflow:"hidden",marginBottom:3}}>
 <div style={{height:"100%",width:(b.progress)+"%",background:st.color,borderRadius:2}}/>
 </div>
-<div style={{fontSize:10,color:"#444"}}>%{b.progress}</div>
+<div style={{fontSize:10,color:T.textDim}}>%{b.progress}</div>
 </div>}
-{!isUnlocked&&!(b.progress>0)&&<div style={{fontSize:10,color:"#333",letterSpacing:1}}>— — —</div>}
+{!isUnlocked&&!(b.progress>0)&&<div style={{fontSize:10,color:T.textDim,letterSpacing:1}}>— — —</div>}
 </div>
 </div>
 );})}
@@ -2772,7 +2779,7 @@ style={{...inp,flex:1}}
 )}
 </div>);}
 
-function TacoEntryV({logs,setLogs,cur,fm,fd,tod,menu,setMenu,ecats,inp,sb,T}){
+function TacoEntryV({logs,setLogs,cur,fm,fd,tod,menu,setMenu,ecats,inp,sb,T=DARK}){
 const[date,setDate]=useState(tod());
 const[cash,setCash]=useState("");
 const[card,setCard]=useState("");
@@ -2921,7 +2928,7 @@ return(<button key={m.name} onClick={()=>addItem(m)} style={{background:inCart?"
 </button>
 </div>);}
 
-function TacoTabV({tacoLogs,setTacoLogs,cur,fm,fd,fdl,tod,inp,sb,T}){
+function TacoTabV({tacoLogs,setTacoLogs,cur,fm,fd,fdl,tod,inp,sb,T=DARK}){
 const[mode,setMode]=useState(null);
 const[pt,setPt]=useState("cash");
 const[itemName,setItemName]=useState("");
@@ -2964,7 +2971,7 @@ return(<div style={{paddingTop:8}}>
 <button onClick={()=>setMode(mode==="expense"?null:"expense")} style={{flex:1,padding:"14px 0",borderRadius:12,border:"2px solid "+(mode==="expense"?"#FF3B30":"rgba(0,0,0,0.08)"),background:mode==="expense"?"rgba(255,59,48,0.1)":"#fff",cursor:"pointer",fontWeight:700,fontSize:14,color:mode==="expense"?"#FF3B30":"#000"}}>－ Gider Ekle</button>
 </div>
 
-{mode&&<div style={{background:"#1a1a1a",border:"0.5px solid rgba(0,0,0,0.08)",borderRadius:14,padding:20,marginBottom:20,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+{mode&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(0,0,0,0.08)",borderRadius:14,padding:20,marginBottom:20,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
 <div style={{fontWeight:700,fontSize:14,color:mode==="income"?"#34C759":"#FF3B30",marginBottom:14}}>{mode==="income"?"Gelir Ekle":"Gider Ekle"}</div>
 {mode==="income"&&<>
 <div style={{fontSize:11,color:"#8E8E93",marginBottom:8,fontWeight:600}}>Ödeme Tipi</div>
@@ -2994,7 +3001,7 @@ return(<div style={{paddingTop:8}}>
 {months.map(m=>{
 const md=byMonth[m];
 const isOpen=openM===m;
-return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",overflow:"hidden"}}>
+return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",overflow:"hidden"}}>
 <button onClick={()=>setOpenM(isOpen?null:m)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"14px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
 <div><div style={{fontWeight:700,fontSize:15,color:"#F0F0F0"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{md.entries.length} kayıt</div></div>
 <div style={{display:"flex",alignItems:"center",gap:12}}>
@@ -3006,7 +3013,7 @@ return(<div key={m} style={{background:"#1a1a1a",backdropFilter:"blur(16px)",Web
 </div>
 </button>
 {isOpen&&<div style={{borderTop:"0.5px solid rgba(0,0,0,0.08)"}}>
-{md.entries.map((e,i)=><div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 18px",borderBottom:i<md.entries.length-1?"0.5px solid rgba(0,0,0,0.06)":"none",background:i%2===0?"#1a1a1a":"#161616"}}>
+{md.entries.map((e,i)=><div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 18px",borderBottom:i<md.entries.length-1?"0.5px solid rgba(0,0,0,0.06)":"none",background:i%2===0?T.isDark?"#1a1a1a":T.bg2:T.bg2}}>
 <div><div style={{fontSize:13,fontWeight:600,color:"#F0F0F0"}}>{e.itemName}</div><div style={{fontSize:10,color:"#8E8E93",marginTop:1}}>{fd(e.date)}{e.pt?" · "+(e.pt==="cash"?"Nakit":"Kart"):""}</div></div>
 <div style={{fontWeight:700,fontSize:14,color:e.type==="income"?"#34C759":"#FF3B30"}}>{e.type==="income"?"＋":"－"}{fm(e.amount,cur)}</div>
 </div>)}
@@ -3055,7 +3062,7 @@ return(<div style={{paddingTop:8}}>
 </div>}
 
 {open.length===0?<div style={{textAlign:"center",padding:"30px 0",color:T.textDim,background:T.bg2,borderRadius:12,marginBottom:16}}>Açık cari hesap yok.</div>
-:<div style={{marginBottom:20}}>{open.map(c=>(<div key={c.id} style={{background:"#1a1a1a",backdropFilter:"blur(16px)",border:"1.5px solid rgba(175,82,222,0.25)",borderRadius:12,padding:"14px 16px",marginBottom:10}}>
+:<div style={{marginBottom:20}}>{open.map(c=>(<div key={c.id} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",border:"1.5px solid rgba(175,82,222,0.25)",borderRadius:12,padding:"14px 16px",marginBottom:10}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
 <div><div style={{fontWeight:700,fontSize:15}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>{fd(c.date)} · {c.tbl}</div></div>
 <div style={{fontWeight:800,fontSize:18,color:"#AF52DE"}}>{fm(c.total,cur)}</div>
