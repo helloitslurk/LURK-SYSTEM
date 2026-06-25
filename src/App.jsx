@@ -324,7 +324,7 @@ const gm={};to.forEach(o=>{const g=o.g||"--";if(!gm[g])gm[g]={name:g,count:0,tot
 setLogs(prev=>[{id:uid(),date:td,oa:day.oa,ca:new Date().toISOString(),inc,exp:expt,net:inc-expt,cash,card,count:to.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:te},...prev]);
 setDay(null);setDayCon(false);msg("Gun kapatıldı");};
 
-const goTbl=(id)=>{if(!day){msg("Önce günü aç","err");return;}if(cfg.requireName){setGM(id);}else doOpen(id,"");};
+const goTbl=(id)=>{if(!day){msg("Önce günü aç","err");return;}if(cfg.requireName){setSel(id);setGM(id);}else doOpen(id,"");};
 const doOpen=(id,g)=>{setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g||t.g}:t));setSel(id);setCat("Tümü");setDisc(null);setPay(false);setGM(null);setV("order");};
 const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const ex=t.order.find(o=>o.id===item.id);const order=ex?t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o):[...t.order,{...item,qty:1}];return{...t,order,s:"o",oa:t.oa||new Date().toISOString()};}));};
 const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);if(newOrder.length===0)return{...t,order:newOrder,s:"e",oa:null,g:""};return{...t,order:newOrder};}));};
@@ -332,7 +332,7 @@ const cancelOrder=(tid)=>{setTbl(prev=>prev.map(t=>t.id===tid?{...t,order:[],s:"
 const sub=(t)=>t.order.reduce((s,o)=>s+o.price*o.qty,0);
 const fin=(t)=>{const s=sub(t);return disc?disc.after:s;};
 
-const closeTbl=(splits)=>{
+const closeTbl=(splits,closeTable=true)=>{
 const t=tables.find(x=>x.id===sel);if(!t||!t.order.length)return;
 const g=t.g||"";
 const creditSplits=splits.filter(sp=>sp.pt==="credit");
@@ -360,6 +360,28 @@ next=[{id:uid(),g:spGuest,adisyonlar:[newAdisyon],items:sp.items,sub:sp.sub,da:s
 });
 return next;
 });
+}
+// Kısmi ödeme: ürün bazlı ise ödenen ürünleri masadan çıkar
+if(!closeTable){
+const paidItemNames=splits.flatMap(sp=>sp.items.map(i=>i.name+"_"+i.qty));
+const paidMap={};
+splits.flatMap(sp=>sp.items).forEach(it=>{
+if(!paidMap[it.name])paidMap[it.name]=0;
+paidMap[it.name]+=it.qty;
+});
+setTbl(prev=>prev.map(t2=>{
+if(t2.id!==sel)return t2;
+const remaining=t2.order.map(o=>{
+const paid=paidMap[o.name]||0;
+if(paid>=o.qty)return null;
+return{...o,qty:o.qty-paid};
+}).filter(Boolean);
+if(remaining.length===0)return{...t2,s:"e",order:[],oa:null,g:""};
+return{...t2,order:remaining};
+}));
+setPay(false);
+msg("Kısmi ödeme alındı");
+return;
 }
 setTbl(prev=>prev.map(t2=>t2.id===sel?{...t2,s:"e",order:[],oa:null,g:""}:t2));
 setPay(false);setSel(null);setDisc(null);setV("tables");msg(t.lbl+" kapatıldı");};
@@ -438,6 +460,8 @@ return(
 <div style={{fontSize:isMobile?18:22,fontWeight:800,letterSpacing:-0.5,color:"#fff",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</div>
 </div>}
 
+{gM&&view!=="order"&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>{setGM(null);setSel(null);}} T={T}/></div>}
+
 {view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile}/>}
 {view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile}/>}
 
@@ -466,7 +490,7 @@ return(
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 340px",gridTemplateRows:isMobile?"1fr auto":"none",height:"calc(100vh - 60px)",overflow:isMobile?"auto":"visible"}}>
 {gM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>doOpen(gM,"")} T={T}/></div>}
 {disM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><DiscM total={sub(curT)} cur={cur} fm={fm} T={T} onApply={d=>{setDisc(d);setDisM(false);}} onClose={()=>setDisM(false)}/></div>}
-{pay&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}><PayM table={curT} disc={disc} cur={cur} fm={fm} T={T} PO={PO} openCari={cari.filter(c=>!c.settled)} onClose={()=>setPay(false)} onDone={closeTbl}/></div>}
+{pay&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}><PayM table={curT} disc={disc} cur={cur} fm={fm} T={T} PO={PO} openCari={cari.filter(c=>!c.settled)} onClose={()=>setPay(false)} onDone={(splits,closeTable)=>closeTbl(splits,closeTable)}/></div>}
 <div style={{padding:16,overflowY:"auto"}}>
 {cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:"rgba(22,22,22,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",border:"0.5px solid rgba(255,255,255,0.85)",borderRadius:20,padding:28,width:340,boxShadow:"0 24px 48px rgba(0,0,0,0.15)"}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Adisyonu İptal Et</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>{curT.lbl} masasındaki tüm ürünler silinecek ve masa boşalacak. Bu işlem geri alınamaz.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setCancelConfirm(false)} style={{...sb(T.bg3),flex:1,color:T.text}}>Vazgeç</button><button onClick={()=>{setCancelConfirm(false);cancelOrder(curT.id);}} style={{...sb(T.danger),flex:1}}>Evet, İptal Et</button></div></div></div>}
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
@@ -485,7 +509,7 @@ return(
 <div style={{background:"#111",borderLeft:"0.5px solid rgba(255,255,255,0.08)",display:"flex",flexDirection:"column"}}>
 <div style={{padding:"12px 16px",borderBottom:"0.5px solid "+T.border,fontWeight:700,fontSize:13,color:T.accentL,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <span>Sipariş</span>
-<button onClick={()=>{if(cfg.requireName)setGM(curT.id);}} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:6,padding:"3px 8px",color:T.textSub,cursor:"pointer",fontSize:11}}>{curT.g||"Müşteri"}</button>
+<button onClick={()=>setGM(curT.id)} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:6,padding:"3px 8px",color:T.textSub,cursor:"pointer",fontSize:11}}>{curT.g||"Müşteri"}</button>
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"10px 14px"}}>
 {curT.order.length===0?<div style={{color:T.textDim,textAlign:"center",paddingTop:30,fontSize:12}}>Ürün eklenmedi</div>
@@ -670,11 +694,36 @@ const nameOk=!needsName||cariName.trim().length>0;
 const getSplits=()=>{
 if(!nameOk)return null;
 const cn=cariName.trim()||undefined;
-if(mode==="all"){if(!sp)return null;return[{items:[...table.order],sub,da,total:fin,pt:sp,cariName:cn}];}
-if(mode==="byitem"){const g={};for(const item of table.order){const pt=ip[item.id];if(!pt)return null;if(!g[pt])g[pt]={pt,items:[],sub:0};g[pt].items.push(item);g[pt].sub+=item.price*item.qty;}return Object.values(g).map(x=>({...x,da:sub>0?da*(x.sub/sub):0,total:x.sub-(sub>0?da*(x.sub/sub):0),cariName:x.pt==="credit"?cn:undefined}));}
-if(mode==="byamount"){const fl=lines.filter(l=>parseFloat(l.amount)>0&&l.pt);if(!fl.length)return null;const t=fl.reduce((s,l)=>s+parseFloat(l.amount),0);if(Math.abs(t-fin)>0.5)return null;return fl.map(l=>({items:[...table.order],sub:parseFloat(l.amount),da:0,total:parseFloat(l.amount),pt:l.pt,cariName:l.pt==="credit"?cn:undefined}));}
+if(mode==="all"){if(!sp)return null;return{splits:[{items:[...table.order],sub,da,total:fin,pt:sp,cariName:cn}],closeTable:true};}
+if(mode==="byitem"){
+const g={};
+let anySelected=false;
+for(const item of table.order){
+const pt=ip[item.id];
+if(!pt)continue; // seçilmeyenler masada kalır
+anySelected=true;
+if(!g[pt])g[pt]={pt,items:[],sub:0};
+g[pt].items.push(item);
+g[pt].sub+=item.price*item.qty;
+}
+if(!anySelected)return null;
+const selectedSub=Object.values(g).reduce((s,x)=>s+x.sub,0);
+const allSelected=selectedSub>=sub-0.5;
+const splits=Object.values(g).map(x=>({...x,da:0,total:x.sub,cariName:x.pt==="credit"?cn:undefined}));
+return{splits,closeTable:allSelected};
+}
+if(mode==="byamount"){
+const fl=lines.filter(l=>parseFloat(l.amount)>0&&l.pt);
+if(!fl.length)return null;
+const t=fl.reduce((s,l)=>s+parseFloat(l.amount),0);
+if(t>fin+0.5)return null; // girilen tutar toplamı aşamaz
+const closeTable=Math.abs(t-fin)<=0.5;
+return{splits:fl.map(l=>({items:[...table.order],sub:parseFloat(l.amount),da:0,total:parseFloat(l.amount),pt:l.pt,cariName:l.pt==="credit"?cn:undefined})),closeTable};
+}
 return null;};
-const splits=getSplits();
+const result=getSplits();
+const splits=result?.splits||null;
+const closeTable=result?.closeTable??true;
 const atot=lines.reduce((s,l)=>s+(parseFloat(l.amount)||0),0);
 const rem=fin-atot;
 return(<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"90vh",overflowY:"auto"}}>
@@ -740,7 +789,13 @@ return(<div style={{background:"#1a1a1a",border:"0.5px solid rgba(255,255,255,0.
 </div>}
 </div>}
 </>}
-<button onClick={()=>splits&&onDone(splits)} disabled={!splits} style={{width:"100%",marginTop:18,padding:"14px",background:splits?T.accent:T.bg3,color:splits?"#fff":T.textDim,border:"none",borderRadius:10,fontWeight:800,fontSize:15,cursor:splits?"pointer":"not-allowed"}}>{splits?"Hesabı Kapat - "+fm(fin,cur):"Ödeme yöntemi seçin"}</button>
+<button onClick={()=>splits&&onDone(splits,closeTable)} disabled={!splits} style={{width:"100%",marginTop:18,padding:"14px",background:splits?T.accent:T.bg3,color:splits?"#fff":T.textDim,border:"none",borderRadius:10,fontWeight:800,fontSize:15,cursor:splits?"pointer":"not-allowed"}}>
+{splits
+  ?(closeTable
+    ?"Hesabı Kapat — "+fm(fin,cur)
+    :"Kısmi Ödeme Al")
+  :"Ödeme yöntemi seçin"}
+</button>
 </div>
 </div>);}
 
@@ -915,33 +970,33 @@ return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 </div>
 
 {/* Sekme stat kartları */}
-<div style={{display:"flex",gap:0,overflowX:"auto",marginBottom:0}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:0,marginBottom:0}}>
 {[
 {k:"sales",l:"Satış",val:filteredLogs.reduce((s,l)=>s+(l.inc||0),0),sub:filteredLogs.length+" gün",color:"#34C759"},
 {k:"expenses",l:"Harcama",val:exp.reduce((s,e)=>s+e.amount,0),sub:exp.length+" kayıt",color:"#FF3B30"},
 {k:"installments",l:"Vadeler",val:(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0),sub:(installments||[]).length+" plan",color:"#FF9500"},
 {k:"credit",l:"Cari",val:(cari||[]).filter(c=>!c.settled).reduce((s,c)=>s+c.total,0),sub:(cari||[]).filter(c=>!c.settled).length+" açık",color:"#AF52DE"},
-{k:"products",l:"Ürün Analizi",val:prodTotalQty,sub:prodDaysWithData+" günlük veri",color:"#3A9EFF",unit:"count"},
-{k:"taco",l:"Taco & Tortilla",val:0,sub:"gelir & gider",color:"#FF6B35"},
+{k:"products",l:"Ürün",val:prodTotalQty,sub:prodDaysWithData+" gün",color:"#3A9EFF",unit:"count"},
+{k:"taco",l:"Taco",val:0,sub:"gelir & gider",color:"#FF6B35"},
 ].map(({k,l,val,sub,color,unit})=>{
 const isActive=mainT===k;
 return(
 <button key={k} onClick={()=>setMainT(k)} style={{
-  flex:"0 0 auto",
-  padding:"16px 22px 14px",
+  flex:1,
+  padding:"14px 8px 12px",
   background:"transparent",
   border:"none",
   borderBottom:`2.5px solid ${isActive?color:"transparent"}`,
   cursor:"pointer",
   textAlign:"left",
   transition:"all 0.15s",
-  minWidth:120,
+  minWidth:0,
 }}>
-<div style={{fontSize:10,color:isActive?color:"#444",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6,whiteSpace:"nowrap"}}>{l}</div>
-<div style={{fontSize:20,fontWeight:800,color:isActive?"#fff":"#555",letterSpacing:-0.5,marginBottom:2}}>
+<div style={{fontSize:9,color:isActive?color:"#444",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{l}</div>
+<div style={{fontSize:15,fontWeight:800,color:isActive?"#fff":"#555",letterSpacing:-0.3,marginBottom:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
 {unit==="count"?val.toLocaleString("tr-TR"):fm(val,cur)}
 </div>
-<div style={{fontSize:10,color:isActive?"#666":"#333",whiteSpace:"nowrap"}}>{sub}</div>
+<div style={{fontSize:9,color:isActive?"#666":"#333",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{sub}</div>
 </button>
 );})}
 </div>
@@ -2244,11 +2299,11 @@ const weekStart=new Date(now);weekStart.setDate(now.getDate()+diffToMon);
 const weekStartStr=weekStart.toISOString().split("T")[0];
 const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
 const weekEndStr=weekEnd.toISOString().split("T")[0];
-const weeklyRev=allLogs.filter(l=>l.date&&l.date>=weekStartStr&&l.date<=weekEndStr).reduce((s,l)=>s+(l.inc||0),0);
+const weeklyRev=[...allLogs,...(orders||[]).filter(o=>o.date&&o.date>=weekStartStr&&o.date<=weekEndStr&&!allLogs.find(l=>l.date===o.date))].filter(l=>l.date&&l.date>=weekStartStr&&l.date<=weekEndStr).reduce((s,l)=>s+(l.inc||l.total||0),0);
 
 // Bu ay
 const thisMonth=now.toISOString().slice(0,7);
-const monthlyRev=allLogs.filter(l=>l.date&&l.date.startsWith(thisMonth)).reduce((s,l)=>s+(l.inc||0),0);
+const monthlyRev=[...allLogs,...(orders||[]).filter(o=>o.date&&o.date.startsWith(thisMonth)&&!allLogs.find(l=>l.date===o.date))].filter(l=>l.date&&l.date.startsWith(thisMonth)).reduce((s,l)=>s+(l.inc||l.total||0),0);
 
 const weeklyGoal=cfg?.weeklyGoal||0;
 const monthlyGoal=cfg?.monthlyGoal||0;
