@@ -470,7 +470,7 @@ return(
 {gM&&view!=="order"&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>{setGM(null);setSel(null);}} T={T}/></div>}
 
 {view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile} T={T}/>}
-{view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile}/>}
+{view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} setExp={setExp} ecats={ecats} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} uid={uid} msg={msg} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile} T={T}/>}
 
 {view==="tables"&&(
 <div style={{padding:isMobile?"16px":"24px",maxWidth:1100,margin:"0 auto"}}>
@@ -544,6 +544,8 @@ return(
 {view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
+{view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb}/>}
+{view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
 {view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
@@ -551,9 +553,11 @@ return(
 </div>
 );}
 
-function HomeV({tables,orders,exp,todO,todI,day,cari,cfg,cur,fm,ft,fd,tod,setV,openDay,closeDay,dayCon,setDayCon,isMobile,T=DARK}){
+function HomeV({tables,orders,exp,setExp,ecats,todO,todI,day,cari,cfg,cur,fm,ft,fd,tod,uid,msg,setV,openDay,closeDay,dayCon,setDayCon,isMobile,T=DARK}){
 const now=new Date();
 const cash=todO.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
+const[showExpForm,setShowExpForm]=useState(false);
+const[expF,setExpF]=useState({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});
 const card=todO.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
 const cred=todO.filter(o=>o.pt==="credit").reduce((s,o)=>s+o.total,0);
 const todE=exp.filter(e=>e.date===tod()).reduce((s,e)=>s+e.amount,0);
@@ -631,6 +635,26 @@ return(
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Harcama</div><div style={{fontSize:22,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>Net: <span style={{color:todI-todE>=0?"#34C759":"#FF3B30",fontWeight:600}}>{fm(todI-todE,cur)}</span></div></div>
 {oCari.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Açık Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(oCari.reduce((s,c)=>s+c.total,0),cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{oCari.length} bekliyor</div></div>}
 </div>
+{/* Hızlı Harcama */}
+<div style={{marginBottom:isMobile?16:20}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:showExpForm?12:0}}>
+<button onClick={()=>setShowExpForm(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,background:showExpForm?T.bg3:T.isDark?"rgba(255,59,48,0.12)":"rgba(255,59,48,0.08)",border:"1px solid "+(showExpForm?T.border:"rgba(255,59,48,0.25)"),borderRadius:10,padding:"9px 16px",cursor:"pointer",color:showExpForm?T.textSub:"#FF3B30",fontWeight:600,fontSize:13}}>
+{showExpForm?"İptal":"＋ Harcama Ekle"}
+</button>
+{showExpForm&&<div style={{fontSize:12,color:T.textSub}}>Bugünün harcaması olarak kaydedilir</div>}
+</div>
+{showExpForm&&<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:16,display:"grid",gap:10}}>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+<input autoFocus placeholder="Açıklama (örn: Market)" value={expF.desc} onChange={e=>setExpF(p=>({...p,desc:e.target.value}))} onKeyDown={e=>{if(e.key==="Enter"&&expF.desc&&expF.amount){if(!expF.amount||!expF.desc)return;setExp(prev=>[{id:uid(),desc:expF.desc,amount:parseFloat(expF.amount),cat:expF.cat,date:tod()},...prev]);msg("Harcama eklendi");setExpF({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});setShowExpForm(false);}}} style={{background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"}}/>
+<input type="number" placeholder="Tutar (TL)" value={expF.amount} onChange={e=>setExpF(p=>({...p,amount:e.target.value}))} style={{background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"}}/>
+</div>
+<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{(ecats||[]).map(cat=><button key={cat} onClick={()=>setExpF(p=>({...p,cat}))} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:expF.cat===cat?"#FF3B30":T.bg3,color:expF.cat===cat?"#fff":T.textSub}}>{cat}</button>)}
+</div>
+<button onClick={()=>{if(!expF.desc||!expF.amount)return;setExp(prev=>[{id:uid(),desc:expF.desc,amount:parseFloat(expF.amount),cat:expF.cat,date:tod()},...prev]);msg("Harcama eklendi");setExpF({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});setShowExpForm(false);}} style={{background:"#FF3B30",border:"none",borderRadius:10,padding:"11px",color:"#fff",fontWeight:700,fontSize:14,cursor:"pointer",opacity:expF.desc&&expF.amount?1:0.5}}>Kaydet</button>
+</div>}
+</div>
+
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?12:16}}>
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
 <div style={{fontWeight:600,fontSize:15,marginBottom:18}}>Son 7 Gün</div>
@@ -914,74 +938,6 @@ const upcomingCount=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&
 const upcomingTotal=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).reduce((s,r)=>s+r.amount,0);
 const totalUnpaid=unpaidRows.reduce((s,r)=>s+r.amount,0);
 
-const[prodSortBy,setProdSortBy]=useState("qty");
-const prodDefaultFrom=(()=>{const d=new Date();d.setDate(d.getDate()-40);return d.toISOString().split("T")[0];})();
-const prodDefaultTo=tod();
-const[prodDateFrom,setProdDateFrom]=useState(prodDefaultFrom);
-const[prodDateTo,setProdDateTo]=useState(prodDefaultTo);
-const[showProdDatePicker,setShowProdDatePicker]=useState(false);
-const isProdDefaultRange=prodDateFrom===prodDefaultFrom&&prodDateTo===prodDefaultTo;
-const prodInRange=(date)=>{
-  if(!prodDateFrom&&!prodDateTo)return true;
-  if(prodDateFrom&&date<prodDateFrom)return false;
-  if(prodDateTo&&date>prodDateTo)return false;
-  return true;
-};
-const prodRangeLabel=!isProdDefaultRange&&(prodDateFrom||prodDateTo)?`${prodDateFrom||"..."} → ${prodDateTo||"..."}`:null;
-const clearProdRange=()=>{setProdDateFrom(prodDefaultFrom);setProdDateTo(prodDefaultTo);setShowProdDatePicker(false);};
-const setProdQuickRange=(days)=>{
-const to=tod();
-const from=new Date();
-from.setDate(from.getDate()-(days-1));
-setProdDateFrom(from.toISOString().split("T")[0]);
-setProdDateTo(to);
-setShowProdDatePicker(false);
-};
-const setProdQuickMonth=()=>{
-const now=new Date();
-const from=new Date(now.getFullYear(),now.getMonth(),1);
-setProdDateFrom(from.toISOString().split("T")[0]);
-setProdDateTo(tod());
-setShowProdDatePicker(false);
-};
-
-const prodRelevantLogs=logs.filter(l=>prodInRange(l.date)&&l.items&&l.items.length>0);
-const prodDaysWithData=prodRelevantLogs.length;
-const prodTotalDaysInRange=logs.filter(l=>prodInRange(l.date)).length;
-
-const productMap={};
-prodRelevantLogs.forEach(log=>{
-  log.items.forEach(it=>{
-    const key=it.name;
-    if(!productMap[key])productMap[key]={name:it.name,qty:0,revenue:0,days:new Set()};
-    productMap[key].qty+=it.qty;
-    productMap[key].revenue+=it.total;
-    productMap[key].days.add(log.date);
-  });
-});
-const productList=Object.values(productMap).map(p=>({...p,dayCount:p.days.size,avgPerDay:p.qty/p.days.size}));
-const prodTotalQty=productList.reduce((s,p)=>s+p.qty,0);
-const prodTotalRevenue=productList.reduce((s,p)=>s+p.revenue,0);
-const prodSorted=[...productList].sort((a,b)=>prodSortBy==="qty"?b.qty-a.qty:b.revenue-a.revenue);
-const prodMaxVal=prodSorted.length>0?(prodSortBy==="qty"?prodSorted[0].qty:prodSorted[0].revenue):1;
-const prodBottomSorted=[...productList].sort((a,b)=>prodSortBy==="qty"?a.qty-b.qty:a.revenue-b.revenue).slice(0,5);
-
-// Müşteri verileri
-const custMap={};
-(orders||[]).filter(o=>o.g&&o.g.trim()&&o.g!=="--").forEach(o=>{
-  const name=o.g.trim();
-  const month=o.date?o.date.slice(0,7):"";
-  if(!custMap[name])custMap[name]={name,total:0,count:0,visits:new Set(),months:{},lastVisit:"",items:{}};
-  custMap[name].total+=o.total||0;
-  custMap[name].count++;
-  custMap[name].visits.add(o.date);
-  if(o.date>custMap[name].lastVisit)custMap[name].lastVisit=o.date;
-  if(month){if(!custMap[name].months[month])custMap[name].months[month]=0;custMap[name].months[month]+=o.total||0;}
-  (o.items||[]).forEach(it=>{if(!custMap[name].items[it.name])custMap[name].items[it.name]=0;custMap[name].items[it.name]+=it.qty||0;});
-});
-const custList=Object.values(custMap).map(c=>({...c,visits:c.visits.size,avgOrder:c.count>0?c.total/c.count:0})).sort((a,b)=>b.total-a.total);
-const totalCustCount=custList.length;
-const totalCustRev=custList.reduce((s,c)=>s+c.total,0);
 return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 
 {/* Header — Rozetler tarzı koyu banner */}
@@ -996,14 +952,12 @@ return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 </div>
 
 {/* Sekme stat kartları */}
-<div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:0,marginBottom:0}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:0,marginBottom:0}}>
 {[
 {k:"sales",l:"Satış",val:filteredLogs.reduce((s,l)=>s+(l.inc||0),0),sub:filteredLogs.length+" gün",color:"#34C759"},
 {k:"expenses",l:"Harcama",val:exp.reduce((s,e)=>s+e.amount,0),sub:exp.length+" kayıt",color:"#FF3B30"},
 {k:"installments",l:"Vadeler",val:(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0),sub:(installments||[]).length+" plan",color:"#FF9500"},
 {k:"credit",l:"Cari",val:(cari||[]).filter(c=>!c.settled).reduce((s,c)=>s+c.total,0),sub:(cari||[]).filter(c=>!c.settled).length+" açık",color:"#AF52DE"},
-{k:"products",l:"Ürün",val:prodTotalQty,sub:prodDaysWithData+" gün",color:"#3A9EFF",unit:"count"},
-{k:"customers",l:"Müşteri",val:totalCustCount,sub:totalCustRev>0?fm(totalCustRev,cur):"kayıt yok",color:"#F59E0B",unit:"count"},
 {k:"taco",l:"Taco",val:0,sub:"gelir & gider",color:"#FF6B35"},
 ].map(({k,l,val,sub,color,unit})=>{
 const isActive=mainT===k;
@@ -1244,145 +1198,6 @@ return(
 </div>}
 </div>}
 
-{mainT==="products"&&(
-<div>
-<div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
-<div style={{position:"relative"}}>
-  <button onClick={()=>setShowProdDatePicker(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:prodRangeLabel?"rgba(52,199,89,0.12)":"rgba(118,118,128,0.12)",border:"1px solid "+(prodRangeLabel?"#8FE3A8":"rgba(60,60,67,0.18)"),borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,color:prodRangeLabel?"#34C759":"#8E8E93"}}>
-    📅 {prodRangeLabel||"Son 41 Gün"}
-    {prodRangeLabel&&<span onClick={e=>{e.stopPropagation();clearProdRange();}} style={{marginLeft:4,color:"#34C759",fontWeight:800,fontSize:14,lineHeight:1}}>×</span>}
-  </button>
-  {showProdDatePicker&&(
-    <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:16,boxShadow:"0 8px 24px rgba(0,0,0,0.12)",zIndex:100,minWidth:260}}>
-      <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Hızlı Seçim</div>
-      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}}>
-        <button onClick={()=>setProdQuickRange(7)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#F0F0F0"}}>Son 7 Gün</button>
-        <button onClick={()=>setProdQuickRange(14)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#F0F0F0"}}>Son 14 Gün</button>
-        <button onClick={()=>setProdQuickRange(30)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#F0F0F0"}}>Son 1 Ay</button>
-        <button onClick={()=>setProdQuickRange(90)} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#F0F0F0"}}>Son 3 Ay</button>
-        <button onClick={setProdQuickMonth} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:"rgba(118,118,128,0.12)",color:"#F0F0F0"}}>Bu Ay</button>
-      </div>
-      <div style={{fontSize:11,color:"#8E8E93",fontWeight:600,marginBottom:8}}>Özel Aralık</div>
-      <div style={{fontSize:10,color:"#C7C7CC",marginBottom:6}}>Başlangıç</div>
-      <input type="date" value={prodDateFrom} onChange={e=>setProdDateFrom(e.target.value)} style={{...inp,marginBottom:10}}/>
-      <div style={{fontSize:10,color:"#C7C7CC",marginBottom:6}}>Bitiş</div>
-      <input type="date" value={prodDateTo} onChange={e=>setProdDateTo(e.target.value)} style={{...inp,marginBottom:14}}/>
-      <div style={{display:"flex",gap:8}}>
-        <button onClick={clearProdRange} style={{...sb("rgba(118,118,128,0.12)"),flex:1,color:"#8E8E93",padding:"8px 0",fontSize:12}}>Son 41 Gün</button>
-        <button onClick={()=>setShowProdDatePicker(false)} style={{...sb("#34C759"),flex:1,padding:"8px 0",fontSize:12}}>Uygula</button>
-      </div>
-    </div>
-  )}
-</div>
-</div>
-<div style={{fontSize:12,color:"#8E8E93",marginBottom:16,marginTop:-8}}>{prodDaysWithData} günün ürün verisi üzerinden hesaplanıyor{prodTotalDaysInRange>prodDaysWithData?` (toplam ${prodTotalDaysInRange} gün içinde)`:""}</div>
-
-{prodDaysWithData===0?(
-<div style={{textAlign:"center",padding:"60px 0",color:"#C7C7CC"}}>
-<div style={{fontSize:32,marginBottom:10}}>📊</div>
-<div>Bu tarih aralığında ürün bazlı veri yok.</div>
-<div style={{fontSize:12,marginTop:6}}>Ürün detayı olan günler henüz sınırlı (Mayıs-Haziran 2026).</div>
-</div>
-):(
-<>
-<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:24}}>
-<div style={{background:"rgba(52,199,89,0.12)",border:"1px solid #8FE3A8",borderRadius:12,padding:"16px 18px"}}>
-<div style={{fontSize:11,color:"#8E8E93",marginBottom:4}}>Toplam Ürün Çeşidi</div>
-<div style={{fontSize:24,fontWeight:800,color:"#34C759"}}>{productList.length}</div>
-</div>
-<div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:12,padding:"16px 18px"}}>
-<div style={{fontSize:11,color:"#FF9500",marginBottom:4}}>Toplam Satılan Adet</div>
-<div style={{fontSize:24,fontWeight:800,color:"#FF9500"}}>{prodTotalQty}</div>
-</div>
-<div style={{background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.3)",borderRadius:12,padding:"16px 18px"}}>
-<div style={{fontSize:11,color:"#007AFF",marginBottom:4}}>Toplam Ciro</div>
-<div style={{fontSize:24,fontWeight:800,color:"#007AFF"}}>{fm(prodTotalRevenue,cur)}</div>
-</div>
-</div>
-
-<div style={{display:"flex",gap:8,marginBottom:16}}>
-{[{k:"qty",l:"Adete Göre"},{k:"revenue",l:"Ciroya Göre"}].map(({k,l})=><button key={k} onClick={()=>setProdSortBy(k)} style={{padding:"8px 18px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:700,fontSize:13,background:prodSortBy===k?"#34C759":"rgba(118,118,128,0.12)",color:prodSortBy===k?"#fff":"#8E8E93"}}>{l}</button>)}
-</div>
-
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:"20px 20px 12px",marginBottom:16}}>
-<div style={{fontWeight:700,fontSize:14,marginBottom:16,paddingLeft:4}}>En Çok Satanlar — Grafik</div>
-<div style={{display:"flex",flexDirection:"column",gap:10}}>
-{prodSorted.slice(0,10).map((p,i)=>{
-const val=prodSortBy==="qty"?p.qty:p.revenue;
-const barPct=prodMaxVal>0?Math.round(val/prodMaxVal*100):0;
-const label=prodSortBy==="qty"?p.qty+" adet":fm(p.revenue,cur);
-const barColor=i===0?"#34C759":i<3?"#5FD584":"#A8E8BC";
-return(
-<div key={p.name} style={{display:"flex",alignItems:"center",gap:10}}>
-<div style={{width:110,fontSize:11,fontWeight:600,color:i===0?"#000":"#3C3C43",textAlign:"right",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",flexShrink:0}}>{p.name}</div>
-<div style={{flex:1,background:"rgba(118,118,128,0.1)",borderRadius:6,height:22,overflow:"hidden",position:"relative"}}>
-<div style={{background:barColor,height:"100%",width:barPct+"%",borderRadius:6,transition:"width 0.4s ease",display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:6}}>
-{barPct>25&&<span style={{fontSize:10,fontWeight:700,color:"#fff"}}>{label}</span>}
-</div>
-{barPct<=25&&<span style={{position:"absolute",left:"calc("+barPct+"% + 8px)",top:"50%",transform:"translateY(-50%)",fontSize:10,fontWeight:700,color:T.textSub,whiteSpace:"nowrap"}}>{label}</span>}
-</div>
-<div style={{width:22,fontSize:11,color:"#8E8E93",flexShrink:0,textAlign:"right"}}>{i+1}</div>
-</div>
-);
-})}
-</div>
-<div style={{display:"flex",justifyContent:"space-between",marginTop:12,paddingLeft:120}}>
-<span style={{fontSize:10,color:"#8E8E93"}}>0</span>
-<span style={{fontSize:10,color:"#8E8E93"}}>{prodSortBy==="qty"?Math.round(prodMaxVal/2)+" adet":fm(prodMaxVal/2,cur)}</span>
-<span style={{fontSize:10,color:"#8E8E93"}}>{prodSortBy==="qty"?prodMaxVal+" adet":fm(prodMaxVal,cur)}</span>
-</div>
-</div>
-
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:20,marginBottom:20}}>
-<div style={{fontWeight:700,fontSize:14,marginBottom:14}}>En Çok Satanlar</div>
-<div style={{display:"flex",flexDirection:"column",gap:10}}>
-{prodSorted.map((p,i)=>{
-const val=prodSortBy==="qty"?p.qty:p.revenue;
-const pct=prodTotalQty>0?(prodSortBy==="qty"?p.qty/prodTotalQty*100:p.revenue/prodTotalRevenue*100):0;
-const barPct=prodMaxVal>0?val/prodMaxVal*100:0;
-return(
-<div key={p.name}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
-<div style={{display:"flex",alignItems:"center",gap:8}}>
-<span style={{fontSize:11,fontWeight:800,color:"#C7C7CC",minWidth:18}}>{i+1}</span>
-<span style={{fontSize:13,fontWeight:600}}>{p.name}</span>
-</div>
-<div style={{display:"flex",alignItems:"center",gap:10}}>
-<span style={{fontSize:11,color:"#8E8E93"}}>%{pct.toFixed(1)}</span>
-<span style={{fontSize:13,fontWeight:700,color:"#34C759",minWidth:70,textAlign:"right"}}>{prodSortBy==="qty"?p.qty+" adet":fm(p.revenue,cur)}</span>
-</div>
-</div>
-<div style={{background:"rgba(118,118,128,0.12)",borderRadius:6,height:8,overflow:"hidden"}}>
-<div style={{background:"#34C759",height:"100%",width:barPct+"%",borderRadius:6,transition:"width 0.3s"}}/>
-</div>
-<div style={{fontSize:10,color:"#C7C7CC",marginTop:3}}>{p.dayCount} günde satıldı · günlük ort. {p.avgPerDay.toFixed(1)} adet · {prodSortBy==="qty"?fm(p.revenue,cur):p.qty+" adet"}</div>
-</div>
-);
-})}
-</div>
-</div>
-
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",padding:20}}>
-<div style={{fontWeight:700,fontSize:14,marginBottom:4}}>En Az Satanlar</div>
-<div style={{fontSize:11,color:"#8E8E93",marginBottom:14}}>Menüden çıkarmayı veya kampanya yapmayı düşünebileceğin ürünler</div>
-<div style={{display:"flex",flexDirection:"column",gap:8}}>
-{prodBottomSorted.map(p=>(
-<div key={p.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",background:"rgba(118,118,128,0.12)",borderRadius:8}}>
-<span style={{fontSize:13,fontWeight:600}}>{p.name}</span>
-<div style={{display:"flex",gap:14,fontSize:12,color:"#8E8E93"}}>
-<span>{p.qty} adet</span>
-<span style={{fontWeight:700,color:"#FF3B30"}}>{fm(p.revenue,cur)}</span>
-</div>
-</div>
-))}
-</div>
-</div>
-</>
-)}
-</div>
-)}
-
-{mainT==="customers"&&<CustomersV orders={orders} custList={custList} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>}
 {mainT==="credit"&&<CariInReportsV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp}/>}
 {mainT==="taco"&&<TacoTabV tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} cur={cur} fm={fm} fd={fd} fdl={fdl} tod={tod} inp={inp} sb={sb} T={T}/>}
 </div>
@@ -2364,6 +2179,10 @@ const NAV_CARDS=[
    stat:earnedCount, statColor:"#FF9500", icon:"🎖"},
   {k:"todo", label:"Yapılacaklar", sub:"Görevler & notlar", accent:"#A855F7",
    stat:null, icon:"✅"},
+  {k:"products", label:"Ürün Analizi", sub:"En çok satanlar", accent:"#3A9EFF",
+   stat:null, icon:"📦"},
+  {k:"customers", label:"Müşteriler", sub:earnedCount>0?earnedCount+" müşteri":"isimli müşteri", accent:"#F59E0B",
+   stat:null, icon:"👥"},
 ];
 
 return(
@@ -3040,6 +2859,81 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </div>);})}
 </div>}
 </div>);}
+
+function ProductsPageV({logs,cur,fm,tod,T,inp,sb}){
+const[sortBy,setSortBy]=useState("qty");
+const[dateFrom,setDateFrom]=useState(()=>{const d=new Date();d.setDate(d.getDate()-40);return d.toISOString().split("T")[0];});
+const[dateTo,setDateTo]=useState(tod());
+
+const inRange=(date)=>{if(!dateFrom&&!dateTo)return true;if(dateFrom&&date<dateFrom)return false;if(dateTo&&date>dateTo)return false;return true;};
+const relevantLogs=(logs||[]).filter(l=>inRange(l.date)&&l.items&&l.items.length>0);
+const productMap={};
+relevantLogs.forEach(log=>{(log.items||[]).forEach(it=>{const key=it.name;if(!productMap[key])productMap[key]={name:it.name,qty:0,revenue:0,days:new Set()};productMap[key].qty+=it.qty;productMap[key].revenue+=it.total;productMap[key].days.add(log.date);});});
+const productList=Object.values(productMap).map(p=>({...p,dayCount:p.days.size,avgPerDay:p.qty/p.days.size}));
+const sorted=[...productList].sort((a,b)=>sortBy==="qty"?b.qty-a.qty:b.revenue-a.revenue);
+const maxVal=sorted.length>0?(sortBy==="qty"?sorted[0].qty:sorted[0].revenue):1;
+const totalQty=productList.reduce((s,p)=>s+p.qty,0);
+const totalRev=productList.reduce((s,p)=>s+p.revenue,0);
+
+return(
+<div style={{padding:"24px 28px",maxWidth:860,margin:"0 auto"}}>
+<h2 style={{margin:"0 0 20px",fontWeight:800,fontSize:22,color:T.text}}>📦 Ürün Analizi</h2>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
+<input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={inp}/>
+<input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={inp}/>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:20}}>
+<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:"14px 16px"}}><div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Ürün Çeşidi</div><div style={{fontSize:22,fontWeight:800,color:T.text}}>{productList.length}</div></div>
+<div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.25)",borderRadius:12,padding:"14px 16px"}}><div style={{fontSize:10,color:"#FF9500",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Toplam Adet</div><div style={{fontSize:22,fontWeight:800,color:"#FF9500"}}>{totalQty}</div></div>
+<div style={{background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.25)",borderRadius:12,padding:"14px 16px"}}><div style={{fontSize:10,color:"#3A9EFF",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Toplam Ciro</div><div style={{fontSize:18,fontWeight:800,color:"#3A9EFF"}}>{fm(totalRev,cur)}</div></div>
+</div>
+<div style={{display:"flex",gap:6,marginBottom:16}}>
+{[{k:"qty",l:"Adete Göre"},{k:"revenue",l:"Ciroya Göre"}].map(({k,l})=><button key={k} onClick={()=>setSortBy(k)} style={{padding:"8px 16px",borderRadius:8,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,background:sortBy===k?"#3A9EFF":T.bg3,color:sortBy===k?"#fff":T.textSub}}>{l}</button>)}
+</div>
+{sorted.length===0?<div style={{textAlign:"center",padding:"60px 0",color:T.textDim}}>Bu aralıkta ürün verisi yok.</div>
+:<div style={{display:"flex",flexDirection:"column",gap:6}}>
+{sorted.map((p,i)=>{
+const val=sortBy==="qty"?p.qty:p.revenue;
+const barPct=maxVal>0?val/maxVal*100:0;
+return(
+<div key={p.name} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:"12px 16px",position:"relative",overflow:"hidden"}}>
+<div style={{position:"absolute",bottom:0,left:0,height:2,width:barPct+"%",background:"rgba(58,158,255,0.4)"}}/>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<span style={{fontSize:12,fontWeight:800,color:T.textDim,minWidth:20}}>{i+1}</span>
+<div>
+<div style={{fontSize:13,fontWeight:600,color:T.text}}>{p.name}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:1}}>{p.dayCount} günde · günlük ort. {p.avgPerDay.toFixed(1)} adet</div>
+</div>
+</div>
+<div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
+<div style={{fontSize:14,fontWeight:700,color:"#3A9EFF"}}>{sortBy==="qty"?p.qty+" adet":fm(p.revenue,cur)}</div>
+<div style={{fontSize:11,color:T.textSub}}>{sortBy==="qty"?fm(p.revenue,cur):p.qty+" adet"}</div>
+</div>
+</div>
+</div>
+);})}
+</div>}
+</div>
+);}
+
+function CustomersPageV({orders,cur,fm,fd,T,inp}){
+const custMap={};
+(orders||[]).filter(o=>o.g&&o.g.trim()&&o.g!=="--").forEach(o=>{
+  const name=o.g.trim();const month=o.date?o.date.slice(0,7):"";
+  if(!custMap[name])custMap[name]={name,total:0,count:0,visits:new Set(),months:{},lastVisit:"",items:{}};
+  custMap[name].total+=o.total||0;custMap[name].count++;custMap[name].visits.add(o.date);
+  if(o.date>custMap[name].lastVisit)custMap[name].lastVisit=o.date;
+  if(month){if(!custMap[name].months[month])custMap[name].months[month]=0;custMap[name].months[month]+=o.total||0;}
+  (o.items||[]).forEach(it=>{if(!custMap[name].items[it.name])custMap[name].items[it.name]=0;custMap[name].items[it.name]+=it.qty||0;});
+});
+const custList=Object.values(custMap).map(c=>({...c,visits:c.visits.size,avgOrder:c.count>0?c.total/c.count:0})).sort((a,b)=>b.total-a.total);
+return(
+<div style={{padding:"24px 28px",maxWidth:860,margin:"0 auto"}}>
+<h2 style={{margin:"0 0 20px",fontWeight:800,fontSize:22,color:T.text}}>👥 Müşteriler</h2>
+<CustomersV orders={orders} custList={custList} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>
+</div>
+);}
 
 function CustomersV({orders,custList,cur,fm,fd,T,inp}){
 const[selCust,setSelCust]=useState(null);
