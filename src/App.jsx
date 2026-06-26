@@ -175,7 +175,13 @@ function buildBadges({logs,orders,cari,installments,fm,cur}){
 export default function App(){
 const[darkMode,setDarkMode]=useState(()=>{try{return localStorage.getItem("nicchia_theme")!=="light";}catch{return true;}});
 const T=darkMode?DARK:LIGHT;
-const inp={background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
+// iOS zoom fix: font-size 16px on all inputs
+if(typeof document!=="undefined"){
+  let styleEl=document.getElementById("nicchia-input-fix");
+  if(!styleEl){styleEl=document.createElement("style");styleEl.id="nicchia-input-fix";document.head.appendChild(styleEl);}
+  styleEl.textContent="input,select,textarea{font-size:16px!important;}";
+}
+const inp={background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:16,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
 const sb=(bg,col)=>({background:bg,border:"none",color:col||(T.isDark?"#fff":T.text),borderRadius:10,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer",boxShadow:T.isDark?"0 2px 8px rgba(0,0,0,0.4)":"0 1px 4px rgba(0,0,0,0.1)"});
 const toggleTheme=()=>{setDarkMode(p=>{const next=!p;try{localStorage.setItem("nicchia_theme",next?"dark":"light");}catch{}return next;});};
 const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"settings",l:"Ayarlar"}];
@@ -423,8 +429,8 @@ return(
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:16,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":l}</button>)}
-<button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:16,marginBottom:4,textAlign:"left"}}>
+{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":l}</button>)}
+<button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:13,marginBottom:4,textAlign:"left"}}>
 🔔 Bildirimler
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
 </button>
@@ -446,21 +452,21 @@ return(
 <div style={{display:"flex",gap:2,background:"rgba(255,255,255,0.05)",backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",padding:3,borderRadius:9,border:"0.5px solid rgba(255,255,255,0.1)",overflowX:"auto",maxWidth:"calc(100vw - 200px)"}}>
 {NAV.map(({k,l})=><button key={k} onClick={()=>go(k)} style={{padding:"6px 12px",borderRadius:7,border:"none",cursor:"pointer",fontWeight:590,fontSize:12,background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,opacity:view===k?1:0.75,boxShadow:view===k?"0 1px 3px rgba(0,0,0,0.12)":"none",transition:"all 0.15s",whiteSpace:"nowrap"}}>{k==="achievements"?"🎖 Rozetler":k==="todo"?"✅ Yapılacaklar":l}</button>)}
 </div>
-<button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"rgba(255,255,255,0.06)",boxShadow:view==="notifications"?"0 1px 3px rgba(0,0,0,0.12)":"none",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>
+<button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"rgba(255,255,255,0.06)",boxShadow:view==="notifications"?"0 1px 3px rgba(0,0,0,0.12)":"none",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}}>
 🔔
 {notifications.filter(n=>!n.read).length>0&&<span style={{position:"absolute",top:2,right:2,minWidth:16,height:16,borderRadius:8,background:"#FF3B30",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>{notifications.filter(n=>!n.read).length>9?"9+":notifications.filter(n=>!n.read).length}</span>}
 </button>
-<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title="Güvenli Çıkış">🔒</button>
-<button onClick={toggleTheme} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:darkMode?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title={darkMode?"Aydınlık Tema":"Karanlık Tema"}>{darkMode?"☀️":"🌙"}</button>
+<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}} title="Güvenli Çıkış">🔒</button>
+<button onClick={toggleTheme} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:darkMode?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}} title={darkMode?"Aydınlık Tema":"Karanlık Tema"}>{darkMode?"☀️":"🌙"}</button>
 </div>}
 {isMobile&&<div style={{display:"flex",alignItems:"center",gap:8}}>
 <button onClick={()=>go("notifications")} style={{position:"relative",width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(118,118,128,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
 🔔
 {notifications.filter(n=>!n.read).length>0&&<span style={{position:"absolute",top:2,right:2,minWidth:16,height:16,borderRadius:8,background:"#FF3B30",color:"#fff",fontSize:9,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>{notifications.filter(n=>!n.read).length>9?"9+":notifications.filter(n=>!n.read).length}</span>}
 </button>
-<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title="Güvenli Çıkış">🔒</button>
+<button onClick={()=>{try{localStorage.removeItem("lurk_auth");}catch{}setAuthed(false);setV("lurk");}} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:"rgba(255,59,48,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}} title="Güvenli Çıkış">🔒</button>
 </div>}
-<button onClick={toggleTheme} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:darkMode?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}} title={darkMode?"Aydınlık Tema":"Karanlık Tema"}>{darkMode?"☀️":"🌙"}</button>
+<button onClick={toggleTheme} style={{width:36,height:36,borderRadius:"50%",border:"none",cursor:"pointer",background:darkMode?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.07)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13}} title={darkMode?"Aydınlık Tema":"Karanlık Tema"}>{darkMode?"☀️":"🌙"}</button>
 </nav>
 
 {view!=="lurk"&&<div style={{padding:isMobile?"16px 16px 0":"24px 24px 0",maxWidth:860,margin:"0 auto"}}>
@@ -502,7 +508,7 @@ return(
 {cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:"rgba(22,22,22,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",border:"0.5px solid rgba(255,255,255,0.85)",borderRadius:20,padding:28,width:340,boxShadow:"0 24px 48px rgba(0,0,0,0.15)"}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Adisyonu İptal Et</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>{curT.lbl} masasındaki tüm ürünler silinecek ve masa boşalacak. Bu işlem geri alınamaz.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setCancelConfirm(false)} style={{...sb(T.bg3),flex:1,color:T.text}}>Vazgeç</button><button onClick={()=>{setCancelConfirm(false);cancelOrder(curT.id);}} style={{...sb(T.danger),flex:1}}>Evet, İptal Et</button></div></div></div>}
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
 <button onClick={()=>{setV("tables");setSel(null);}} style={{...sb(T.bg3),color:T.textSub,padding:"6px 12px"}}>Masalar</button>
-<div><div style={{fontWeight:700,fontSize:16}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
+<div><div style={{fontWeight:700,fontSize:13}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
 {curT.oa&&<span style={{fontSize:11,color:T.textSub,background:T.bg3,padding:"2px 8px",borderRadius:20}}>{ft(curT.oa)}</span>}
 {(curT.order.length>0||curT.s==="o")&&<button onClick={()=>setCancelConfirm(true)} style={{marginLeft:"auto",background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>Adisyonu İptal Et</button>}
 </div>
@@ -523,9 +529,9 @@ return(
 :curT.order.map(item=><div key={item.id} style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
 <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600}}>{item.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty} = <span style={{color:T.accentL}}>{fm(item.price*item.qty,cur)}</span></div></div>
 <div style={{display:"flex",gap:3}}>
-<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"}}>-</button>
+<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>-</button>
 <span style={{width:18,textAlign:"center",fontWeight:700,lineHeight:"24px",fontSize:12}}>{item.qty}</span>
-<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
+<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
 </div></div>)}
 </div>
 <div style={{padding:"12px 16px",borderTop:"0.5px solid "+T.border}}>
@@ -645,8 +651,8 @@ return(
 </div>
 {showExpForm&&<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:16,display:"grid",gap:10}}>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-<input autoFocus placeholder="Açıklama (örn: Market)" value={expF.desc} onChange={e=>setExpF(p=>({...p,desc:e.target.value}))} onKeyDown={e=>{if(e.key==="Enter"&&expF.desc&&expF.amount){if(!expF.amount||!expF.desc)return;setExp(prev=>[{id:uid(),desc:expF.desc,amount:parseFloat(expF.amount),cat:expF.cat,date:tod()},...prev]);msg("Harcama eklendi");setExpF({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});setShowExpForm(false);}}} style={{background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"}}/>
-<input type="number" placeholder="Tutar (TL)" value={expF.amount} onChange={e=>setExpF(p=>({...p,amount:e.target.value}))} style={{background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box"}}/>
+<input autoFocus placeholder="Açıklama (örn: Market)" value={expF.desc} onChange={e=>setExpF(p=>({...p,desc:e.target.value}))} onKeyDown={e=>{if(e.key==="Enter"&&expF.desc&&expF.amount){if(!expF.amount||!expF.desc)return;setExp(prev=>[{id:uid(),desc:expF.desc,amount:parseFloat(expF.amount),cat:expF.cat,date:tod()},...prev]);msg("Harcama eklendi");setExpF({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});setShowExpForm(false);}}} style={{background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:16,outline:"none",width:"100%",boxSizing:"border-box"}}/>
+<input type="number" placeholder="Tutar (TL)" value={expF.amount} onChange={e=>setExpF(p=>({...p,amount:e.target.value}))} style={{background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:16,outline:"none",width:"100%",boxSizing:"border-box"}}/>
 </div>
 <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
 {(ecats||[]).map(cat=><button key={cat} onClick={()=>setExpF(p=>({...p,cat}))} style={{padding:"6px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:expF.cat===cat?"#FF3B30":T.bg3,color:expF.cat===cat?"#fff":T.textSub}}>{cat}</button>)}
@@ -807,7 +813,7 @@ return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba
 {lines.map(line=><div key={line.id} style={{display:"flex",gap:8,marginBottom:10,alignItems:"center"}}>
 <input type="number" placeholder="Tutar" value={line.amount} onChange={e=>setLines(prev=>prev.map(l=>l.id===line.id?{...l,amount:e.target.value}:l))} style={{background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"8px 10px",color:T.text,fontSize:13,outline:"none",flex:1}}/>
 <div style={{display:"flex",gap:4}}>{PO.map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setLines(prev=>prev.map(li=>li.id===line.id?{...li,pt:k}:li))} style={{padding:"7px 9px",borderRadius:7,border:"2px solid "+(line.pt===k?bd:T.border),background:line.pt===k?bg:"#1E1E1E",color:line.pt===k?c:T.textSub,fontWeight:700,fontSize:11,cursor:"pointer"}}>{l}</button>)}</div>
-{lines.length>1&&<button onClick={()=>setLines(prev=>prev.filter(l=>l.id!==line.id))} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",padding:4,fontSize:16}}>x</button>}
+{lines.length>1&&<button onClick={()=>setLines(prev=>prev.filter(l=>l.id!==line.id))} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",padding:4,fontSize:13}}>x</button>}
 </div>)}
 <button onClick={()=>setLines(prev=>[...prev,{id:Date.now(),amount:"",pt:"cash"}])} style={{width:"100%",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:8,padding:"7px",color:T.textSub,fontSize:12,cursor:"pointer",marginBottom:10}}>+ Satır Ekle</button>
 <div style={{background:T.bg3,borderRadius:8,padding:"9px 12px",display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:8}}><span style={{color:T.textSub}}>Kalan</span><span style={{fontWeight:800,color:Math.abs(rem)<0.5?T.success:T.danger}}>{fm(rem,cur)}</span></div>
@@ -1031,7 +1037,7 @@ const mNet=mLogs.reduce((s,l)=>s+(l.net||0),0);
 const isOpen=curOpen===m;
 return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",overflow:"hidden"}}>
 <button onClick={()=>setOpenSalesMonth(isOpen?null:m)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
-<div><div style={{fontWeight:700,fontSize:16,color:"#F0F0F0"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{mLogs.length} gün kapatıldı</div></div>
+<div><div style={{fontWeight:700,fontSize:13,color:"#F0F0F0"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{mLogs.length} gün kapatıldı</div></div>
 <div style={{display:"flex",alignItems:"center",gap:16}}>
 <div style={{textAlign:"right"}}><div style={{fontWeight:800,fontSize:18,color:"#34C759"}}>{fm(mTotal,cur)}</div><div style={{fontSize:11,color:mNet>=0?"#34C759":"#FF3B30"}}>Net: {fm(mNet,cur)}</div></div>
 <span style={{color:"#C7C7CC",fontSize:13}}>{isOpen?"▲":"▼"}</span>
@@ -1102,7 +1108,7 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </div>}
 {lE.map(e=><div key={e.id} style={{background:T.isDark?"#1a1a1a":T.bg2,border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"10px 14px",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div><div style={{fontWeight:600,fontSize:13}}>{e.desc}</div><span style={{fontSize:10,background:"rgba(118,118,128,0.12)",padding:"1px 7px",borderRadius:10,color:"#8E8E93"}}>{e.cat}</span></div>
-<div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#FF3B30",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#C7C7CC",cursor:"pointer",padding:4,fontSize:16}}>x</button></div>
+<div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#FF3B30",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#C7C7CC",cursor:"pointer",padding:4,fontSize:13}}>x</button></div>
 </div>)}
 </>}
 </div>}
@@ -1352,7 +1358,7 @@ return(
 {!isEditing?(
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <span style={{fontSize:12,fontWeight:600,padding:"3px 10px",borderRadius:20,background:o.pt==="cash"?"rgba(255,149,0,0.1)":o.pt==="card"?"rgba(0,122,255,0.1)":"rgba(175,82,222,0.1)",color:o.pt==="cash"?"#FF9500":o.pt==="card"?"#007AFF":"#AF52DE"}}>{o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":"Cari"}</span>
-<span style={{fontWeight:800,fontSize:16,color:T.accentL}}>{fm(o.total,cur)}</span>
+<span style={{fontWeight:800,fontSize:13,color:T.accentL}}>{fm(o.total,cur)}</span>
 </div>
 ):(
 <div style={{background:T.bg3,borderRadius:10,padding:12}}>
@@ -1429,7 +1435,7 @@ return(
 :guestGroups.map((g,gi)=><div key={gi} style={{marginBottom:16,paddingBottom:16,borderBottom:"0.5px solid "+T.border}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
 <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:32,height:32,borderRadius:"50%",background:T.accentD,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:13,color:"#fff"}}>{g.name==="--"?"?":g.name[0].toUpperCase()}</div><div><div style={{fontWeight:700,fontSize:14}}>{g.name}</div><div style={{fontSize:11,color:T.textSub}}>{g.orders.length} adisyon</div></div></div>
-<div style={{fontWeight:800,color:T.accentL,fontSize:16}}>{fm(g.total,cur)}</div>
+<div style={{fontWeight:800,color:T.accentL,fontSize:13}}>{fm(g.total,cur)}</div>
 </div>
 {g.orders.map((o)=>{
 const isEditing=editOrderId===o.id;
@@ -1665,7 +1671,7 @@ return(<div style={{padding:24,maxWidth:780,margin:"0 auto"}}>
 const adisyonlar=c.adisyonlar||[{id:c.id+"_0",tbl:c.tbl,items:c.items,sub:c.sub,da:c.da||0,total:c.total,oa:c.oa,ca:c.cAt,date:c.date}];
 return(<div key={c.id} style={{background:T.bg2,border:"2px solid rgba(175,82,222,0.3)",borderRadius:12,padding:"14px 16px",marginBottom:10}}>
 <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
-<div><div style={{fontWeight:800,fontSize:16}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>{adisyonlar.length} adisyon</div></div>
+<div><div style={{fontWeight:800,fontSize:13}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>{adisyonlar.length} adisyon</div></div>
 <div style={{fontWeight:800,fontSize:20,color:"#AF52DE"}}>{fm(c.total,cur)}</div>
 </div>
 <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:12}}>
@@ -1683,10 +1689,10 @@ return(<div key={c.id} style={{background:T.bg2,border:"2px solid rgba(175,82,22
 </div>
 ))}
 </div>
-<div style={{display:"flex",gap:8}}><button onClick={()=>{setSelC(c);setStT(null);}} style={{...sb("rgba(175,82,222,0.18)"),flex:1,color:"#AF52DE",fontSize:12}}>Tahsil Et</button><button onClick={()=>setDelC(c.id)} style={{background:T.bg3,border:"none",borderRadius:8,padding:"10px 14px",cursor:"pointer",color:T.danger,fontSize:16}}>x</button></div>
+<div style={{display:"flex",gap:8}}><button onClick={()=>{setSelC(c);setStT(null);}} style={{...sb("rgba(175,82,222,0.18)"),flex:1,color:"#AF52DE",fontSize:12}}>Tahsil Et</button><button onClick={()=>setDelC(c.id)} style={{background:T.bg3,border:"none",borderRadius:8,padding:"10px 14px",cursor:"pointer",color:T.danger,fontSize:13}}>x</button></div>
 </div>);})}</div>}
 {closed.length>0&&<div><div style={{fontSize:12,fontWeight:700,color:T.textSub,marginBottom:10,textTransform:"uppercase",letterSpacing:1}}>Kapatılmış</div>
-{closed.map(c=><div key={c.id} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:10,padding:"12px 14px",marginBottom:8,opacity:0.7}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontWeight:700,fontSize:13}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textSub}}>{c.tbl} - {fd(c.cAt)}</div><div style={{fontSize:11,color:T.success,marginTop:2}}>{fd(c.sAt)} - {c.sPt==="cash"?"Nakit":"Kart"}</div></div><div style={{textAlign:"right"}}><div style={{fontWeight:800,color:T.accentL}}>{fm(c.total,cur)}</div><button onClick={()=>setDelC(c.id)} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",padding:"4px 0",marginTop:4,fontSize:16}}>x</button></div></div></div>)}
+{closed.map(c=><div key={c.id} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:10,padding:"12px 14px",marginBottom:8,opacity:0.7}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontWeight:700,fontSize:13}}>{c.g||"İsimsiz"}</div><div style={{fontSize:11,color:T.textSub}}>{c.tbl} - {fd(c.cAt)}</div><div style={{fontSize:11,color:T.success,marginTop:2}}>{fd(c.sAt)} - {c.sPt==="cash"?"Nakit":"Kart"}</div></div><div style={{textAlign:"right"}}><div style={{fontWeight:800,color:T.accentL}}>{fm(c.total,cur)}</div><button onClick={()=>setDelC(c.id)} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",padding:"4px 0",marginTop:4,fontSize:13}}>x</button></div></div></div>)}
 </div>}
 </div>);}
 
@@ -1788,7 +1794,7 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 <div style={{display:"flex",gap:6}}>
 <button onClick={()=>{setMF({name:item.name,price:String(item.price),cat:item.cat,on:item.on});setMEid(item.id);}} style={{...sb(T.bg3),flex:1,color:T.text,padding:"6px 0",fontSize:11}}>Düzenle</button>
 <button onClick={()=>setMenü(prev=>prev.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{...sb(item.on?T.bg3:T.accent),flex:1,color:item.on?T.textSub:"#fff",padding:"6px 0",fontSize:11}}>{item.on?"Pasif":"Aktif"}</button>
-<button onClick={()=>{if(window.confirm("Bu ürünü silmek istediğine emin misin?")){setMenü(prev=>prev.filter(m=>m.id!==item.id));}}} style={{background:T.bg3,border:"none",borderRadius:7,padding:"6px 10px",cursor:"pointer",color:T.danger,fontSize:16}}>x</button>
+<button onClick={()=>{if(window.confirm("Bu ürünü silmek istediğine emin misin?")){setMenü(prev=>prev.filter(m=>m.id!==item.id));}}} style={{background:T.bg3,border:"none",borderRadius:7,padding:"6px 10px",cursor:"pointer",color:T.danger,fontSize:13}}>x</button>
 </div>
 </div>)}
 </div>
@@ -1800,7 +1806,7 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 <button onClick={()=>{const t=newec.trim();if(t&&!ecats.includes(t)){setEc(prev=>[...prev,t]);setNewec("");msg("Eklendi");}}} style={{...sb(T.accent),padding:"9px 14px",flexShrink:0}}>+</button>
 </div>
 <div style={{display:"flex",flexDirection:"column",gap:7}}>
-{ecats.map(cat=>{const used=exp.filter(e=>e.cat===cat).length;return(<div key={cat} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.bg3,borderRadius:9,padding:"10px 14px"}}><div><div style={{fontWeight:600,fontSize:13}}>{cat}</div><div style={{fontSize:10,color:T.textSub,marginTop:2}}>{used} kayıt</div></div><button onClick={()=>{if(used>0){msg("Harcaması var","err");return;}if(window.confirm("Bu kategoriyi silmek istediğine emin misin?")){setEc(prev=>prev.filter(c=>c!==cat));msg("Silindi");}}} style={{background:"none",border:"none",color:used>0?T.textDim:T.danger,cursor:used>0?"not-allowed":"pointer",padding:4,fontSize:16,opacity:used>0?0.4:1}}>x</button></div>);})}
+{ecats.map(cat=>{const used=exp.filter(e=>e.cat===cat).length;return(<div key={cat} style={{display:"flex",alignItems:"center",justifyContent:"space-between",background:T.bg3,borderRadius:9,padding:"10px 14px"}}><div><div style={{fontWeight:600,fontSize:13}}>{cat}</div><div style={{fontSize:10,color:T.textSub,marginTop:2}}>{used} kayıt</div></div><button onClick={()=>{if(used>0){msg("Harcaması var","err");return;}if(window.confirm("Bu kategoriyi silmek istediğine emin misin?")){setEc(prev=>prev.filter(c=>c!==cat));msg("Silindi");}}} style={{background:"none",border:"none",color:used>0?T.textDim:T.danger,cursor:used>0?"not-allowed":"pointer",padding:4,fontSize:13,opacity:used>0?0.4:1}}>x</button></div>);})}
 </div>
 <div style={{marginTop:14,padding:10,background:T.bg3,borderRadius:8,fontSize:11,color:T.textDim}}>Harcaması olan kategorisi silinemez.</div>
 </div>}
@@ -2012,7 +2018,7 @@ return(
               <div style={{display:"flex",alignItems:"center",gap:12}}>
                 <div style={{fontWeight:800,fontSize:15,color:T.text}}>{fm(o.amount,cur)}</div>
                 {hasItems&&<span style={{color:T.textSub,fontSize:11}}>{isExpanded?"▲":"▼"}</span>}
-                <button onClick={(e)=>{e.stopPropagation();if(window.confirm("Bu siparişi silmek istediğine emin misin?")){setOnlineOrders(prev=>prev.filter(x=>x.id!==o.id));}}} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",padding:4,fontSize:16}}>x</button>
+                <button onClick={(e)=>{e.stopPropagation();if(window.confirm("Bu siparişi silmek istediğine emin misin?")){setOnlineOrders(prev=>prev.filter(x=>x.id!==o.id));}}} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",padding:4,fontSize:13}}>x</button>
               </div>
             </div>
             {isExpanded&&hasItems&&(
@@ -2820,7 +2826,7 @@ return(<div style={{paddingTop:8}}>
 <div style={{fontSize:11,color:"#8E8E93",marginBottom:6,fontWeight:600}}>Ürün / Açıklama</div>
 <input placeholder={mode==="income"?"Ürün adı (örn: Taco)":"Açıklama (örn: Malzeme)"} value={itemName} onChange={e=>setItemName(e.target.value)} style={{...inp,marginBottom:12}}/>
 <div style={{fontSize:11,color:"#8E8E93",marginBottom:6,fontWeight:600}}>Tutar ({cur})</div>
-<input type="number" placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)} onKeyDown={e=>e.key==="Enter"&&save()} style={{...inp,marginBottom:14,fontSize:16,fontWeight:700}} autoFocus/>
+<input type="number" placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)} onKeyDown={e=>e.key==="Enter"&&save()} style={{...inp,marginBottom:14,fontSize:13,fontWeight:700}} autoFocus/>
 <div style={{display:"flex",gap:8}}>
 <button onClick={()=>{setMode(null);setItemName("");setAmount("");}} style={{...sb("rgba(118,118,128,0.12)"),flex:1,color:"#8E8E93"}}>İptal</button>
 <button onClick={save} style={{...sb(mode==="income"?"#34C759":"#FF3B30"),flex:2}}>Kaydet</button>
@@ -3056,7 +3062,7 @@ return(
 </div>
 </div>
 <div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
-<div style={{fontSize:16,fontWeight:800,color:"#F59E0B"}}>{fm(c.total,cur)}</div>
+<div style={{fontSize:13,fontWeight:800,color:"#F59E0B"}}>{fm(c.total,cur)}</div>
 <div style={{fontSize:11,color:T.textSub,marginTop:1}}>ort. {fm(Math.round(c.avgOrder),cur)}</div>
 </div>
 </div>
