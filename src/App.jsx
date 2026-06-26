@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const DARK={bg:"#0D0D0D",bg2:"#161616",bg3:"#1E1E1E",border:"rgba(255,255,255,0.08)",border2:"rgba(255,255,255,0.12)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#F0F0F0",textSub:"#888",textDim:"#444",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 12px rgba(0,0,0,0.4),0 0 0 0.5px rgba(255,255,255,0.06) inset",shadowM:"0 8px 32px rgba(0,0,0,0.6),0 0 0 0.5px rgba(255,255,255,0.06) inset",glass:"rgba(255,255,255,0.05)",isDark:true};
+const DARK={bg:"#0D0D0D",bg2:"#1A1A1A",bg3:"#242424",border:"rgba(255,255,255,0.1)",border2:"rgba(255,255,255,0.15)",accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#F5F5F5",textSub:"#A0A0A0",textDim:"#666",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 12px rgba(0,0,0,0.4),0 0 0 0.5px rgba(255,255,255,0.06) inset",shadowM:"0 8px 32px rgba(0,0,0,0.6),0 0 0 0.5px rgba(255,255,255,0.06) inset",glass:"rgba(255,255,255,0.05)",isDark:true};
 
 const LIGHT={bg:"#F2F2F7",bg2:"rgba(255,255,255,0.9)",bg3:"rgba(118,118,128,0.12)",border:"rgba(60,60,67,0.12)",border2:"rgba(60,60,67,0.2)",accent:"#34C759",accentL:"#248A3D",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#6C6C70",textDim:"#AEAEB2",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 8px rgba(0,0,0,0.08),0 0 0 0.5px rgba(255,255,255,0.5) inset",shadowM:"0 8px 32px rgba(0,0,0,0.12),0 0 0 0.5px rgba(255,255,255,0.4) inset",glass:"rgba(255,255,255,0.7)",isDark:false};
 
@@ -13,7 +13,7 @@ const MENU=[
 {id:601,name:"+vegan süt",price:50,cat:"Ekstra",on:true},{id:602,name:"sıcak çikolata",price:200,cat:"Ekstra",on:true},{id:603,name:"sahlep",price:150,cat:"Ekstra",on:true},{id:604,name:"soda",price:90,cat:"Ekstra",on:true},{id:605,name:"baileys matcha",price:300,cat:"Ekstra",on:true},{id:606,name:"servis",price:200,cat:"Ekstra",on:true},{id:607,name:"oralet",price:50,cat:"Ekstra",on:true},{id:608,name:"Clap",price:250,cat:"Ekstra",on:true},{id:609,name:"Churchill",price:120,cat:"Ekstra",on:true},
 ];
 
-const OLD_LOGS=[{"id":"old_0_1767696480","date":"2026-01-06","oa":"2026-01-06T10:48:00","ca":"2026-01-07T00:59:00","inc":4070,"exp":0,"net":4070,"cash":200,"card":3870,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_1_1767791520","date":"2026-01-07","oa":"2026-01-07T13:12:00","ca":"2026-01-08T11:55:00","inc":810,"exp":0,"net":810,"cash":300,"card":510,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_2_1767877620","date":"2026-01-08","oa":"2026-01-08T13:07:00","ca":"2026-01-08T22:24:00","inc":450,"exp":0,"net":450,"cash":0,"card":450,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_3_1767963780","date":"2026-01-09","oa":"2026-01-09T13:03:00","ca":"2026-01-10T11:09:00","inc":3020,"exp":0,"net":3020,"cash":620,"card":2400,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_4_1768043340","date":"2026-01-10","oa":"2026-01-10T11:09:00","ca":"2026-01-10T23:59:00","inc":2020,"exp":0,"net":2020,"cash":150,"card":1870,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_5_1768138680","date":"2026-01-11","oa":"2026-01-11T13:38:00","ca":"2026-01-12T00:28:00","inc":1410,"exp":0,"net":1410,"cash":0,"card":1410,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_6_1768177680","date":"2026-01-12","oa":"2026-01-12T00:28:00","ca":"2026-01-12T22:34:00","inc":2525,"exp":0,"net":2525,"cash":120,"card":2405,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_7_1768305300","date":"2026-01-13","oa":"2026-01-13T11:55:00","ca":"2026-01-13T23:01:00","inc":1990,"exp":0,"net":1990,"cash":540,"card":1450,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_8_1768390980","date":"2026-01-14","oa":"2026-01-14T11:43:00","ca":"2026-01-15T10:17:00","inc":1250,"exp":0,"net":1250,"cash":200,"card":1050,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_9_1768476060","date":"2026-01-15","oa":"2026-01-15T11:21:00","ca":"2026-01-16T00:25:00","inc":1330,"exp":0,"net":1330,"cash":680,"card":650,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_10_1768523160","date":"2026-01-16","oa":"2026-01-16T00:26:00","ca":"2026-01-17T02:45:00","inc":1730,"exp":0,"net":1730,"cash":840,"card":890,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_11_1768647360","date":"2026-01-17","oa":"2026-01-17T10:56:00","ca":"2026-01-18T12:45:00","inc":1160,"exp":0,"net":1160,"cash":500,"card":660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_12_1768749720","date":"2026-01-18","oa":"2026-01-18T15:22:00","ca":"2026-01-18T22:10:00","inc":870,"exp":0,"net":870,"cash":400,"card":470,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_13_1768820760","date":"2026-01-19","oa":"2026-01-19T11:06:00","ca":"2026-01-19T23:05:00","inc":3140,"exp":0,"net":3140,"cash":1470,"card":1670,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_14_1768931280","date":"2026-01-20","oa":"2026-01-20T17:48:00","ca":"2026-01-21T10:05:00","inc":1180,"exp":0,"net":1180,"cash":580,"card":600,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_15_1768989900","date":"2026-01-21","oa":"2026-01-21T10:05:00","ca":"2026-01-21T22:36:00","inc":2410,"exp":0,"net":2410,"cash":750,"card":1660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_16_1769077080","date":"2026-01-22","oa":"2026-01-22T10:18:00","ca":"2026-01-22T22:07:00","inc":880,"exp":0,"net":880,"cash":120,"card":760,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_17_1769198460","date":"2026-01-23","oa":"2026-01-23T20:01:00","ca":"2026-01-24T07:19:00","inc":1170,"exp":0,"net":1170,"cash":0,"card":1170,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_18_1769262540","date":"2026-01-24","oa":"2026-01-24T13:49:00","ca":"2026-01-25T12:49:00","inc":610,"exp":0,"net":610,"cash":0,"card":610,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_19_1769360400","date":"2026-01-25","oa":"2026-01-25T17:00:00","ca":"2026-01-25T21:37:00","inc":2050,"exp":0,"net":2050,"cash":350,"card":1700,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_20_1769423580","date":"2026-01-26","oa":"2026-01-26T10:33:00","ca":"2026-01-26T22:05:00","inc":1465,"exp":0,"net":1465,"cash":300,"card":1165,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_21_1769509440","date":"2026-01-27","oa":"2026-01-27T10:24:00","ca":"2026-01-27T23:01:00","inc":1910,"exp":0,"net":1910,"cash":0,"card":1910,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_22_1769603820","date":"2026-01-28","oa":"2026-01-28T12:37:00","ca":"2026-01-29T10:21:00","inc":1525,"exp":0,"net":1525,"cash":0,"card":1525,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_23_1769682060","date":"2026-01-29","oa":"2026-01-29T10:21:00","ca":"2026-01-29T23:32:00","inc":2495,"exp":0,"net":2495,"cash":730,"card":1765,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_24_1769775540","date":"2026-01-30","oa":"2026-01-30T12:19:00","ca":"2026-01-30T21:20:00","inc":1970,"exp":0,"net":1970,"cash":750,"card":1220,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_25_1769855640","date":"2026-01-31","oa":"2026-01-31T10:34:00","ca":"2026-01-31T21:49:00","inc":1230,"exp":0,"net":1230,"cash":680,"card":550,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_26_1769972760","date":"2026-02-01","oa":"2026-02-01T19:06:00","ca":"2026-02-01T20:40:00","inc":940,"exp":0,"net":940,"cash":100,"card":840,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_27_1770045660","date":"2026-02-02","oa":"2026-02-02T15:21:00","ca":"2026-02-02T23:24:00","inc":960,"exp":0,"net":960,"cash":100,"card":860,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_28_1770122460","date":"2026-02-03","oa":"2026-02-03T12:41:00","ca":"2026-02-03T21:31:00","inc":890,"exp":0,"net":890,"cash":200,"card":690,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_29_1770207660","date":"2026-02-04","oa":"2026-02-04T12:21:00","ca":"2026-02-05T00:56:00","inc":800,"exp":0,"net":800,"cash":350,"card":450,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_30_1770285660","date":"2026-02-05","oa":"2026-02-05T10:01:00","ca":"2026-02-05T21:33:00","inc":1870,"exp":0,"net":1870,"cash":500,"card":1370,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_31_1770468720","date":"2026-02-07","oa":"2026-02-07T12:52:00","ca":"2026-02-08T01:35:00","inc":1430,"exp":0,"net":1430,"cash":200,"card":1230,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_32_1770552720","date":"2026-02-08","oa":"2026-02-08T12:12:00","ca":"2026-02-08T20:12:00","inc":2235,"exp":0,"net":2235,"cash":465,"card":1770,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_33_1770655620","date":"2026-02-09","oa":"2026-02-09T16:47:00","ca":"2026-02-09T23:29:00","inc":810,"exp":0,"net":810,"cash":0,"card":810,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_34_1770726120","date":"2026-02-10","oa":"2026-02-10T12:22:00","ca":"2026-02-10T22:49:00","inc":1550,"exp":0,"net":1550,"cash":450,"card":1100,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_35_1770806580","date":"2026-02-11","oa":"2026-02-11T10:43:00","ca":"2026-02-12T10:50:00","inc":1530,"exp":280,"net":1250,"cash":340,"card":1190,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_36_1770899580","date":"2026-02-12","oa":"2026-02-12T12:33:00","ca":"2026-02-13T00:50:00","inc":670,"exp":0,"net":670,"cash":0,"card":670,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_37_1770982980","date":"2026-02-13","oa":"2026-02-13T11:43:00","ca":"2026-02-13T22:40:00","inc":2190,"exp":0,"net":2190,"cash":425,"card":1765,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_38_1771071660","date":"2026-02-14","oa":"2026-02-14T12:21:00","ca":"2026-02-15T10:11:00","inc":660,"exp":0,"net":660,"cash":0,"card":660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_39_1771188060","date":"2026-02-15","oa":"2026-02-15T20:41:00","ca":"2026-02-16T00:03:00","inc":160,"exp":0,"net":160,"cash":0,"card":160,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_40_1771242960","date":"2026-02-16","oa":"2026-02-16T11:56:00","ca":"2026-02-17T14:07:00","inc":1710,"exp":0,"net":1710,"cash":780,"card":930,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_41_1771337280","date":"2026-02-17","oa":"2026-02-17T14:08:00","ca":"2026-02-17T23:35:00","inc":800,"exp":0,"net":800,"cash":0,"card":800,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_42_1771410540","date":"2026-02-18","oa":"2026-02-18T10:29:00","ca":"2026-02-18T21:23:00","inc":720,"exp":0,"net":720,"cash":420,"card":300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_43_1771499040","date":"2026-02-19","oa":"2026-02-19T11:04:00","ca":"2026-02-20T14:40:00","inc":1950,"exp":0,"net":1950,"cash":100,"card":1850,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_44_1771598400","date":"2026-02-20","oa":"2026-02-20T14:40:00","ca":"2026-02-20T22:38:00","inc":2610,"exp":0,"net":2610,"cash":320,"card":2290,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_45_1771666560","date":"2026-02-21","oa":"2026-02-21T09:36:00","ca":"2026-02-21T22:13:00","inc":1440,"exp":0,"net":1440,"cash":530,"card":910,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_46_1771759920","date":"2026-02-22","oa":"2026-02-22T11:32:00","ca":"2026-02-23T11:43:00","inc":2395,"exp":0,"net":2395,"cash":240,"card":2155,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_47_1771846980","date":"2026-02-23","oa":"2026-02-23T11:43:00","ca":"2026-02-24T02:27:00","inc":900,"exp":0,"net":900,"cash":320,"card":580,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_48_1771936020","date":"2026-02-24","oa":"2026-02-24T12:27:00","ca":"2026-02-25T10:32:00","inc":1630,"exp":0,"net":1630,"cash":0,"card":1630,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_49_1772017260","date":"2026-02-25","oa":"2026-02-25T11:01:00","ca":"2026-02-25T20:21:00","inc":640,"exp":0,"net":640,"cash":0,"card":640,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_50_1772101680","date":"2026-02-26","oa":"2026-02-26T10:28:00","ca":"2026-02-27T11:42:00","inc":530,"exp":0,"net":530,"cash":0,"card":530,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_51_1772197200","date":"2026-02-27","oa":"2026-02-27T13:00:00","ca":"2026-02-27T21:41:00","inc":590,"exp":0,"net":590,"cash":250,"card":340,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_52_1772285160","date":"2026-02-28","oa":"2026-02-28T13:26:00","ca":"2026-03-01T14:08:00","inc":270,"exp":0,"net":270,"cash":150,"card":120,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_53_1772374080","date":"2026-03-01","oa":"2026-03-01T14:08:00","ca":"2026-03-01T23:24:00","inc":3620,"exp":0,"net":3620,"cash":320,"card":3300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_54_1772454720","date":"2026-03-02","oa":"2026-03-02T12:32:00","ca":"2026-03-03T11:25:00","inc":1460,"exp":0,"net":1460,"cash":330,"card":1130,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_55_1772537100","date":"2026-03-03","oa":"2026-03-03T11:25:00","ca":"2026-03-03T23:52:00","inc":1920,"exp":0,"net":1920,"cash":140,"card":1780,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_56_1772623560","date":"2026-03-04","oa":"2026-03-04T11:26:00","ca":"2026-03-05T11:08:00","inc":1550,"exp":0,"net":1550,"cash":220,"card":1330,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_57_1772708880","date":"2026-03-05","oa":"2026-03-05T11:08:00","ca":"2026-03-05T22:43:00","inc":960,"exp":0,"net":960,"cash":480,"card":480,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_58_1772806260","date":"2026-03-06","oa":"2026-03-06T14:11:00","ca":"2026-03-06T22:01:00","inc":690,"exp":0,"net":690,"cash":180,"card":510,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_59_1772884500","date":"2026-03-07","oa":"2026-03-07T11:55:00","ca":"2026-03-08T11:51:00","inc":1130,"exp":0,"net":1130,"cash":670,"card":460,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_60_1772970660","date":"2026-03-08","oa":"2026-03-08T11:51:00","ca":"2026-03-08T23:07:00","inc":2360,"exp":0,"net":2360,"cash":700,"card":1660,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_61_1773066060","date":"2026-03-09","oa":"2026-03-09T14:21:00","ca":"2026-03-10T01:34:00","inc":2660,"exp":0,"net":2660,"cash":570,"card":2090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_62_1773151860","date":"2026-03-10","oa":"2026-03-10T14:11:00","ca":"2026-03-10T22:08:00","inc":1970,"exp":0,"net":1970,"cash":180,"card":1790,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_63_1773222060","date":"2026-03-11","oa":"2026-03-11T09:41:00","ca":"2026-03-11T22:05:00","inc":1420,"exp":0,"net":1420,"cash":0,"card":1420,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_64_1773314700","date":"2026-03-12","oa":"2026-03-12T11:25:00","ca":"2026-03-12T23:30:00","inc":2150,"exp":0,"net":2150,"cash":530,"card":1620,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_65_1773400800","date":"2026-03-13","oa":"2026-03-13T11:20:00","ca":"2026-03-14T12:11:00","inc":850,"exp":0,"net":850,"cash":250,"card":600,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_66_1773501960","date":"2026-03-14","oa":"2026-03-14T15:26:00","ca":"2026-03-14T19:56:00","inc":1660,"exp":0,"net":1660,"cash":350,"card":1310,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_67_1773575220","date":"2026-03-15","oa":"2026-03-15T11:47:00","ca":"2026-03-15T21:02:00","inc":2130,"exp":0,"net":2130,"cash":300,"card":1830,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_68_1773658680","date":"2026-03-16","oa":"2026-03-16T10:58:00","ca":"2026-03-16T23:05:00","inc":1330,"exp":0,"net":1330,"cash":0,"card":1330,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_69_1773744780","date":"2026-03-17","oa":"2026-03-17T10:53:00","ca":"2026-03-18T09:39:00","inc":1440,"exp":0,"net":1440,"cash":0,"card":1440,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_70_1773829320","date":"2026-03-18","oa":"2026-03-18T10:22:00","ca":"2026-03-18T21:59:00","inc":1080,"exp":0,"net":1080,"cash":160,"card":920,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_71_1773918240","date":"2026-03-19","oa":"2026-03-19T11:04:00","ca":"2026-03-20T11:43:00","inc":1210,"exp":0,"net":1210,"cash":330,"card":880,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_72_1774095180","date":"2026-03-21","oa":"2026-03-21T12:13:00","ca":"2026-03-21T21:02:00","inc":2300,"exp":0,"net":2300,"cash":930,"card":1370,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_73_1774178880","date":"2026-03-22","oa":"2026-03-22T11:28:00","ca":"2026-03-22T19:53:00","inc":5020,"exp":0,"net":5020,"cash":740,"card":4280,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_74_1774275720","date":"2026-03-23","oa":"2026-03-23T14:22:00","ca":"2026-03-23T21:58:00","inc":1240,"exp":0,"net":1240,"cash":200,"card":1040,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_75_1774352400","date":"2026-03-24","oa":"2026-03-24T11:40:00","ca":"2026-03-24T21:28:00","inc":1270,"exp":0,"net":1270,"cash":750,"card":520,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_76_1774439100","date":"2026-03-25","oa":"2026-03-25T11:45:00","ca":"2026-03-25T21:45:00","inc":2740,"exp":0,"net":2740,"cash":0,"card":2740,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_77_1774522560","date":"2026-03-26","oa":"2026-03-26T10:56:00","ca":"2026-03-27T07:52:00","inc":1620,"exp":0,"net":1620,"cash":100,"card":1520,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_78_1774598160","date":"2026-03-27","oa":"2026-03-27T07:56:00","ca":"2026-03-27T20:57:00","inc":2485,"exp":0,"net":2485,"cash":270,"card":2215,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_79_1774704480","date":"2026-03-28","oa":"2026-03-28T13:28:00","ca":"2026-03-29T06:20:00","inc":470,"exp":0,"net":470,"cash":170,"card":300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_80_1774796100","date":"2026-03-29","oa":"2026-03-29T14:55:00","ca":"2026-03-29T22:35:00","inc":2005,"exp":0,"net":2005,"cash":100,"card":1905,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_81_1774857360","date":"2026-03-30","oa":"2026-03-30T07:56:00","ca":"2026-03-31T10:34:00","inc":2250,"exp":0,"net":2250,"cash":290,"card":1960,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_82_1774978980","date":"2026-03-31","oa":"2026-03-31T17:43:00","ca":"2026-04-01T09:48:00","inc":1230,"exp":0,"net":1230,"cash":140,"card":1090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_83_1775037000","date":"2026-04-01","oa":"2026-04-01T09:50:00","ca":"2026-04-01T22:53:00","inc":3645,"exp":0,"net":3645,"cash":345,"card":3300,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_84_1775135940","date":"2026-04-02","oa":"2026-04-02T13:19:00","ca":"2026-04-02T23:12:00","inc":2890,"exp":0,"net":2890,"cash":150,"card":2740,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_85_1775211900","date":"2026-04-03","oa":"2026-04-03T10:25:00","ca":"2026-04-03T22:36:00","inc":2160,"exp":0,"net":2160,"cash":700,"card":1460,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_86_1775303580","date":"2026-04-04","oa":"2026-04-04T11:53:00","ca":"2026-04-05T11:49:00","inc":1790,"exp":0,"net":1790,"cash":110,"card":1680,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_87_1775397780","date":"2026-04-05","oa":"2026-04-05T14:03:00","ca":"2026-04-05T22:17:00","inc":3550,"exp":0,"net":3550,"cash":290,"card":3260,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_88_1775470680","date":"2026-04-06","oa":"2026-04-06T10:18:00","ca":"2026-04-06T22:22:00","inc":8710,"exp":0,"net":8710,"cash":2530,"card":6180,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_89_1775561040","date":"2026-04-07","oa":"2026-04-07T11:24:00","ca":"2026-04-07T21:10:00","inc":2430,"exp":0,"net":2430,"cash":500,"card":1930,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_90_1775646060","date":"2026-04-08","oa":"2026-04-08T11:01:00","ca":"2026-04-08T23:12:00","inc":1800,"exp":0,"net":1800,"cash":540,"card":1260,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_91_1775740440","date":"2026-04-09","oa":"2026-04-09T13:14:00","ca":"2026-04-09T22:05:00","inc":2290,"exp":0,"net":2290,"cash":230,"card":2060,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_92_1775827320","date":"2026-04-10","oa":"2026-04-10T13:22:00","ca":"2026-04-11T11:35:00","inc":750,"exp":0,"net":750,"cash":0,"card":750,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_93_1775910120","date":"2026-04-11","oa":"2026-04-11T12:22:00","ca":"2026-04-12T12:03:00","inc":2450,"exp":0,"net":2450,"cash":220,"card":2230,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_94_1775995980","date":"2026-04-12","oa":"2026-04-12T12:13:00","ca":"2026-04-12T22:24:00","inc":2650,"exp":0,"net":2650,"cash":500,"card":2150,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_95_1776083280","date":"2026-04-13","oa":"2026-04-13T12:28:00","ca":"2026-04-13T20:52:00","inc":2240,"exp":0,"net":2240,"cash":150,"card":2090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_96_1776164520","date":"2026-04-14","oa":"2026-04-14T11:02:00","ca":"2026-04-14T22:30:00","inc":4350,"exp":0,"net":4350,"cash":250,"card":4100,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_97_1776249960","date":"2026-04-15","oa":"2026-04-15T10:46:00","ca":"2026-04-16T12:23:00","inc":2130,"exp":0,"net":2130,"cash":400,"card":1730,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_98_1776342180","date":"2026-04-16","oa":"2026-04-16T12:23:00","ca":"2026-04-16T21:59:00","inc":1570,"exp":0,"net":1570,"cash":200,"card":1370,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_99_1776426720","date":"2026-04-17","oa":"2026-04-17T11:52:00","ca":"2026-04-17T21:48:00","inc":1410,"exp":0,"net":1410,"cash":0,"card":1410,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_100_1776527880","date":"2026-04-18","oa":"2026-04-18T15:58:00","ca":"2026-04-19T02:44:00","inc":1060,"exp":0,"net":1060,"cash":50,"card":1010,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_101_1776596040","date":"2026-04-19","oa":"2026-04-19T10:54:00","ca":"2026-04-19T20:38:00","inc":5870,"exp":0,"net":5870,"cash":1200,"card":4670,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_102_1776682680","date":"2026-04-20","oa":"2026-04-20T10:58:00","ca":"2026-04-20T22:29:00","inc":2710,"exp":0,"net":2710,"cash":620,"card":2090,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_103_1776774840","date":"2026-04-21","oa":"2026-04-21T12:34:00","ca":"2026-04-21T21:04:00","inc":2450,"exp":0,"net":2450,"cash":500,"card":1950,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_104_1776860280","date":"2026-04-22","oa":"2026-04-22T12:18:00","ca":"2026-04-22T21:30:00","inc":1625,"exp":0,"net":1625,"cash":435,"card":1190,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_105_1776948240","date":"2026-04-23","oa":"2026-04-23T12:44:00","ca":"2026-04-23T22:55:00","inc":4330,"exp":0,"net":4330,"cash":300,"card":4030,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_106_1777033320","date":"2026-04-24","oa":"2026-04-24T12:22:00","ca":"2026-04-24T22:29:00","inc":3200,"exp":0,"net":3200,"cash":870,"card":2330,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_107_1777116540","date":"2026-04-25","oa":"2026-04-25T11:29:00","ca":"2026-04-25T21:50:00","inc":3120,"exp":0,"net":3120,"cash":550,"card":2570,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_108_1777211760","date":"2026-04-26","oa":"2026-04-26T13:56:00","ca":"2026-04-27T10:54:00","inc":2860,"exp":0,"net":2860,"cash":230,"card":2630,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_109_1777287900","date":"2026-04-27","oa":"2026-04-27T11:05:00","ca":"2026-04-27T22:31:00","inc":2130,"exp":0,"net":2130,"cash":100,"card":2030,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_110_1777382880","date":"2026-04-28","oa":"2026-04-28T13:28:00","ca":"2026-04-28T21:18:00","inc":1430,"exp":0,"net":1430,"cash":300,"card":1130,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_111_1777465620","date":"2026-04-29","oa":"2026-04-29T12:27:00","ca":"2026-04-29T22:04:00","inc":4060,"exp":0,"net":4060,"cash":950,"card":3110,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_112_1777551000","date":"2026-04-30","oa":"2026-04-30T12:10:00","ca":"2026-04-30T23:44:00","inc":5790,"exp":0,"net":5790,"cash":440,"card":5350,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_113_1777639440","date":"2026-05-01","oa":"2026-05-01T12:44:00","ca":"2026-05-01T21:48:00","inc":3865,"exp":0,"net":3865,"cash":490,"card":3375,"count":11,"items":[{"name":"filtre kahve","qty":8,"total":1140,"price":142.5,"cat":"Diger"},{"name":"americano","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"250g FILTER","qty":1,"total":500,"price":500.0,"cat":"Diger"},{"name":"latte","qty":2,"total":360,"price":180.0,"cat":"Diger"},{"name":"bitki çayı","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"soft cookie","qty":1,"total":175,"price":175.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_114_1777727160","date":"2026-05-02","oa":"2026-05-02T13:06:00","ca":"2026-05-02T22:20:00","inc":3940,"exp":0,"net":3940,"cash":680,"card":3260,"count":12,"items":[{"name":"salted caramel latte","qty":4,"total":1000,"price":250.0,"cat":"Diger"},{"name":"latte","qty":4,"total":720,"price":180.0,"cat":"Diger"},{"name":"americano","qty":3,"total":470,"price":156.67,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"kış lattesi","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cappuccino","qty":1,"total":180,"price":180.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_115_1777810500","date":"2026-05-03","oa":"2026-05-03T12:15:00","ca":"2026-05-03T21:33:00","inc":2870,"exp":0,"net":2870,"cash":400,"card":2470,"count":10,"items":[{"name":"vanilla matcha latte","qty":3,"total":770,"price":256.67,"cat":"Diger"},{"name":"filtre kahve","qty":3,"total":420,"price":140.0,"cat":"Diger"},{"name":"(a) servis","qty":1,"total":350,"price":350.0,"cat":"Diger"},{"name":"sahlep","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_116_1777901100","date":"2026-05-04","oa":"2026-05-04T13:25:00","ca":"2026-05-04T21:25:00","inc":1340,"exp":0,"net":1340,"cash":50,"card":1290,"count":4,"items":[{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":7,"total":350,"price":50.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"sıcak çikolata","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_117_1777983060","date":"2026-05-05","oa":"2026-05-05T12:11:00","ca":"2026-05-05T21:16:00","inc":1990,"exp":0,"net":1990,"cash":150,"card":1840,"count":7,"items":[{"name":"americano","qty":3,"total":470,"price":156.67,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_118_1778070780","date":"2026-05-06","oa":"2026-05-06T12:33:00","ca":"2026-05-07T15:26:00","inc":4520,"exp":0,"net":4520,"cash":550,"card":3970,"count":9,"items":[{"name":"vanilya latte","qty":4,"total":840,"price":210.0,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":760,"price":152.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":10,"total":450,"price":45.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_119_1778167560","date":"2026-05-07","oa":"2026-05-07T15:26:00","ca":"2026-05-08T00:03:00","inc":3600,"exp":0,"net":3600,"cash":420,"card":3180,"count":10,"items":[{"name":"salted caramel latte","qty":3,"total":790,"price":263.33,"cat":"Diger"},{"name":"strawberry matcha latte","qty":2,"total":560,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"(a) servis","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_120_1778252040","date":"2026-05-08","oa":"2026-05-08T14:54:00","ca":"2026-05-08T22:21:00","inc":4240,"exp":0,"net":4240,"cash":630,"card":3610,"count":12,"items":[{"name":"strawberry matcha latte","qty":3,"total":820,"price":273.33,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"(a) servis","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"bitki çayı","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_121_1778337600","date":"2026-05-09","oa":"2026-05-09T14:40:00","ca":"2026-05-09T21:54:00","inc":2810,"exp":0,"net":2810,"cash":150,"card":2660,"count":9,"items":[{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_122_1778419140","date":"2026-05-10","oa":"2026-05-10T13:19:00","ca":"2026-05-10T23:10:00","inc":3680,"exp":0,"net":3680,"cash":330,"card":3350,"count":8,"items":[{"name":"vanilla matcha latte","qty":3,"total":810,"price":270.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"filtre kahve","qty":3,"total":480,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":450,"price":50.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"flatwhite","qty":1,"total":170,"price":170.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_123_1778502360","date":"2026-05-11","oa":"2026-05-11T12:26:00","ca":"2026-05-11T22:12:00","inc":4120,"exp":0,"net":4120,"cash":420,"card":3700,"count":12,"items":[{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"filtre kahve","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"latte","qty":3,"total":560,"price":186.67,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"Churchill","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"+vegan süt","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_124_1778591820","date":"2026-05-12","oa":"2026-05-12T13:17:00","ca":"2026-05-12T23:15:00","inc":5310,"exp":0,"net":5310,"cash":450,"card":4860,"count":11,"items":[{"name":"latte","qty":5,"total":960,"price":192.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":800,"price":160.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"sigaralık filtre","qty":8,"total":400,"price":50.0,"cat":"Diger"},{"name":"(a) servis","qty":1,"total":350,"price":350.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_125_1778668740","date":"2026-05-13","oa":"2026-05-13T10:39:00","ca":"2026-05-13T23:11:00","inc":4370,"exp":0,"net":4370,"cash":100,"card":4270,"count":10,"items":[{"name":"americano","qty":7,"total":1190,"price":170.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":470,"price":235.0,"cat":"Diger"},{"name":"bitki çayı","qty":3,"total":450,"price":150.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_126_1778751000","date":"2026-05-14","oa":"2026-05-14T09:30:00","ca":"2026-05-14T23:58:00","inc":3970,"exp":0,"net":3970,"cash":90,"card":3880,"count":9,"items":[{"name":"latte","qty":5,"total":940,"price":188.0,"cat":"Diger"},{"name":"americano","qty":5,"total":850,"price":170.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":720,"price":144.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":500,"price":250.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_127_1778846220","date":"2026-05-15","oa":"2026-05-15T11:57:00","ca":"2026-05-15T21:53:00","inc":3020,"exp":0,"net":3020,"cash":800,"card":2220,"count":10,"items":[{"name":"strawberry matcha latte","qty":3,"total":820,"price":273.33,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"americano","qty":2,"total":340,"price":170.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"kış lattesi","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_128_1778937360","date":"2026-05-16","oa":"2026-05-16T13:16:00","ca":"2026-05-17T10:47:00","inc":1910,"exp":0,"net":1910,"cash":0,"card":1910,"count":5,"items":[{"name":"salted caramel latte","qty":3,"total":770,"price":256.67,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_129_1779014820","date":"2026-05-17","oa":"2026-05-17T10:47:00","ca":"2026-05-17T22:19:00","inc":6970,"exp":0,"net":6970,"cash":50,"card":6920,"count":12,"items":[{"name":"strawberry matcha latte","qty":4,"total":1120,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":4,"total":1080,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":4,"total":1020,"price":255.0,"cat":"Diger"},{"name":"filtre kahve","qty":7,"total":1000,"price":142.86,"cat":"Diger"},{"name":"americano","qty":4,"total":680,"price":170.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":12,"total":600,"price":50.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"tiramisu","qty":1,"total":290,"price":290.0,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_130_1779096900","date":"2026-05-18","oa":"2026-05-18T09:35:00","ca":"2026-05-18T22:11:00","inc":4050,"exp":0,"net":4050,"cash":1280,"card":2770,"count":9,"items":[{"name":"latte","qty":8,"total":1560,"price":195.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"mocha","qty":2,"total":480,"price":240.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"tiramisu","qty":1,"total":290,"price":290.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_131_1779188400","date":"2026-05-19","oa":"2026-05-19T11:00:00","ca":"2026-05-19T22:06:00","inc":7580,"exp":0,"net":7580,"cash":700,"card":6880,"count":11,"items":[{"name":"filtre kahve","qty":9,"total":1380,"price":153.33,"cat":"Diger"},{"name":"americano","qty":5,"total":880,"price":176.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"latte","qty":4,"total":780,"price":195.0,"cat":"Diger"},{"name":"matcha latte","qty":3,"total":750,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":14,"total":700,"price":50.0,"cat":"Diger"},{"name":"berry matcha latte","qty":2,"total":560,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":2,"total":540,"price":270.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_132_1779275400","date":"2026-05-20","oa":"2026-05-20T11:10:00","ca":"2026-05-20T22:48:00","inc":2900,"exp":0,"net":2900,"cash":50,"card":2850,"count":11,"items":[{"name":"strawberry matcha latte","qty":2,"total":560,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"tiramisu","qty":1,"total":290,"price":290.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"mocha","qty":1,"total":230,"price":230.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"americano","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_133_1779360480","date":"2026-05-21","oa":"2026-05-21T10:48:00","ca":"2026-05-21T21:40:00","inc":1985,"exp":0,"net":1985,"cash":300,"card":1685,"count":9,"items":[{"name":"soft cookie","qty":2,"total":350,"price":175.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"apple & ginger matcha latte","qty":1,"total":260,"price":260.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"americano","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"+vegan süt","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_134_1779452580","date":"2026-05-22","oa":"2026-05-22T12:23:00","ca":"2026-05-22T22:52:00","inc":3570,"exp":0,"net":3570,"cash":0,"card":3570,"count":8,"items":[{"name":"strawberry matcha latte","qty":3,"total":840,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":3,"total":810,"price":270.0,"cat":"Diger"},{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":500,"price":250.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_135_1779535440","date":"2026-05-23","oa":"2026-05-23T11:24:00","ca":"2026-05-23T21:30:00","inc":2500,"exp":0,"net":2500,"cash":0,"card":2500,"count":9,"items":[{"name":"filtre kahve","qty":4,"total":600,"price":150.0,"cat":"Diger"},{"name":"latte","qty":3,"total":580,"price":193.33,"cat":"Diger"},{"name":"soft cookie","qty":2,"total":350,"price":175.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"Churchill","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_136_1779629400","date":"2026-05-24","oa":"2026-05-24T13:30:00","ca":"2026-05-25T09:20:00","inc":3270,"exp":0,"net":3270,"cash":100,"card":3170,"count":8,"items":[{"name":"filtre kahve","qty":5,"total":760,"price":152.0,"cat":"Diger"},{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"latte","qty":3,"total":560,"price":186.67,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":450,"price":50.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"Churchill","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_137_1779705720","date":"2026-05-25","oa":"2026-05-25T10:42:00","ca":"2026-05-26T13:29:00","inc":2860,"exp":0,"net":2860,"cash":830,"card":2030,"count":8,"items":[{"name":"filtre kahve","qty":5,"total":780,"price":156.0,"cat":"Diger"},{"name":"ice tea","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":2,"total":520,"price":260.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"espresso","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"dümdüz siyah çay","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_138_1779807360","date":"2026-05-26","oa":"2026-05-26T14:56:00","ca":"2026-05-26T21:28:00","inc":1470,"exp":0,"net":1470,"cash":390,"card":1080,"count":5,"items":[{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"latte","qty":2,"total":390,"price":195.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_139_1779966540","date":"2026-05-28","oa":"2026-05-28T11:09:00","ca":"2026-05-29T11:57:00","inc":3210,"exp":0,"net":3210,"cash":850,"card":2360,"count":7,"items":[{"name":"vanilla matcha latte","qty":3,"total":810,"price":270.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":720,"price":144.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":420,"price":46.67,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"americano","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_140_1780055820","date":"2026-05-29","oa":"2026-05-29T11:57:00","ca":"2026-05-30T11:06:00","inc":3720,"exp":0,"net":3720,"cash":980,"card":2740,"count":8,"items":[{"name":"salted caramel latte","qty":5,"total":1270,"price":254.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":780,"price":156.0,"cat":"Diger"},{"name":"americano","qty":3,"total":510,"price":170.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":5,"total":250,"price":50.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_141_1780139160","date":"2026-05-30","oa":"2026-05-30T11:06:00","ca":"2026-05-31T13:35:00","inc":2640,"exp":0,"net":2640,"cash":100,"card":2540,"count":7,"items":[{"name":"americano","qty":5,"total":850,"price":170.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":9,"total":450,"price":50.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_142_1780234680","date":"2026-05-31","oa":"2026-05-31T13:38:00","ca":"2026-05-31T23:55:00","inc":5030,"exp":0,"net":5030,"cash":250,"card":4780,"count":12,"items":[{"name":"filtre kahve","qty":8,"total":1180,"price":147.5,"cat":"Diger"},{"name":"salted caramel latte","qty":3,"total":790,"price":263.33,"cat":"Diger"},{"name":"sigaralık filtre","qty":15,"total":750,"price":50.0,"cat":"Diger"},{"name":"americano","qty":4,"total":660,"price":165.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"matcha latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"cappuccino","qty":1,"total":180,"price":180.0,"cat":"Diger"},{"name":"bitki çayı","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780322820","date":"2026-06-01","oa":"2026-06-01T14:07:00","ca":"2026-06-02T11:21:00","inc":3020,"exp":0,"net":3020,"cash":400,"card":2620,"count":7,"items":[{"name":"latte","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"americano","qty":4,"total":680,"price":170.0,"cat":"Diger"},{"name":"filtre kahve","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"espresso","qty":2,"total":280,"price":140.0,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"ice tea","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780399320","date":"2026-06-02","oa":"2026-06-02T11:22:00","ca":"2026-06-03T10:59:00","inc":2970,"exp":0,"net":2970,"cash":300,"card":2670,"count":9,"items":[{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":780,"price":156.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"vanilya latte","qty":1,"total":220,"price":220.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"americano","qty":1,"total":170,"price":170.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780486260","date":"2026-06-03","oa":"2026-06-03T11:31:00","ca":"2026-06-03T23:00:00","inc":4330,"exp":0,"net":4330,"cash":800,"card":3530,"count":10,"items":[{"name":"ice tea","qty":7,"total":1400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":5,"total":800,"price":160.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"mevsim meyvelerinden matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"cortado","qty":1,"total":150,"price":150.0,"cat":"Diger"},{"name":"espresso","qty":1,"total":140,"price":140.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780577520","date":"2026-06-04","oa":"2026-06-04T12:52:00","ca":"2026-06-05T14:50:00","inc":4400,"exp":0,"net":4400,"cash":650,"card":3750,"count":10,"items":[{"name":"filtre kahve","qty":6,"total":960,"price":160.0,"cat":"Diger"},{"name":"ice tea","qty":4,"total":800,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":3,"total":790,"price":263.33,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"americano","qty":3,"total":520,"price":173.33,"cat":"Diger"},{"name":"berry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"soda","qty":2,"total":180,"price":90.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":3,"total":150,"price":50.0,"cat":"Diger"},{"name":"cappuccino","qty":1,"total":120,"price":120.0,"cat":"Diger"},{"name":"+vegan süt","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780682820","date":"2026-06-05","oa":"2026-06-05T18:07:00","ca":"2026-06-05T23:31:00","inc":2210,"exp":0,"net":2210,"cash":410,"card":1800,"count":6,"items":[{"name":"salted caramel latte","qty":3,"total":750,"price":250.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"ice tea","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"},{"name":"soda","qty":1,"total":90,"price":90.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780746360","date":"2026-06-06","oa":"2026-06-06T11:46:00","ca":"2026-06-07T15:59:00","inc":2720,"exp":0,"net":2720,"cash":600,"card":2120,"count":7,"items":[{"name":"americano","qty":5,"total":850,"price":170.0,"cat":"Diger"},{"name":"latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"matcha latte","qty":2,"total":460,"price":230.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"strawberry matcha latte","qty":1,"total":280,"price":280.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":1,"total":50,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780847940","date":"2026-06-07","oa":"2026-06-07T15:59:00","ca":"2026-06-08T11:23:00","inc":1290,"exp":0,"net":1290,"cash":820,"card":470,"count":5,"items":[{"name":"americano","qty":2,"total":340,"price":170.0,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":300,"price":150.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":4,"total":200,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1780917780","date":"2026-06-08","oa":"2026-06-08T11:23:00","ca":"2026-06-09T11:29:00","inc":4470,"exp":0,"net":4470,"cash":400,"card":4070,"count":7,"items":[{"name":"ice tea","qty":8,"total":1600,"price":200.0,"cat":"Diger"},{"name":"americano","qty":8,"total":1340,"price":167.5,"cat":"Diger"},{"name":"matcha latte","qty":3,"total":600,"price":200.0,"cat":"Diger"},{"name":"latte","qty":2,"total":400,"price":200.0,"cat":"Diger"},{"name":"vanilla matcha latte","qty":1,"total":270,"price":270.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":2,"total":100,"price":50.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781005500","date":"2026-06-09","oa":"2026-06-09T11:45:00","ca":"2026-06-10T10:25:00","inc":2500,"exp":0,"net":2500,"cash":400,"card":2100,"count":5,"items":[{"name":"ice tea","qty":6,"total":1200,"price":200.0,"cat":"Diger"},{"name":"americano","qty":4,"total":640,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":6,"total":300,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"},{"name":"filtre kahve","qty":1,"total":160,"price":160.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781088540","date":"2026-06-10","oa":"2026-06-10T10:49:00","ca":"2026-06-11T01:54:00","inc":3430,"exp":0,"net":3430,"cash":0,"card":3430,"count":6,"items":[{"name":"ice tea","qty":7,"total":1400,"price":200.0,"cat":"Diger"},{"name":"salted caramel latte","qty":3,"total":750,"price":250.0,"cat":"Diger"},{"name":"americano","qty":3,"total":490,"price":163.33,"cat":"Diger"},{"name":"filtre kahve","qty":2,"total":320,"price":160.0,"cat":"Diger"},{"name":"sigaralık filtre","qty":6,"total":300,"price":50.0,"cat":"Diger"},{"name":"latte","qty":1,"total":200,"price":200.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781184720","date":"2026-06-11","oa":"2026-06-11T13:32:00","ca":"2026-06-11T17:42:00","inc":1050,"exp":0,"net":1050,"cash":180,"card":870,"count":0,"items":[],"guests":[],"exps":[],"imported":true},{"id":"old_june_1781272080","date":"2026-06-12","oa":"2026-06-12T13:48:00","ca":"2026-06-14T15:51:00","inc":550,"exp":0,"net":550,"cash":300,"card":250,"count":2,"items":[{"name":"vanilla matcha latte","qty":1,"total":300,"price":300.0,"cat":"Diger"},{"name":"salted caramel latte","qty":1,"total":250,"price":250.0,"cat":"Diger"}],"guests":[],"exps":[],"imported":true}];
+const OLD_LOGS=[]; // Supabase'e taşındı
 const DS={name:"Restoran",tableCount:10,cur:"TL",requireName:false,sitePassword:"",recoveryQ:"",recoveryA:"",monthlyGoal:0,weeklyGoal:0,hiddenPlatforms:[]};
 const DEC=["Malzeme","Kira","Personel","Fatura","Diğer"];
 const PO=[{k:"cash",l:"Nakit",c:"#FF9500",bg:"rgba(255,149,0,0.1)",bd:"rgba(255,149,0,0.3)"},{k:"card",l:"Kart",c:"#007AFF",bg:"rgba(0,122,255,0.1)",bd:"rgba(0,122,255,0.3)"},{k:"credit",l:"Cari",c:"#AF52DE",bg:"rgba(175,82,222,0.1)",bd:"rgba(175,82,222,0.3)"}];
@@ -266,6 +266,34 @@ const today=new Date().toISOString().split("T")[0];
 const validDay=d&&d.oa&&d.oa.split("T")[0]===today?d:null;
 setDay(validDay);setLogs(l);setCari(c||[]);setEc(finalEc);setOnlineOrders(onl);setInstallments(inst||[]);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
 setTacoLogs((tl||[]).filter(l=>l.type==="income"||l.type==="expense"));setTacoMenu(tm||[]);
+
+// Vade bildirimleri kontrolü
+const instNotifs=[];
+const todayDate=new Date(today);
+(inst||[]).forEach(plan=>{
+  (plan.installments||[]).filter(i=>!i.paid).forEach(instItem=>{
+    const dueDate=new Date(instItem.due);
+    const diffDays=Math.round((dueDate-todayDate)/(1000*60*60*24));
+    const notifId="inst_"+plan.id+"_"+instItem.id;
+    const alreadyNotified=(notif||[]).some(n=>n.id===notifId);
+    if(alreadyNotified)return;
+    if(diffDays<0){
+      instNotifs.push({id:notifId,type:"overdue",planName:plan.name,amount:instItem.amount,due:instItem.due,date:new Date().toISOString(),read:false,icon:"⚠️",title:plan.name+" — Gecikmiş Vade",desc:`${Math.abs(diffDays)} gün gecikmiş · ${instItem.amount.toLocaleString("tr-TR")} TL`});
+    } else if(diffDays<=3){
+      instNotifs.push({id:notifId,type:"urgent",planName:plan.name,amount:instItem.amount,due:instItem.due,date:new Date().toISOString(),read:false,icon:"🔔",title:plan.name+" — Vade Yaklaşıyor",desc:`${diffDays===0?"Bugün":diffDays===1?"Yarın":diffDays+" gün içinde"} · ${instItem.amount.toLocaleString("tr-TR")} TL`});
+    } else if(diffDays<=7){
+      instNotifs.push({id:notifId,type:"upcoming",planName:plan.name,amount:instItem.amount,due:instItem.due,date:new Date().toISOString(),read:false,icon:"📅",title:plan.name+" — Vade Hatırlatma",desc:`${diffDays} gün içinde · ${instItem.amount.toLocaleString("tr-TR")} TL`});
+    }
+  });
+});
+if(instNotifs.length>0){
+  setNotifications(prev=>{
+    const existingIds=new Set(prev.map(n=>n.id));
+    const newOnes=instNotifs.filter(n=>!existingIds.has(n.id));
+    return newOnes.length>0?[...newOnes,...prev]:prev;
+  });
+}
+
 setOk(true);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
@@ -277,22 +305,34 @@ if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 setAuthChecked(true);
 })();},[]);
 
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_t",tables);},[tables,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_o",orders);},[orders,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_e",exp);},[exp,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_m",menu);},[menu,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_s",cfg);},[cfg,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_d",day);},[day,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_l",logs);},[logs,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_c",cari);},[cari,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_ec",ecats);},[ecats,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_onl",onlineOrders);},[onlineOrders,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_inst",installments);},[installments,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_unl",unlocked);},[unlocked,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_notif",notifications);},[notifications,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("lurk_todo",todos);},[todos,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("tt_l",tacoLogs);},[tacoLogs,ok]);
-useEffect(()=>{if(ok&&loadedRef.current)sv("tt_m",tacoMenu);},[tacoMenu,ok]);
+// Debounced toplu kayıt — 800ms bekleyip tek seferde yazar
+const saveTimerRef=useRef(null);
+const pendingSaveRef=useRef({});
+const debouncedSave=(key,value)=>{
+  pendingSaveRef.current[key]=value;
+  if(saveTimerRef.current)clearTimeout(saveTimerRef.current);
+  saveTimerRef.current=setTimeout(async()=>{
+    const batch={...pendingSaveRef.current};
+    pendingSaveRef.current={};
+    await Promise.all(Object.entries(batch).map(([k,v])=>sv(k,v)));
+  },800);
+};
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_t",tables);},[tables,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_o",orders);},[orders,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_e",exp);},[exp,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_m",menu);},[menu,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_s",cfg);},[cfg,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_d",day);},[day,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_l",logs);},[logs,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_c",cari);},[cari,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_ec",ecats);},[ecats,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_onl",onlineOrders);},[onlineOrders,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_inst",installments);},[installments,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_unl",unlocked);},[unlocked,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_notif",notifications);},[notifications,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("lurk_todo",todos);},[todos,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("tt_l",tacoLogs);},[tacoLogs,ok]);
+useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("tt_m",tacoMenu);},[tacoMenu,ok]);
 
 useEffect(()=>{
 if(!ok)return;
@@ -336,7 +376,9 @@ setLogs(prev=>[{id:uid(),date:td,oa:day.oa,ca:new Date().toISOString(),inc,exp:e
 setDay(null);setDayCon(false);msg("Gun kapatıldı");};
 
 const goTbl=(id)=>{if(!day){msg("Önce günü aç","err");return;}if(cfg.requireName){setSel(id);setGM(id);}else doOpen(id,"");};
-const doOpen=(id,g)=>{setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g||t.g}:t));setSel(id);setCat("Tümü");setDisc(null);setPay(false);setGM(null);setV("order");};
+const doOpen=(id,g)=>{
+const firstCat=Array.from(new Set(menu.filter(m=>m.on).map(m=>m.cat)))[0]||"";
+setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g||t.g}:t));setSel(id);setCat(firstCat);setDisc(null);setPay(false);setGM(null);setV("order");};
 const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const ex=t.order.find(o=>o.id===item.id);const order=ex?t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o):[...t.order,{...item,qty:1}];return{...t,order,s:"o",oa:t.oa||new Date().toISOString()};}));};
 const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);if(newOrder.length===0)return{...t,order:newOrder,s:"e",oa:null,g:""};return{...t,order:newOrder};}));};
 const cancelOrder=(tid)=>{setTbl(prev=>prev.map(t=>t.id===tid?{...t,order:[],s:"e",oa:null,g:""}:t));setV("tables");setSel(null);msg("Adisyon iptal edildi","err");};
@@ -404,8 +446,8 @@ const saveCfg=()=>{const nc={...cfgF,tableCount:parseInt(cfgF.tableCount)||10};s
 const todO=orders.filter(o=>o.date===tod());
 const todI=todO.reduce((s,o)=>s+o.total,0);
 const aMenü=menu.filter(m=>m.on);
-const oCats=["Tümü",...Array.from(new Set(aMenü.map(m=>m.cat)))];
-const fMenü=cat==="Tümü"?aMenü:aMenü.filter(m=>m.cat===cat);
+const oCats=Array.from(new Set(aMenü.map(m=>m.cat)));
+const fMenü=aMenü.filter(m=>m.cat===cat);
 const curT=tables.find(t=>t.id===sel);
 const go=(k)=>{setV(k);setSel(null);setSelLog(null);};
 
@@ -500,15 +542,22 @@ return(
 )}
 
 {view==="order"&&curT&&(
-<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 340px",gridTemplateRows:isMobile?"1fr auto":"none",height:"calc(100vh - 60px)",overflow:isMobile?"auto":"visible"}}>
+<div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 60px)",overflow:"hidden",position:"relative"}}>
 {gM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>doOpen(gM,"")} T={T}/></div>}
 {disM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><DiscM total={sub(curT)} cur={cur} fm={fm} T={T} onApply={d=>{setDisc(d);setDisM(false);}} onClose={()=>setDisM(false)}/></div>}
 {pay&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}><PayM table={curT} disc={disc} cur={cur} fm={fm} T={T} PO={PO} openCari={cari.filter(c=>!c.settled)} onClose={()=>setPay(false)} onDone={(splits,closeTable)=>closeTbl(splits,closeTable)}/></div>}
+{cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",border:"0.5px solid "+T.border,borderRadius:20,padding:28,width:340,maxWidth:"90vw",boxShadow:"0 24px 48px rgba(0,0,0,0.4)"}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Adisyonu İptal Et</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>{curT.lbl} masasındaki tüm ürünler silinecek ve masa boşalacak. Bu işlem geri alınamaz.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setCancelConfirm(false)} style={{...sb(T.bg3),flex:1,color:T.text}}>Vazgeç</button><button onClick={()=>{setCancelConfirm(false);cancelOrder(curT.id);}} style={{...sb(T.danger),flex:1}}>Evet, İptal Et</button></div></div></div>}
+
+{isMobile?(
+/* MOBİL: Tab ile menü/sepet arası geçiş */
+<OrderMobileV curT={curT} T={T} sb={sb} fm={fm} ft={ft} cur={cur} disc={disc} setDisc={setDisc} setDisM={setDisM} setPay={setPay} setV={setV} setSel={setSel} setCancelConfirm={setCancelConfirm} cat={cat} setCat={setCat} oCats={oCats} fMenü={fMenü} addItem={addItem} chQ={chQ} sub={sub} fin={fin} cfg={cfg} setGM={setGM} msg={msg}/>
+):(
+/* MASAÜSTÜ: yan yana iki sütun */
+<div style={{display:"grid",gridTemplateColumns:"1fr 340px",height:"100%",overflow:"hidden"}}>
 <div style={{padding:16,overflowY:"auto"}}>
-{cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:"rgba(22,22,22,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",border:"0.5px solid rgba(255,255,255,0.85)",borderRadius:20,padding:28,width:340,boxShadow:"0 24px 48px rgba(0,0,0,0.15)"}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Adisyonu İptal Et</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>{curT.lbl} masasındaki tüm ürünler silinecek ve masa boşalacak. Bu işlem geri alınamaz.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setCancelConfirm(false)} style={{...sb(T.bg3),flex:1,color:T.text}}>Vazgeç</button><button onClick={()=>{setCancelConfirm(false);cancelOrder(curT.id);}} style={{...sb(T.danger),flex:1}}>Evet, İptal Et</button></div></div></div>}
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
 <button onClick={()=>{setV("tables");setSel(null);}} style={{...sb(T.bg3),color:T.textSub,padding:"6px 12px"}}>Masalar</button>
-<div><div style={{fontWeight:700,fontSize:13}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
+<div><div style={{fontWeight:700,fontSize:13,color:T.text}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
 {curT.oa&&<span style={{fontSize:11,color:T.textSub,background:T.bg3,padding:"2px 8px",borderRadius:20}}>{ft(curT.oa)}</span>}
 {(curT.order.length>0||curT.s==="o")&&<button onClick={()=>setCancelConfirm(true)} style={{marginLeft:"auto",background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>Adisyonu İptal Et</button>}
 </div>
@@ -519,7 +568,7 @@ return(
 {fMenü.map(item=><button key={item.id} onClick={()=>addItem(curT.id,item)} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"left",color:T.text}}><div style={{fontWeight:600,fontSize:11,marginBottom:4}}>{item.name}</div><div style={{fontWeight:800,fontSize:13,color:T.accentL}}>{fm(item.price,cur)}</div></button>)}
 </div>
 </div>
-<div style={{background:T.isDark?"#111":T.bg2,borderLeft:"0.5px solid rgba(255,255,255,0.08)",display:"flex",flexDirection:"column"}}>
+<div style={{background:T.isDark?"#111":T.bg2,borderLeft:"0.5px solid "+T.border,display:"flex",flexDirection:"column",overflow:"hidden"}}>
 <div style={{padding:"12px 16px",borderBottom:"0.5px solid "+T.border,fontWeight:700,fontSize:13,color:T.accentL,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <span>Sipariş</span>
 <button onClick={()=>setGM(curT.id)} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:6,padding:"3px 8px",color:T.textSub,cursor:"pointer",fontSize:11}}>{curT.g||"Müşteri"}</button>
@@ -527,11 +576,11 @@ return(
 <div style={{flex:1,overflowY:"auto",padding:"10px 14px"}}>
 {curT.order.length===0?<div style={{color:T.textDim,textAlign:"center",paddingTop:30,fontSize:12}}>Ürün eklenmedi</div>
 :curT.order.map(item=><div key={item.id} style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-<div style={{flex:1}}><div style={{fontSize:12,fontWeight:600}}>{item.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty} = <span style={{color:T.accentL}}>{fm(item.price*item.qty,cur)}</span></div></div>
+<div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:T.text}}>{item.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty} = <span style={{color:T.accentL}}>{fm(item.price*item.qty,cur)}</span></div></div>
 <div style={{display:"flex",gap:3}}>
-<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>-</button>
-<span style={{width:18,textAlign:"center",fontWeight:700,lineHeight:"24px",fontSize:12}}>{item.qty}</span>
-<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
+<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>-</button>
+<span style={{width:18,textAlign:"center",fontWeight:700,lineHeight:"24px",fontSize:12,color:T.text}}>{item.qty}</span>
+<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>+</button>
 </div></div>)}
 </div>
 <div style={{padding:"12px 16px",borderTop:"0.5px solid "+T.border}}>
@@ -544,18 +593,116 @@ return(
 </div>
 </div>
 )}
+</div>
+)}
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T} cfg={cfg}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
-{view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb}/>}
-{view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>}
+{view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb} setV={setV}/>}
+{view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp} setV={setV}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
-{view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T}/>}
+{view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T} setV={setV}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
-{view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T}/>}
+{view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T} logs={logs} onlineOrders={onlineOrders} todos={todos} tacoLogs={tacoLogs} tacoMenu={tacoMenu} notifications={notifications} cari={cari} installments={installments}/>}
+</div>
+);}
+
+function OrderMobileV({curT,T,sb,fm,ft,cur,disc,setDisc,setDisM,setPay,setV,setSel,setCancelConfirm,cat,setCat,oCats,fMenü,addItem,chQ,sub,fin,cfg,setGM,msg}){
+const[activeTab,setActiveTab]=useState("menu");
+const orderTotal=fin(curT);
+const itemCount=curT.order.reduce((s,i)=>s+i.qty,0);
+
+return(
+<div style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden"}}>
+{/* Üst bar */}
+<div style={{padding:"10px 14px",borderBottom:"0.5px solid "+T.border,display:"flex",alignItems:"center",gap:10,flexShrink:0,background:T.bg}}>
+<button onClick={()=>{setV("tables");setSel(null);}} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
+<div style={{flex:1}}>
+<div style={{fontWeight:700,fontSize:14,color:T.text}}>{curT.lbl}</div>
+{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}
+</div>
+<button onClick={()=>setGM(curT.id)} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:8,padding:"5px 10px",color:T.textSub,cursor:"pointer",fontSize:11}}>{curT.g||"Müşteri"}</button>
+{(curT.order.length>0)&&<button onClick={()=>setCancelConfirm(true)} style={{background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:600,cursor:"pointer"}}>İptal</button>}
+</div>
+
+{/* Tab: Menü / Sepet */}
+<div style={{display:"flex",borderBottom:"0.5px solid "+T.border,flexShrink:0,background:T.bg}}>
+<button onClick={()=>setActiveTab("menu")} style={{flex:1,padding:"10px 0",border:"none",background:"none",borderBottom:`2px solid ${activeTab==="menu"?T.accent:"transparent"}`,color:activeTab==="menu"?T.accent:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>Menü</button>
+<button onClick={()=>setActiveTab("cart")} style={{flex:1,padding:"10px 0",border:"none",background:"none",borderBottom:`2px solid ${activeTab==="cart"?T.accent:"transparent"}`,color:activeTab==="cart"?T.accent:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+Sepet {itemCount>0&&<span style={{background:T.accent,color:"#fff",borderRadius:20,padding:"1px 7px",fontSize:11,marginLeft:4}}>{itemCount}</span>}
+</button>
+</div>
+
+{/* Menü tab */}
+{activeTab==="menu"&&<div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+<div style={{padding:"10px 12px 6px",flexShrink:0}}>
+<div style={{display:"flex",gap:6,flexWrap:"nowrap",overflowX:"auto",paddingBottom:4}}>
+{oCats.map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:"6px 14px",borderRadius:20,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,background:cat===c?T.accent:T.bg3,color:cat===c?"#fff":T.textSub,whiteSpace:"nowrap",flexShrink:0}}>{c}</button>)}
+</div>
+</div>
+<div style={{flex:1,overflowY:"auto",padding:"0 12px 12px"}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
+{fMenü.map(item=>{
+const inCart=curT.order.find(o=>o.id===item.id);
+return(
+<button key={item.id} onClick={()=>addItem(curT.id,item)} style={{background:inCart?"rgba(52,199,89,0.12)":T.bg2,border:"0.5px solid "+(inCart?"rgba(52,199,89,0.3)":T.border),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative"}}>
+{inCart&&<span style={{position:"absolute",top:6,right:8,background:T.accent,color:"#fff",borderRadius:20,fontSize:10,fontWeight:800,padding:"1px 6px"}}>×{inCart.qty}</span>}
+<div style={{fontWeight:600,fontSize:12,marginBottom:4,paddingRight:inCart?28:0,color:T.text}}>{item.name}</div>
+<div style={{fontWeight:800,fontSize:13,color:T.accentL}}>{fm(item.price,cur)}</div>
+</button>);
+})}
+</div>
+</div>
+{/* Siparişi Gönder butonu — altta sabit */}
+{itemCount>0&&<div style={{padding:"10px 12px",borderTop:"0.5px solid "+T.border,background:T.bg,flexShrink:0,display:"flex",gap:8}}>
+<button onClick={()=>setActiveTab("cart")} style={{flex:1,padding:"12px",background:T.bg3,border:"none",borderRadius:10,color:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+Sepet ({itemCount})
+</button>
+<button onClick={()=>{msg(curT.lbl+" siparişi kaydedildi");setV("tables");setSel(null);}} style={{flex:2,padding:"12px",background:"#3A9EFF",border:"none",borderRadius:10,color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer"}}>
+Siparişi Gönder ✓
+</button>
+</div>}
+</div>}
+
+{/* Sepet tab */}
+{activeTab==="cart"&&<div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
+<div style={{flex:1,padding:"10px 14px"}}>
+{curT.order.length===0
+?<div style={{color:T.textDim,textAlign:"center",paddingTop:40,fontSize:13}}>Henüz ürün eklenmedi</div>
+:curT.order.map(item=>(
+<div key={item.id} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 0",borderBottom:"0.5px solid "+T.border}}>
+<div style={{flex:1}}>
+<div style={{fontSize:13,fontWeight:600,color:T.text}}>{item.name}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{fm(item.price,cur)} × {item.qty} = <span style={{color:T.accentL,fontWeight:700}}>{fm(item.price*item.qty,cur)}</span></div>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:30,height:30,borderRadius:8,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:16,color:T.text,display:"flex",alignItems:"center",justifyContent:"center"}}>−</button>
+<span style={{minWidth:20,textAlign:"center",fontWeight:800,fontSize:14,color:T.text}}>{item.qty}</span>
+<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:30,height:30,borderRadius:8,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:16,color:T.text,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
+</div>
+</div>
+))}
+</div>
+{/* Alt özet + ödeme */}
+<div style={{padding:"12px 14px",borderTop:"0.5px solid "+T.border,background:T.bg,flexShrink:0}}>
+{disc
+?<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:6}}><span>İndirim <button onClick={()=>setDisc(null)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:13}}>×</button></span><span>-{fm(disc.amount,cur)}</span></div>
+:<button onClick={()=>curT.order.length>0&&setDisM(true)} style={{width:"100%",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:8,padding:"7px",color:T.textSub,fontSize:12,cursor:"pointer",marginBottom:8}}>İndirim Ekle</button>}
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+<span style={{fontSize:15,fontWeight:700,color:T.textSub}}>Toplam</span>
+<span style={{fontSize:22,fontWeight:800,color:T.accentL}}>{fm(orderTotal,cur)}</span>
+</div>
+<div style={{display:"flex",gap:8}}>
+<button onClick={()=>{msg(curT.lbl+" siparişi kaydedildi");setV("tables");setSel(null);}} style={{flex:1,padding:"13px",background:T.bg3,border:"none",borderRadius:10,color:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>Gönder ✓</button>
+<button onClick={()=>curT.order.length>0&&setPay(true)} disabled={curT.order.length===0} style={{flex:2,padding:"13px",background:curT.order.length===0?T.bg3:T.accent,color:curT.order.length===0?T.textDim:"#fff",border:"none",borderRadius:10,fontWeight:800,fontSize:14,cursor:curT.order.length===0?"not-allowed":"pointer"}}>
+Ödeme Al
+</button>
+</div>
+</div>
+</div>}
 </div>
 );}
 
@@ -1696,7 +1843,7 @@ return(<div key={c.id} style={{background:T.bg2,border:"2px solid rgba(175,82,22
 </div>}
 </div>);}
 
-function SetV({cfg,cfgF,setCfgF,saveCfg,stab,setStab,menu,mF,setMF,mEid,setMEid,mCat,setMCat,saveMI,setMenü,ecats,setEc,newec,setNewec,exp,msg,setOrd,setExp,setLogs,cur,fm,inp,sb,T}){
+function SetV({cfg,cfgF,setCfgF,saveCfg,stab,setStab,menu,mF,setMF,mEid,setMEid,mCat,setMCat,saveMI,setMenü,ecats,setEc,newec,setNewec,exp,msg,setOrd,setExp,setLogs,cur,fm,inp,sb,T,logs,onlineOrders,todos,tacoLogs,tacoMenu,notifications,cari,installments}){
 return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <h2 style={{margin:"0 0 20px",fontWeight:700,fontSize:20}}>Ayarlar</h2>
 <div style={{display:"flex",gap:8,marginBottom:22}}>
@@ -1762,7 +1909,25 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 </div>}
 </div>
 <button onClick={saveCfg} style={{...sb(T.accent),padding:"12px 28px",fontSize:14}}>Kaydet</button>
-<div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:12,padding:18,marginTop:28}}>
+
+<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:18,marginTop:20}}>
+<div style={{fontWeight:700,fontSize:13,color:T.text,marginBottom:6}}>Veri Yedekleme</div>
+<p style={{fontSize:12,color:T.textSub,margin:"0 0 14px"}}>Tüm verileri JSON olarak indir. Düzenli yedek almanı öneririz.</p>
+<div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+<button onClick={()=>{
+  const backup={version:1,date:new Date().toISOString(),logs,orders:exp,expenses:exp,cari,installments,ecats,cfg,menu,onlineOrders,todos,tacoLogs,tacoMenu,notifications};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="nicchia-yedek-"+new Date().toISOString().split("T")[0]+".json";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  msg("Yedek indirildi");
+}} style={{...sb(T.accent),fontSize:12,padding:"9px 18px"}}>⬇ Yedeği İndir</button>
+</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:10}}>Son yedek: elle indirildiğinde güncellenir. Otomatik yedek yok.</div>
+</div>
+
+<div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:12,padding:18,marginTop:16}}>
 <div style={{fontWeight:700,fontSize:13,color:T.danger,marginBottom:8}}>Tehlikeli Bölge</div>
 <p style={{fontSize:12,color:T.textSub,margin:"0 0 12px"}}>Tüm sipariş, rapor ve harcama verilerini sil.</p>
 <button onClick={()=>{if(window.confirm("Emin misin?")){setOrd([]);setExp([]);setLogs([]);msg("Silindi","err");}}} style={{...sb(T.danger),fontSize:12}}>Tüm Verileri Sil</button>
@@ -2204,13 +2369,46 @@ return(
 </div>
 </div>
 
-{/* Hedef kartları */}
+{/* Navigasyon kartları — üstte */}
+<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(6,1fr)",gap:10,marginBottom:16}}>
+{NAV_CARDS.map(card=>(
+<button key={card.k} onClick={()=>setV(card.k)} style={{
+  background:T.isDark?"#111":T.bg2,
+  border:"1px solid "+T.border,
+  borderRadius:16,
+  padding:"16px 14px",
+  cursor:"pointer",
+  textAlign:"left",
+  color:T.text,
+  position:"relative",
+  overflow:"hidden",
+  transition:"border-color 0.15s",
+  display:"flex",
+  flexDirection:"column",
+  gap:8,
+  minHeight:100,
+}}>
+<div style={{position:"absolute",top:0,left:0,right:0,height:2,background:card.accent,borderRadius:"16px 16px 0 0",opacity:0.7}}/>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+<span style={{fontSize:24}}>{card.icon}</span>
+{card.stat!=null&&<span style={{background:card.statColor+"22",color:card.statColor,fontSize:11,fontWeight:800,borderRadius:20,padding:"2px 8px",border:`1px solid ${card.statColor}44`}}>{card.stat}</span>}
+</div>
+<div>
+<div style={{fontSize:12,fontWeight:700,color:T.text,marginBottom:2}}>{card.label}</div>
+<div style={{fontSize:10,color:T.textSub}}>{card.sub}</div>
+</div>
+</button>
+))}
+</div>
+
+{/* Hedef kartları — altta */}
 <div style={{marginBottom:16}}>
-<div style={{display:"flex",justifyContent:"flex-end",marginBottom:8}}>
-<button onClick={()=>setHideAmounts(p=>!p)} style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:11,fontWeight:600,padding:"4px 8px",borderRadius:8,letterSpacing:0.3}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+<div style={{fontSize:11,color:T.textDim,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase"}}>Hedefler</div>
+<button onClick={()=>setHideAmounts(p=>!p)} style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:11,fontWeight:600,padding:"4px 8px",borderRadius:8}}>
 {hideAmounts
-  ?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-  :<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+  ?<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+  :<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 }
 {hideAmounts?"Göster":"Gizle"}
 </button>
@@ -2244,50 +2442,6 @@ return(
 <button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
 </div>}
 </div>
-</div>
-
-{/* Navigasyon kartları */}
-<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(5,1fr)",gap:12}}>
-{NAV_CARDS.map(card=>(
-<button key={card.k} onClick={()=>setV(card.k)} style={{
-  background:T.isDark?"#111":T.bg2,
-  border:"1px solid "+T.border,
-  borderRadius:18,
-  padding:"20px 18px",
-  cursor:"pointer",
-  textAlign:"left",
-  color:"#fff",
-  position:"relative",
-  overflow:"hidden",
-  transition:"border-color 0.15s, background 0.15s",
-  display:"flex",
-  flexDirection:"column",
-  gap:12,
-  minHeight:120,
-}}>
-{/* Accent top line */}
-<div style={{position:"absolute",top:0,left:0,right:0,height:2,background:card.accent,borderRadius:"18px 18px 0 0",opacity:0.6}}/>
-
-{/* Icon + stat */}
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-<span style={{fontSize:28}}>{card.icon}</span>
-{card.stat!=null&&<span style={{
-  background:card.statColor+"22",
-  color:card.statColor,
-  fontSize:12,fontWeight:800,
-  borderRadius:20,padding:"3px 10px",
-  border:`1px solid ${card.statColor}44`,
-}}>{card.stat}</span>}
-{card.k==="tables"&&overdueCount>0&&<span style={{background:"rgba(255,59,48,0.15)",color:"#FF3B30",fontSize:11,fontWeight:700,borderRadius:20,padding:"3px 8px",border:"1px solid rgba(255,59,48,0.3)"}}>{overdueCount} vadeli</span>}
-</div>
-
-{/* Label */}
-<div>
-<div style={{fontSize:13,fontWeight:700,color:T.textSub,marginBottom:3}}>{card.label}</div>
-<div style={{fontSize:11,color:T.textDim}}>{card.sub}</div>
-</div>
-</button>
-))}
 </div>
 
 </div>
@@ -2431,6 +2585,7 @@ return(
 {/* Header banner */}
 <div style={{background:T.isDark?"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)":"linear-gradient(180deg,#fff 0%,#F2F2F7 100%)",borderBottom:"1px solid "+(T.isDark?"#222":"rgba(60,60,67,0.12)"),padding:"28px 28px 24px"}}>
 <div style={{maxWidth:920,margin:"0 auto"}}>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
 <h2 style={{margin:"0 0 20px",fontSize:28,fontWeight:800,letterSpacing:-0.5,color:"#fff"}}>Rozetler</h2>
 
 {/* Progress bar büyük */}
@@ -2528,6 +2683,7 @@ const clearAll=()=>{if(window.confirm("Tüm bildirimleri silmek istediğine emin
 return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
 <div>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
 <h2 style={{margin:0,fontWeight:800,fontSize:20}}>🔔 Bildirimler</h2>
 <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{unreadCount>0?`${unreadCount} okunmamış bildirim`:"Hepsi okundu"}</div>
 </div>
@@ -2560,7 +2716,7 @@ return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 )}
 </div>);}
 
-function TodoV({todos,setTodos,fd,sb,inp,T}){
+function TodoV({todos,setTodos,fd,sb,inp,T,setV}){
 const[newTodo,setNewTodo]=useState("");
 const[filter,setFilter]=useState("active");
 
@@ -2580,6 +2736,7 @@ const filtered=filter==="active"?activeTodos:filter==="done"?doneTodos:todos;
 
 return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 <div style={{marginBottom:22}}>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
 <h2 style={{margin:0,fontWeight:800,fontSize:20}}>📝 Yapılacaklar</h2>
 <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{activeTodos.length} aktif görev{doneTodos.length>0?`, ${doneTodos.length} tamamlandı`:""}</div>
 </div>
@@ -2866,7 +3023,7 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </div>}
 </div>);}
 
-function ProductsPageV({logs,cur,fm,tod,T,inp,sb}){
+function ProductsPageV({logs,cur,fm,tod,T,inp,sb,setV}){
 const[sortBy,setSortBy]=useState("qty");
 const[dateFrom,setDateFrom]=useState(()=>{const d=new Date();d.setDate(d.getDate()-40);return d.toISOString().split("T")[0];});
 const[dateTo,setDateTo]=useState(tod());
@@ -2883,6 +3040,7 @@ const totalRev=productList.reduce((s,p)=>s+p.revenue,0);
 
 return(
 <div style={{padding:"24px 28px",maxWidth:860,margin:"0 auto"}}>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
 <h2 style={{margin:"0 0 20px",fontWeight:800,fontSize:22,color:T.text}}>📦 Ürün Analizi</h2>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
 <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={inp}/>
@@ -2923,7 +3081,7 @@ return(
 </div>
 );}
 
-function CustomersPageV({orders,cur,fm,fd,T,inp}){
+function CustomersPageV({orders,cur,fm,fd,T,inp,setV}){
 const custMap={};
 (orders||[]).filter(o=>o.g&&o.g.trim()&&o.g!=="--").forEach(o=>{
   const name=o.g.trim();const month=o.date?o.date.slice(0,7):"";
@@ -2936,6 +3094,7 @@ const custMap={};
 const custList=Object.values(custMap).map(c=>({...c,visits:c.visits.size,avgOrder:c.count>0?c.total/c.count:0})).sort((a,b)=>b.total-a.total);
 return(
 <div style={{padding:"24px 28px",maxWidth:860,margin:"0 auto"}}>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
 <h2 style={{margin:"0 0 20px",fontWeight:800,fontSize:22,color:T.text}}>👥 Müşteriler</h2>
 <CustomersV orders={orders} custList={custList} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>
 </div>
