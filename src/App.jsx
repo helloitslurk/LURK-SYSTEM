@@ -294,6 +294,81 @@ if(instNotifs.length>0){
   });
 }
 
+// Hepsiburada Limiti migration — sadece bir kez çalışır
+const hepsiExists=(inst||[]).some(p=>p.id&&p.id.startsWith("hepsi_"));
+if(!hepsiExists){
+  const hepsiPlan={
+    id:"hepsi_"+Date.now(),
+    name:"Hepsiburada Limiti",
+    category:"kisisel",
+    total:17837.00,
+    installments:[
+      // Resim 1 - Kutu 1
+      {id:"h1",note:"405 955 2495 - T1",amount:801.22,due:"",paid:false},
+      {id:"h2",note:"450 276 1704 - T1",amount:223.52,due:"",paid:false},
+      {id:"h3",note:"483 489 8368 - T1",amount:397.52,due:"",paid:false},
+      {id:"h4",note:"403 301 7635 - T1",amount:148.57,due:"",paid:false},
+      {id:"h5",note:"415 920 6280 - T1",amount:303.41,due:"",paid:false},
+      {id:"h6",note:"444 036 1104 - T1",amount:958.67,due:"",paid:false},
+      {id:"h7",note:"427 538 8943 - T1",amount:399.18,due:"",paid:false},
+      // Resim 1 - Kutu 2
+      {id:"h8",note:"415 920 6280 - T2",amount:303.41,due:"",paid:false},
+      {id:"h9",note:"427 538 8943 - T2",amount:399.18,due:"",paid:false},
+      // Resim 1 - Kutu 3
+      {id:"h10",note:"415 920 6280 - T3",amount:303.41,due:"",paid:false},
+      {id:"h11",note:"427 538 8943 - T3",amount:399.21,due:"",paid:false},
+      // Resim 2 - Kutu 1
+      {id:"h12",note:"414 540 4727 - T1",amount:291.76,due:"",paid:false},
+      {id:"h13",note:"405 955 2495 - T2",amount:801.20,due:"",paid:false},
+      {id:"h14",note:"450 276 1704 - T2",amount:223.54,due:"",paid:false},
+      {id:"h15",note:"483 489 8368 - T2",amount:397.55,due:"",paid:false},
+      {id:"h16",note:"403 301 7635 - T2",amount:148.59,due:"",paid:false},
+      {id:"h17",note:"423 605 6305 - T1",amount:145.49,due:"",paid:false},
+      {id:"h18",note:"444 681 0448 - T1",amount:182.71,due:"",paid:false},
+      {id:"h19",note:"415 920 6280 - T4",amount:303.41,due:"",paid:false},
+      {id:"h20",note:"444 036 1104 - T2",amount:958.68,due:"",paid:false},
+      {id:"h21",note:"427 538 8943 - T4",amount:399.18,due:"",paid:false},
+      {id:"h22",note:"476 106 4121 - T1",amount:177.70,due:"",paid:false},
+      // Resim 2 - Kutu 2
+      {id:"h23",note:"414 540 4727 - T2",amount:291.73,due:"",paid:false},
+      // Resim 3 - Kutu 1
+      {id:"h24",note:"414 540 4727 - T3",amount:291.76,due:"",paid:false},
+      {id:"h25",note:"405 955 2495 - T3",amount:801.20,due:"",paid:false},
+      {id:"h26",note:"443 251 3827 - T1",amount:124.40,due:"",paid:false},
+      {id:"h27",note:"450 276 1704 - T3",amount:223.54,due:"",paid:false},
+      {id:"h28",note:"483 489 8368 - T3",amount:397.55,due:"",paid:false},
+      {id:"h29",note:"403 301 7635 - T3",amount:148.59,due:"",paid:false},
+      {id:"h30",note:"423 605 6305 - T2",amount:145.52,due:"",paid:false},
+      {id:"h31",note:"444 681 0448 - T2",amount:182.70,due:"",paid:false},
+      {id:"h32",note:"415 920 6280 - T5",amount:303.41,due:"",paid:false},
+      {id:"h33",note:"444 036 1104 - T3",amount:958.68,due:"",paid:false},
+      {id:"h34",note:"427 538 8943 - T5",amount:399.18,due:"",paid:false},
+      {id:"h35",note:"476 106 4121 - T2",amount:177.68,due:"",paid:false},
+      {id:"h36",note:"457 290 5073 - T1",amount:229.73,due:"",paid:false},
+      // Resim 4 - Kutu 1 (üst)
+      {id:"h37",note:"482 605 5408 - T1",amount:141.92,due:"",paid:false},
+      {id:"h38",note:"450 276 1704 - T4",amount:223.54,due:"",paid:false},
+      {id:"h39",note:"483 489 8368 - T4",amount:397.55,due:"",paid:false},
+      {id:"h40",note:"403 301 7635 - T4",amount:148.59,due:"",paid:false},
+      // Resim 4 - Kutu 2
+      {id:"h41",note:"414 540 4727 - T4",amount:291.76,due:"",paid:false},
+      {id:"h42",note:"405 955 2495 - T4",amount:801.20,due:"",paid:false},
+      {id:"h43",note:"482 605 5408 - T2",amount:141.91,due:"",paid:false},
+      {id:"h44",note:"450 276 1704 - T5",amount:223.54,due:"",paid:false},
+      {id:"h45",note:"483 489 8368 - T5",amount:397.55,due:"",paid:false},
+      {id:"h46",note:"403 301 7635 - T5",amount:148.59,due:"",paid:false},
+      {id:"h47",note:"444 681 0448 - T3",amount:182.70,due:"",paid:false},
+      {id:"h48",note:"415 920 6280 - T6",amount:303.41,due:"",paid:false},
+      // Resim 5 - Kutu
+      {id:"h49",note:"414 540 4727 - T5",amount:291.76,due:"",paid:false},
+      {id:"h50",note:"405 955 2495 - T5",amount:801.20,due:"",paid:false},
+    ]
+  };
+  const updatedInst=[...(inst||[]),hepsiPlan];
+  setInstallments(updatedInst);
+  sv("lurk_inst",updatedInst);
+}
+
 setOk(true);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
@@ -2665,9 +2740,10 @@ const markPaid=(planId,instId,partial)=>{
 };
 const addPlan=()=>{
   if(!newPlan.name)return;
-  const insts=newPlan.rows.filter(r=>r.due&&r.amount).map((r,i)=>({
+  const insts=newPlan.rows.filter(r=>r.amount).map((r,i)=>({
     id:Date.now()+"_"+i,
-    due:r.due,
+    due:r.due||"",
+    note:r.note||"",
     amount:parseFloat(r.amount),
     paid:false
   }));
@@ -2724,8 +2800,9 @@ return(
 {(newPlan.rows||[]).map((row,i)=>(
 <div key={row.id} style={{display:"flex",gap:8,marginBottom:8,alignItems:"center"}}>
 <span style={{fontSize:11,color:T.textDim,minWidth:16,textAlign:"right"}}>{i+1}.</span>
-<input type="date" value={row.due} onChange={e=>updateRow(row.id,"due",e.target.value)} style={{...inp,flex:"0 0 140px"}}/>
+<input placeholder="Not (örn: Sipariş No)" value={row.note||""} onChange={e=>updateRow(row.id,"note",e.target.value)} style={{...inp,flex:"0 0 160px"}}/>
 <input type="number" placeholder="Tutar" value={row.amount} onChange={e=>updateRow(row.id,"amount",e.target.value)} style={{...inp,flex:1}}/>
+<input type="date" value={row.due||""} onChange={e=>updateRow(row.id,"due",e.target.value)} style={{...inp,flex:"0 0 140px"}} placeholder="Tarih (opsiyonel)"/>
 {newPlan.rows.length>1&&<button onClick={()=>removeRow(row.id)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:18,padding:"0 4px",flexShrink:0}}>×</button>}
 </div>
 ))}
@@ -2758,15 +2835,19 @@ return(
 </div>
 {expanded[plan.id]&&<div style={{borderTop:"0.5px solid "+T.border,padding:"10px 16px"}}>
 {(plan.installments||[]).map((inst,ii)=>{
-const d=daysUntil(inst.due);
-const isOverdue=!inst.paid&&d<0;
-const isUpcoming=!inst.paid&&d>=0&&d<=7;
+const d=inst.due?daysUntil(inst.due):999;
+const isOverdue=!inst.paid&&inst.due&&d<0;
+const isUpcoming=!inst.paid&&inst.due&&d>=0&&d<=7;
 return(
 <div key={inst.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"0.5px solid "+T.border,background:isOverdue?"rgba(255,59,48,0.05)":isUpcoming?"rgba(255,149,0,0.05)":"transparent",borderRadius:6,paddingLeft:6}}>
 <input type="checkbox" checked={inst.paid} onChange={()=>!inst.paid&&markPaid(plan.id,inst.id)} style={{width:16,height:16,cursor:inst.paid?"default":"pointer",accentColor:T.accent}}/>
 <div style={{flex:1}}>
-<div style={{fontSize:12,fontWeight:600,color:inst.paid?T.textDim:T.text}}>{ii+1}. Taksit — {fd(inst.due)}</div>
-<div style={{fontSize:11,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":T.textSub,marginTop:1}}>{inst.paid?"Ödendi":d<0?`${Math.abs(d)} gün gecikmiş`:d===0?"Bugün":d===1?"Yarın":`${d} gün kaldı`}</div>
+<div style={{fontSize:12,fontWeight:600,color:inst.paid?T.textDim:T.text}}>
+{inst.note?inst.note:`${ii+1}. Taksit`}{inst.due?` — ${fd(inst.due)}`:""}
+</div>
+<div style={{fontSize:11,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":T.textSub,marginTop:1}}>
+{inst.paid?"Ödendi":inst.due?(d<0?`${Math.abs(d)} gün gecikmiş`:d===0?"Bugün":d===1?"Yarın":`${d} gün kaldı`):"Tarih belirtilmedi"}
+</div>
 </div>
 <div style={{fontWeight:700,fontSize:13,color:inst.paid?T.textDim:T.text}}>{fm(inst.amount,cur)}</div>
 {!inst.paid&&<button onClick={()=>{setPartialOpen(partialOpen===inst.id?null:inst.id);setPartialAmt("");}} style={{fontSize:11,color:"#3A9EFF",background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.2)",borderRadius:8,padding:"4px 10px",cursor:"pointer",fontWeight:600}}>Kısmi Öde</button>}
