@@ -530,22 +530,22 @@ return(
 {drawerOpen&&<div onClick={()=>setDrawerOpen(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.3)",backdropFilter:"blur(4px)",WebkitBackdropFilter:"blur(4px)",zIndex:200}}/>}
 
 {/* Mobile drawer */}
-<div style={{position:"fixed",top:0,left:0,bottom:0,width:280,zIndex:300,transform:drawerOpen?"translateX(0)":"translateX(-100%)",transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderRight:"0.5px solid rgba(255,255,255,0.08)",boxShadow:"4px 0 32px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",padding:"0 0 32px"}}>
-<div style={{padding:"56px 20px 20px",borderBottom:"0.5px solid rgba(0,0,0,0.06)"}}>
-<div style={{fontSize:28,fontWeight:800,letterSpacing:-0.5,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",marginBottom:6}}>NICCHIA.</div>
+<div style={{position:"fixed",top:0,left:0,bottom:0,width:280,zIndex:300,transform:drawerOpen?"translateX(0)":"translateX(-100%)",transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",background:T.isDark?"rgba(13,13,13,0.98)":"rgba(242,242,247,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderRight:"0.5px solid "+T.border,boxShadow:"4px 0 32px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",padding:"0 0 32px"}}>
+<div style={{padding:"56px 20px 20px",borderBottom:"0.5px solid "+T.border}}>
+<div style={{fontSize:28,fontWeight:800,letterSpacing:-0.5,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",marginBottom:6,color:T.text}}>NICCHIA.</div>
 {day?<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(52,199,89,0.12)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.success,display:"inline-block"}}/><span style={{fontSize:12,color:T.success,fontWeight:600}}>AÇIK {ft(day.oa)}</span></div>
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":k==="installments"?"📅 Vadeler":l}</button>)}
-<button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:13,marginBottom:4,textAlign:"left"}}>
+{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?T.bg3:"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":k==="installments"?"📅 Vadeler":l}</button>)}
+<button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?T.bg3:"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:13,marginBottom:4,textAlign:"left"}}>
 🔔 Bildirimler
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
 </button>
 </div>
 </div>
 
-<nav style={{background:"rgba(13,13,13,0.95)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",boxShadow:"0 1px 0 rgba(0,0,0,0.5)",padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60,position:"sticky",top:0,zIndex:100}}>
+<nav style={{background:T.isDark?"rgba(13,13,13,0.95)":"rgba(242,242,247,0.95)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderBottom:"0.5px solid "+T.border,boxShadow:T.isDark?"0 1px 0 rgba(0,0,0,0.5)":"0 1px 0 rgba(0,0,0,0.08)",padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",height:60,position:"sticky",top:0,zIndex:100}}>
 <div style={{display:"flex",alignItems:"center",gap:12}}>
 {isMobile&&<button onClick={()=>setDrawerOpen(p=>!p)} style={{width:36,height:36,borderRadius:10,border:"none",background:"rgba(118,118,128,0.12)",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,flexShrink:0}}>
 <span style={{display:"block",width:16,height:1.5,background:"#ccc",borderRadius:2}}/>
