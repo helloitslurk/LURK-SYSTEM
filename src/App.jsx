@@ -2628,15 +2628,26 @@ return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 function InstallmentsPageV({installments,setInstallments,cur,fm,fd,ft,tod,T,sb,inp,setV,notifications,setNotifications}){
 const now=new Date();
 const today=tod();
+const[activeTab,setActiveTab]=useState("is");
 const daysUntil=(due)=>Math.round((new Date(due)-new Date(today))/(1000*60*60*24));
-const unpaidRows=(installments||[]).flatMap(plan=>(plan.installments||[]).filter(i=>!i.paid).map(i=>({...i,planId:plan.id,planName:plan.name})));
-const overdueCount=unpaidRows.filter(r=>daysUntil(r.due)<0).length;
+
+// Tab'a göre filtrele — category field yoksa "is" kabul et
+const filteredPlans=(installments||[]).filter(p=>{
+  const cat=p.category||"is";
+  return cat===activeTab;
+});
+
+const unpaidRows=filteredPlans.flatMap(plan=>(plan.installments||[]).filter(i=>!i.paid).map(i=>({...i,planId:plan.id,planName:plan.name})));
 const overdueTotal=unpaidRows.filter(r=>daysUntil(r.due)<0).reduce((s,r)=>s+r.amount,0);
-const upcomingCount=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).length;
+const overdueCount=unpaidRows.filter(r=>daysUntil(r.due)<0).length;
 const upcomingTotal=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).reduce((s,r)=>s+r.amount,0);
-const totalRemaining=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0);
+const upcomingCount=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).length;
+const totalRemaining=filteredPlans.reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0);
 const[showAdd,setShowAdd]=useState(false);
-const[newPlan,setNewPlan]=useState({name:"",total:"",count:1,startDate:today,period:"monthly"});
+const[newPlan,setNewPlan]=useState({name:"",category:activeTab,rows:[{id:1,due:today,amount:""}]});
+const addRow=()=>setNewPlan(p=>({...p,rows:[...p.rows,{id:Date.now(),due:today,amount:""}]}));
+const removeRow=(id)=>setNewPlan(p=>({...p,rows:p.rows.filter(r=>r.id!==id)}));
+const updateRow=(id,field,val)=>setNewPlan(p=>({...p,rows:p.rows.map(r=>r.id===id?{...r,[field]:val}:r)}));
 const[expanded,setExpanded]=useState({});
 const[partialOpen,setPartialOpen]=useState(null);
 const[partialAmt,setPartialAmt]=useState("");
@@ -2653,19 +2664,17 @@ const markPaid=(planId,instId,partial)=>{
   setPartialOpen(null);setPartialAmt("");
 };
 const addPlan=()=>{
-  if(!newPlan.name||!newPlan.total)return;
-  const total=parseFloat(newPlan.total);
-  const count=parseInt(newPlan.count)||1;
-  const perInst=Math.round(total/count*100)/100;
-  const insts=Array.from({length:count},(_,i)=>{
-    const d=new Date(newPlan.startDate);
-    if(newPlan.period==="monthly")d.setMonth(d.getMonth()+i);
-    else if(newPlan.period==="weekly")d.setDate(d.getDate()+7*i);
-    else d.setDate(d.getDate()+30*i);
-    return{id:Date.now()+"_"+i,due:d.toISOString().split("T")[0],amount:perInst,paid:false};
-  });
-  setInstallments(prev=>[{id:Date.now()+"",name:newPlan.name,total,installments:insts},...prev]);
-  setNewPlan({name:"",total:"",count:1,startDate:today,period:"monthly"});
+  if(!newPlan.name)return;
+  const insts=newPlan.rows.filter(r=>r.due&&r.amount).map((r,i)=>({
+    id:Date.now()+"_"+i,
+    due:r.due,
+    amount:parseFloat(r.amount),
+    paid:false
+  }));
+  if(insts.length===0)return;
+  const total=insts.reduce((s,i)=>s+i.amount,0);
+  setInstallments(prev=>[{id:Date.now()+"",name:newPlan.name,total,category:newPlan.category||activeTab,installments:insts},...prev]);
+  setNewPlan({name:"",category:activeTab,rows:[{id:1,due:today,amount:""}]});
   setShowAdd(false);
 };
 const deletePlan=(id)=>setInstallments(prev=>prev.filter(p=>p.id!==id));
@@ -2680,9 +2689,16 @@ const statusLabel=(plan)=>{
 return(
 <div style={{padding:"20px 20px 80px",maxWidth:720,margin:"0 auto"}}>
 <button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
 <h2 style={{margin:0,fontWeight:800,fontSize:22,color:T.text}}>📅 Vadeler</h2>
-<button onClick={()=>setShowAdd(p=>!p)} style={{...sb(T.accent),padding:"8px 18px",fontSize:13}}>{showAdd?"İptal":"+ Vade Ekle"}</button>
+<button onClick={()=>{setShowAdd(p=>!p);setNewPlan({name:"",category:activeTab,rows:[{id:Date.now(),due:today,amount:""}]});}} style={{...sb(T.accent),padding:"8px 18px",fontSize:13}}>{showAdd?"İptal":"+ Vade Ekle"}</button>
+</div>
+
+{/* Kategori tabları */}
+<div style={{display:"flex",gap:0,marginBottom:20,background:T.bg3,borderRadius:12,padding:4}}>
+{[{k:"is",l:"💼 İş"},{k:"kisisel",l:"👤 Kişisel"}].map(({k,l})=>(
+<button key={k} onClick={()=>{setActiveTab(k);setShowAdd(false);setNewPlan({name:"",category:k,rows:[{id:1,due:today,amount:""}]});}} style={{flex:1,padding:"9px 0",border:"none",borderRadius:9,cursor:"pointer",fontWeight:700,fontSize:13,background:activeTab===k?T.bg2:"transparent",color:activeTab===k?T.text:T.textSub,transition:"all 0.15s",boxShadow:activeTab===k?T.shadow:"none"}}>{l}</button>
+))}
 </div>
 {/* Özet kartlar */}
 <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:20}}>
@@ -2703,25 +2719,26 @@ return(
 </div>
 {/* Yeni plan formu */}
 {showAdd&&<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:18,marginBottom:16}}>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-<input placeholder="Plan adı (örn: Kira Borcu)" value={newPlan.name} onChange={e=>setNewPlan(p=>({...p,name:e.target.value}))} style={inp}/>
-<input type="number" placeholder="Toplam tutar" value={newPlan.total} onChange={e=>setNewPlan(p=>({...p,total:e.target.value}))} style={inp}/>
+<input placeholder="Plan adı (örn: Kira Borcu, Kredi Kartı...)" value={newPlan.name} onChange={e=>setNewPlan(p=>({...p,name:e.target.value}))} style={{...inp,marginBottom:12}}/>
+<div style={{fontSize:11,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Taksitler</div>
+{(newPlan.rows||[]).map((row,i)=>(
+<div key={row.id} style={{display:"flex",gap:8,marginBottom:8,alignItems:"center"}}>
+<span style={{fontSize:11,color:T.textDim,minWidth:16,textAlign:"right"}}>{i+1}.</span>
+<input type="date" value={row.due} onChange={e=>updateRow(row.id,"due",e.target.value)} style={{...inp,flex:"0 0 140px"}}/>
+<input type="number" placeholder="Tutar" value={row.amount} onChange={e=>updateRow(row.id,"amount",e.target.value)} style={{...inp,flex:1}}/>
+{newPlan.rows.length>1&&<button onClick={()=>removeRow(row.id)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:18,padding:"0 4px",flexShrink:0}}>×</button>}
 </div>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:10}}>
-<input type="number" placeholder="Taksit sayısı" value={newPlan.count} onChange={e=>setNewPlan(p=>({...p,count:e.target.value}))} style={inp} min={1}/>
-<input type="date" value={newPlan.startDate} onChange={e=>setNewPlan(p=>({...p,startDate:e.target.value}))} style={inp}/>
-<select value={newPlan.period} onChange={e=>setNewPlan(p=>({...p,period:e.target.value}))} style={inp}>
-<option value="monthly">Aylık</option>
-<option value="weekly">Haftalık</option>
-<option value="custom">30 Günlük</option>
-</select>
+))}
+<div style={{display:"flex",gap:8,marginTop:4}}>
+<button onClick={addRow} style={{flex:1,padding:"9px",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:10,color:T.textSub,fontSize:12,fontWeight:600,cursor:"pointer"}}>+ Taksit Ekle</button>
+<button onClick={addPlan} disabled={!newPlan.name||newPlan.rows.every(r=>!r.amount)} style={{flex:2,padding:"9px",background:newPlan.name&&newPlan.rows.some(r=>r.amount)?T.accent:T.bg3,color:newPlan.name&&newPlan.rows.some(r=>r.amount)?"#fff":T.textDim,border:"none",borderRadius:10,fontWeight:700,fontSize:13,cursor:"pointer"}}>
+Kaydet {newPlan.rows.filter(r=>r.amount).length>0&&"— "+fm(newPlan.rows.filter(r=>r.amount).reduce((s,r)=>s+(parseFloat(r.amount)||0),0),cur)}
+</button>
 </div>
-{newPlan.total&&newPlan.count>0&&<div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Her taksit: {fm(Math.round(parseFloat(newPlan.total)/parseInt(newPlan.count)*100)/100,cur)}</div>}
-<button onClick={addPlan} style={{...sb(T.accent),width:"100%",padding:"11px"}}>Planı Kaydet</button>
 </div>}
 {/* Plan listesi */}
-{(installments||[]).length===0?<div style={{textAlign:"center",padding:"60px 0",color:T.textDim}}><div style={{fontSize:32,marginBottom:10}}>📅</div><div>Henüz vade kaydı yok.</div></div>
-:(installments||[]).map(plan=>{
+{filteredPlans.length===0?<div style={{textAlign:"center",padding:"60px 0",color:T.textDim}}><div style={{fontSize:32,marginBottom:10}}>📅</div><div>{activeTab==="kisisel"?"Kişisel vade kaydı yok.":"İş vadesi kaydı yok."}</div></div>
+:filteredPlans.map(plan=>{
 const st=statusLabel(plan);
 const paidCount=(plan.installments||[]).filter(i=>i.paid).length;
 const totalCount=(plan.installments||[]).length;
