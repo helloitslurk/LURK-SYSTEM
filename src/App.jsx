@@ -295,7 +295,7 @@ if(instNotifs.length>0){
 }
 
 // Hepsiburada Limiti migration — sadece bir kez çalışır
-const hepsiExists=(inst||[]).some(p=>p.id&&p.id.startsWith("hepsi_"));
+const hepsiExists=(inst||[]).some(p=>p.id&&String(p.id).startsWith("hepsi_"));
 const hepsiPlan={
   id:"hepsi_migration",
   name:"Hepsiburada Limiti",
