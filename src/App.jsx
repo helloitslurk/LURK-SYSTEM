@@ -532,14 +532,14 @@ return(
 {/* Mobile drawer */}
 <div style={{position:"fixed",top:0,left:0,bottom:0,width:280,zIndex:300,transform:drawerOpen?"translateX(0)":"translateX(-100%)",transition:"transform 0.3s cubic-bezier(0.4,0,0.2,1)",background:T.isDark?"rgba(13,13,13,0.98)":"rgba(242,242,247,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderRight:"0.5px solid "+T.border,boxShadow:"4px 0 32px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",padding:"0 0 32px"}}>
 <div style={{padding:"56px 20px 20px",borderBottom:"0.5px solid "+T.border}}>
-<div style={{fontSize:28,fontWeight:800,letterSpacing:-0.5,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",marginBottom:6,color:T.text}}>NICCHIA.</div>
+<div style={{fontSize:28,fontWeight:800,letterSpacing:-0.5,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",marginBottom:6,color:T.text}}>LURK.</div>
 {day?<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(52,199,89,0.12)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.success,display:"inline-block"}}/><span style={{fontSize:12,color:T.success,fontWeight:600}}>AÇIK {ft(day.oa)}</span></div>
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?T.bg3:"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":k==="installments"?"📅 Vadeler":l}</button>)}
+{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?T.bg3:"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:"none",letterSpacing:0.5}}>{k==="lurk"?"DASHBOARD":k==="tables"?"MASALAR":k==="home"?"BUGÜN":k==="settings"?"AYARLAR":k==="installments"?"VADELER":l.toUpperCase()}</button>)}
 <button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?T.bg3:"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:13,marginBottom:4,textAlign:"left"}}>
-🔔 Bildirimler
+BİLDİRİMLER
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
 </button>
 </div>
@@ -552,7 +552,7 @@ return(
 <span style={{display:"block",width:16,height:1.5,background:"#ccc",borderRadius:2}}/>
 <span style={{display:"block",width:16,height:1.5,background:"#ccc",borderRadius:2}}/>
 </button>}
-<span style={{fontWeight:700,fontSize:isMobile?16:18,letterSpacing:-0.4,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</span>
+<span style={{fontWeight:700,fontSize:isMobile?16:18,letterSpacing:-0.4,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</span>
 {day?<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(52,199,89,0.12)",borderRadius:20,padding:"4px 10px 4px 8px"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.success,display:"inline-block"}}/><span style={{fontSize:11,color:T.success,fontWeight:600}}>{isMobile?"":"AÇIK "}{ft(day.oa)}</span></div>
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:11,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
@@ -578,7 +578,7 @@ return(
 </nav>
 
 {view!=="lurk"&&<div style={{padding:isMobile?"16px 16px 0":"24px 24px 0",maxWidth:860,margin:"0 auto"}}>
-<div style={{fontSize:isMobile?18:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</div>
+<div style={{fontSize:isMobile?18:22,fontWeight:800,letterSpacing:-0.5,color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</div>
 </div>}
 
 {gM&&view!=="order"&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>{setGM(null);setSel(null);}} T={T}/></div>}
@@ -812,6 +812,19 @@ const weekNeededPerDay=weeklyGoal>0&&daysLeftWeek>0?Math.max(0,(weeklyGoal-weekl
 return(
 <div style={{padding:isMobile?"16px":"28px",maxWidth:980,margin:"0 auto"}}>
 
+{!day?(<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",gap:20,textAlign:"center"}}>
+<div style={{fontSize:13,color:T.textSub,fontWeight:500}}>{now.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div>
+<div style={{fontSize:40}}>☕</div>
+<div style={{fontSize:22,fontWeight:800,color:T.text}}>Gün henüz açılmadı</div>
+<div style={{fontSize:13,color:T.textSub}}>Günü başlatmak için aşağıdaki butona bas.</div>
+{!dayCon
+?<button onClick={()=>setDayCon(true)} style={{background:T.accent,border:"none",borderRadius:14,padding:"14px 36px",color:"#fff",fontWeight:700,fontSize:15,cursor:"pointer",marginTop:8}}>Günü Başlat</button>
+:<div style={{display:"flex",gap:10,marginTop:8}}>
+<button onClick={()=>setDayCon(false)} style={{background:T.bg3,border:"none",borderRadius:12,padding:"12px 20px",color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>İptal</button>
+<button onClick={openDay} style={{background:T.accent,border:"none",borderRadius:12,padding:"12px 24px",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>✓ Evet, Başlat</button>
+</div>}
+</div>):(<div>
+
 {monthlyGoal>0&&<div style={{marginBottom:20}}>
 {<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",boxShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
@@ -889,6 +902,7 @@ return(
 {openT.map(t=>{const tot=t.order.reduce((s,o)=>s+o.price*o.qty,0);const dur=t.oa?Math.floor((Date.now()-new Date(t.oa))/60000):0;return(<div key={t.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:"rgba(52,199,89,0.1)",borderRadius:12}}><div><span style={{fontWeight:600,fontSize:14}}>{t.lbl}</span>{t.g&&<div style={{fontSize:11,color:"#34C759",marginTop:1}}>{t.g}</div>}<div style={{fontSize:11,color:"#8E8E93",marginTop:1}}>{dur}dk - {t.order.length} kalem</div></div><div style={{fontWeight:700,color:"#34C759",fontSize:15}}>{fm(tot,cur)}</div></div>);})}
 </div>
 </div>}
+</div>)}
 </div>
 );}
 
@@ -2336,7 +2350,7 @@ return(
 
 {/* Header */}
 <div style={{marginBottom:28}}>
-<h1 style={{fontSize:isMobile?28:42,fontWeight:800,letterSpacing:-1,margin:"0 0 6px",color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>NICCHIA.</h1>
+<h1 style={{fontSize:isMobile?28:42,fontWeight:800,letterSpacing:-1,margin:"0 0 6px",color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</h1>
 <div style={{fontSize:13,color:T.textSub}}>
 {now.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}
 {day&&<span style={{marginLeft:12,background:"rgba(52,199,89,0.15)",color:"#34C759",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● AÇIK {ft(day.oa)}</span>}
@@ -2456,7 +2470,7 @@ if(mode==="recover"){
 return(
 <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:T.bg,fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:340}}>
-<h1 style={{fontSize:40,fontWeight:800,letterSpacing:-1,margin:"0 0 28px",color:T.text}}>NICCHIA.</h1>
+<h1 style={{fontSize:40,fontWeight:800,letterSpacing:-1,margin:"0 0 28px",color:T.text}}>LURK.</h1>
 {resetDone?(
 <>
 <div style={{fontSize:14,fontWeight:600,color:T.success,marginBottom:8}}>✓ Şifre sıfırlandı</div>
@@ -2492,7 +2506,7 @@ style={{background:T.bg2,border:"1px solid "+(recoveryErr?T.danger:T.border2),bo
 return(
 <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:24,background:T.bg,fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif"}}>
 <div style={{textAlign:"center",width:"100%",maxWidth:320}}>
-<h1 style={{fontSize:56,fontWeight:800,letterSpacing:-1,margin:"0 0 32px",color:T.text}}>NICCHIA.</h1>
+<h1 style={{fontSize:56,fontWeight:800,letterSpacing:-1,margin:"0 0 32px",color:T.text}}>LURK.</h1>
 <input
 type="password"
 autoFocus
