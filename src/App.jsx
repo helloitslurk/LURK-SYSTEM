@@ -184,7 +184,7 @@ if(typeof document!=="undefined"){
 const inp={background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:16,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
 const sb=(bg,col)=>({background:bg,border:"none",color:col||(T.isDark?"#fff":T.text),borderRadius:10,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer",boxShadow:T.isDark?"0 2px 8px rgba(0,0,0,0.4)":"0 1px 4px rgba(0,0,0,0.1)"});
 const toggleTheme=()=>{setDarkMode(p=>{const next=!p;try{localStorage.setItem("nicchia_theme",next?"dark":"light");}catch{}return next;});};
-const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"settings",l:"Ayarlar"}];
+const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"installments",l:"Vadeler"},{k:"settings",l:"Ayarlar"}];
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
@@ -471,7 +471,7 @@ return(
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":l}</button>)}
+{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?"rgba(255,255,255,0.1)":"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:view===k?"0 2px 8px rgba(0,0,0,0.08)":"none"}}>{k==="lurk"?"🏠 Dashboard":k==="tables"?"🪑 Masalar":k==="home"?"📊 Bugün":k==="settings"?"⚙️ Ayarlar":k==="installments"?"📅 Vadeler":l}</button>)}
 <button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?"rgba(255,255,255,0.1)":"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:13,marginBottom:4,textAlign:"left"}}>
 🔔 Bildirimler
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
@@ -604,6 +604,7 @@ return(
 {view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb} setV={setV}/>}
 {view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp} setV={setV}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
+{view==="installments"&&<InstallmentsPageV installments={installments} setInstallments={setInstallments} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} T={T} sb={sb} inp={inp} setV={setV} notifications={notifications} setNotifications={setNotifications}/>}
 {view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T} setV={setV}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T} logs={logs} onlineOrders={onlineOrders} todos={todos} tacoLogs={tacoLogs} tacoMenu={tacoMenu} notifications={notifications} cari={cari} installments={installments}/>}
@@ -1105,11 +1106,10 @@ return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 </div>
 
 {/* Sekme stat kartları */}
-<div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:0,marginBottom:0}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:0,marginBottom:0}}>
 {[
 {k:"sales",l:"Satış",val:filteredLogs.reduce((s,l)=>s+(l.inc||0),0),sub:filteredLogs.length+" gün",color:"#34C759"},
 {k:"expenses",l:"Harcama",val:exp.reduce((s,e)=>s+e.amount,0),sub:exp.length+" kayıt",color:"#FF3B30"},
-{k:"installments",l:"Vadeler",val:(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0),sub:(installments||[]).length+" plan",color:"#FF9500"},
 {k:"credit",l:"Cari",val:(cari||[]).filter(c=>!c.settled).reduce((s,c)=>s+c.total,0),sub:(cari||[]).filter(c=>!c.settled).length+" açık",color:"#AF52DE"},
 {k:"taco",l:"Taco",val:0,sub:"gelir & gider",color:"#FF6B35"},
 ].map(({k,l,val,sub,color,unit})=>{
@@ -1258,97 +1258,6 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 <div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#FF3B30",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#C7C7CC",cursor:"pointer",padding:4,fontSize:13}}>x</button></div>
 </div>)}
 </>}
-</div>}
-
-{mainT==="installments"&&<div>
-<div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
-<button onClick={()=>setShowAddInst(p=>!p)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",background:showAddInst?"rgba(118,118,128,0.12)":"#34C759",border:"1px solid "+(showAddInst?"rgba(60,60,67,0.18)":"transparent"),borderRadius:9,color:showAddInst?"#555":"#fff",fontWeight:600,fontSize:12,cursor:"pointer"}}>{showAddInst?"İptal":"+ Vade Ekle"}</button>
-</div>
-
-{showAddInst&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
-<input placeholder="Ödeme adı (örn: Kira)" value={newInst.name} onChange={e=>setNewInst(p=>({...p,name:e.target.value}))} style={inp} autoFocus/>
-<input type="number" placeholder="Toplam tutar" value={newInst.totalAmount} onChange={e=>setNewInst(p=>({...p,totalAmount:e.target.value}))} style={inp}/>
-<input type="number" placeholder="Taksit sayısı" value={newInst.count} onChange={e=>setNewInst(p=>({...p,count:e.target.value}))} style={inp} min="1"/>
-<input type="date" value={newInst.startDate} onChange={e=>setNewInst(p=>({...p,startDate:e.target.value}))} style={inp}/>
-</div>
-{newInst.totalAmount&&newInst.count&&<div style={{fontSize:12,color:"#8E8E93",marginBottom:12}}>Her taksit: {fm(Math.round((parseFloat(newInst.totalAmount)/parseInt(newInst.count||1))*100)/100,cur)} — toplam {newInst.count} ay boyunca aynı günde</div>}
-<button onClick={addInstallment} style={{...sb("#34C759"),fontSize:13,padding:"9px 20px"}}>Ekle</button>
-</div>}
-
-{installments.length>0&&<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:18}}>
-<div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#FF3B30",marginBottom:3}}>Gecikmiş</div><div style={{fontSize:overdueTotal>0?15:18,fontWeight:800,color:"#FF3B30",lineHeight:1.2}}>{overdueTotal>0?fm(overdueTotal,cur):overdueCount}</div>{overdueTotal>0&&<div style={{fontSize:10,color:"rgba(255,59,48,0.6)",marginTop:2}}>{overdueCount} taksit</div>}</div>
-<div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#FF9500",marginBottom:3}}>7 Gün İçinde</div><div style={{fontSize:upcomingTotal>0?15:18,fontWeight:800,color:"#FF9500",lineHeight:1.2}}>{upcomingTotal>0?fm(upcomingTotal,cur):upcomingCount}</div>{upcomingTotal>0&&<div style={{fontSize:10,color:"rgba(255,149,0,0.6)",marginTop:2}}>{upcomingCount} taksit</div>}</div>
-<div style={{background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.3)",borderRadius:10,padding:"12px 14px"}}><div style={{fontSize:10,color:"#007AFF",marginBottom:3}}>Kalan Toplam</div><div style={{fontSize:18,fontWeight:800,color:"#007AFF"}}>{fm(totalUnpaid,cur)}</div></div>
-</div>}
-
-{installments.length===0?<div style={{textAlign:"center",padding:"60px 0",color:"#C7C7CC"}}>Henüz vade kaydı yok.</div>
-:<div style={{display:"flex",flexDirection:"column",gap:10}}>
-{[...installments].sort((a,b)=>{
-const aNext=a.installments.filter(i=>!i.paid).sort((x,y)=>x.due.localeCompare(y.due))[0];
-const bNext=b.installments.filter(i=>!i.paid).sort((x,y)=>x.due.localeCompare(y.due))[0];
-if(!aNext&&!bNext)return 0;
-if(!aNext)return 1;
-if(!bNext)return -1;
-return aNext.due.localeCompare(bNext.due);
-}).map(plan=>{
-const paidCount=plan.installments.filter(i=>i.paid).length;
-const isExpanded=expandedInstId===plan.id;
-const nextUnpaid=plan.installments.filter(i=>!i.paid).sort((a,b)=>a.due.localeCompare(b.due))[0];
-return(
-<div key={plan.id} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:"14px 16px"}}>
-<div onClick={()=>setExpandedInstId(isExpanded?null:plan.id)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
-<div>
-<div style={{fontWeight:700,fontSize:14}}>{plan.name}</div>
-<div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{paidCount}/{plan.count} ödendi · {fm(plan.totalAmount,cur)}{nextUnpaid&&<span> · sıradaki: {fd(nextUnpaid.due)}</span>}</div>
-</div>
-<div style={{display:"flex",alignItems:"center",gap:10}}>
-{paidCount===plan.count
-?<span style={{fontSize:11,fontWeight:700,color:"#34C759",background:"rgba(52,199,89,0.12)",padding:"3px 10px",borderRadius:20}}>Tamamlandı</span>
-:nextUnpaid&&daysUntil(nextUnpaid.due)<0
-?<span style={{fontSize:11,fontWeight:700,color:"#FF3B30",background:"rgba(255,59,48,0.1)",padding:"3px 10px",borderRadius:20}}>Gecikmiş</span>
-:nextUnpaid&&daysUntil(nextUnpaid.due)<=7
-?<span style={{fontSize:11,fontWeight:700,color:"#FF9500",background:"rgba(255,149,0,0.1)",padding:"3px 10px",borderRadius:20}}>Yaklaşıyor</span>
-:<span style={{fontSize:11,fontWeight:700,color:"#8E8E93",background:"rgba(118,118,128,0.12)",padding:"3px 10px",borderRadius:20}}>Devam Ediyor</span>
-}
-<span style={{color:"#C7C7CC",fontSize:11}}>{isExpanded?"▲":"▼"}</span>
-</div>
-</div>
-{isExpanded&&<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid rgba(0,0,0,0.08)"}}>
-{plan.installments.map((inst,ii)=>{
-const dd=daysUntil(inst.due);
-const isOverdue=!inst.paid&&dd<0;
-const isUpcoming=!inst.paid&&dd>=0&&dd<=7;
-const isPartialOpen=partialInstForm&&partialInstForm.planId===plan.id&&partialInstForm.instId===inst.id;
-return(
-<div key={inst.id} style={{marginBottom:8}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 10px",borderRadius:8,background:isOverdue?"rgba(255,59,48,0.15)":isUpcoming?"rgba(255,149,0,0.15)":T.bg3}}>
-<div style={{display:"flex",alignItems:"center",gap:10}}>
-<input type="checkbox" checked={inst.paid} onChange={()=>togglePaid(plan.id,inst.id)} style={{width:16,height:16,cursor:"pointer"}}/>
-<div>
-<div style={{fontSize:12,fontWeight:600,textDecoration:inst.paid?"line-through":"none",color:inst.paid?"#555":"#e0e0e0"}}>{ii+1}. Taksit — {fd(inst.due)}</div>
-{!inst.paid&&<div style={{fontSize:10,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":"#666",marginTop:1}}>{isOverdue?`${Math.abs(dd)} gün gecikti`:dd===0?"Bugün":dd===1?"Yarın":`${dd} gün kaldı`}</div>}
-{inst.payments&&inst.payments.length>0&&<div style={{fontSize:10,color:"#34C759",marginTop:2}}>↓ {inst.payments.length} kısmi ödeme yapıldı</div>}
-</div>
-</div>
-<div style={{display:"flex",alignItems:"center",gap:8}}>
-<div style={{fontWeight:700,fontSize:13,color:inst.paid?"#34C759":"#fff"}}>{fm(inst.amount,cur)}</div>
-{!inst.paid&&<button onClick={()=>setPartialInstForm(isPartialOpen?null:{planId:plan.id,instId:inst.id,value:""})} style={{background:"none",border:"0.5px solid rgba(0,122,255,0.4)",color:"#007AFF",borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:600,cursor:"pointer"}}>{isPartialOpen?"İptal":"Kısmi Öde"}</button>}
-</div>
-</div>
-{isPartialOpen&&<div style={{display:"flex",gap:8,padding:"8px 10px",background:"rgba(0,122,255,0.12)",borderRadius:8,marginTop:4,border:"1px solid rgba(0,122,255,0.2)",alignItems:"center"}}>
-<input type="number" autoFocus placeholder={`Maks: ${fm(inst.amount,cur)}`} value={partialInstForm.value} onChange={e=>setPartialInstForm(p=>({...p,value:e.target.value}))} style={{...inp,flex:1,padding:"7px 10px",fontSize:12}} onKeyDown={e=>{if(e.key==="Enter"){const amt=parseFloat(partialInstForm.value);if(amt>0){partialPayInst(plan.id,inst.id,Math.min(amt,inst.amount));setPartialInstForm(null);}}}}/>
-<button onClick={()=>{const amt=parseFloat(partialInstForm.value);if(amt>0){partialPayInst(plan.id,inst.id,Math.min(amt,inst.amount));setPartialInstForm(null);}}} style={{...sb("#007AFF"),padding:"7px 16px",fontSize:12,fontWeight:700,whiteSpace:"nowrap"}}>Uygula</button>
-</div>}
-</div>
-);
-})}
-<button onClick={()=>deletePlan(plan.id)} style={{marginTop:8,background:"none",border:"none",color:"#FF3B30",cursor:"pointer",fontSize:11,fontWeight:600,padding:0}}>Bu vade planını sil</button>
-</div>}
-</div>
-);
-})}
-</div>}
 </div>}
 
 {mainT==="credit"&&<CariInReportsV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp}/>}
@@ -2705,7 +2614,7 @@ return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 <div key={n.id} onClick={()=>!n.read&&markRead(n.id)} style={{display:"flex",alignItems:"flex-start",gap:12,background:n.read?T.bg2:"rgba(255,149,0,0.08)",borderRadius:14,padding:"14px 16px",cursor:n.read?"default":"pointer",boxShadow:T.shadow,position:"relative"}}>
 <div style={{fontSize:26}}>{n.icon||"🏆"}</div>
 <div style={{flex:1,minWidth:0}}>
-<div style={{fontSize:13,fontWeight:700,color:T.text}}>{n.title} kazanıldı!</div>
+<div style={{fontSize:13,fontWeight:700,color:T.text}}>{n.title}{(!n.type||n.type==="badge")?" kazanıldı!":""}</div>
 <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{n.desc}</div>
 <div style={{fontSize:11,color:T.textDim,marginTop:6}}>{fd(n.date)} · {ft(n.date)}</div>
 </div>
@@ -2715,6 +2624,151 @@ return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 </div>
 )}
 </div>);}
+
+function InstallmentsPageV({installments,setInstallments,cur,fm,fd,ft,tod,T,sb,inp,setV,notifications,setNotifications}){
+const now=new Date();
+const today=tod();
+const daysUntil=(due)=>Math.round((new Date(due)-new Date(today))/(1000*60*60*24));
+const unpaidRows=(installments||[]).flatMap(plan=>(plan.installments||[]).filter(i=>!i.paid).map(i=>({...i,planId:plan.id,planName:plan.name})));
+const overdueCount=unpaidRows.filter(r=>daysUntil(r.due)<0).length;
+const overdueTotal=unpaidRows.filter(r=>daysUntil(r.due)<0).reduce((s,r)=>s+r.amount,0);
+const upcomingCount=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).length;
+const upcomingTotal=unpaidRows.filter(r=>{const d=daysUntil(r.due);return d>=0&&d<=7;}).reduce((s,r)=>s+r.amount,0);
+const totalRemaining=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>!i.paid).reduce((ss,i)=>ss+i.amount,0),0);
+const[showAdd,setShowAdd]=useState(false);
+const[newPlan,setNewPlan]=useState({name:"",total:"",count:1,startDate:today,period:"monthly"});
+const[expanded,setExpanded]=useState({});
+const[partialOpen,setPartialOpen]=useState(null);
+const[partialAmt,setPartialAmt]=useState("");
+const toggle=(id)=>setExpanded(p=>({...p,[id]:!p[id]}));
+const markPaid=(planId,instId,partial)=>{
+  setInstallments(prev=>prev.map(p=>{
+    if(p.id!==planId)return p;
+    return{...p,installments:p.installments.map(i=>{
+      if(i.id!==instId)return i;
+      if(partial&&partial<i.amount)return{...i,paid:false,amount:i.amount-partial,paidPartial:(i.paidPartial||0)+partial};
+      return{...i,paid:true,paidAt:new Date().toISOString()};
+    })};
+  }));
+  setPartialOpen(null);setPartialAmt("");
+};
+const addPlan=()=>{
+  if(!newPlan.name||!newPlan.total)return;
+  const total=parseFloat(newPlan.total);
+  const count=parseInt(newPlan.count)||1;
+  const perInst=Math.round(total/count*100)/100;
+  const insts=Array.from({length:count},(_,i)=>{
+    const d=new Date(newPlan.startDate);
+    if(newPlan.period==="monthly")d.setMonth(d.getMonth()+i);
+    else if(newPlan.period==="weekly")d.setDate(d.getDate()+7*i);
+    else d.setDate(d.getDate()+30*i);
+    return{id:Date.now()+"_"+i,due:d.toISOString().split("T")[0],amount:perInst,paid:false};
+  });
+  setInstallments(prev=>[{id:Date.now()+"",name:newPlan.name,total,installments:insts},...prev]);
+  setNewPlan({name:"",total:"",count:1,startDate:today,period:"monthly"});
+  setShowAdd(false);
+};
+const deletePlan=(id)=>setInstallments(prev=>prev.filter(p=>p.id!==id));
+const statusLabel=(plan)=>{
+  const unpaid=(plan.installments||[]).filter(i=>!i.paid);
+  if(unpaid.length===0)return{l:"Tamamlandı",c:"#34C759"};
+  const next=unpaid[0];const d=daysUntil(next.due);
+  if(d<0)return{l:"Gecikmiş",c:"#FF3B30"};
+  if(d<=7)return{l:"Yaklaşıyor",c:"#FF9500"};
+  return{l:"Devam Ediyor",c:T.textSub};
+};
+return(
+<div style={{padding:"20px 20px 80px",maxWidth:720,margin:"0 auto"}}>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<h2 style={{margin:0,fontWeight:800,fontSize:22,color:T.text}}>📅 Vadeler</h2>
+<button onClick={()=>setShowAdd(p=>!p)} style={{...sb(T.accent),padding:"8px 18px",fontSize:13}}>{showAdd?"İptal":"+ Vade Ekle"}</button>
+</div>
+{/* Özet kartlar */}
+<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:20}}>
+<div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:12,padding:"14px 16px"}}>
+<div style={{fontSize:10,color:"#FF3B30",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Gecikmiş</div>
+<div style={{fontSize:overdueTotal>0?16:22,fontWeight:800,color:"#FF3B30",lineHeight:1.2}}>{overdueTotal>0?fm(overdueTotal,cur):overdueCount}</div>
+{overdueTotal>0&&<div style={{fontSize:10,color:"rgba(255,59,48,0.6)",marginTop:2}}>{overdueCount} taksit</div>}
+</div>
+<div style={{background:"rgba(255,149,0,0.1)",border:"1px solid rgba(255,149,0,0.3)",borderRadius:12,padding:"14px 16px"}}>
+<div style={{fontSize:10,color:"#FF9500",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>7 Gün İçinde</div>
+<div style={{fontSize:upcomingTotal>0?16:22,fontWeight:800,color:"#FF9500",lineHeight:1.2}}>{upcomingTotal>0?fm(upcomingTotal,cur):upcomingCount}</div>
+{upcomingTotal>0&&<div style={{fontSize:10,color:"rgba(255,149,0,0.6)",marginTop:2}}>{upcomingCount} taksit</div>}
+</div>
+<div style={{background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.25)",borderRadius:12,padding:"14px 16px"}}>
+<div style={{fontSize:10,color:"#3A9EFF",fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Kalan Toplam</div>
+<div style={{fontSize:16,fontWeight:800,color:"#3A9EFF",lineHeight:1.2}}>{fm(totalRemaining,cur)}</div>
+</div>
+</div>
+{/* Yeni plan formu */}
+{showAdd&&<div style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,padding:18,marginBottom:16}}>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+<input placeholder="Plan adı (örn: Kira Borcu)" value={newPlan.name} onChange={e=>setNewPlan(p=>({...p,name:e.target.value}))} style={inp}/>
+<input type="number" placeholder="Toplam tutar" value={newPlan.total} onChange={e=>setNewPlan(p=>({...p,total:e.target.value}))} style={inp}/>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:10}}>
+<input type="number" placeholder="Taksit sayısı" value={newPlan.count} onChange={e=>setNewPlan(p=>({...p,count:e.target.value}))} style={inp} min={1}/>
+<input type="date" value={newPlan.startDate} onChange={e=>setNewPlan(p=>({...p,startDate:e.target.value}))} style={inp}/>
+<select value={newPlan.period} onChange={e=>setNewPlan(p=>({...p,period:e.target.value}))} style={inp}>
+<option value="monthly">Aylık</option>
+<option value="weekly">Haftalık</option>
+<option value="custom">30 Günlük</option>
+</select>
+</div>
+{newPlan.total&&newPlan.count>0&&<div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Her taksit: {fm(Math.round(parseFloat(newPlan.total)/parseInt(newPlan.count)*100)/100,cur)}</div>}
+<button onClick={addPlan} style={{...sb(T.accent),width:"100%",padding:"11px"}}>Planı Kaydet</button>
+</div>}
+{/* Plan listesi */}
+{(installments||[]).length===0?<div style={{textAlign:"center",padding:"60px 0",color:T.textDim}}><div style={{fontSize:32,marginBottom:10}}>📅</div><div>Henüz vade kaydı yok.</div></div>
+:(installments||[]).map(plan=>{
+const st=statusLabel(plan);
+const paidCount=(plan.installments||[]).filter(i=>i.paid).length;
+const totalCount=(plan.installments||[]).length;
+const unpaidInsts=(plan.installments||[]).filter(i=>!i.paid);
+const nextDue=unpaidInsts[0];
+return(
+<div key={plan.id} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:14,marginBottom:10,overflow:"hidden"}}>
+<div style={{padding:"14px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}} onClick={()=>toggle(plan.id)}>
+<div style={{flex:1}}>
+<div style={{fontWeight:700,fontSize:14,color:T.text}}>{plan.name}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{paidCount}/{totalCount} ödendi · {fm((plan.installments||[]).filter(i=>!i.paid).reduce((s,i)=>s+i.amount,0),cur)} · {nextDue?`siradaki: ${fd(nextDue.due)}`:""}</div>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+<span style={{fontSize:11,fontWeight:700,color:st.c,background:st.c+"15",padding:"3px 10px",borderRadius:20}}>{st.l}</span>
+<span style={{color:T.textSub,fontSize:12}}>{expanded[plan.id]?"▲":"▼"}</span>
+</div>
+</div>
+{expanded[plan.id]&&<div style={{borderTop:"0.5px solid "+T.border,padding:"10px 16px"}}>
+{(plan.installments||[]).map((inst,ii)=>{
+const d=daysUntil(inst.due);
+const isOverdue=!inst.paid&&d<0;
+const isUpcoming=!inst.paid&&d>=0&&d<=7;
+return(
+<div key={inst.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"0.5px solid "+T.border,background:isOverdue?"rgba(255,59,48,0.05)":isUpcoming?"rgba(255,149,0,0.05)":"transparent",borderRadius:6,paddingLeft:6}}>
+<input type="checkbox" checked={inst.paid} onChange={()=>!inst.paid&&markPaid(plan.id,inst.id)} style={{width:16,height:16,cursor:inst.paid?"default":"pointer",accentColor:T.accent}}/>
+<div style={{flex:1}}>
+<div style={{fontSize:12,fontWeight:600,color:inst.paid?T.textDim:T.text}}>{ii+1}. Taksit — {fd(inst.due)}</div>
+<div style={{fontSize:11,color:isOverdue?"#FF3B30":isUpcoming?"#FF9500":T.textSub,marginTop:1}}>{inst.paid?"Ödendi":d<0?`${Math.abs(d)} gün gecikmiş`:d===0?"Bugün":d===1?"Yarın":`${d} gün kaldı`}</div>
+</div>
+<div style={{fontWeight:700,fontSize:13,color:inst.paid?T.textDim:T.text}}>{fm(inst.amount,cur)}</div>
+{!inst.paid&&<button onClick={()=>{setPartialOpen(partialOpen===inst.id?null:inst.id);setPartialAmt("");}} style={{fontSize:11,color:"#3A9EFF",background:"rgba(0,122,255,0.1)",border:"1px solid rgba(0,122,255,0.2)",borderRadius:8,padding:"4px 10px",cursor:"pointer",fontWeight:600}}>Kısmi Öde</button>}
+</div>
+);
+})}
+{partialOpen&&(plan.installments||[]).find(i=>i.id===partialOpen)&&(
+<div style={{display:"flex",gap:8,marginTop:10,background:"rgba(0,122,255,0.08)",borderRadius:8,padding:"10px",border:"1px solid rgba(0,122,255,0.2)"}}>
+<input type="number" placeholder="Ödenen tutar" value={partialAmt} onChange={e=>setPartialAmt(e.target.value)} style={{...inp,flex:1}}/>
+<button onClick={()=>partialAmt&&markPaid(plan.id,partialOpen,parseFloat(partialAmt))} style={{...sb(T.accent),padding:"8px 14px",fontSize:12}}>Kaydet</button>
+</div>
+)}
+<button onClick={()=>deletePlan(plan.id)} style={{marginTop:10,background:"none",border:"none",color:T.danger,fontSize:12,cursor:"pointer",fontWeight:600,padding:"4px 0"}}>Bu vade planını sil</button>
+</div>}
+</div>
+);
+})}
+</div>
+);}
 
 function TodoV({todos,setTodos,fd,sb,inp,T,setV}){
 const[newTodo,setNewTodo]=useState("");
