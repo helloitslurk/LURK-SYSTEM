@@ -2780,6 +2780,7 @@ return(
 </div>
 )}
 <button onClick={()=>deletePlan(plan.id)} style={{marginTop:10,background:"none",border:"none",color:T.danger,fontSize:12,cursor:"pointer",fontWeight:600,padding:"4px 0"}}>Bu vade planını sil</button>
+<button onClick={()=>setInstallments(prev=>prev.map(p=>p.id===plan.id?{...p,category:activeTab==="is"?"kisisel":"is"}:p))} style={{marginTop:6,background:"none",border:"none",color:T.textSub,fontSize:12,cursor:"pointer",fontWeight:600,padding:"4px 0"}}>→ {activeTab==="is"?"Kişisel'e":"İş'e"} taşı</button>
 </div>}
 </div>
 );
