@@ -830,24 +830,6 @@ return(
 </div>}
 </div>):(<div>
 
-{monthlyGoal>0&&<div style={{marginBottom:20}}>
-{<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",boxShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
-<div style={{fontSize:11,color:"#8E8E93",fontWeight:600}}>Aylık Hedef</div>
-<div style={{fontSize:11,fontWeight:700,color:monthPct>=100?"#34C759":monthPct>=70?"#FF9500":"#FF3B30"}}>{monthPct}%</div>
-</div>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
-<div style={{fontSize:17,fontWeight:800,color:monthPct>=100?"#34C759":"#F0F0F0"}}>{fm(monthlyRev,cur)}</div>
-<div style={{fontSize:11,color:"#8E8E93"}}>/ {fm(monthlyGoal,cur)}</div>
-</div>
-<div style={{background:"rgba(118,118,128,0.12)",borderRadius:6,height:6,overflow:"hidden",marginBottom:6}}>
-<div style={{height:"100%",width:monthPct+"%",borderRadius:6,background:monthPct>=100?"#34C759":monthPct>=70?"#FF9500":"#FF3B30",transition:"width 0.6s ease"}}/>
-</div>
-<div style={{fontSize:10,color:"#8E8E93"}}>
-{monthPct>=100?"🎯 Hedefe ulaştın!":daysLeftMonth===0?"Son gün!":monthNeededPerDay>0?`${daysLeftMonth} gün kaldı · günde ${fm(Math.round(monthNeededPerDay),cur)} daha`:`${daysLeftMonth} gün kaldı`}
-</div>
-</div>}
-</div>}
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:28}}>
 <div>
 <div style={{fontSize:13,color:"#8E8E93",fontWeight:500}}>{now.toLocaleDateString("tr-TR",{weekday:"long"})}</div>
@@ -1873,7 +1855,6 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:6}}>Hedef Takibi</div>
 <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Bugün sayfasında aylık ve haftalık hedefe göre ilerlemenizi takip edebilirsiniz.</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-<div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Aylık Hedef ({cur})</label><input type="number" min="0" placeholder="örn: 80000" value={cfgF.monthlyGoal||""} onChange={e=>setCfgF(p=>({...p,monthlyGoal:parseFloat(e.target.value)||0}))} style={inp}/></div>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Haftalık Hedef ({cur})</label><input type="number" min="0" placeholder="örn: 20000" value={cfgF.weeklyGoal||""} onChange={e=>setCfgF(p=>({...p,weeklyGoal:parseFloat(e.target.value)||0}))} style={inp}/></div>
 </div>
 <button onClick={saveCfg} style={{...sb(T.accent),marginTop:14,padding:"10px 22px",fontSize:13}}>Hedefleri Güncelle</button>
@@ -2426,19 +2407,6 @@ return(
 <button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
 </div>}
 
-{monthlyGoal>0?<div style={{background:T.isDark?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.9)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:18,padding:"22px 24px",color:T.text,border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,boxShadow:T.isDark?"0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)":"0 2px 8px rgba(0,0,0,0.06)"}}>
-<div style={{fontSize:11,color:T.textSub,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
-<div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:-0.5,marginBottom:4,fontVariantNumeric:"tabular-nums"}}>{mask(fm(monthlyRev,cur))}</div>
-<div style={{background:"rgba(255,255,255,0.1)",borderRadius:4,height:5,overflow:"hidden",marginBottom:5}}>
-{!hideAmounts&&<div style={{height:"100%",width:monthPct+"%",background:monthPct>=100?"#34C759":monthPct>=70?"#FF9500":"#FF3B30",borderRadius:4,transition:"width 0.8s"}}/>}
-{hideAmounts&&<div style={{height:"100%",width:"100%",background:"#2a2a2a",borderRadius:4}}/>}
-</div>
-<div style={{fontSize:11,color:T.textSub}}>{hideAmounts?"/ ••••••":("/ "+fm(monthlyGoal,cur)+" · %"+monthPct+(monthPct>=100?" 🎯":""))}</div>
-</div>:<div style={{background:T.isDark?"#111":T.bg2,borderRadius:18,padding:"22px 24px",border:"1px solid "+T.border,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-<div style={{fontSize:11,color:T.textDim,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
-<div style={{fontSize:isMobile?24:28,fontWeight:800,color:T.textDim,marginBottom:8}}>{mask(fm(monthlyRev,cur))}</div>
-<button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
-</div>}
 </div>
 </div>
 
