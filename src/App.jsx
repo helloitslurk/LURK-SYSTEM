@@ -522,7 +522,12 @@ if(!ok||!authChecked)return <div style={{display:"flex",alignItems:"center",just
 if(!authed)return <LoginV cfg={cfg} setCfg={setCfg} setAuthed={setAuthed} T={T}/>;
 
 return(
-<div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:T.bg,minHeight:"100vh",color:T.text}}>
+<div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'SF Pro Display',Inter,'Helvetica Neue',Helvetica,Arial,sans-serif",background:T.isDark?"#080810":T.bg,minHeight:"100vh",color:T.text,position:"relative"}}>
+{T.isDark&&<>
+<div style={{position:"fixed",top:"-5%",left:"-10%",width:"50vw",height:"50vw",maxWidth:500,maxHeight:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(52,199,89,0.09) 0%,transparent 70%)",pointerEvents:"none",zIndex:0}}/>
+<div style={{position:"fixed",top:"35%",right:"-8%",width:"40vw",height:"40vw",maxWidth:400,maxHeight:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(0,122,255,0.08) 0%,transparent 70%)",pointerEvents:"none",zIndex:0}}/>
+<div style={{position:"fixed",bottom:"5%",left:"20%",width:"45vw",height:"45vw",maxWidth:450,maxHeight:450,borderRadius:"50%",background:"radial-gradient(circle,rgba(168,85,247,0.07) 0%,transparent 70%)",pointerEvents:"none",zIndex:0}}/>
+</>}
 
 {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",zIndex:9999,background:toast.t==="ok"?"rgba(52,199,89,0.12)":"#FDEFED",color:toast.t==="ok"?T.success:T.danger,border:"1px solid "+(toast.t==="ok"?"#8FE3A8":"rgba(255,59,48,0.3)"),padding:"10px 20px",borderRadius:20,fontWeight:600,fontSize:13,whiteSpace:"nowrap"}}>{toast.m}</div>}
 
@@ -1850,7 +1855,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
 <div style={{fontWeight:700,fontSize:14,color:T.accentL,marginBottom:6}}>Online Sipariş Platformları</div>
 <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Pasif platformlar Online sayfasında görünmez, geçmiş veriler silinmez.</div>
-{[{k:"yemeksepeti",l:"Yemeksepeti",color:"#FA0050"},{k:"getir",l:"Getir",color:"#5C3EBC"},{k:"ubereats",l:"Uber Eats",color:"#06C167"}].map(p=>{
+{[{k:"yemeksepeti",l:"Yemeksepeti",color:"#FA0050"},{k:"ubereats",l:"Uber Eats",color:"#06C167"}].map(p=>{
 const hidden=(cfgF.hiddenPlatforms||[]).includes(p.k);
 return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
 <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -1969,8 +1974,7 @@ return(<div key={p.k} style={{display:"flex",alignItems:"center",justifyContent:
 function OnlineV({onlineOrders,setOnlineOrders,cur,fm,fd,ft,tod,uid,msg,inp,sb,T,cfg}){
 const PLATFORMS=[
   {k:"yemeksepeti",l:"Yemeksepeti",color:"#FA0050",bg:"#FFF0F4"},
-  {k:"getir",l:"Getir",color:"#5C3EBC",bg:"#F4F0FF"},
-  {k:"ubereats",l:"Uber Eats",color:"#06C167",bg:"#F0FFF6"},
+    {k:"ubereats",l:"Uber Eats",color:"#06C167",bg:"#F0FFF6"},
 ];
 const hiddenPlatforms=cfg?.hiddenPlatforms||[];
 const activePlatforms=PLATFORMS.filter(p=>!hiddenPlatforms.includes(p.k));
@@ -2331,7 +2335,7 @@ const overdueCount=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filte
 }).length,0);
 
 const NAV_CARDS=[
-  {k:"online", label:"Online Siparişler", sub:"Yemeksepeti · Getir · Uber", accent:"#FF6B35",
+  {k:"online", label:"Online Siparişler", sub:"Yemeksepeti · Uber Eats", accent:"#FF6B35",
    stat:null, icon:"📦"},
   {k:"reports", label:"Raporlar", sub:openCari>0?`${openCari} açık cari`:"Satış & harcama", accent:"#3A9EFF",
    stat:openCari>0?openCari:null, statColor:"#AF52DE", icon:"📊"},
@@ -2346,10 +2350,10 @@ const NAV_CARDS=[
 ];
 
 return(
-<div style={{minHeight:"calc(100vh - 60px)",padding:isMobile?"16px":"28px 32px",maxWidth:1000,margin:"0 auto"}}>
+<div style={{minHeight:"calc(100vh - 60px)",padding:isMobile?"16px":"28px 32px",maxWidth:1000,margin:"0 auto",position:"relative"}}>
 
 {/* Header */}
-<div style={{marginBottom:28}}>
+<div style={{marginBottom:28,position:"relative",zIndex:1}}>
 <h1 style={{fontSize:isMobile?28:42,fontWeight:800,letterSpacing:-1,margin:"0 0 6px",color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</h1>
 <div style={{fontSize:13,color:T.textSub}}>
 {now.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}
@@ -2359,30 +2363,35 @@ return(
 </div>
 
 {/* Navigasyon kartları — üstte */}
-<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(6,1fr)",gap:10,marginBottom:16}}>
+<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(6,1fr)",gap:10,marginBottom:16,position:"relative",zIndex:1}}>
 {NAV_CARDS.map(card=>(
 <button key={card.k} onClick={()=>setV(card.k)} style={{
-  background:T.isDark?"#111":T.bg2,
-  border:"1px solid "+T.border,
-  borderRadius:16,
-  padding:"16px 14px",
+  background:T.isDark?"rgba(255,255,255,0.06)":T.bg2,
+  backdropFilter:"blur(24px)",
+  WebkitBackdropFilter:"blur(24px)",
+  border:T.isDark?"1px solid rgba(255,255,255,0.12)":"1px solid "+T.border,
+  borderRadius:20,
+  padding:"18px 14px",
   cursor:"pointer",
   textAlign:"left",
   color:T.text,
   position:"relative",
   overflow:"hidden",
-  transition:"border-color 0.15s",
+  transition:"all 0.2s",
   display:"flex",
   flexDirection:"column",
   gap:8,
-  minHeight:100,
+  minHeight:110,
+  boxShadow:T.isDark?"0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)":"0 2px 8px rgba(0,0,0,0.06)",
 }}>
-<div style={{position:"absolute",top:0,left:0,right:0,height:2,background:card.accent,borderRadius:"16px 16px 0 0",opacity:0.7}}/>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-<span style={{fontSize:24}}>{card.icon}</span>
+{/* Accent glow top */}
+<div style={{position:"absolute",top:0,left:0,right:0,height:40,background:`linear-gradient(180deg,${card.accent}18 0%,transparent 100%)`,borderRadius:"20px 20px 0 0",pointerEvents:"none"}}/>
+<div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg,transparent 0%,${card.accent}80 50%,transparent 100%)`,pointerEvents:"none"}}/>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",position:"relative"}}>
+<span style={{fontSize:26}}>{card.icon}</span>
 {card.stat!=null&&<span style={{background:card.statColor+"22",color:card.statColor,fontSize:11,fontWeight:800,borderRadius:20,padding:"2px 8px",border:`1px solid ${card.statColor}44`}}>{card.stat}</span>}
 </div>
-<div>
+<div style={{position:"relative"}}>
 <div style={{fontSize:12,fontWeight:700,color:T.text,marginBottom:2}}>{card.label}</div>
 <div style={{fontSize:10,color:T.textSub}}>{card.sub}</div>
 </div>
@@ -2391,7 +2400,7 @@ return(
 </div>
 
 {/* Hedef kartları — altta */}
-<div style={{marginBottom:16}}>
+<div style={{marginBottom:16,position:"relative",zIndex:1}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
 <div style={{fontSize:11,color:T.textDim,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase"}}>Hedefler</div>
 <button onClick={()=>setHideAmounts(p=>!p)} style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:11,fontWeight:600,padding:"4px 8px",borderRadius:8}}>
@@ -2403,7 +2412,7 @@ return(
 </button>
 </div>
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
-{weeklyGoal>0?<div style={{background:T.isDark?"linear-gradient(135deg,#1C1C1E,#2C2C2E)":"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:18,padding:"22px 24px",color:"#fff",border:"1px solid "+T.border}}>
+{weeklyGoal>0?<div style={{background:T.isDark?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.9)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:18,padding:"22px 24px",color:T.text,border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,boxShadow:T.isDark?"0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)":"0 2px 8px rgba(0,0,0,0.06)"}}>
 <div style={{fontSize:11,color:T.textSub,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
 <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:-0.5,marginBottom:4,fontVariantNumeric:"tabular-nums"}}>{mask(fm(weeklyRev,cur))}</div>
 <div style={{background:"rgba(255,255,255,0.1)",borderRadius:4,height:5,overflow:"hidden",marginBottom:5}}>
@@ -2417,7 +2426,7 @@ return(
 <button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
 </div>}
 
-{monthlyGoal>0?<div style={{background:T.isDark?"linear-gradient(135deg,#1C1C1E,#2C2C2E)":"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:18,padding:"22px 24px",color:"#fff",border:"1px solid "+T.border}}>
+{monthlyGoal>0?<div style={{background:T.isDark?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.9)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:18,padding:"22px 24px",color:T.text,border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,boxShadow:T.isDark?"0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)":"0 2px 8px rgba(0,0,0,0.06)"}}>
 <div style={{fontSize:11,color:T.textSub,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Ay</div>
 <div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:-0.5,marginBottom:4,fontVariantNumeric:"tabular-nums"}}>{mask(fm(monthlyRev,cur))}</div>
 <div style={{background:"rgba(255,255,255,0.1)",borderRadius:4,height:5,overflow:"hidden",marginBottom:5}}>
