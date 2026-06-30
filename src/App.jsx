@@ -873,7 +873,7 @@ return(
 {cred>0&&<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Cari</div><div style={{fontSize:17,fontWeight:700,color:"#AF52DE"}}>{fm(cred,cur)}</div></div>}
 <div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Dolu Masa</div><div style={{fontSize:17,fontWeight:700,color:T.text}}>{openT.length}<span style={{fontSize:12,fontWeight:400,color:T.textDim}}> / {tables.length}</span></div><div style={{fontSize:10,color:T.textDim,marginTop:2}}>{fm(openT.reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0),cur)} açık</div></div>
 <div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Harcama</div><div style={{fontSize:17,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div><div style={{fontSize:10,color:T.textDim,marginTop:2}}>Net: <span style={{color:todI-todE>=0?"#34C759":"#FF3B30",fontWeight:600}}>{fm(todI-todE,cur)}</span></div></div>
-{oCari.length>0&&<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Açık Cari</div><div style={{fontSize:17,fontWeight:700,color:"#AF52DE"}}>{fm(oCari.reduce((s,c)=>s+c.total,0),cur)}</div><div style={{fontSize:10,color:T.textDim,marginTop:2}}>{oCari.length} bekliyor</div></div>}
+
 </div>
 {/* Hızlı Harcama */}
 <div style={{marginBottom:isMobile?16:20}}>
@@ -897,9 +897,9 @@ return(
 
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?12:16}}>
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
-<div style={{fontWeight:600,fontSize:15,marginBottom:18}}>Son 7 Gün</div>
-<div style={{display:"flex",gap:6,alignItems:"flex-end",height:90,paddingTop:22,position:"relative"}}>
-{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4,position:"relative",height:"100%",justifyContent:"flex-end"}}><div style={{position:"absolute",bottom:h+4,fontSize:9,color:T.textSub,textAlign:"center",whiteSpace:"nowrap",fontWeight:600}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:4}}>{d.lbl}</div></div>);})}
+<div style={{fontWeight:600,fontSize:15,marginBottom:24}}>Son 7 Gün</div>
+<div style={{display:"flex",gap:6,alignItems:"flex-end",height:80,position:"relative"}}>
+{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*70,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",height:"100%",justifyContent:"flex-end",position:"relative"}}>{d.inc>0&&<div style={{position:"absolute",bottom:h+6,fontSize:9,color:T.textSub,textAlign:"center",whiteSpace:"nowrap",fontWeight:600}}>{fm(d.inc,cur).replace(cur,"").trim()}</div>}<div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:4}}>{d.lbl}</div></div>);})}
 </div>
 </div>
 </div>
