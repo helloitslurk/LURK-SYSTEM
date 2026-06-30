@@ -264,7 +264,7 @@ const finalEc=isOldEc?DEC:ec;
 if(!ec||ec.length===0){sv("lurk_ec",DEC);}
 const today=new Date().toISOString().split("T")[0];
 const validDay=d&&d.oa&&d.oa.split("T")[0]===today?d:null;
-setDay(validDay);setLogs(l);setCari(c||[]);setEc(finalEc);setOnlineOrders(onl);setInstallments(inst||[]);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||mkT(cf.tableCount));
+setDay(validDay);setLogs(l);setCari(c||[]);setEc(finalEc);setOnlineOrders(onl);setInstallments(inst||[]);setUnlocked(unl);setNotifications(notif);setTodos(td_);setTbl(t||[]);
 setTacoLogs((tl||[]).filter(l=>l.type==="income"||l.type==="expense"));setTacoMenu(tm||[]);
 
 // Vade bildirimleri kontrolü
@@ -429,7 +429,7 @@ const openDay=()=>{
 const td=tod();
 const alreadyClosed=logs.some(l=>l.date===td);
 if(alreadyClosed){msg("Bugün zaten kapatıldı, yarın tekrar açabilirsin","err");return;}
-setDay({oa:new Date().toISOString()});msg("Gün açıldı");
+setDay({oa:new Date().toISOString()});setDayCon(false);msg("Gün açıldı");
 };
 const closeDay=()=>{
 const td=tod();const to=orders.filter(o=>o.date===td);const te=exp.filter(e=>e.date===td);
@@ -442,12 +442,19 @@ setLogs(prev=>[{id:uid(),date:td,oa:day.oa,ca:new Date().toISOString(),inc,exp:e
 setDay(null);setDayCon(false);msg("Gun kapatıldı");};
 
 const goTbl=(id)=>{if(!day){msg("Önce günü aç","err");return;}if(cfg.requireName){setSel(id);setGM(id);}else doOpen(id,"");};
+const addNewTable=()=>{
+if(!day){msg("Önce günü aç","err");return;}
+const newId=tables.length>0?Math.max(...tables.map(t=>t.id))+1:1;
+const newTable={id:newId,lbl:"Masa "+newId,s:"e",order:[],oa:null,g:""};
+setTbl(prev=>[...prev,newTable]);
+if(cfg.requireName){setSel(newId);setGM(newId);}else doOpen(newId,"");
+};
 const doOpen=(id,g)=>{
 const firstCat=Array.from(new Set(menu.filter(m=>m.on).map(m=>m.cat)))[0]||"";
 setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g||t.g}:t));setSel(id);setCat(firstCat);setDisc(null);setPay(false);setGM(null);setV("order");};
 const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const ex=t.order.find(o=>o.id===item.id);const order=ex?t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o):[...t.order,{...item,qty:1}];return{...t,order,s:"o",oa:t.oa||new Date().toISOString()};}));};
-const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);if(newOrder.length===0)return{...t,order:newOrder,s:"e",oa:null,g:""};return{...t,order:newOrder};}));};
-const cancelOrder=(tid)=>{setTbl(prev=>prev.map(t=>t.id===tid?{...t,order:[],s:"e",oa:null,g:""}:t));setV("tables");setSel(null);msg("Adisyon iptal edildi","err");};
+const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);return{...t,order:newOrder};}).filter(t=>t.id!==tid||t.order.length>0));};
+const cancelOrder=(tid)=>{setTbl(prev=>prev.filter(t=>t.id!==tid));setV("tables");setSel(null);msg("Adisyon iptal edildi","err");};
 const sub=(t)=>t.order.reduce((s,o)=>s+o.price*o.qty,0);
 const fin=(t)=>{const s=sub(t);return disc?disc.after:s;};
 
@@ -495,19 +502,19 @@ const paid=paidMap[o.name]||0;
 if(paid>=o.qty)return null;
 return{...o,qty:o.qty-paid};
 }).filter(Boolean);
-if(remaining.length===0)return{...t2,s:"e",order:[],oa:null,g:""};
+if(remaining.length===0)return null;
 return{...t2,order:remaining};
-}));
+}).filter(Boolean));
 setPay(false);
 msg("Kısmi ödeme alındı");
 return;
 }
-setTbl(prev=>prev.map(t2=>t2.id===sel?{...t2,s:"e",order:[],oa:null,g:""}:t2));
+setTbl(prev=>prev.filter(t2=>t2.id!==sel));
 setPay(false);setSel(null);setDisc(null);setV("tables");msg(t.lbl+" kapatıldı");};
 
 const addExp=()=>{if(!expF.desc||!expF.amount)return;setExp(prev=>[{id:uid(),...expF,amount:parseFloat(expF.amount)},...prev]);setExpF(p=>({desc:"",amount:"",cat:ecats[0]||p.cat,date:tod()}));msg("Harcama eklendi");};
 const saveMI=()=>{if(!mF.name||!mF.price||!mF.cat)return;if(mEid){setMenü(prev=>prev.map(m=>m.id===mEid?{...m,...mF,price:parseFloat(mF.price)}:m));msg("Güncellendi");}else{setMenü(prev=>[...prev,{id:uid(),...mF,price:parseFloat(mF.price),on:true}]);msg("Eklendi");}setMF({name:"",price:"",cat:"",on:true});setMEid(null);};
-const saveCfg=()=>{const nc={...cfgF,tableCount:parseInt(cfgF.tableCount)||10};setCfg(nc);if(nc.tableCount!==tables.length)setTbl(mkT(nc.tableCount).map(nt=>tables.find(t=>t.id===nt.id)||nt));msg("Kaydedildi");};
+const saveCfg=()=>{setCfg(cfgF);msg("Kaydedildi");};
 
 const todO=orders.filter(o=>o.date===tod());
 const todI=todO.reduce((s,o)=>s+o.total,0);
@@ -594,21 +601,34 @@ BİLDİRİMLER
 {view==="tables"&&(
 <div style={{padding:isMobile?"16px":"24px",maxWidth:1100,margin:"0 auto"}}>
 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:isMobile?16:22}}>
-<h2 style={{margin:0,fontWeight:700,fontSize:isMobile?18:22,letterSpacing:-0.4}}>Aktif Masalar</h2>
+<h2 style={{margin:0,fontWeight:700,fontSize:isMobile?18:22,letterSpacing:-0.4,color:T.text}}>Aktif Masalar</h2>
 {!day&&<div style={{background:"rgba(255,59,48,0.1)",borderRadius:10,padding:"8px 14px",display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:12,color:T.danger,fontWeight:600}}>Gün açık değil</span><button onClick={()=>go("home")} style={{fontSize:12,color:T.accent,background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Başlangıç</button></div>}
 </div>
-<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(auto-fill,minmax(140px,1fr))":"repeat(auto-fill,minmax(155px,1fr))",gap:isMobile?10:12}}>
+
+{tables.length===0?(
+<div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"50vh",gap:16,textAlign:"center"}}>
+<div style={{fontSize:36}}>🪑</div>
+<div style={{fontSize:16,fontWeight:700,color:T.text}}>Henüz açık masa yok</div>
+<div style={{fontSize:13,color:T.textSub,maxWidth:280}}>Yeni bir sipariş almak için masa ekle.</div>
+<button onClick={addNewTable} disabled={!day} style={{background:day?T.accent:T.bg3,border:"none",borderRadius:14,padding:"14px 32px",color:day?"#fff":T.textDim,fontWeight:700,fontSize:15,cursor:day?"pointer":"not-allowed",marginTop:8}}>＋ Yeni Masa Ekle</button>
+</div>
+):(
+<>
+<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(auto-fill,minmax(140px,1fr))":"repeat(auto-fill,minmax(155px,1fr))",gap:isMobile?10:12,marginBottom:14}}>
 {tables.map(t=>{const tot=t.order.reduce((s,o)=>s+o.price*o.qty,0);const dur=t.oa?Math.floor((Date.now()-new Date(t.oa))/60000):0;const occ=t.s==="o";return(
 <button key={t.id} onClick={()=>goTbl(t.id)} style={{background:occ?"#1a3a1a":T.bg2,border:"none",borderRadius:16,padding:isMobile?"12px":"14px 12px",cursor:day?"pointer":"not-allowed",textAlign:"left",color:occ?"#fff":T.text,opacity:day?1:0.5,boxShadow:T.shadow}}>
 <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><span style={{fontWeight:700,fontSize:isMobile?16:14}}>{t.lbl}</span><span style={{background:occ?"rgba(255,255,255,0.25)":T.bg3,color:occ?"#fff":T.textSub,fontSize:9,fontWeight:700,padding:"2px 6px",borderRadius:20}}>{occ?"DOLU":"BOŞ"}</span></div>
 {t.g&&<div style={{fontSize:11,color:occ?"rgba(255,255,255,0.85)":T.accentL,marginBottom:4}}>{t.g}</div>}
 {occ?<><div style={{fontSize:isMobile?20:18,fontWeight:700}}>{fm(tot,cur)}</div><div style={{fontSize:11,opacity:0.85,marginTop:2}}>{dur}dk - {t.order.length} kalem</div></>:<div style={{fontSize:12,color:T.textDim}}>Boş</div>}
 </button>);})}
+<button onClick={addNewTable} disabled={!day} style={{background:"transparent",border:"2px dashed "+T.border2,borderRadius:16,padding:isMobile?"12px":"14px 12px",cursor:day?"pointer":"not-allowed",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:6,color:T.textSub,minHeight:isMobile?90:96,opacity:day?1:0.5}}>
+<span style={{fontSize:22}}>＋</span>
+<span style={{fontSize:11,fontWeight:600}}>Yeni Masa</span>
+</button>
 </div>
-<div style={{marginTop:16,display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-<div style={{background:T.bg2,borderRadius:14,padding:"14px 16px",boxShadow:T.shadow}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Dolu Masa</div><div style={{fontSize:19,fontWeight:700}}>{tables.filter(t=>t.s==="o").length} / {tables.length}</div></div>
-<div style={{background:T.bg2,borderRadius:14,padding:"14px 16px",boxShadow:T.shadow}}><div style={{fontSize:11,color:T.textSub,marginBottom:4}}>Açık Hesap</div><div style={{fontSize:19,fontWeight:700,color:T.accent}}>{fm(tables.reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0),cur)}</div></div>
-</div>
+
+</>
+)}
 </div>
 )}
 
@@ -627,7 +647,7 @@ BİLDİRİMLER
 <div style={{display:"grid",gridTemplateColumns:"1fr 340px",height:"100%",overflow:"hidden"}}>
 <div style={{padding:16,overflowY:"auto"}}>
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
-<button onClick={()=>{setV("tables");setSel(null);}} style={{...sb(T.bg3),color:T.textSub,padding:"6px 12px"}}>Masalar</button>
+<button onClick={()=>{if(curT&&curT.order.length===0){setTbl(prev=>prev.filter(t2=>t2.id!==curT.id));}setV("tables");setSel(null);}} style={{...sb(T.bg3),color:T.textSub,padding:"6px 12px"}}>Masalar</button>
 <div><div style={{fontWeight:700,fontSize:13,color:T.text}}>{curT.lbl}</div>{curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}</div>
 {curT.oa&&<span style={{fontSize:11,color:T.textSub,background:T.bg3,padding:"2px 8px",borderRadius:20}}>{ft(curT.oa)}</span>}
 {(curT.order.length>0||curT.s==="o")&&<button onClick={()=>setCancelConfirm(true)} style={{marginLeft:"auto",background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"6px 12px",fontSize:11,fontWeight:600,cursor:"pointer"}}>Adisyonu İptal Et</button>}
@@ -691,7 +711,7 @@ return(
 <div style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden"}}>
 {/* Üst bar */}
 <div style={{padding:"10px 14px",borderBottom:"0.5px solid "+T.border,display:"flex",alignItems:"center",gap:10,flexShrink:0,background:T.bg}}>
-<button onClick={()=>{setV("tables");setSel(null);}} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
+<button onClick={()=>{if(curT.order.length===0){setTbl(prev=>prev.filter(t2=>t2.id!==curT.id));}setV("tables");setSel(null);}} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
 <div style={{flex:1}}>
 <div style={{fontWeight:700,fontSize:14,color:T.text}}>{curT.lbl}</div>
 {curT.g&&<div style={{fontSize:11,color:T.accentL}}>{curT.g}</div>}
@@ -842,18 +862,18 @@ return(
 :<button onClick={()=>setDayCon(true)} style={{background:"rgba(118,118,128,0.12)",border:"none",color:"#FF9500",padding:"12px 18px",borderRadius:12,fontWeight:600,fontSize:13,cursor:"pointer"}}>Günü Kapat</button>}
 </div>
 </div>
-<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(auto-fill,minmax(190px,1fr))",gap:isMobile?10:12,marginBottom:isMobile?16:24}}>
-<div style={{background:"linear-gradient(135deg,#34C759,#2EB350)",borderRadius:16,padding:"20px 22px",color:"#fff",gridColumn:"span 2"}}>
-<div style={{fontSize:11,opacity:0.85,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Bugün Toplam Ciro</div>
-<div style={{fontSize:36,fontWeight:700,letterSpacing:-1}}>{fm(todI,cur)}</div>
-<div style={{fontSize:12,opacity:0.8,marginTop:6}}>{todO.length} adisyon</div>
+<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(auto-fill,minmax(150px,1fr))",gap:isMobile?8:10,marginBottom:isMobile?16:24}}>
+<div style={{background:T.isDark?"rgba(255,255,255,0.05)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,borderRadius:14,padding:"14px 16px",gridColumn:"span 2"}}>
+<div style={{fontSize:10,color:T.textSub,marginBottom:5,textTransform:"uppercase",letterSpacing:0.5,fontWeight:600}}>Bugün Toplam Ciro</div>
+<div style={{fontSize:26,fontWeight:800,letterSpacing:-0.5,color:T.text}}>{fm(todI,cur)}</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:4}}>{todO.length} adisyon</div>
 </div>
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Nakit</div><div style={{fontSize:22,fontWeight:700,color:"#F0F0F0"}}>{fm(cash,cur)}</div>{todI>0&&<div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>%{Math.round(cash/todI*100)}</div>}</div>
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Kart</div><div style={{fontSize:22,fontWeight:700,color:"#007AFF"}}>{fm(card,cur)}</div>{todI>0&&<div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>%{Math.round(card/todI*100)}</div>}</div>
-{cred>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(cred,cur)}</div></div>}
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Dolu Masa</div><div style={{fontSize:22,fontWeight:700,color:"#F0F0F0"}}>{openT.length}<span style={{fontSize:14,fontWeight:400,color:"#8E8E93"}}> / {tables.length}</span></div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{fm(openT.reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0),cur)} açık</div></div>
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Harcama</div><div style={{fontSize:22,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>Net: <span style={{color:todI-todE>=0?"#34C759":"#FF3B30",fontWeight:600}}>{fm(todI-todE,cur)}</span></div></div>
-{oCari.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"16px 18px",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}><div style={{fontSize:11,color:"#8E8E93",marginBottom:5,fontWeight:600}}>Açık Cari</div><div style={{fontSize:22,fontWeight:700,color:"#AF52DE"}}>{fm(oCari.reduce((s,c)=>s+c.total,0),cur)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{oCari.length} bekliyor</div></div>}
+<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Nakit</div><div style={{fontSize:17,fontWeight:700,color:"#34C759"}}>{fm(cash,cur)}</div>{todI>0&&<div style={{fontSize:10,color:T.textDim,marginTop:2}}>%{Math.round(cash/todI*100)}</div>}</div>
+<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Kart</div><div style={{fontSize:17,fontWeight:700,color:"#007AFF"}}>{fm(card,cur)}</div>{todI>0&&<div style={{fontSize:10,color:T.textDim,marginTop:2}}>%{Math.round(card/todI*100)}</div>}</div>
+{cred>0&&<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Cari</div><div style={{fontSize:17,fontWeight:700,color:"#AF52DE"}}>{fm(cred,cur)}</div></div>}
+<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Dolu Masa</div><div style={{fontSize:17,fontWeight:700,color:T.text}}>{openT.length}<span style={{fontSize:12,fontWeight:400,color:T.textDim}}> / {tables.length}</span></div><div style={{fontSize:10,color:T.textDim,marginTop:2}}>{fm(openT.reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0),cur)} açık</div></div>
+<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Harcama</div><div style={{fontSize:17,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div><div style={{fontSize:10,color:T.textDim,marginTop:2}}>Net: <span style={{color:todI-todE>=0?"#34C759":"#FF3B30",fontWeight:600}}>{fm(todI-todE,cur)}</span></div></div>
+{oCari.length>0&&<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Açık Cari</div><div style={{fontSize:17,fontWeight:700,color:"#AF52DE"}}>{fm(oCari.reduce((s,c)=>s+c.total,0),cur)}</div><div style={{fontSize:10,color:T.textDim,marginTop:2}}>{oCari.length} bekliyor</div></div>}
 </div>
 {/* Hızlı Harcama */}
 <div style={{marginBottom:isMobile?16:20}}>
@@ -878,8 +898,8 @@ return(
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?12:16}}>
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
 <div style={{fontWeight:600,fontSize:15,marginBottom:18}}>Son 7 Gün</div>
-<div style={{display:"flex",gap:6,alignItems:"flex-end",height:90}}>
-{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{fontSize:9,color:"#8E8E93",textAlign:"center"}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":"#8E8E93",fontWeight:isT?700:400}}>{d.lbl}</div></div>);})}
+<div style={{display:"flex",gap:6,alignItems:"flex-end",height:90,paddingTop:22,position:"relative"}}>
+{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4,position:"relative",height:"100%",justifyContent:"flex-end"}}><div style={{position:"absolute",bottom:h+4,fontSize:9,color:T.textSub,textAlign:"center",whiteSpace:"nowrap",fontWeight:600}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:4}}>{d.lbl}</div></div>);})}
 </div>
 </div>
 </div>
@@ -1831,7 +1851,7 @@ return(<div style={{padding:24,maxWidth:860,margin:"0 auto"}}>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>İşletme Adı</label><input value={cfgF.name} onChange={e=>setCfgF(p=>({...p,name:e.target.value}))} style={inp}/></div>
 <div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Para Birimi</label><input value={cfgF.cur} onChange={e=>setCfgF(p=>({...p,cur:e.target.value}))} style={{...inp,maxWidth:80}}/></div>
-<div><label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:5}}>Masa Sayısı</label><input type="number" min="1" max="50" value={cfgF.tableCount} onChange={e=>setCfgF(p=>({...p,tableCount:e.target.value}))} style={{...inp,maxWidth:100}}/></div>
+
 </div>
 </div>
 <div style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:12,padding:22,marginBottom:20}}>
