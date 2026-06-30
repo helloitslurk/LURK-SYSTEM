@@ -901,7 +901,7 @@ return(
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?12:16}}>
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
 <div style={{fontWeight:600,fontSize:15}}>Son 7 Gün</div>
-<div style={{height:28}}/>
+<div style={{height:56}}/>
 <div style={{display:"flex",gap:6,alignItems:"flex-end",height:90}}>
 {l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{fontSize:9,color:T.textSub,textAlign:"center"}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400}}>{d.lbl}</div></div>);})}
 </div>
