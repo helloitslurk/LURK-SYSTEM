@@ -900,9 +900,9 @@ return(
 
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:isMobile?12:16}}>
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20,boxShadow:"0 1px 2px rgba(0,0,0,0.04)"}}>
-<div style={{fontWeight:600,fontSize:15,marginBottom:56}}>Son 7 Gün</div>
-<div style={{display:"flex",gap:6,alignItems:"flex-end",height:90}}>
-{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",height:"100%",justifyContent:"flex-end",position:"relative"}}>{d.inc>0&&<div style={{position:"absolute",bottom:h+8,fontSize:9,color:T.textSub,textAlign:"center",whiteSpace:"nowrap"}}>{fm(d.inc,cur).replace(cur,"").trim()}</div>}<div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:4}}>{d.lbl}</div></div>);})}
+<div style={{fontWeight:600,fontSize:15,marginBottom:8}}>Son 7 Gün</div>
+<div style={{display:"flex",gap:6,alignItems:"flex-end",paddingTop:40}}>
+{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*100,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4,position:"relative"}}><div style={{position:"absolute",bottom:h+6,fontSize:9,color:T.textSub,textAlign:"center",whiteSpace:"nowrap"}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:4}}>{d.lbl}</div></div>);})}
 </div>
 </div>
 </div>
@@ -1188,7 +1188,7 @@ return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 <div style={{background:T.isDark?"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)":"linear-gradient(180deg,#fff 0%,#F2F2F7 100%)",borderBottom:"1px solid "+(T.isDark?"#222":"rgba(60,60,67,0.12)"),padding:"28px 28px 0",marginBottom:0}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:24}}>
 <div>
-<h2 style={{margin:0,fontSize:26,fontWeight:800,letterSpacing:-0.5,color:"#fff"}}>Raporlar</h2>
+<h2 style={{margin:0,fontSize:26,fontWeight:800,letterSpacing:-0.5,color:T.text}}>Raporlar</h2>
 </div>
 <button onClick={()=>setV("import-old")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",background:T.isDark?"#111":T.bg2,border:"1px solid #2a2a4e",borderRadius:9,cursor:"pointer",fontSize:11,fontWeight:600,color:"#6B7FFF"}}>
 📁 Before NICCHIA
@@ -1274,7 +1274,7 @@ const mNet=mLogs.reduce((s,l)=>s+(l.net||0),0);
 const isOpen=curOpen===m;
 return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:16,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",overflow:"hidden"}}>
 <button onClick={()=>setOpenSalesMonth(isOpen?null:m)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
-<div><div style={{fontWeight:700,fontSize:13,color:"#F0F0F0"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{mLogs.length} gün kapatıldı</div></div>
+<div><div style={{fontWeight:700,fontSize:13,color:T.text}}>{monthName(m)}</div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>{mLogs.length} gün kapatıldı</div></div>
 <div style={{display:"flex",alignItems:"center",gap:16}}>
 <div style={{textAlign:"right"}}><div style={{fontWeight:800,fontSize:18,color:"#34C759"}}>{fm(mTotal,cur)}</div><div style={{fontSize:11,color:mNet>=0?"#34C759":"#FF3B30"}}>Net: {fm(mNet,cur)}</div></div>
 <span style={{color:"#C7C7CC",fontSize:13}}>{isOpen?"▲":"▼"}</span>
@@ -1282,7 +1282,7 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </button>
 {isOpen&&<div style={{borderTop:"0.5px solid rgba(0,0,0,0.08)",display:"flex",flexDirection:"column",gap:0}}>
 {mLogs.map((log,i)=><button key={log.id} onClick={()=>setSelLog(log)} style={{background:i%2===0?T.isDark?"#1a1a1a":T.bg2:T.bg2,border:"none",borderBottom:i<mLogs.length-1?"0.5px solid rgba(0,0,0,0.06)":"none",padding:"14px 20px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontWeight:600,fontSize:14}}>{fdl(log.date)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:1}}>{ft(log.oa)} - {ft(log.ca)} · {log.count} adisyon</div></div>
+<div><div style={{fontWeight:600,fontSize:14,color:T.text}}>{fdl(log.date)}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>{ft(log.oa)} - {ft(log.ca)} · {log.count} adisyon</div></div>
 <div style={{textAlign:"right",display:"flex",alignItems:"center",gap:12}}>
 <div><div style={{fontWeight:700,fontSize:15,color:"#34C759"}}>{fm(log.inc,cur)}</div><div style={{fontSize:11,color:log.net>=0?"#34C759":"#FF3B30"}}>Net: {fm(log.net,cur)}</div></div>
 <span style={{color:"#C7C7CC",fontSize:12}}>›</span>
@@ -1306,45 +1306,45 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 <button onClick={()=>{addExp();setShowEF(false);}} style={{...sb("#FF3B30")}}>Ekle</button>
 </div>}
 {(expMon||expDay)&&<div style={{display:"flex",gap:6,marginBottom:16}}>
-{expMon&&<button onClick={()=>{setExpMon(null);setExpDay(null);}} style={{fontSize:11,background:"rgba(118,118,128,0.12)",border:"1px solid rgba(60,60,67,0.18)",borderRadius:6,padding:"3px 10px",color:"#8E8E93",cursor:"pointer"}}>Tüm Aylar</button>}
-{expDay&&<button onClick={()=>setExpDay(null)} style={{fontSize:11,background:"rgba(118,118,128,0.12)",border:"1px solid rgba(60,60,67,0.18)",borderRadius:6,padding:"3px 10px",color:"#8E8E93",cursor:"pointer"}}>{fmtM(expMon)}</button>}
+{expMon&&<button onClick={()=>{setExpMon(null);setExpDay(null);}} style={{fontSize:11,background:"rgba(118,118,128,0.12)",border:"1px solid rgba(60,60,67,0.18)",borderRadius:6,padding:"3px 10px",color:T.textSub,cursor:"pointer"}}>Tüm Aylar</button>}
+{expDay&&<button onClick={()=>setExpDay(null)} style={{fontSize:11,background:"rgba(118,118,128,0.12)",border:"1px solid rgba(60,60,67,0.18)",borderRadius:6,padding:"3px 10px",color:T.textSub,cursor:"pointer"}}>{fmtM(expMon)}</button>}
 </div>}
 {!expMon&&(exp.length===0?<div style={{textAlign:"center",padding:"60px 0",color:"#C7C7CC"}}>Harcama yok.</div>
 :<div>{months.map(m=>{const md=MM[m];return(<button key={m} onClick={()=>{setExpMon(m);setExpDay(null);}} style={{width:"100%",background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:"16px 18px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",marginBottom:10,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontWeight:700,fontSize:15}}>{fmtM(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:3}}>{Object.keys(md.days).length} gun - {exp.filter(e=>e.date.slice(0,7)===m).length} kayıt</div></div>
-<div style={{display:"flex",alignItems:"center",gap:12}}><div style={{fontWeight:800,fontSize:18,color:"#FF3B30"}}>{fm(md.total,cur)}</div><span style={{color:"#8E8E93"}}>&rsaquo;</span></div>
+<div><div style={{fontWeight:700,fontSize:15}}>{fmtM(m)}</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>{Object.keys(md.days).length} gun - {exp.filter(e=>e.date.slice(0,7)===m).length} kayıt</div></div>
+<div style={{display:"flex",alignItems:"center",gap:12}}><div style={{fontWeight:800,fontSize:18,color:"#FF3B30"}}>{fm(md.total,cur)}</div><span style={{color:T.textSub}}>&rsaquo;</span></div>
 </button>);})}</div>)}
 {expMon&&!expDay&&sMD&&<>
 <div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:12,padding:"16px 18px",marginBottom:18,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontSize:11,color:"#8E8E93",marginBottom:3}}>{fmtM(expMon)}</div><div style={{fontSize:24,fontWeight:800,color:"#FF3B30"}}>{fm(sMD.total,cur)}</div></div>
-<div style={{fontSize:12,color:"#8E8E93"}}>{Object.keys(sMD.days).length} gun</div>
+<div><div style={{fontSize:11,color:T.textSub,marginBottom:3}}>{fmtM(expMon)}</div><div style={{fontSize:24,fontWeight:800,color:"#FF3B30"}}>{fm(sMD.total,cur)}</div></div>
+<div style={{fontSize:12,color:T.textSub}}>{Object.keys(sMD.days).length} gun</div>
 </div>
 <div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:18,marginBottom:18}}>
-<div style={{fontSize:11,fontWeight:700,color:"#8E8E93",marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>Kategori</div>
+<div style={{fontSize:11,fontWeight:700,color:T.textSub,marginBottom:14,textTransform:"uppercase",letterSpacing:0.5}}>Kategori</div>
 {Object.entries(sMD.cats).sort((a,b)=>b[1]-a[1]).map(([cat,amt],ci)=>{const pct=sMD.total>0?Math.round(amt/sMD.total*100):0;return(<div key={cat} style={{marginBottom:14}}>
-<div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:10,height:10,borderRadius:"50%",background:CC[ci%CC.length]}}/><span style={{fontSize:13}}>{cat}</span></div><div style={{display:"flex",gap:10}}><span style={{fontSize:13,fontWeight:700,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{fontSize:12,color:"#8E8E93",minWidth:32,textAlign:"right"}}>%{pct}</span></div></div>
+<div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:10,height:10,borderRadius:"50%",background:CC[ci%CC.length]}}/><span style={{fontSize:13}}>{cat}</span></div><div style={{display:"flex",gap:10}}><span style={{fontSize:13,fontWeight:700,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{fontSize:12,color:T.textSub,minWidth:32,textAlign:"right"}}>%{pct}</span></div></div>
 <div style={{height:7,background:"rgba(118,118,128,0.12)",borderRadius:10,overflow:"hidden"}}><div style={{height:"100%",width:pct+"%",background:CC[ci%CC.length],borderRadius:10}}/></div>
 </div>);})}
 </div>
-<div style={{fontSize:11,fontWeight:700,color:"#8E8E93",textTransform:"uppercase",letterSpacing:0.5,marginBottom:10}}>Günlere Göre</div>
+<div style={{fontSize:11,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5,marginBottom:10}}>Günlere Göre</div>
 {Object.entries(sMD.days).sort((a,b)=>b[0].localeCompare(a[0])).map(([day2,amt])=><button key={day2} onClick={()=>setExpDay(day2)} style={{width:"100%",background:T.isDark?"#1a1a1a":T.bg2,border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"12px 16px",cursor:"pointer",textAlign:"left",color:"#F0F0F0",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontWeight:600,fontSize:13}}>{fd(day2)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{exp.filter(e=>e.date===day2).length} kayıt</div></div>
-<div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontWeight:700,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{color:"#8E8E93"}}>&rsaquo;</span></div>
+<div><div style={{fontWeight:600,fontSize:13}}>{fd(day2)}</div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>{exp.filter(e=>e.date===day2).length} kayıt</div></div>
+<div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontWeight:700,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{color:T.textSub}}>&rsaquo;</span></div>
 </button>)}
 </>}
 {expDay&&<>
 <div style={{background:"rgba(255,59,48,0.1)",border:"1px solid rgba(255,59,48,0.3)",borderRadius:12,padding:"14px 18px",marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontSize:11,color:"#8E8E93",marginBottom:3}}>{fd(expDay)}</div><div style={{fontSize:22,fontWeight:800,color:"#FF3B30"}}>{fm(stot,cur)}</div></div>
-<div style={{fontSize:12,color:"#8E8E93"}}>{lE.length} kayıt</div>
+<div><div style={{fontSize:11,color:T.textSub,marginBottom:3}}>{fd(expDay)}</div><div style={{fontSize:22,fontWeight:800,color:"#FF3B30"}}>{fm(stot,cur)}</div></div>
+<div style={{fontSize:12,color:T.textSub}}>{lE.length} kayıt</div>
 </div>
 {ce.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",padding:16,marginBottom:14}}>
 {ce.map(([cat,amt],ci)=>{const pct=stot>0?Math.round(amt/stot*100):0;return(<div key={cat} style={{marginBottom:10}}>
-<div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><div style={{display:"flex",alignItems:"center",gap:7}}><div style={{width:8,height:8,borderRadius:"50%",background:CC[ci%CC.length]}}/><span style={{fontSize:12}}>{cat}</span></div><div style={{display:"flex",gap:8}}><span style={{fontSize:12,fontWeight:600,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{fontSize:11,color:"#8E8E93"}}>%{pct}</span></div></div>
+<div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><div style={{display:"flex",alignItems:"center",gap:7}}><div style={{width:8,height:8,borderRadius:"50%",background:CC[ci%CC.length]}}/><span style={{fontSize:12}}>{cat}</span></div><div style={{display:"flex",gap:8}}><span style={{fontSize:12,fontWeight:600,color:"#FF3B30"}}>{fm(amt,cur)}</span><span style={{fontSize:11,color:T.textSub}}>%{pct}</span></div></div>
 <div style={{height:5,background:"rgba(118,118,128,0.12)",borderRadius:10,overflow:"hidden"}}><div style={{height:"100%",width:pct+"%",background:CC[ci%CC.length],borderRadius:10}}/></div>
 </div>);})}
 </div>}
 {lE.map(e=><div key={e.id} style={{background:T.isDark?"#1a1a1a":T.bg2,border:"1px solid rgba(0,0,0,0.08)",borderRadius:10,padding:"10px 14px",marginBottom:7,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontWeight:600,fontSize:13}}>{e.desc}</div><span style={{fontSize:10,background:"rgba(118,118,128,0.12)",padding:"1px 7px",borderRadius:10,color:"#8E8E93"}}>{e.cat}</span></div>
+<div><div style={{fontWeight:600,fontSize:13}}>{e.desc}</div><span style={{fontSize:10,background:"rgba(118,118,128,0.12)",padding:"1px 7px",borderRadius:10,color:T.textSub}}>{e.cat}</span></div>
 <div style={{display:"flex",alignItems:"center",gap:10}}><div style={{fontWeight:700,color:"#FF3B30",fontSize:14}}>{fm(e.amount,cur)}</div><button onClick={()=>{if(window.confirm("Bu harcamayı silmek istediğine emin misin?")){setExp(prev=>prev.filter(x=>x.id!==e.id));}}} style={{background:"none",border:"none",color:"#C7C7CC",cursor:"pointer",padding:4,fontSize:13}}>x</button></div>
 </div>)}
 </>}
@@ -2139,7 +2139,7 @@ return(
         <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{onlineOrders.filter(o=>o.platform===p.k).length} sipariş</div>
       </div>
     ))}
-    <div style={{background:"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:14,padding:"16px 18px",color:"#fff"}}>
+    <div style={{background:T.isDark?"linear-gradient(135deg,#1a1a2e,#16213e)":T.bg2,borderRadius:14,padding:"16px 18px",color:T.text}}>
       <div style={{fontSize:11,opacity:0.7,marginBottom:6,textTransform:"uppercase",letterSpacing:0.5}}>Toplam</div>
       <div style={{fontSize:24,fontWeight:800}}>{fm(totalAll,cur)}</div>
       <div style={{fontSize:11,opacity:0.6,marginTop:4}}>{onlineOrders.length} sipariş</div>
@@ -2240,7 +2240,7 @@ return(
 </div>
 </div>
 
-<div style={{background:"linear-gradient(135deg,#1a1a2e,#16213e)",borderRadius:14,padding:"20px 22px",color:"#fff",marginBottom:20}}>
+<div style={{background:T.isDark?"linear-gradient(135deg,#1a1a2e,#16213e)":T.bg2,borderRadius:14,padding:"20px 22px",color:T.text,marginBottom:20}}>
 <div style={{fontSize:11,opacity:0.7,marginBottom:8,textTransform:"uppercase",letterSpacing:0.5}}>Arşivdeki Veri</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
 <div>
@@ -2569,13 +2569,13 @@ const BADGE_STYLE={
 };
 
 return(
-<div style={{minHeight:"calc(100vh - 60px)",background:T.bg,color:"#fff",padding:"0 0 60px"}}>
+<div style={{minHeight:"calc(100vh - 60px)",background:T.bg,color:T.text,padding:"0 0 60px"}}>
 
 {/* Header banner */}
 <div style={{background:T.isDark?"linear-gradient(180deg,#1a1a1a 0%,#0D0D0D 100%)":"linear-gradient(180deg,#fff 0%,#F2F2F7 100%)",borderBottom:"1px solid "+(T.isDark?"#222":"rgba(60,60,67,0.12)"),padding:"28px 28px 24px"}}>
 <div style={{maxWidth:920,margin:"0 auto"}}>
 <button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
-<h2 style={{margin:"0 0 20px",fontSize:28,fontWeight:800,letterSpacing:-0.5,color:"#fff"}}>Rozetler</h2>
+<h2 style={{margin:"0 0 20px",fontSize:28,fontWeight:800,letterSpacing:-0.5,color:T.text}}>Rozetler</h2>
 
 {/* Progress bar büyük */}
 <div style={{display:"flex",alignItems:"center",gap:16}}>
@@ -2587,7 +2587,7 @@ return(
 <div style={{display:"flex",gap:20,marginTop:16}}>
 <div><div style={{fontSize:24,fontWeight:800,color:"#C0922A"}}>{pct}%</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>tamamlandı</div></div>
 <div style={{width:1,background:"#222"}}/>
-<div><div style={{fontSize:24,fontWeight:800,color:"#fff"}}>{doneCount}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>kazanıldı</div></div>
+<div><div style={{fontSize:24,fontWeight:800,color:T.text}}>{doneCount}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>kazanıldı</div></div>
 <div style={{width:1,background:"#222"}}/>
 <div><div style={{fontSize:24,fontWeight:800,color:T.textSub}}>{total-doneCount}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>kilitli</div></div>
 </div>
@@ -2609,7 +2609,7 @@ return(
 <div style={{
   width:96,height:96,borderRadius:"50%",
   background:isUnlocked?T.bg2:T.bg3,
-  border:`2.5px solid ${isUnlocked?st.color:"#2a2a2a"}`,
+  border:`2.5px solid ${isUnlocked?st.color:T.border}`,
   display:"flex",alignItems:"center",justifyContent:"center",
   boxShadow:isUnlocked?`0 0 0 1px ${st.color}22, 0 8px 24px ${st.color}33`:"none",
   opacity:isUnlocked?1:0.45,
@@ -2627,7 +2627,7 @@ return(
   background:st.color,color:"#F0F0F0",
   fontSize:10,fontWeight:700,
   borderRadius:20,padding:"2px 7px",
-  border:"2px solid #0D0D0D",
+  border:"2px solid "+T.bg,
   letterSpacing:0.5,
 }}>×{b.count}</div>}
 
@@ -2644,7 +2644,8 @@ return(
 
 {/* Bilgi */}
 <div style={{textAlign:"center",width:"100%"}}>
-<div style={{fontSize:12,fontWeight:600,color:isUnlocked?"#fff":"#444",lineHeight:1.3,marginBottom:isUnlocked?3:6}}>{b.title}</div>
+<div style={{fontSize:12,fontWeight:600,color:isUnlocked?T.text:T.textSub,lineHeight:1.3,marginBottom:4}}>{b.title}</div>
+<div style={{fontSize:10,color:T.textDim,lineHeight:1.4,marginBottom:isUnlocked?3:6}}>{b.desc}</div>
 {isUnlocked&&!b.repeatable&&unlockedAt&&<div style={{fontSize:10,color:st.color,fontWeight:500}}>{fd(unlockedAt)}</div>}
 {isUnlocked&&b.repeatable&&<div style={{fontSize:10,color:st.color,fontWeight:500}}>{b.count} kez</div>}
 {!isUnlocked&&(b.progress||0)>0&&<div>
@@ -3162,7 +3163,7 @@ const md=byMonth[m];
 const isOpen=openM===m;
 return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"blur(16px)",WebkitBackdropFilter:"blur(16px)",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,boxShadow:"0 2px 12px rgba(0,0,0,0.4)",overflow:"hidden"}}>
 <button onClick={()=>setOpenM(isOpen?null:m)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"14px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
-<div><div style={{fontWeight:700,fontSize:15,color:"#F0F0F0"}}>{monthName(m)}</div><div style={{fontSize:11,color:"#8E8E93",marginTop:2}}>{md.entries.length} kayıt</div></div>
+<div><div style={{fontWeight:700,fontSize:15,color:T.text}}>{monthName(m)}</div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>{md.entries.length} kayıt</div></div>
 <div style={{display:"flex",alignItems:"center",gap:12}}>
 <div style={{textAlign:"right"}}>
 <div style={{fontSize:13,color:"#34C759",fontWeight:700}}>↑ {fm(md.income,cur)}</div>
@@ -3173,7 +3174,7 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </button>
 {isOpen&&<div style={{borderTop:"0.5px solid rgba(0,0,0,0.08)"}}>
 {md.entries.map((e,i)=><div key={e.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 18px",borderBottom:i<md.entries.length-1?"0.5px solid rgba(0,0,0,0.06)":"none",background:i%2===0?T.isDark?"#1a1a1a":T.bg2:T.bg2}}>
-<div><div style={{fontSize:13,fontWeight:600,color:"#F0F0F0"}}>{e.itemName}</div><div style={{fontSize:10,color:"#8E8E93",marginTop:1}}>{fd(e.date)}{e.pt?" · "+(e.pt==="cash"?"Nakit":"Kart"):""}</div></div>
+<div><div style={{fontSize:13,fontWeight:600,color:T.text}}>{e.itemName}</div><div style={{fontSize:10,color:T.textSub,marginTop:1}}>{fd(e.date)}{e.pt?" · "+(e.pt==="cash"?"Nakit":"Kart"):""}</div></div>
 <div style={{fontWeight:700,fontSize:14,color:e.type==="income"?"#34C759":"#FF3B30"}}>{e.type==="income"?"＋":"－"}{fm(e.amount,cur)}</div>
 </div>)}
 </div>}
