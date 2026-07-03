@@ -297,6 +297,31 @@ if(instNotifs.length>0){
   });
 }
 
+// Logu olmayan geçmiş günleri orders'tan otomatik oluştur
+const autoToday=new Date().toISOString().split("T")[0];
+const loggedDates=new Set((l||[]).map(x=>x.date));
+const ordersByDate={};
+(o||[]).forEach(order=>{
+  if(!order.date||order.date===autoToday)return;
+  if(loggedDates.has(order.date))return;
+  if(!ordersByDate[order.date])ordersByDate[order.date]=[];
+  ordersByDate[order.date].push(order);
+});
+if(Object.keys(ordersByDate).length>0){
+  const newLogs=Object.entries(ordersByDate).map(([date,dayOrders])=>{
+    const cash=dayOrders.filter(x=>x.pt==="cash").reduce((s,x)=>s+x.total,0);
+    const card=dayOrders.filter(x=>x.pt==="card").reduce((s,x)=>s+x.total,0);
+    const inc=dayOrders.reduce((s,x)=>s+x.total,0);
+    const im={};dayOrders.forEach(ord=>ord.items&&ord.items.forEach(it=>{if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty;im[it.name].total+=it.price*it.qty;}));
+    const gm={};dayOrders.forEach(ord=>{const g=ord.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=ord.total;gm[g].orders.push({id:ord.id,tbl:ord.tn,total:ord.total,pt:ord.pt,items:ord.items});});
+    return{id:uid(),date,oa:date+"T09:00:00.000Z",ca:date+"T23:59:59.000Z",inc,exp:0,net:inc,cash,card,count:dayOrders.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:[]};
+  });
+  const merged=[...(l||[]),...newLogs].sort((a,b)=>b.date.localeCompare(a.date));
+  setLogs(merged);
+  sv("lurk_l",merged);
+  console.log("Auto-logged missing days:",Object.keys(ordersByDate));
+}
+
 setOk(true);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
