@@ -3389,7 +3389,6 @@ const c=(cari||[]).find(x=>x.id===cariId);
 if(!c)return;
 setTbl(prev=>prev.map(t=>{
 if(t.id!==tableId)return t;
-// Cari'nin ürünlerini masaya ekle
 const newItems=c.items&&c.items.length>0?c.items:[{id:"cari_"+cariId,name:c.g+" (Cari)",qty:1,price:c.total,cat:"Cari"}];
 const existingOrder=[...t.order];
 newItems.forEach(item=>{
@@ -3399,6 +3398,7 @@ else existingOrder.push({...item,id:item.id||(uid?uid():"cari_"+Date.now())});
 });
 return{...t,order:existingOrder,s:"o",g:c.g||t.g};
 }));
+setCari(prev=>prev.filter(x=>x.id!==cariId));
 setTablePickFor(null);
 };
 
