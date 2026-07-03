@@ -184,7 +184,7 @@ if(typeof document!=="undefined"){
 const inp={background:T.isDark?"rgba(255,255,255,0.07)":"rgba(255,255,255,0.9)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",border:"0.5px solid "+T.border2,borderRadius:10,padding:"10px 14px",color:T.text,fontSize:16,outline:"none",width:"100%",boxSizing:"border-box",boxShadow:"0 1px 3px rgba(0,0,0,0.06) inset"};
 const sb=(bg,col)=>({background:bg,border:"none",color:col||(T.isDark?"#fff":T.text),borderRadius:10,padding:"10px 18px",fontWeight:600,fontSize:13,cursor:"pointer",boxShadow:T.isDark?"0 2px 8px rgba(0,0,0,0.4)":"0 1px 4px rgba(0,0,0,0.1)"});
 const toggleTheme=()=>{setDarkMode(p=>{const next=!p;try{localStorage.setItem("nicchia_theme",next?"dark":"light");}catch{}return next;});};
-const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"installments",l:"Vadeler"},{k:"settings",l:"Ayarlar"}];
+const NAV=[{k:"lurk",l:"Dashboard"},{k:"home",l:"Bugün"},{k:"tables",l:"Masalar"},{k:"installments",l:"Vadeler"},{k:"credit",l:"Cari"},{k:"settings",l:"Ayarlar"}];
 const[view,setV]=useState("lurk");
 const[authed,setAuthed]=useState(false);
 const[authChecked,setAuthChecked]=useState(false);
@@ -297,72 +297,6 @@ if(instNotifs.length>0){
   });
 }
 
-// Hepsiburada Limiti migration — sadece bir kez çalışır
-const hepsiExists=(inst||[]).some(p=>p.id&&String(p.id).startsWith("hepsi_"));
-const hepsiPlan={
-  id:"hepsi_migration",
-  name:"Hepsiburada Limiti",
-  category:"kisisel",
-  total:17838.00,
-  installments:[
-    {id:"h1",note:"405 955 2495 - T1",amount:801.22,due:"",paid:false},
-    {id:"h2",note:"450 276 1704 - T1",amount:223.52,due:"",paid:false},
-    {id:"h3",note:"483 489 8368 - T1",amount:397.52,due:"",paid:false},
-    {id:"h4",note:"403 301 7635 - T1",amount:148.57,due:"",paid:false},
-    {id:"h5",note:"415 920 6280 - T1",amount:303.41,due:"",paid:false},
-    {id:"h6",note:"444 036 1104 - T1",amount:958.67,due:"",paid:false},
-    {id:"h7",note:"427 538 8943 - T1",amount:399.18,due:"",paid:false},
-    {id:"h8",note:"415 920 6280 - T2",amount:303.41,due:"",paid:false},
-    {id:"h9",note:"427 538 8943 - T2",amount:399.18,due:"",paid:false},
-    {id:"h10",note:"415 920 6280 - T3",amount:303.41,due:"",paid:false},
-    {id:"h11",note:"427 538 8943 - T3",amount:399.21,due:"",paid:false},
-    {id:"h12",note:"414 540 4727 - T1",amount:291.76,due:"",paid:false},
-    {id:"h13",note:"405 955 2495 - T2",amount:801.20,due:"",paid:false},
-    {id:"h14",note:"450 276 1704 - T2",amount:223.54,due:"",paid:false},
-    {id:"h15",note:"483 489 8368 - T2",amount:397.55,due:"",paid:false},
-    {id:"h16",note:"403 301 7635 - T2",amount:148.59,due:"",paid:false},
-    {id:"h17",note:"423 605 6305 - T1",amount:145.49,due:"",paid:false},
-    {id:"h18",note:"444 681 0448 - T1",amount:182.71,due:"",paid:false},
-    {id:"h19",note:"415 920 6280 - T4",amount:303.41,due:"",paid:false},
-    {id:"h20",note:"444 036 1104 - T2",amount:958.68,due:"",paid:false},
-    {id:"h21",note:"427 538 8943 - T4",amount:399.18,due:"",paid:false},
-    {id:"h22",note:"476 106 4121 - T1",amount:177.70,due:"",paid:false},
-    {id:"h23",note:"414 540 4727 - T2",amount:291.73,due:"",paid:false},
-    {id:"h24",note:"414 540 4727 - T3",amount:291.76,due:"",paid:false},
-    {id:"h25",note:"405 955 2495 - T3",amount:801.20,due:"",paid:false},
-    {id:"h26",note:"443 251 3827 - T1",amount:124.40,due:"",paid:false},
-    {id:"h27",note:"450 276 1704 - T3",amount:223.54,due:"",paid:false},
-    {id:"h28",note:"483 489 8368 - T3",amount:397.55,due:"",paid:false},
-    {id:"h29",note:"403 301 7635 - T3",amount:148.59,due:"",paid:false},
-    {id:"h30",note:"423 605 6305 - T2",amount:145.52,due:"",paid:false},
-    {id:"h31",note:"444 681 0448 - T2",amount:182.70,due:"",paid:false},
-    {id:"h32",note:"415 920 6280 - T5",amount:303.41,due:"",paid:false},
-    {id:"h33",note:"444 036 1104 - T3",amount:958.68,due:"",paid:false},
-    {id:"h34",note:"427 538 8943 - T5",amount:399.18,due:"",paid:false},
-    {id:"h35",note:"476 106 4121 - T2",amount:177.68,due:"",paid:false},
-    {id:"h36",note:"457 290 5073 - T1",amount:229.73,due:"",paid:false},
-    {id:"h37",note:"482 605 5408 - T1",amount:141.92,due:"",paid:false},
-    {id:"h38",note:"450 276 1704 - T4",amount:223.54,due:"",paid:false},
-    {id:"h39",note:"483 489 8368 - T4",amount:397.55,due:"",paid:false},
-    {id:"h40",note:"403 301 7635 - T4",amount:148.59,due:"",paid:false},
-    {id:"h41",note:"414 540 4727 - T4",amount:291.76,due:"",paid:false},
-    {id:"h42",note:"405 955 2495 - T4",amount:801.20,due:"",paid:false},
-    {id:"h43",note:"482 605 5408 - T2",amount:141.91,due:"",paid:false},
-    {id:"h44",note:"450 276 1704 - T5",amount:223.54,due:"",paid:false},
-    {id:"h45",note:"483 489 8368 - T5",amount:397.55,due:"",paid:false},
-    {id:"h46",note:"403 301 7635 - T5",amount:148.59,due:"",paid:false},
-    {id:"h47",note:"444 681 0448 - T3",amount:182.70,due:"",paid:false},
-    {id:"h48",note:"415 920 6280 - T6",amount:303.41,due:"",paid:false},
-    {id:"h49",note:"414 540 4727 - T5",amount:291.76,due:"",paid:false},
-    {id:"h50",note:"405 955 2495 - T5",amount:801.20,due:"",paid:false},
-  ]
-};
-if(!hepsiExists){
-  const updatedInst=[...(inst||[]),hepsiPlan];
-  setInstallments(updatedInst);
-  sv("lurk_inst",updatedInst);
-}
-
 setOk(true);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
@@ -406,7 +340,6 @@ useEffect(()=>{if(ok&&loadedRef.current)debouncedSave("tt_m",tacoMenu);},[tacoMe
 useEffect(()=>{
 if(!ok)return;
 const curCur=cfg.cur||"TL";
-const achievements=buildBadges({logs,orders,cari,installments,cur:curCur,fm});
 const newlyDone=achievements.filter(a=>a.done&&!unlocked[a.id]);
 if(newlyDone.length>0){
 const now=new Date().toISOString();
@@ -432,6 +365,24 @@ const openDay=()=>{
 const td=tod();
 const alreadyClosed=logs.some(l=>l.date===td);
 if(alreadyClosed){msg("Bugün zaten kapatıldı, yarın tekrar açabilirsin","err");return;}
+// Önceki gün kapanmamışsa otomatik kapat ve logla
+if(day&&day.oa){
+const prevDate=new Date(day.oa).toISOString().split("T")[0];
+if(prevDate!==td){
+const to=orders.filter(o=>o.date===prevDate);
+const te=exp.filter(e=>e.date===prevDate);
+const cash=to.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
+const card=to.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
+const inc=to.reduce((s,o)=>s+o.total,0);const expt=te.reduce((s,e)=>s+e.amount,0);
+const im={};to.forEach(o=>o.items.forEach(it=>{if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty;im[it.name].total+=it.price*it.qty;}));
+const gm={};to.forEach(o=>{const g=o.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
+const prevLog={id:uid(),date:prevDate,oa:day.oa,ca:new Date(prevDate+"T23:59:59").toISOString(),inc,exp:expt,net:inc-expt,cash,card,count:to.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:te};
+setLogs(prev=>[prevLog,...prev]);
+// Eski masaları temizle
+setTbl([]);
+msg(prevDate+" günü otomatik kapatıldı");
+}
+}
 setDay({oa:new Date().toISOString()});setDayCon(false);msg("Gün açıldı");
 };
 const closeDay=()=>{
@@ -526,6 +477,7 @@ const oCats=Array.from(new Set(aMenü.map(m=>m.cat)));
 const fMenü=aMenü.filter(m=>m.cat===cat);
 const curT=tables.find(t=>t.id===sel);
 const go=(k)=>{setV(k);setSel(null);setSelLog(null);};
+const achievements=buildBadges({logs,orders,cari,installments,cur:cfg.cur||"TL",fm});
 
 if(!ok||!authChecked)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg}}>Yükleniyor...</div>;
 
@@ -552,7 +504,7 @@ return(
 :<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,59,48,0.1)",borderRadius:20,padding:"4px 10px 4px 8px",width:"fit-content"}}><span style={{width:6,height:6,borderRadius:"50%",background:T.danger,display:"inline-block"}}/><span style={{fontSize:12,color:T.danger,fontWeight:600}}>KAPALI</span></div>}
 </div>
 <div style={{flex:1,overflowY:"auto",padding:"12px 12px"}}>
-{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?T.bg3:"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:"none",letterSpacing:0.5}}>{k==="lurk"?"DASHBOARD":k==="tables"?"MASALAR":k==="home"?"BUGÜN":k==="settings"?"AYARLAR":k==="installments"?"VADELER":l.toUpperCase()}</button>)}
+{NAV.map(({k,l})=><button key={k} onClick={()=>{go(k);setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view===k?T.bg3:"transparent",color:view===k?T.text:T.textSub,fontWeight:view===k?700:500,fontSize:13,marginBottom:4,textAlign:"left",boxShadow:"none",letterSpacing:0.5}}>{k==="lurk"?"DASHBOARD":k==="tables"?"MASALAR":k==="home"?"BUGÜN":k==="settings"?"AYARLAR":k==="installments"?"VADELER":k==="credit"?"CARİ":l.toUpperCase()}</button>)}
 <button onClick={()=>{go("notifications");setDrawerOpen(false);}} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:12,border:"none",cursor:"pointer",background:view==="notifications"?T.bg3:"transparent",color:view==="notifications"?T.text:T.textSub,fontWeight:view==="notifications"?700:500,fontSize:13,marginBottom:4,textAlign:"left"}}>
 BİLDİRİMLER
 {notifications.filter(n=>!n.read).length>0&&<span style={{background:"#FF3B30",color:"#fff",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifications.filter(n=>!n.read).length}</span>}
@@ -598,7 +550,7 @@ BİLDİRİMLER
 
 {gM&&view!=="order"&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>{setGM(null);setSel(null);}} T={T}/></div>}
 
-{view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile} T={T}/>}
+{view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile} badges={achievements}/>}
 {view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} setExp={setExp} ecats={ecats} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} uid={uid} msg={msg} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile} T={T}/>}
 
 {view==="tables"&&(
@@ -692,13 +644,14 @@ BİLDİRİMLER
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T} cfg={cfg}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
-{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T}/>}
+{view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T} tables={tables} setTbl={setTbl} uid={uid}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
-{view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
+{view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T} badges={achievements}/>}
 {view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb} setV={setV}/>}
 {view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp} setV={setV}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
 {view==="installments"&&<InstallmentsPageV installments={installments} setInstallments={setInstallments} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} T={T} sb={sb} inp={inp} setV={setV} notifications={notifications} setNotifications={setNotifications}/>}
+{view==="credit"&&<CreditPageV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp} setV={setV} tables={tables} setTbl={setTbl} uid={uid}/>}
 {view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T} setV={setV}/>}
 {view==="credit"&&<CariV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} selC={selC} setSelC={setSelC} stT={stT} setStT={setStT} delC={delC} setDelC={setDelC} msg={msg} T={T} sb={sb} inp={inp} PO={PO} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T} logs={logs} onlineOrders={onlineOrders} todos={todos} tacoLogs={tacoLogs} tacoMenu={tacoMenu} notifications={notifications} cari={cari} installments={installments}/>}
@@ -1074,7 +1027,7 @@ return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba
 </div>
 </div>);}
 
-function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari,T=DARK}){
+function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari,T=DARK,tables,setTbl,uid}){
 const CC=["#34C759","#34C759","#FF9500","#007AFF","#AF52DE","#FF3B30","#FF9500","#248A3D"];
 const[dateFrom,setDateFrom]=useState("");
 const[dateTo,setDateTo]=useState("");
@@ -1196,12 +1149,10 @@ return(<div style={{padding:0,maxWidth:900,margin:"0 auto"}}>
 </div>
 
 {/* Sekme stat kartları */}
-<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:0,marginBottom:0}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:0,marginBottom:0}}>
 {[
 {k:"sales",l:"Satış",val:filteredLogs.reduce((s,l)=>s+(l.inc||0),0),sub:filteredLogs.length+" gün",color:"#34C759"},
 {k:"expenses",l:"Harcama",val:exp.reduce((s,e)=>s+e.amount,0),sub:exp.length+" kayıt",color:"#FF3B30"},
-{k:"credit",l:"Cari",val:(cari||[]).filter(c=>!c.settled).reduce((s,c)=>s+c.total,0),sub:(cari||[]).filter(c=>!c.settled).length+" açık",color:"#AF52DE"},
-{k:"taco",l:"Taco",val:0,sub:"gelir & gider",color:"#FF6B35"},
 ].map(({k,l,val,sub,color,unit})=>{
 const isActive=mainT===k;
 return(
@@ -1350,8 +1301,6 @@ return(<div key={m} style={{background:T.isDark?"#1a1a1a":T.bg2,backdropFilter:"
 </>}
 </div>}
 
-{mainT==="credit"&&<CariInReportsV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp}/>}
-{mainT==="taco"&&<TacoTabV tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} cur={cur} fm={fm} fd={fd} fdl={fdl} tod={tod} inp={inp} sb={sb} T={T}/>}
 </div>
 </div>);}
 
@@ -2300,7 +2249,7 @@ Bu işlem {OLD_LOGS.length} günlük geçmiş satış kaydını mevcut Raporlar 
 </div>
 );}
 
-function LurkV({setV,T,logs,orders,cfg,cari,installments,unlocked,fm,fd,cur,day,ft,tod,isMobile}){
+function LurkV({setV,T,logs,orders,cfg,cari,installments,unlocked,fm,fd,cur,day,ft,tod,isMobile,badges}){
 const now=new Date();
 const allLogs=logs||[];
 
@@ -2326,7 +2275,6 @@ const[hideAmounts,setHideAmounts]=useState(false);
 const mask=(val)=>hideAmounts?"••••••":val;
 
 // Rozetler
-const badges=buildBadges({logs:allLogs,orders:orders||[],cari,installments,fm,cur});
 const earnedCount=badges.filter(b=>b.done).length;
 
 // Açık cari
@@ -2523,8 +2471,7 @@ style={{background:"rgba(255,255,255,0.07)",backdropFilter:"blur(20px)",WebkitBa
 </div>
 );}
 
-function AchievementsV({logs,orders,cari,installments,unlocked,cur,fm,fd,setV,sb,T}){
-const badges=buildBadges({logs,orders,cari,installments,cur,fm});
+function AchievementsV({logs,orders,cari,installments,unlocked,cur,fm,fd,setV,sb,T,badges}){
 const doneCount=badges.filter(b=>b.done).length;
 const total=badges.length;
 const pct=Math.round(doneCount/total*100);
@@ -2705,6 +2652,15 @@ return(<div style={{padding:24,maxWidth:680,margin:"0 auto"}}>
 </div>
 )}
 </div>);}
+
+function CreditPageV({cari,setCari,cur,fm,fd,ft,T,sb,inp,setV,tables,setTbl,uid}){
+return(
+<div style={{padding:"20px 20px 80px",maxWidth:720,margin:"0 auto"}}>
+<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
+<h2 style={{margin:"0 0 16px",fontWeight:800,fontSize:22,color:T.text}}>👤 Cari Hesaplar</h2>
+<CariInReportsV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp} tables={tables} setTbl={setTbl} uid={uid} tod={()=>new Date().toISOString().split("T")[0]}/>
+</div>
+);}
 
 function InstallmentsPageV({installments,setInstallments,cur,fm,fd,ft,tod,T,sb,inp,setV,notifications,setNotifications}){
 const now=new Date();
@@ -3393,13 +3349,34 @@ return(
 );
 }
 
-function CariInReportsV({cari,setCari,cur,fm,fd,ft,T,sb,inp}){
+function CariInReportsV({cari,setCari,cur,fm,fd,ft,T,sb,inp,tables,setTbl,uid,tod}){
 const[selC,setSelC]=useState(null);
 const[stT,setStT]=useState(null);
 const[delC,setDelC]=useState(null);
 const[showManual,setShowManual]=useState(false);
 const[manualForm,setManualForm]=useState({name:"",amount:"",note:""});
 const[partialInstForm,setPartialInstForm]=useState(null);
+const[tablePickFor,setTablePickFor]=useState(null); // cari id için masa seçici
+
+const activeTables=(tables||[]).filter(t=>t.s==="o");
+
+const addCariToTable=(cariId,tableId)=>{
+const c=(cari||[]).find(x=>x.id===cariId);
+if(!c)return;
+setTbl(prev=>prev.map(t=>{
+if(t.id!==tableId)return t;
+// Cari'nin ürünlerini masaya ekle
+const newItems=c.items&&c.items.length>0?c.items:[{id:"cari_"+cariId,name:c.g+" (Cari)",qty:1,price:c.total,cat:"Cari"}];
+const existingOrder=[...t.order];
+newItems.forEach(item=>{
+const ex=existingOrder.findIndex(o=>o.id===item.id);
+if(ex>=0)existingOrder[ex]={...existingOrder[ex],qty:existingOrder[ex].qty+item.qty};
+else existingOrder.push({...item,id:item.id||(uid?uid():"cari_"+Date.now())});
+});
+return{...t,order:existingOrder,s:"o",g:c.g||t.g};
+}));
+setTablePickFor(null);
+};
 
 const open=(cari||[]).filter(c=>!c.settled);
 const closed=(cari||[]).filter(c=>c.settled);
@@ -3411,6 +3388,7 @@ const del=(id)=>{setCari(prev=>prev.filter(c=>c.id!==id));setDelC(null);};
 const addManualCari=()=>{if(!manualForm.name.trim()||!manualForm.amount)return;const amt=parseFloat(manualForm.amount)||0;const now=new Date().toISOString();setCari(prev=>[{id:Date.now()+Math.random(),g:manualForm.name.trim(),tbl:"Manuel",items:manualForm.note?[{name:manualForm.note,qty:1,price:amt}]:[],sub:amt,da:0,total:amt,oa:now,cAt:now,date:now.split("T")[0],settled:false},...prev]);setManualForm({name:"",amount:"",note:""});setShowManual(false);};
 
 return(<div style={{paddingTop:8}}>
+{tablePickFor&&activeTables.length===0&&setTablePickFor(null)}
 {selC&&<SettleModal selC={selC} cur={cur} fm={fm} ft={ft} T={T} sb={sb} stT={stT} setStT={setStT} setSelC={setSelC} settle={settle} partialPay={partialPay}/>}
 {delC&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:"rgba(22,22,22,0.98)",backdropFilter:"blur(20px)",borderRadius:16,padding:24,width:320}}><div style={{fontWeight:700,fontSize:15,color:T.danger,marginBottom:10}}>Cari Hesabı Sil</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 16px"}}>Kalıcı olarak silinecek.</p><div style={{display:"flex",gap:8}}><button onClick={()=>setDelC(null)} style={{...sb(T.bg3),flex:1,color:T.text}}>İptal</button><button onClick={()=>del(delC)} style={{...sb(T.danger),flex:1}}>Sil</button></div></div></div>}
 
@@ -3439,10 +3417,17 @@ return(<div style={{paddingTop:8}}>
 <div style={{fontWeight:800,fontSize:18,color:"#AF52DE"}}>{fm(c.total,cur)}</div>
 </div>
 {(c.payments||[]).length>0&&<div style={{fontSize:11,color:"#34C759",marginBottom:8}}>↓ {c.payments.length} kısmi ödeme yapıldı</div>}
-<div style={{display:"flex",gap:8}}>
+<div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
 <button onClick={()=>{setSelC(c);setStT(null);}} style={{...sb("rgba(175,82,222,0.15)"),flex:2,color:"#AF52DE",border:"1px solid rgba(175,82,222,0.3)",fontSize:12}}>Tahsil Et</button>
+{activeTables.length>0&&<button onClick={()=>setTablePickFor(tablePickFor===c.id?null:c.id)} style={{...sb("rgba(0,122,255,0.1)"),color:"#3A9EFF",border:"1px solid rgba(0,122,255,0.25)",fontSize:12}}>🪑 Masaya Ekle</button>}
 <button onClick={()=>setDelC(c.id)} style={{...sb("rgba(255,59,48,0.1)"),color:T.danger,border:"1px solid rgba(255,59,48,0.2)",fontSize:12}}>Sil</button>
 </div>
+{tablePickFor===c.id&&<div style={{marginTop:8,padding:10,background:T.bg3,borderRadius:10,border:"0.5px solid "+T.border}}>
+<div style={{fontSize:11,color:T.textSub,marginBottom:8,fontWeight:600}}>Hangi masaya eklensin?</div>
+<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{activeTables.map(t=><button key={t.id} onClick={()=>addCariToTable(c.id,t.id)} style={{...sb(T.accent),fontSize:12,padding:"6px 14px"}}>{t.lbl}{t.g?" - "+t.g:""}</button>)}
+</div>
+</div>}
 </div>))}
 </div>}
 
