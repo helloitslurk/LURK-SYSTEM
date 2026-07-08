@@ -5,12 +5,12 @@ const DARK={bg:"#0D0D0D",bg2:"#1A1A1A",bg3:"#242424",border:"rgba(255,255,255,0.
 const LIGHT={bg:"#F2F2F7",bg2:"rgba(255,255,255,0.9)",bg3:"rgba(118,118,128,0.12)",border:"rgba(60,60,67,0.12)",border2:"rgba(60,60,67,0.2)",accent:"#34C759",accentL:"#248A3D",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#6C6C70",textDim:"#AEAEB2",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 8px rgba(0,0,0,0.08),0 0 0 0.5px rgba(255,255,255,0.5) inset",shadowM:"0 8px 32px rgba(0,0,0,0.12),0 0 0 0.5px rgba(255,255,255,0.4) inset",glass:"rgba(255,255,255,0.7)",isDark:false};
 
 const MENU=[
-{id:101,name:"sigaralık filtre",price:50,cat:"Kahve",on:true},{id:102,name:"filtre kahve",price:140,cat:"Kahve",on:true},{id:103,name:"americano",price:150,cat:"Kahve",on:true},{id:104,name:"latte",price:180,cat:"Kahve",on:true},{id:105,name:"salted caramel latte",price:250,cat:"Kahve",on:true},{id:106,name:"cortado",price:150,cat:"Kahve",on:true},{id:107,name:"flatwhite",price:170,cat:"Kahve",on:true},{id:108,name:"süt reçelli latte",price:250,cat:"Kahve",on:true},{id:109,name:"mocha",price:230,cat:"Kahve",on:true},{id:110,name:"vanilya latte",price:200,cat:"Kahve",on:true},{id:111,name:"kış lattesi",price:200,cat:"Kahve",on:true},{id:112,name:"v60",price:220,cat:"Kahve",on:true},{id:113,name:"espresso",price:140,cat:"Kahve",on:true},{id:114,name:"cappuccino",price:180,cat:"Kahve",on:true},
-{id:201,name:"matcha latte",price:230,cat:"Matcha",on:true},{id:202,name:"strawberry matcha",price:260,cat:"Matcha",on:true},{id:203,name:"berry matcha latte",price:260,cat:"Matcha",on:true},{id:204,name:"vanilla matcha latte",price:250,cat:"Matcha",on:true},{id:205,name:"apple & ginger matcha",price:260,cat:"Matcha",on:true},{id:206,name:"cremebrulee matcha",price:250,cat:"Matcha",on:true},{id:207,name:"mevsim meyveli matcha",price:260,cat:"Matcha",on:true},
-{id:301,name:"siyah çay",price:50,cat:"Cay",on:true},{id:302,name:"bitki çayı",price:150,cat:"Cay",on:true},{id:303,name:"ice tea",price:200,cat:"Cay",on:true},
-{id:401,name:"muhammara sandviç",price:330,cat:"Sandviç",on:true},{id:402,name:"renç sandviç",price:330,cat:"Sandviç",on:true},{id:403,name:"pesto sandviç",price:300,cat:"Sandviç",on:true},{id:404,name:"ton balığı sandviç",price:300,cat:"Sandviç",on:true},
-{id:501,name:"tiramisu",price:290,cat:"Tatlı",on:true},{id:502,name:"soft cookie",price:175,cat:"Tatlı",on:true},
-{id:601,name:"+vegan süt",price:50,cat:"Ekstra",on:true},{id:602,name:"sıcak çikolata",price:200,cat:"Ekstra",on:true},{id:603,name:"sahlep",price:150,cat:"Ekstra",on:true},{id:604,name:"soda",price:90,cat:"Ekstra",on:true},{id:605,name:"baileys matcha",price:300,cat:"Ekstra",on:true},{id:606,name:"servis",price:200,cat:"Ekstra",on:true},{id:607,name:"oralet",price:50,cat:"Ekstra",on:true},{id:608,name:"Clap",price:250,cat:"Ekstra",on:true},{id:609,name:"Churchill",price:120,cat:"Ekstra",on:true},
+{id:101,name:"SIGARALIK FILTRE",price:50,cat:"Kahve",on:true},{id:102,name:"FILTRE KAHVE",price:140,cat:"Kahve",on:true},{id:103,name:"AMERICANO",price:150,cat:"Kahve",on:true},{id:104,name:"LATTE",price:180,cat:"Kahve",on:true},{id:105,name:"SALTED CARAMEL LATTE",price:250,cat:"Kahve",on:true},{id:106,name:"CORTADO",price:150,cat:"Kahve",on:true},{id:107,name:"FLATWHITE",price:170,cat:"Kahve",on:true},{id:108,name:"SÜT REÇELLI LATTE",price:250,cat:"Kahve",on:true},{id:109,name:"MOCHA",price:230,cat:"Kahve",on:true},{id:110,name:"VANILYA LATTE",price:200,cat:"Kahve",on:true},{id:111,name:"KIŞ LATTESI",price:200,cat:"Kahve",on:true},{id:112,name:"V60",price:220,cat:"Kahve",on:true},{id:113,name:"ESPRESSO",price:140,cat:"Kahve",on:true},{id:114,name:"CAPPUCCINO",price:180,cat:"Kahve",on:true},
+{id:201,name:"MATCHA LATTE",price:230,cat:"Matcha",on:true},{id:202,name:"STRAWBERRY MATCHA",price:260,cat:"Matcha",on:true},{id:203,name:"BERRY MATCHA LATTE",price:260,cat:"Matcha",on:true},{id:204,name:"VANILLA MATCHA LATTE",price:250,cat:"Matcha",on:true},{id:205,name:"APPLE & GINGER MATCHA",price:260,cat:"Matcha",on:true},{id:206,name:"CREMEBRULEE MATCHA",price:250,cat:"Matcha",on:true},{id:207,name:"MEVSIM MEYVELI MATCHA",price:260,cat:"Matcha",on:true},
+{id:301,name:"SIYAH ÇAY",price:50,cat:"Cay",on:true},{id:302,name:"BITKI ÇAYI",price:150,cat:"Cay",on:true},{id:303,name:"ICE TEA",price:200,cat:"Cay",on:true},
+{id:401,name:"MUHAMMARA SANDVIÇ",price:330,cat:"Sandviç",on:true},{id:402,name:"RENÇ SANDVIÇ",price:330,cat:"Sandviç",on:true},{id:403,name:"PESTO SANDVIÇ",price:300,cat:"Sandviç",on:true},{id:404,name:"TON BALIĞI SANDVIÇ",price:300,cat:"Sandviç",on:true},
+{id:501,name:"TIRAMISU",price:290,cat:"Tatlı",on:true},{id:502,name:"SOFT COOKIE",price:175,cat:"Tatlı",on:true},
+{id:601,name:"+VEGAN SÜT",price:50,cat:"Ekstra",on:true},{id:602,name:"SICAK ÇIKOLATA",price:200,cat:"Ekstra",on:true},{id:603,name:"SAHLEP",price:150,cat:"Ekstra",on:true},{id:604,name:"SODA",price:90,cat:"Ekstra",on:true},{id:605,name:"BAILEYS MATCHA",price:300,cat:"Ekstra",on:true},{id:606,name:"SERVIS",price:200,cat:"Ekstra",on:true},{id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},{id:608,name:"CLAP",price:250,cat:"Ekstra",on:true},{id:609,name:"CHURCHILL",price:120,cat:"Ekstra",on:true},
 ];
 
 const OLD_LOGS=[]; // Supabase'e taşındı
@@ -655,11 +655,8 @@ BİLDİRİMLER
 </div></div>)}
 </div>
 <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"12px 16px",borderTop:"0.5px solid "+T.border,background:T.isDark?"#111":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)"}}>
-<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:4}}><span>Ara toplam</span><span>{fm(sub(curT),cur)}</span></div>
-{disc?<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:4}}><span>İndirim <button onClick={()=>setDisc(null)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",padding:"0 2px",fontSize:14}}>x</button></span><span>-{fm(disc.amount,cur)}</span></div>
-:<button onClick={()=>curT.order.length>0&&setDisM(true)} style={{width:"100%",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:8,padding:"6px",color:T.textSub,fontSize:11,cursor:"pointer",marginBottom:8}}>İndirim Ekle</button>}
-<div style={{display:"flex",justifyContent:"space-between",fontSize:18,fontWeight:800,color:T.accentL,marginBottom:12,marginTop:4}}><span>Toplam</span><span>{fm(fin(curT),cur)}</span></div>
-<button onClick={()=>curT.order.length>0&&setPay(true)} disabled={curT.order.length===0} style={{width:"100%",padding:"13px",background:curT.order.length===0?T.bg3:T.accent,color:curT.order.length===0?T.textDim:"#fff",border:"none",borderRadius:10,fontWeight:800,fontSize:14,cursor:curT.order.length===0?"not-allowed":"pointer"}}>Ödeme Al</button>
+<div style={{display:"flex",justifyContent:"space-between",fontSize:16,fontWeight:800,color:T.accentL,marginBottom:10}}><span>Toplam</span><span>{fm(fin(curT),cur)}</span></div>
+<button onClick={()=>curT.order.length>0&&setPay(true)} disabled={curT.order.length===0} style={{width:"100%",padding:"15px",background:curT.order.length===0?T.bg3:T.accent,color:curT.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:16,cursor:curT.order.length===0?"not-allowed":"pointer"}}>Ödeme Al</button>
 </div>
 </div>
 </div>
@@ -688,7 +685,13 @@ const orderTotal=fin(curT);
 const itemCount=curT.order.reduce((s,i)=>s+i.qty,0);
 
 return(
-<div style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden"}}>
+<div style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden",position:"relative"}}>
+{/* Floating ödeme butonu */}
+{itemCount>0&&<button onClick={()=>setPay(true)} style={{position:"absolute",bottom:24,right:16,zIndex:100,background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:28,padding:"13px 20px",cursor:"pointer",display:"flex",alignItems:"center",gap:10,boxShadow:"0 8px 28px rgba(52,199,89,0.5)",color:"#fff",fontWeight:800,fontSize:15}}>
+<span style={{background:"rgba(255,255,255,0.2)",borderRadius:"50%",width:24,height:24,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,flexShrink:0}}>{itemCount}</span>
+{fm(orderTotal,cur)}
+<span style={{fontSize:16,opacity:0.9}}>↑</span>
+</button>}
 {/* Üst bar */}
 <div style={{padding:"10px 14px",borderBottom:"0.5px solid "+T.border,display:"flex",alignItems:"center",gap:10,flexShrink:0,background:T.bg}}>
 <button onClick={()=>{if(curT.order.length===0){setTbl(prev=>prev.filter(t2=>t2.id!==curT.id));}setV("tables");setSel(null);}} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
@@ -929,127 +932,116 @@ return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba
 </div>);}
 
 function PayM({table,disc,cur,fm,T,PO,openCari,onClose,onDone}){
+const[payMode,setPayMode]=useState("full");
+const[partialAmt,setPartialAmt]=useState("");
+const[selectedItems,setSelectedItems]=useState({});
 const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
-const da=disc?.amount||0;const fin=sub-da;
-const[mode,setMode]=useState("all");
-const[ip,setIp]=useState({});
-const[lines,setLines]=useState([{id:1,amount:"",pt:"cash"},{id:2,amount:"",pt:"card"}]);
-const[sp,setSp]=useState(null);
-const[cariName,setCariName]=useState(table.g||"");
+const discAmt=disc?disc.amount:0;
+const total=Math.max(0,sub-discAmt);
+const selectedTotal=Object.entries(selectedItems).reduce((s,[id,qty])=>{
+  const item=table.order.find(o=>o.id===id);
+  return s+(item?item.price*qty:0);
+},0);
+const toggleItem=(id,maxQty)=>setSelectedItems(p=>{
+  if(p[id]){const n={...p};delete n[id];return n;}
+  return{...p,[id]:maxQty};
+});
 
-const hasCreditAll=mode==="all"&&sp==="credit";
-const hasCreditItem=mode==="byitem"&&Object.values(ip).some(v=>v==="credit");
-const hasCreditAmt=mode==="byamount"&&lines.some(l=>l.pt==="credit");
-const needsName=hasCreditAll||hasCreditItem||hasCreditAmt;
-const nameOk=!needsName||cariName.trim().length>0;
+const doPay=(pt,amt,items)=>onDone([{pt,amount:amt,items:items||null}],!items&&amt>=total);
 
-const getSplits=()=>{
-if(!nameOk)return null;
-const cn=cariName.trim()||undefined;
-if(mode==="all"){if(!sp)return null;return{splits:[{items:[...table.order],sub,da,total:fin,pt:sp,cariName:cn}],closeTable:true};}
-if(mode==="byitem"){
-const g={};
-let anySelected=false;
-for(const item of table.order){
-const pt=ip[item.id];
-if(!pt)continue; // seçilmeyenler masada kalır
-anySelected=true;
-if(!g[pt])g[pt]={pt,items:[],sub:0};
-g[pt].items.push(item);
-g[pt].sub+=item.price*item.qty;
-}
-if(!anySelected)return null;
-const selectedSub=Object.values(g).reduce((s,x)=>s+x.sub,0);
-const allSelected=selectedSub>=sub-0.5;
-const splits=Object.values(g).map(x=>({...x,da:0,total:x.sub,cariName:x.pt==="credit"?cn:undefined}));
-return{splits,closeTable:allSelected};
-}
-if(mode==="byamount"){
-const fl=lines.filter(l=>parseFloat(l.amount)>0&&l.pt);
-if(!fl.length)return null;
-const t=fl.reduce((s,l)=>s+parseFloat(l.amount),0);
-if(t>fin+0.5)return null; // girilen tutar toplamı aşamaz
-const closeTable=Math.abs(t-fin)<=0.5;
-return{splits:fl.map(l=>({items:[...table.order],sub:parseFloat(l.amount),da:0,total:parseFloat(l.amount),pt:l.pt,cariName:l.pt==="credit"?cn:undefined})),closeTable};
-}
-return null;};
-const result=getSplits();
-const splits=result?.splits||null;
-const closeTable=result?.closeTable??true;
-const atot=lines.reduce((s,l)=>s+(parseFloat(l.amount)||0),0);
-const rem=fin-atot;
-return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"90vh",overflowY:"auto"}}>
-<div style={{padding:"18px 20px",borderBottom:"0.5px solid "+T.border,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontWeight:800,fontSize:17}}>Ödeme Al</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>{table.lbl} - <span style={{color:T.accentL,fontWeight:700}}>{fm(fin,cur)}</span></div></div>
-<button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:T.textSub}}>x</button>
+return(
+<div style={{background:"rgba(22,22,22,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,padding:"20px 20px 32px",maxHeight:"85vh",overflowY:"auto"}}>
+
+{/* Başlık */}
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+<div>
+<div style={{fontWeight:800,fontSize:18,color:T.text}}>Ödeme Al</div>
+<div style={{fontSize:12,color:T.textSub,marginTop:2}}>{table.lbl}{table.g?" — "+table.g:""}</div>
 </div>
-<div style={{display:"flex",borderBottom:"0.5px solid "+T.border}}>
-{[{k:"all",l:"Tümü"},{k:"byitem",l:"Ürün Bazlı"},{k:"byamount",l:"Tutar Bazlı"}].map(({k,l})=><button key={k} onClick={()=>setMode(k)} style={{flex:1,padding:"11px 0",border:"none",borderBottom:"2px solid "+(mode===k?T.accent:"transparent"),background:"transparent",color:mode===k?T.accentL:T.textSub,fontWeight:700,fontSize:12,cursor:"pointer"}}>{l}</button>)}
+<button onClick={onClose} style={{background:T.bg3,border:"none",borderRadius:20,width:32,height:32,cursor:"pointer",color:T.textSub,fontSize:18,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
 </div>
-<div style={{padding:20}}>
-{mode==="all"&&<>
-<div style={{display:"flex",gap:8,marginBottom:16}}>{PO.map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setSp(k)} style={{flex:1,padding:"11px 0",borderRadius:10,border:"2px solid "+(sp===k?bd:T.border),background:sp===k?bg:T.bg3,color:sp===k?c:T.textSub,fontWeight:700,fontSize:12,cursor:"pointer"}}>{l}</button>)}</div>
-{sp==="credit"&&<div style={{marginBottom:12}}>
-<label style={{display:"block",fontSize:11,color:"#AF52DE",fontWeight:600,marginBottom:5}}>Müşteri Adı (zorunlu)</label>
-<input autoFocus placeholder="Müşteri adı girin..." value={cariName} onChange={e=>setCariName(e.target.value)} style={{background:"rgba(175,82,222,0.1)",border:"2px solid "+(cariName.trim()?"rgba(175,82,222,0.3)":"#FF3B30"),borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:6}}/>
-{!cariName.trim()&&<div style={{fontSize:11,color:T.danger,marginBottom:6}}>Cari kayıt için musteri adi zorunludur</div>}
-{openCari.length>0&&<div>
-<div style={{fontSize:10,color:"#AF52DE",fontWeight:600,marginBottom:5,textTransform:"uppercase",letterSpacing:0.5}}>Mevcut Açık Cariler</div>
-<div style={{display:"flex",flexDirection:"column",gap:5}}>
-{openCari.map(oc=><button key={oc.id} onClick={()=>setCariName(oc.g)} style={{background:cariName===oc.g?"rgba(175,82,222,0.18)":T.bg3,border:"1px solid "+(cariName===oc.g?"rgba(175,82,222,0.3)":T.border),borderRadius:8,padding:"8px 12px",cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div><div style={{fontSize:12,fontWeight:700,color:"#AF52DE"}}>{oc.g}</div><div style={{fontSize:10,color:T.textSub,marginTop:1}}>{(oc.adisyonlar||[oc]).length} adisyon</div></div>
-<div style={{fontWeight:800,color:"#AF52DE",fontSize:13}}>{fm(oc.total,cur)}</div>
-</button>)}
-</div>
-</div>}
-</div>}
-{sp&&<div style={{background:T.bg3,borderRadius:10,padding:12,fontSize:13,color:T.textSub}}>
-{table.order.map(item=><div key={item.id} style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span>{item.name} x{item.qty}</span><span style={{color:T.accentL}}>{fm(item.price*item.qty,cur)}</span></div>)}
-{da>0&&<div style={{display:"flex",justifyContent:"space-between",color:T.danger,borderTop:"0.5px solid "+T.border,paddingTop:4,marginTop:4}}><span>İndirim</span><span>-{fm(da,cur)}</span></div>}
-<div style={{display:"flex",justifyContent:"space-between",fontWeight:800,color:T.accentL,borderTop:"0.5px solid "+T.border,paddingTop:4,marginTop:4,fontSize:15}}><span>Toplam</span><span>{fm(fin,cur)}</span></div>
-</div>}
-</>}
-{mode==="byitem"&&<>
-{table.order.map(item=>{const as=ip[item.id];return(<div key={item.id} style={{background:T.bg3,borderRadius:10,padding:"10px 12px",marginBottom:8}}>
-<div style={{fontWeight:600,fontSize:12,marginBottom:6}}>{item.name} x{item.qty} <span style={{color:T.accentL,float:"right"}}>{fm(item.price*item.qty,cur)}</span></div>
-<div style={{display:"flex",gap:5}}>{PO.map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setIp(p=>({...p,[item.id]:k}))} style={{flex:1,padding:"5px 0",borderRadius:7,border:"2px solid "+(as===k?bd:T.border),background:as===k?bg:"#1E1E1E",color:as===k?c:T.textSub,fontWeight:700,fontSize:11,cursor:"pointer"}}>{l}</button>)}</div>
-</div>);})}
-{hasCreditItem&&<div style={{marginTop:8}}>
-<label style={{display:"block",fontSize:11,color:"#AF52DE",fontWeight:600,marginBottom:5}}>Müşteri Adı (zorunlu)</label>
-<input placeholder="Müşteri adı girin..." value={cariName} onChange={e=>setCariName(e.target.value)} style={{background:"rgba(175,82,222,0.1)",border:"2px solid "+(cariName.trim()?"rgba(175,82,222,0.3)":"#FF3B30"),borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:6}}/>
-{!cariName.trim()&&<div style={{fontSize:11,color:T.danger,marginBottom:6}}>Cari kayıt için musteri adi zorunludur</div>}
-{openCari.length>0&&<div style={{display:"flex",flexDirection:"column",gap:5}}>
-{openCari.map(oc=><button key={oc.id} onClick={()=>setCariName(oc.g)} style={{background:cariName===oc.g?"rgba(175,82,222,0.18)":T.bg3,border:"1px solid "+(cariName===oc.g?"rgba(175,82,222,0.3)":T.border),borderRadius:8,padding:"7px 12px",cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:12,fontWeight:700,color:"#AF52DE"}}>{oc.g}</span><span style={{fontWeight:800,color:"#AF52DE",fontSize:12}}>{fm(oc.total,cur)}</span></button>)}
-</div>}
-</div>}
-</>}
-{mode==="byamount"&&<>
-<div style={{fontSize:12,color:T.textSub,marginBottom:12}}>Toplam <strong style={{color:T.accentL}}>{fm(fin,cur)}</strong> olmali.</div>
-{lines.map(line=><div key={line.id} style={{display:"flex",gap:8,marginBottom:10,alignItems:"center"}}>
-<input type="number" placeholder="Tutar" value={line.amount} onChange={e=>setLines(prev=>prev.map(l=>l.id===line.id?{...l,amount:e.target.value}:l))} style={{background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:8,padding:"8px 10px",color:T.text,fontSize:13,outline:"none",flex:1}}/>
-<div style={{display:"flex",gap:4}}>{PO.map(({k,l,c,bg,bd})=><button key={k} onClick={()=>setLines(prev=>prev.map(li=>li.id===line.id?{...li,pt:k}:li))} style={{padding:"7px 9px",borderRadius:7,border:"2px solid "+(line.pt===k?bd:T.border),background:line.pt===k?bg:"#1E1E1E",color:line.pt===k?c:T.textSub,fontWeight:700,fontSize:11,cursor:"pointer"}}>{l}</button>)}</div>
-{lines.length>1&&<button onClick={()=>setLines(prev=>prev.filter(l=>l.id!==line.id))} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",padding:4,fontSize:13}}>x</button>}
-</div>)}
-<button onClick={()=>setLines(prev=>[...prev,{id:Date.now(),amount:"",pt:"cash"}])} style={{width:"100%",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:8,padding:"7px",color:T.textSub,fontSize:12,cursor:"pointer",marginBottom:10}}>+ Satır Ekle</button>
-<div style={{background:T.bg3,borderRadius:8,padding:"9px 12px",display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:8}}><span style={{color:T.textSub}}>Kalan</span><span style={{fontWeight:800,color:Math.abs(rem)<0.5?T.success:T.danger}}>{fm(rem,cur)}</span></div>
-{hasCreditAmt&&<div style={{marginTop:8}}>
-<label style={{display:"block",fontSize:11,color:"#AF52DE",fontWeight:600,marginBottom:5}}>Müşteri Adı (zorunlu)</label>
-<input placeholder="Müşteri adı girin..." value={cariName} onChange={e=>setCariName(e.target.value)} style={{background:"rgba(175,82,222,0.1)",border:"2px solid "+(cariName.trim()?"rgba(175,82,222,0.3)":"#FF3B30"),borderRadius:8,padding:"9px 12px",color:T.text,fontSize:13,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:6}}/>
-{!cariName.trim()&&<div style={{fontSize:11,color:T.danger,marginBottom:6}}>Cari kayıt için musteri adi zorunludur</div>}
-{openCari.length>0&&<div style={{display:"flex",flexDirection:"column",gap:5}}>
-{openCari.map(oc=><button key={oc.id} onClick={()=>setCariName(oc.g)} style={{background:cariName===oc.g?"rgba(175,82,222,0.18)":T.bg3,border:"1px solid "+(cariName===oc.g?"rgba(175,82,222,0.3)":T.border),borderRadius:8,padding:"7px 12px",cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:12,fontWeight:700,color:"#AF52DE"}}>{oc.g}</span><span style={{fontWeight:800,color:"#AF52DE",fontSize:12}}>{fm(oc.total,cur)}</span></button>)}
-</div>}
-</div>}
-</>}
-<button onClick={()=>splits&&onDone(splits,closeTable)} disabled={!splits} style={{width:"100%",marginTop:18,padding:"14px",background:splits?T.accent:T.bg3,color:splits?"#fff":T.textDim,border:"none",borderRadius:10,fontWeight:800,fontSize:15,cursor:splits?"pointer":"not-allowed"}}>
-{splits
-  ?(closeTable
-    ?"Hesabı Kapat — "+fm(fin,cur)
-    :"Kısmi Ödeme Al")
-  :"Ödeme yöntemi seçin"}
+
+{/* Mod seçici */}
+<div style={{display:"flex",gap:8,marginBottom:16}}>
+{[{k:"full",l:"Tümü"},{k:"partial",l:"Kısmi"},{k:"items",l:"Ürün Seç"}].map(m=>(
+<button key={m.k} onClick={()=>{setPayMode(m.k);setSelectedItems({});setPartialAmt("");}}
+style={{flex:1,padding:"9px 0",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,background:payMode===m.k?T.accent:T.bg3,color:payMode===m.k?"#fff":T.textSub,transition:"all 0.15s"}}>
+{m.l}
 </button>
+))}
 </div>
-</div>);}
+
+{/* TAM ÖDEME */}
+{payMode==="full"&&(
+<div>
+<div style={{display:"flex",justifyContent:"space-between",padding:"14px 16px",background:T.bg3,borderRadius:12,marginBottom:16}}>
+<span style={{color:T.textSub,fontSize:14}}>Toplam</span>
+<span style={{fontWeight:800,fontSize:22,color:T.accentL}}>{fm(total,cur)}</span>
+</div>
+{openCari.length>0&&<div style={{marginBottom:12}}>
+<div style={{fontSize:11,color:T.textSub,marginBottom:6,fontWeight:600}}>CARİ HESABA EKLE</div>
+<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{openCari.map(c=><button key={c.id} onClick={()=>doPay("credit",total)} style={{padding:"8px 14px",background:"rgba(175,82,222,0.1)",border:"1px solid rgba(175,82,222,0.3)",borderRadius:8,color:"#AF52DE",fontSize:12,fontWeight:600,cursor:"pointer"}}>{c.g||"İsimsiz"}</button>)}
+</div>
+</div>}
+<div style={{display:"flex",gap:10}}>
+<button onClick={()=>doPay("cash",total)} style={{flex:1,padding:15,background:"#FF9500",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer"}}>💵 Nakit</button>
+<button onClick={()=>doPay("card",total)} style={{flex:1,padding:15,background:"#007AFF",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer"}}>💳 Kart</button>
+</div>
+</div>
+)}
+
+{/* KISMİ TUTAR */}
+{payMode==="partial"&&(
+<div>
+<div style={{fontSize:12,color:T.textSub,marginBottom:8}}>Ne kadar alınacak?</div>
+<input type="number" placeholder="Tutar gir..." value={partialAmt} onChange={e=>setPartialAmt(e.target.value)}
+style={{width:"100%",background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:12,padding:"14px 16px",color:T.text,fontSize:18,fontWeight:700,outline:"none",boxSizing:"border-box",marginBottom:12}}/>
+{partialAmt&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:T.textSub,marginBottom:14,padding:"10px 14px",background:T.bg3,borderRadius:10}}>
+<span>Kalan</span>
+<span style={{color:T.danger,fontWeight:700}}>{fm(Math.max(0,total-parseFloat(partialAmt||0)),cur)}</span>
+</div>}
+<div style={{display:"flex",gap:10}}>
+<button disabled={!partialAmt} onClick={()=>doPay("cash",parseFloat(partialAmt))} style={{flex:1,padding:15,background:partialAmt?"#FF9500":T.bg3,border:"none",borderRadius:12,color:partialAmt?"#fff":T.textDim,fontWeight:800,fontSize:15,cursor:partialAmt?"pointer":"not-allowed"}}>💵 Nakit</button>
+<button disabled={!partialAmt} onClick={()=>doPay("card",parseFloat(partialAmt))} style={{flex:1,padding:15,background:partialAmt?"#007AFF":T.bg3,border:"none",borderRadius:12,color:partialAmt?"#fff":T.textDim,fontWeight:800,fontSize:15,cursor:partialAmt?"pointer":"not-allowed"}}>💳 Kart</button>
+</div>
+</div>
+)}
+
+{/* ÜRÜN SEÇ */}
+{payMode==="items"&&(
+<div>
+<div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Hangi ürünler ödenecek?</div>
+{table.order.map(item=>{const sel=!!selectedItems[item.id];return(
+<button key={item.id} onClick={()=>toggleItem(item.id,item.qty)}
+style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",background:sel?"rgba(52,199,89,0.12)":T.bg3,border:`0.5px solid ${sel?"rgba(52,199,89,0.4)":T.border}`,borderRadius:12,marginBottom:8,cursor:"pointer",color:T.text}}>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<div style={{width:22,height:22,borderRadius:6,border:`2px solid ${sel?T.accent:"rgba(255,255,255,0.2)"}`,background:sel?T.accent:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+{sel&&<span style={{color:"#fff",fontSize:12}}>✓</span>}
+</div>
+<div style={{textAlign:"left"}}>
+<div style={{fontSize:13,fontWeight:600,color:T.text}}>{item.name}</div>
+<div style={{fontSize:11,color:T.textSub}}>×{item.qty}</div>
+</div>
+</div>
+<span style={{fontWeight:700,fontSize:14,color:sel?T.accentL:T.textSub}}>{fm(item.price*item.qty,cur)}</span>
+</button>
+);})}
+{selectedTotal>0&&<div>
+<div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:T.bg3,borderRadius:10,marginBottom:12,marginTop:4}}>
+<span style={{color:T.textSub,fontSize:13}}>Seçilen toplam</span>
+<span style={{fontWeight:800,fontSize:18,color:T.accentL}}>{fm(selectedTotal,cur)}</span>
+</div>
+<div style={{display:"flex",gap:10}}>
+<button onClick={()=>doPay("cash",selectedTotal,Object.keys(selectedItems))} style={{flex:1,padding:15,background:"#FF9500",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer"}}>💵 Nakit</button>
+<button onClick={()=>doPay("card",selectedTotal,Object.keys(selectedItems))} style={{flex:1,padding:15,background:"#007AFF",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer"}}>💳 Kart</button>
+</div>
+</div>}
+</div>
+)}
+
+</div>
+);}
 
 function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari,T=DARK,tables,setTbl,uid}){
 const CC=["#34C759","#34C759","#FF9500","#007AFF","#AF52DE","#FF3B30","#FF9500","#248A3D"];
