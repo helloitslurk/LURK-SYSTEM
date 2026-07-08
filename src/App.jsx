@@ -616,7 +616,7 @@ BİLDİRİMLER
 <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 60px)",overflow:"hidden",position:"relative"}}>
 {gM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>doOpen(gM,"")} T={T}/></div>}
 {disM&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><DiscM total={sub(curT)} cur={cur} fm={fm} T={T} onApply={d=>{setDisc(d);setDisM(false);}} onClose={()=>setDisM(false)}/></div>}
-{pay&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}><PayM table={curT} disc={disc} cur={cur} fm={fm} T={T} PO={PO} openCari={cari.filter(c=>!c.settled)} onClose={()=>setPay(false)} onDone={(splits,closeTable)=>closeTbl(splits,closeTable)}/></div>}
+{pay&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}><PayM table={curT} disc={disc} cur={cur} fm={fm} T={T} PO={PO} openCari={cari.filter(c=>!c.settled)} onClose={()=>setPay(false)} onDone={(splits,closeTable)=>closeTbl(splits,closeTable)} tables={tables} setTbl={setTbl} setSel={setSel} setV={setV} uid={uid} msg={msg}/></div>}
 {cancelConfirm&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{background:T.bg2,backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",border:"0.5px solid "+T.border,borderRadius:20,padding:28,width:340,maxWidth:"90vw",boxShadow:"0 24px 48px rgba(0,0,0,0.4)"}}><div style={{fontWeight:800,fontSize:17,color:T.danger,marginBottom:10}}>Adisyonu İptal Et</div><p style={{fontSize:13,color:T.textSub,margin:"0 0 20px"}}>{curT.lbl} masasındaki tüm ürünler silinecek ve masa boşalacak. Bu işlem geri alınamaz.</p><div style={{display:"flex",gap:10}}><button onClick={()=>setCancelConfirm(false)} style={{...sb(T.bg3),flex:1,color:T.text}}>Vazgeç</button><button onClick={()=>{setCancelConfirm(false);cancelOrder(curT.id);}} style={{...sb(T.danger),flex:1}}>Evet, İptal Et</button></div></div></div>}
 
 {isMobile?(
@@ -925,23 +925,78 @@ return(<div style={{background:T.isDark?"#1a1a1a":T.bg2,border:"0.5px solid rgba
 </div>
 </div>);}
 
-function PayM({table,disc,cur,fm,T,PO,openCari,onClose,onDone}){
+function PayM({table,disc,cur,fm,T,PO,openCari,onClose,onDone,tables,setTbl,setSel,setV,uid,msg}){
 const[payMode,setPayMode]=useState("full");
 const[partialAmt,setPartialAmt]=useState("");
 const[selectedItems,setSelectedItems]=useState({});
+const[moveMode,setMoveMode]=useState(false);
+
 const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
 const discAmt=disc?disc.amount:0;
 const total=Math.max(0,sub-discAmt);
+
+// Seçili ürünlerin toplam tutarı
 const selectedTotal=Object.entries(selectedItems).reduce((s,[id,qty])=>{
   const item=table.order.find(o=>o.id===id);
   return s+(item?item.price*qty:0);
 },0);
+
 const toggleItem=(id,maxQty)=>setSelectedItems(p=>{
   if(p[id]){const n={...p};delete n[id];return n;}
   return{...p,[id]:maxQty};
 });
 
-const doPay=(pt,amt,items)=>onDone([{pt,amount:amt,items:items||null}],!items&&amt>=total);
+// Ürünleri başka masaya taşı
+const moveItemsToTable=(targetId)=>{
+  const itemsToMove=table.order.filter(o=>selectedItems[o.id]);
+  if(itemsToMove.length===0)return;
+  // Hedef masaya ekle
+  setTbl(prev=>prev.map(t=>{
+    if(t.id!==targetId)return t;
+    const newOrder=[...t.order];
+    itemsToMove.forEach(item=>{
+      const ex=newOrder.findIndex(o=>o.id===item.id);
+      if(ex>=0)newOrder[ex]={...newOrder[ex],qty:newOrder[ex].qty+item.qty};
+      else newOrder.push({...item});
+    });
+    return{...t,order:newOrder,s:"o",oa:t.oa||new Date().toISOString()};
+  }));
+  // Kaynak masadan çıkar
+  setTbl(prev=>prev.map(t=>{
+    if(t.id!==table.id)return t;
+    const remaining=t.order.filter(o=>!selectedItems[o.id]);
+    if(remaining.length===0)return null;
+    return{...t,order:remaining};
+  }).filter(Boolean));
+  msg("Ürünler taşındı");
+  onClose();
+};
+
+// Yeni masa aç ve taşı
+const moveToNewTable=()=>{
+  const itemsToMove=table.order.filter(o=>selectedItems[o.id]);
+  if(itemsToMove.length===0)return;
+  const newId=(tables.length>0?Math.max(...tables.map(t=>t.id)):0)+1;
+  const newTable={id:newId,lbl:"Masa "+newId,s:"o",order:itemsToMove,oa:new Date().toISOString(),g:""};
+  setTbl(prev=>{
+    const remaining=prev.map(t=>{
+      if(t.id!==table.id)return t;
+      const rem=t.order.filter(o=>!selectedItems[o.id]);
+      if(rem.length===0)return null;
+      return{...t,order:rem};
+    }).filter(Boolean);
+    return[...remaining,newTable];
+  });
+  msg("Yeni masaya taşındı");
+  onClose();
+};
+
+const doPay=(pt,amt)=>{
+  const items=payMode==="items"?Object.keys(selectedItems):null;
+  onDone([{pt,amount:amt,items}],payMode==="full"||amt>=total);
+};
+
+const otherTables=(tables||[]).filter(t=>t.id!==table.id&&t.s==="o");
 
 return(
 <div style={{background:"rgba(22,22,22,0.98)",backdropFilter:"blur(40px)",WebkitBackdropFilter:"blur(40px)",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,padding:"20px 20px 32px",maxHeight:"85vh",overflowY:"auto"}}>
@@ -950,16 +1005,16 @@ return(
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
 <div>
 <div style={{fontWeight:800,fontSize:18,color:T.text}}>Ödeme Al</div>
-<div style={{fontSize:12,color:T.textSub,marginTop:2}}>{table.lbl}{table.g?" — "+table.g:""}</div>
+<div style={{fontSize:12,color:T.textSub,marginTop:2}}>{table.lbl}{table.g?" — "+table.g:""} · {fm(total,cur)}</div>
 </div>
 <button onClick={onClose} style={{background:T.bg3,border:"none",borderRadius:20,width:32,height:32,cursor:"pointer",color:T.textSub,fontSize:18,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
 </div>
 
 {/* Mod seçici */}
-<div style={{display:"flex",gap:8,marginBottom:16}}>
-{[{k:"full",l:"Tümü"},{k:"partial",l:"Kısmi"},{k:"items",l:"Ürün Seç"}].map(m=>(
-<button key={m.k} onClick={()=>{setPayMode(m.k);setSelectedItems({});setPartialAmt("");}}
-style={{flex:1,padding:"9px 0",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:12,background:payMode===m.k?T.accent:T.bg3,color:payMode===m.k?"#fff":T.textSub,transition:"all 0.15s"}}>
+<div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+{[{k:"full",l:"Tümünü Öde"},{k:"partial",l:"Kısmi Tutar"},{k:"items",l:"Ürün Seç"}].map(m=>(
+<button key={m.k} onClick={()=>{setPayMode(m.k);setSelectedItems({});setPartialAmt("");setMoveMode(false);}}
+style={{flex:1,padding:"9px 6px",borderRadius:10,border:"none",cursor:"pointer",fontWeight:700,fontSize:11,background:payMode===m.k?T.accent:T.bg3,color:payMode===m.k?"#fff":T.textSub,transition:"all 0.15s",minWidth:80}}>
 {m.l}
 </button>
 ))}
@@ -973,7 +1028,7 @@ style={{flex:1,padding:"9px 0",borderRadius:10,border:"none",cursor:"pointer",fo
 <span style={{fontWeight:800,fontSize:22,color:T.accentL}}>{fm(total,cur)}</span>
 </div>
 {openCari.length>0&&<div style={{marginBottom:12}}>
-<div style={{fontSize:11,color:T.textSub,marginBottom:6,fontWeight:600}}>CARİ HESABA EKLE</div>
+<div style={{fontSize:11,color:T.textSub,marginBottom:6,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>Cariye Ekle</div>
 <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
 {openCari.map(c=><button key={c.id} onClick={()=>doPay("credit",total)} style={{padding:"8px 14px",background:"rgba(175,82,222,0.1)",border:"1px solid rgba(175,82,222,0.3)",borderRadius:8,color:"#AF52DE",fontSize:12,fontWeight:600,cursor:"pointer"}}>{c.g||"İsimsiz"}</button>)}
 </div>
@@ -990,7 +1045,7 @@ style={{flex:1,padding:"9px 0",borderRadius:10,border:"none",cursor:"pointer",fo
 <div>
 <div style={{fontSize:12,color:T.textSub,marginBottom:8}}>Ne kadar alınacak?</div>
 <input type="number" placeholder="Tutar gir..." value={partialAmt} onChange={e=>setPartialAmt(e.target.value)}
-style={{width:"100%",background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:12,padding:"14px 16px",color:T.text,fontSize:18,fontWeight:700,outline:"none",boxSizing:"border-box",marginBottom:12}}/>
+style={{width:"100%",background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:12,padding:"14px 16px",color:T.text,fontSize:18,fontWeight:700,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
 {partialAmt&&<div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:T.textSub,marginBottom:14,padding:"10px 14px",background:T.bg3,borderRadius:10}}>
 <span>Kalan</span>
 <span style={{color:T.danger,fontWeight:700}}>{fm(Math.max(0,total-parseFloat(partialAmt||0)),cur)}</span>
@@ -1005,37 +1060,62 @@ style={{width:"100%",background:T.bg3,border:"0.5px solid "+T.border2,borderRadi
 {/* ÜRÜN SEÇ */}
 {payMode==="items"&&(
 <div>
-<div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Hangi ürünler ödenecek?</div>
+<div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Ürün seç → öde veya masaya taşı</div>
 {table.order.map(item=>{const sel=!!selectedItems[item.id];return(
 <button key={item.id} onClick={()=>toggleItem(item.id,item.qty)}
-style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",background:sel?"rgba(52,199,89,0.12)":T.bg3,border:`0.5px solid ${sel?"rgba(52,199,89,0.4)":T.border}`,borderRadius:12,marginBottom:8,cursor:"pointer",color:T.text}}>
+style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 14px",background:sel?"rgba(52,199,89,0.12)":T.bg3,border:`0.5px solid ${sel?"rgba(52,199,89,0.4)":T.border}`,borderRadius:12,marginBottom:8,cursor:"pointer",color:T.text,textAlign:"left"}}>
 <div style={{display:"flex",alignItems:"center",gap:10}}>
 <div style={{width:22,height:22,borderRadius:6,border:`2px solid ${sel?T.accent:"rgba(255,255,255,0.2)"}`,background:sel?T.accent:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
 {sel&&<span style={{color:"#fff",fontSize:12}}>✓</span>}
 </div>
-<div style={{textAlign:"left"}}>
+<div>
 <div style={{fontSize:13,fontWeight:600,color:T.text}}>{item.name}</div>
-<div style={{fontSize:11,color:T.textSub}}>×{item.qty}</div>
+<div style={{fontSize:11,color:T.textSub}}>×{item.qty} · {fm(item.price,cur)} adet</div>
 </div>
 </div>
 <span style={{fontWeight:700,fontSize:14,color:sel?T.accentL:T.textSub}}>{fm(item.price*item.qty,cur)}</span>
 </button>
 );})}
-{selectedTotal>0&&<div>
-<div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:T.bg3,borderRadius:10,marginBottom:12,marginTop:4}}>
+
+{Object.keys(selectedItems).length>0&&(
+<div style={{marginTop:4}}>
+<div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:T.bg3,borderRadius:10,marginBottom:12}}>
 <span style={{color:T.textSub,fontSize:13}}>Seçilen toplam</span>
 <span style={{fontWeight:800,fontSize:18,color:T.accentL}}>{fm(selectedTotal,cur)}</span>
 </div>
-<div style={{display:"flex",gap:10}}>
-<button onClick={()=>doPay("cash",selectedTotal,Object.keys(selectedItems))} style={{flex:1,padding:15,background:"#FF9500",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer"}}>💵 Nakit</button>
-<button onClick={()=>doPay("card",selectedTotal,Object.keys(selectedItems))} style={{flex:1,padding:15,background:"#007AFF",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer"}}>💳 Kart</button>
-</div>
+
+{/* Ödeme butonları */}
+{!moveMode&&<div style={{display:"flex",gap:8,marginBottom:10}}>
+<button onClick={()=>doPay("cash",selectedTotal)} style={{flex:1,padding:13,background:"#FF9500",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer"}}>💵 Nakit</button>
+<button onClick={()=>doPay("card",selectedTotal)} style={{flex:1,padding:13,background:"#007AFF",border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer"}}>💳 Kart</button>
 </div>}
+
+{/* Masaya taşı butonu */}
+<button onClick={()=>setMoveMode(p=>!p)} style={{width:"100%",padding:"11px",background:moveMode?"rgba(255,149,0,0.15)":T.bg3,border:`1px solid ${moveMode?"rgba(255,149,0,0.4)":T.border}`,borderRadius:12,color:moveMode?"#FF9500":T.textSub,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:moveMode?10:0}}>
+🔀 {moveMode?"Masa seç:":"Masaya Taşı"}
+</button>
+
+{moveMode&&<div>
+<button onClick={moveToNewTable} style={{width:"100%",padding:"11px",background:"rgba(52,199,89,0.1)",border:"1px solid rgba(52,199,89,0.3)",borderRadius:12,color:T.accent,fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:8}}>
+＋ Yeni Masa Aç
+</button>
+{otherTables.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{otherTables.map(t=>(
+<button key={t.id} onClick={()=>moveItemsToTable(t.id)} style={{padding:"9px 14px",background:T.bg3,border:"0.5px solid "+T.border,borderRadius:10,color:T.text,fontWeight:600,fontSize:12,cursor:"pointer"}}>
+{t.lbl}{t.g?" — "+t.g:""}
+</button>
+))}
+</div>}
+</div>}
+
+</div>
+)}
 </div>
 )}
 
 </div>
-);}
+);
+}
 
 function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari,T=DARK,tables,setTbl,uid}){
 const CC=["#34C759","#34C759","#FF9500","#007AFF","#AF52DE","#FF3B30","#FF9500","#248A3D"];
