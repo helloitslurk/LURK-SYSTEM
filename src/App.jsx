@@ -444,12 +444,16 @@ const creditSplits=splits.filter(sp=>sp.pt==="credit");
 const nonCreditSplits=splits.filter(sp=>sp.pt!=="credit");
 nonCreditSplits.forEach(sp=>{
 const spGuest=g;
-setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:sp.items,sub:sp.sub,da:sp.da||0,total:sp.total,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
+const spTotal=sp.total||sp.amount||0;
+const spSub=sp.sub||spTotal;
+setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:sp.items,sub:spSub,da:sp.da||0,total:spTotal,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
 });
 if(creditSplits.length>0){
 creditSplits.forEach(sp=>{
 const spGuest=sp.cariName||g;
-setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:sp.items,sub:sp.sub,da:sp.da||0,total:sp.total,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
+const spTotal=sp.total||sp.amount||0;
+const spSub=sp.sub||spTotal;
+setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:sp.items,sub:spSub,da:sp.da||0,total:spTotal,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
 });
 setCari(prev=>{
 let next=[...prev];
