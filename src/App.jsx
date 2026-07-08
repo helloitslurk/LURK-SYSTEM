@@ -913,9 +913,13 @@ return(
 
 {/* Son 7 Gün */}
 <div style={{fontWeight:600,fontSize:15,marginBottom:10,color:T.text}}>Son 7 Gün</div>
-<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"20px 20px 16px",marginBottom:16}}>
-<div style={{display:"flex",gap:6,alignItems:"flex-end",height:90}}>
-{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*90,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}><div style={{fontSize:9,color:T.textSub,textAlign:"center",height:20,display:"flex",alignItems:"flex-end",justifyContent:"center",whiteSpace:"nowrap"}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div><div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/><div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:4}}>{d.lbl}</div></div>);})}
+<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:"20px 16px 14px",marginBottom:16}}>
+<div style={{display:"flex",gap:6,alignItems:"flex-end",height:120}}>
+{l7.map((d,i)=>{const h=d.inc>0?Math.max((d.inc/mx)*80,6):2;const isT=d.date===tod();return(<div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:0}}>
+<div style={{fontSize:9,color:T.textSub,textAlign:"center",height:26,display:"flex",alignItems:"flex-end",justifyContent:"center",whiteSpace:"nowrap",paddingBottom:4}}>{d.inc>0?fm(d.inc,cur).replace(cur,"").trim():""}</div>
+<div style={{width:"100%",height:h,background:isT?"#34C759":"rgba(52,199,89,0.2)",borderRadius:"4px 4px 0 0"}}/>
+<div style={{fontSize:10,color:isT?"#34C759":T.textSub,fontWeight:isT?700:400,marginTop:5}}>{d.lbl}</div>
+</div>);})}
 </div>
 </div>
 
