@@ -740,8 +740,8 @@ Siparişi Gönder ✓
 </div>}
 
 {/* Sepet tab */}
-{activeTab==="cart"&&<div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
-<div style={{flex:1,padding:"10px 14px"}}>
+{activeTab==="cart"&&<div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+<div style={{flex:1,overflowY:"auto",padding:"10px 14px 0"}}>
 {curT.order.length===0
 ?<div style={{color:T.textDim,textAlign:"center",paddingTop:40,fontSize:13}}>Henüz ürün eklenmedi</div>
 :curT.order.map(item=>(
@@ -758,8 +758,8 @@ Siparişi Gönder ✓
 </div>
 ))}
 </div>
-{/* Alt özet + ödeme */}
-<div style={{padding:"12px 14px",borderTop:"0.5px solid "+T.border,background:T.bg,flexShrink:0}}>
+{/* Alt özet + ödeme — her zaman altta */}
+<div style={{flexShrink:0,padding:"12px 14px",borderTop:"0.5px solid "+T.border,background:T.bg}}>
 {disc
 ?<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:6}}><span>İndirim <button onClick={()=>setDisc(null)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:13}}>×</button></span><span>-{fm(disc.amount,cur)}</span></div>
 :<button onClick={()=>curT.order.length>0&&setDisM(true)} style={{width:"100%",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:8,padding:"7px",color:T.textSub,fontSize:12,cursor:"pointer",marginBottom:8}}>İndirim Ekle</button>}
