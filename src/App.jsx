@@ -468,22 +468,30 @@ return next;
 }
 // Kısmi ödeme: ürün bazlı ise ödenen ürünleri masadan çıkar
 if(!closeTable){
-const paidItemNames=splits.flatMap(sp=>sp.items.map(i=>i.name+"_"+i.qty));
 const paidMap={};
-splits.flatMap(sp=>sp.items).forEach(it=>{
-if(!paidMap[it.name])paidMap[it.name]=0;
-paidMap[it.name]+=it.qty;
+splits.forEach(sp=>{
+if(sp.items&&sp.items.length>0){
+// items array of ids or name strings
+t.order.forEach(o=>{
+if(sp.items.includes(o.id)||sp.items.includes(o.name)){
+if(!paidMap[o.id])paidMap[o.id]=0;
+paidMap[o.id]+=o.qty;
+}
 });
+}
+});
+if(Object.keys(paidMap).length>0){
 setTbl(prev=>prev.map(t2=>{
 if(t2.id!==sel)return t2;
 const remaining=t2.order.map(o=>{
-const paid=paidMap[o.name]||0;
+const paid=paidMap[o.id]||0;
 if(paid>=o.qty)return null;
 return{...o,qty:o.qty-paid};
 }).filter(Boolean);
 if(remaining.length===0)return null;
 return{...t2,order:remaining};
 }).filter(Boolean));
+}
 setPay(false);
 msg("Kısmi ödeme alındı");
 return;
@@ -496,7 +504,8 @@ const saveMI=()=>{if(!mF.name||!mF.price||!mF.cat)return;if(mEid){setMenü(prev=
 const saveCfg=()=>{setCfg(cfgF);msg("Kaydedildi");};
 
 const todO=orders.filter(o=>o.date===tod());
-const todI=todO.reduce((s,o)=>s+o.total,0)+(tables||[]).reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0);
+const todI=todO.reduce((s,o)=>s+o.total,0);
+const todOpenTables=(tables||[]).reduce((s,t)=>s+t.order.reduce((a,o)=>a+o.price*o.qty,0),0);
 const aMenü=menu.filter(m=>m.on);
 const oCats=Array.from(new Set(aMenü.map(m=>m.cat)));
 const fMenü=aMenü.filter(m=>m.cat===cat);
@@ -576,7 +585,7 @@ BİLDİRİMLER
 {gM&&view!=="order"&&<div style={{position:"fixed",inset:0,background:"rgba(28,28,26,0.5)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}><GuestM req={cfg.requireName} onOk={g=>doOpen(gM,g)} onSkip={()=>{setGM(null);setSel(null);}} T={T}/></div>}
 
 {view==="lurk"&&<LurkV setV={setV} T={T} logs={logs} orders={orders} cfg={cfg} cari={cari} installments={installments} unlocked={unlocked} fm={fm} fd={fd} cur={cur} day={day} ft={ft} tod={tod} isMobile={isMobile} badges={achievements}/>}
-{view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} setExp={setExp} ecats={ecats} todO={todO} todI={todI} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} uid={uid} msg={msg} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile} T={T}/>}
+{view==="home"&&<HomeV tables={tables} orders={orders} exp={exp} setExp={setExp} ecats={ecats} todO={todO} todI={todI} todOpenTables={todOpenTables} day={day} cari={cari} cfg={cfg} cur={cur} fm={fm} ft={ft} fd={fd} tod={tod} uid={uid} msg={msg} setV={setV} openDay={openDay} closeDay={closeDay} dayCon={dayCon} setDayCon={setDayCon} isMobile={isMobile} T={T}/>}
 
 {view==="tables"&&(
 <div style={{padding:isMobile?"16px":"24px",maxWidth:1100,margin:"0 auto"}}>
@@ -775,7 +784,7 @@ Siparişi Gönder ✓
 </div>
 );}
 
-function HomeV({tables,orders,exp,setExp,ecats,todO,todI,day,cari,cfg,cur,fm,ft,fd,tod,uid,msg,setV,openDay,closeDay,dayCon,setDayCon,isMobile,T=DARK}){
+function HomeV({tables,orders,exp,setExp,ecats,todO,todI,todOpenTables,day,cari,cfg,cur,fm,ft,fd,tod,uid,msg,setV,openDay,closeDay,dayCon,setDayCon,isMobile,T=DARK}){
 const now=new Date();
 const cash=todO.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const[showExpForm,setShowExpForm]=useState(false);
@@ -842,8 +851,8 @@ return(
 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(auto-fill,minmax(150px,1fr))",gap:isMobile?8:10,marginBottom:isMobile?16:24}}>
 <div style={{background:T.isDark?"rgba(255,255,255,0.05)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,borderRadius:14,padding:"14px 16px",gridColumn:"span 2"}}>
 <div style={{fontSize:10,color:T.textSub,marginBottom:5,textTransform:"uppercase",letterSpacing:0.5,fontWeight:600}}>Bugün Toplam Ciro</div>
-<div style={{fontSize:26,fontWeight:800,letterSpacing:-0.5,color:T.text}}>{fm(todI,cur)}</div>
-<div style={{fontSize:11,color:T.textDim,marginTop:4}}>{todO.length} adisyon</div>
+<div style={{fontSize:26,fontWeight:800,letterSpacing:-0.5,color:T.text}}>{fm(todI+(todOpenTables||0),cur)}</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:4}}>{todO.length} kapanan adisyon{(todOpenTables||0)>0?` · ${fm(todOpenTables,cur)} açık masalarda`:""}</div>
 </div>
 <div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Nakit</div><div style={{fontSize:17,fontWeight:700,color:"#34C759"}}>{fm(cash,cur)}</div>{todI>0&&<div style={{fontSize:10,color:T.textDim,marginTop:2}}>%{Math.round(cash/todI*100)}</div>}</div>
 <div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}><div style={{fontSize:10,color:T.textSub,marginBottom:4,fontWeight:600}}>Kart</div><div style={{fontSize:17,fontWeight:700,color:"#007AFF"}}>{fm(card,cur)}</div>{todI>0&&<div style={{fontSize:10,color:T.textDim,marginTop:2}}>%{Math.round(card/todI*100)}</div>}</div>
@@ -992,8 +1001,10 @@ const moveToNewTable=()=>{
 };
 
 const doPay=(pt,amt)=>{
-  const items=payMode==="items"?Object.keys(selectedItems):null;
-  onDone([{pt,amount:amt,items}],payMode==="full"||amt>=total);
+  const itemIds=payMode==="items"?Object.keys(selectedItems):null;
+  const isPartial=payMode==="partial"||(payMode==="items"&&itemIds&&itemIds.length<table.order.length);
+  const sub2=amt;
+  onDone([{pt,amount:amt,total:amt,sub:sub2,da:0,items:itemIds}],!isPartial);
 };
 
 const otherTables=(tables||[]).filter(t=>t.id!==table.id&&t.s==="o");
