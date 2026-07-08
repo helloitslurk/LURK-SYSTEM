@@ -919,20 +919,6 @@ return(
 </div>
 </div>
 
-{/* Açık Masalar */}
-{openT.length>0&&<div style={{background:T.isDark?"#1a1a1a":T.bg2,borderRadius:16,padding:20}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-<div style={{fontWeight:600,fontSize:15,color:T.text}}>Açık Masalar</div>
-<button onClick={()=>setV("tables")} style={{fontSize:13,color:"#34C759",background:"none",border:"none",cursor:"pointer",fontWeight:600}}>Tümü</button>
-</div>
-<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:8}}>
-{openT.map(t=>{const tot=t.order.reduce((s,o)=>s+o.price*o.qty,0);const dur=t.oa?Math.floor((Date.now()-new Date(t.oa))/60000):0;return(<div key={t.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:"rgba(52,199,89,0.1)",borderRadius:12}}>
-<div><span style={{fontWeight:600,fontSize:14,color:T.text}}>{t.lbl}</span>{t.g&&<div style={{fontSize:11,color:"#34C759",marginTop:1}}>{t.g}</div>}<div style={{fontSize:11,color:"#8E8E93",marginTop:1}}>{dur}dk - {t.order.length} kalem</div></div>
-<div style={{fontWeight:700,color:"#34C759",fontSize:15}}>{fm(tot,cur)}</div>
-</div>);})}
-</div>
-</div>}
-
 </div>
 );}
 
