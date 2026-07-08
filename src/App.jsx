@@ -461,7 +461,8 @@ nonCreditSplits.forEach(sp=>{
 const spGuest=g;
 const spTotal=sp.total||sp.amount||0;
 const spSub=sp.sub||spTotal;
-setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:sp.items,sub:spSub,da:sp.da||0,total:spTotal,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
+if(spTotal<=0){console.warn("closeTbl: total 0, skipping",sp);return;}
+setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:t.order,sub:spSub,da:sp.da||0,total:spTotal,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
 });
 if(creditSplits.length>0){
 creditSplits.forEach(sp=>{
@@ -485,20 +486,21 @@ next=[{id:uid(),g:spGuest,adisyonlar:[newAdisyon],items:sp.items,sub:sp.sub,da:s
 return next;
 });
 }
-// Kısmi ödeme: ürün bazlı ise ödenen ürünleri masadan çıkar
+// Kısmi ödeme: ürünleri masadan çıkar ve istatistiğe ekle
 if(!closeTable){
 const paidMap={};
 splits.forEach(sp=>{
 if(sp.items&&sp.items.length>0){
-// items array of ids or name strings
 t.order.forEach(o=>{
-if(sp.items.includes(o.id)||sp.items.includes(o.name)){
+// String veya number karşılaştırması — ikisini de dene
+if(sp.items.includes(o.id)||sp.items.includes(String(o.id))||sp.items.includes(o.name)){
 if(!paidMap[o.id])paidMap[o.id]=0;
 paidMap[o.id]+=o.qty;
 }
 });
 }
 });
+// Masadan ödenen ürünleri çıkar
 if(Object.keys(paidMap).length>0){
 setTbl(prev=>prev.map(t2=>{
 if(t2.id!==sel)return t2;
@@ -511,6 +513,7 @@ if(remaining.length===0)return null;
 return{...t2,order:remaining};
 }).filter(Boolean));
 }
+// Kısmi ödemeyi istatistiğe ekle (zaten nonCreditSplits'te yapıldı ama kontrol et)
 setPay(false);
 msg("Kısmi ödeme alındı");
 return;
