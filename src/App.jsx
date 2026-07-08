@@ -644,7 +644,7 @@ BİLDİRİMLER
 <span>Sipariş</span>
 <button onClick={()=>setGM(curT.id)} style={{background:"none",border:"0.5px solid "+T.border2,borderRadius:6,padding:"3px 8px",color:T.textSub,cursor:"pointer",fontSize:11}}>{curT.g||"Müşteri"}</button>
 </div>
-<div style={{flex:1,overflowY:"auto",padding:"10px 14px"}}>
+<div style={{flex:1,overflowY:"auto",padding:"10px 14px 160px"}}>
 {curT.order.length===0?<div style={{color:T.textDim,textAlign:"center",paddingTop:30,fontSize:12}}>Ürün eklenmedi</div>
 :curT.order.map(item=><div key={item.id} style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
 <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:T.text}}>{item.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty} = <span style={{color:T.accentL}}>{fm(item.price*item.qty,cur)}</span></div></div>
@@ -654,7 +654,7 @@ BİLDİRİMLER
 <button onClick={()=>chQ(curT.id,item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>+</button>
 </div></div>)}
 </div>
-<div style={{padding:"12px 16px",borderTop:"0.5px solid "+T.border}}>
+<div style={{position:"sticky",bottom:0,padding:"12px 16px",borderTop:"0.5px solid "+T.border,background:T.bg,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)"}}>
 <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:4}}><span>Ara toplam</span><span>{fm(sub(curT),cur)}</span></div>
 {disc?<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:4}}><span>İndirim <button onClick={()=>setDisc(null)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",padding:"0 2px",fontSize:14}}>x</button></span><span>-{fm(disc.amount,cur)}</span></div>
 :<button onClick={()=>curT.order.length>0&&setDisM(true)} style={{width:"100%",background:T.bg3,border:"1px dashed "+T.border2,borderRadius:8,padding:"6px",color:T.textSub,fontSize:11,cursor:"pointer",marginBottom:8}}>İndirim Ekle</button>}
