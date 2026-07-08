@@ -322,6 +322,21 @@ if(Object.keys(ordersByDate).length>0){
   console.log("Auto-logged missing days:",Object.keys(ordersByDate));
 }
 
+// Orders total:0 düzeltme — items üzerinden yeniden hesapla
+const fixedOrders=(o||[]).map(order=>{
+  if(order.total>0)return order;
+  if(!order.items||order.items.length===0)return order;
+  const recalc=order.items.reduce((s,item)=>s+(item.price||0)*(item.qty||1),0);
+  if(recalc>0)return{...order,total:recalc,sub:order.sub||recalc};
+  return order;
+});
+const hadBroken=(o||[]).some(order=>order.total===0&&order.items&&order.items.length>0);
+if(hadBroken){
+  setOrd(fixedOrders);
+  sv("lurk_o",fixedOrders);
+  console.log("Fixed broken orders:",fixedOrders.filter(x=>x.total>0&&(o||[]).find(y=>y.id===x.id&&y.total===0)).length);
+}
+
 setOk(true);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
