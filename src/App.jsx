@@ -414,7 +414,7 @@ const te=exp.filter(e=>e.date===prevDate);
 const cash=to.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const card=to.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
 const inc=to.reduce((s,o)=>s+o.total,0);const expt=te.reduce((s,e)=>s+e.amount,0);
-const im={};to.forEach(o=>o.items.forEach(it=>{if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty;im[it.name].total+=it.price*it.qty;}));
+const im={};to.forEach(o=>(o.items||[]).forEach(it=>{if(!it||typeof it!=="object")return;if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty||1;im[it.name].total+=(it.price||0)*(it.qty||1);}));
 const gm={};to.forEach(o=>{const g=o.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
 const prevLog={id:uid(),date:prevDate,oa:day.oa,ca:new Date(prevDate+"T23:59:59").toISOString(),inc,exp:expt,net:inc-expt,cash,card,count:to.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:te};
 setLogs(prev=>[prevLog,...prev]);
@@ -430,7 +430,7 @@ const td=tod();const to=orders.filter(o=>o.date===td);const te=exp.filter(e=>e.d
 const cash=to.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const card=to.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
 const inc=to.reduce((s,o)=>s+o.total,0);const expt=te.reduce((s,e)=>s+e.amount,0);
-const im={};to.forEach(o=>o.items.forEach(it=>{if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty;im[it.name].total+=it.price*it.qty;}));
+const im={};to.forEach(o=>(o.items||[]).forEach(it=>{if(!it||typeof it!=="object")return;if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty||1;im[it.name].total+=(it.price||0)*(it.qty||1);}));
 const gm={};to.forEach(o=>{const g=o.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
 setLogs(prev=>[{id:uid(),date:td,oa:day.oa,ca:new Date().toISOString(),inc,exp:expt,net:inc-expt,cash,card,count:to.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:te},...prev]);
 setDay(null);setDayCon(false);msg("Gun kapatıldı");};
