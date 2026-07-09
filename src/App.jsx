@@ -749,8 +749,7 @@ return(
 <div style={{fontWeight:700,fontSize:15,color:T.text}}>{curT.lbl}</div>
 {curT.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{curT.g}</div>}
 </div>
-{cfg&&cfg.requireName&&<button onClick={()=>setGM(curT.id)} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:8,padding:"5px 10px",color:T.textSub,fontSize:11,fontWeight:600,cursor:"pointer"}}>Müşteri</button>}
-{!showMenu&&<button onClick={()=>setCancelConfirm(true)} style={{background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:600,cursor:"pointer"}}>İptal</button>}
+<button onClick={()=>setGM(curT.id)} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:8,padding:"5px 12px",color:curT.g?T.accentL:T.textSub,fontSize:11,fontWeight:600,cursor:"pointer",flexShrink:0}}>{curT.g||"İsim Ekle"}</button>{!showMenu&&<button onClick={()=>setCancelConfirm(true)} style={{background:"none",border:"0.5px solid rgba(255,59,48,0.3)",color:T.danger,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:600,cursor:"pointer"}}>İptal</button>}
 </div>
 
 {/* SİPARİŞ GÖRÜNÜMÜ */}
