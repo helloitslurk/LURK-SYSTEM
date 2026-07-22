@@ -469,18 +469,22 @@ creditSplits.forEach(sp=>{
 const spGuest=sp.cariName||g;
 const spTotal=sp.total||sp.amount||0;
 const spSub=sp.sub||spTotal;
-setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:sp.items,sub:spSub,da:sp.da||0,total:spTotal,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
+if(spTotal<=0)return;
+setOrd(prev=>[{id:uid(),tId:t.id,tn:t.lbl,g:spGuest,items:t.order,sub:spSub,da:sp.da||0,total:spTotal,pt:sp.pt,oa:t.oa,ca:new Date().toISOString(),date:tod()},...prev]);
 });
 setCari(prev=>{
 let next=[...prev];
 creditSplits.forEach(sp=>{
 const spGuest=sp.cariName||g;
-const newAdisyon={id:uid(),tbl:t.lbl,items:sp.items,sub:sp.sub,da:sp.da||0,total:sp.total,oa:t.oa,ca:new Date().toISOString(),date:tod()};
+const spTotal=sp.total||sp.amount||0;
+const spSub=sp.sub||spTotal;
+if(spTotal<=0)return;
+const newAdisyon={id:uid(),tbl:t.lbl,items:t.order,sub:spSub,da:sp.da||0,total:spTotal,oa:t.oa,ca:new Date().toISOString(),date:tod()};
 const idx=next.findIndex(c=>!c.settled&&c.g.toLowerCase()===spGuest.toLowerCase());
 if(idx>=0){
-next=next.map((c,i)=>i===idx?{...c,adisyonlar:[...(c.adisyonlar||[{id:c.id+"_0",tbl:c.tbl,items:c.items,sub:c.sub,da:c.da||0,total:c.total,oa:c.oa,ca:c.cAt,date:c.date}]),newAdisyon],total:c.total+sp.total}:c);
+next=next.map((c,i)=>i===idx?{...c,adisyonlar:[...(c.adisyonlar||[]),newAdisyon],total:(c.total||0)+spTotal}:c);
 }else{
-next=[{id:uid(),g:spGuest,adisyonlar:[newAdisyon],items:sp.items,sub:sp.sub,da:sp.da||0,total:sp.total,tbl:t.lbl,oa:t.oa,cAt:new Date().toISOString(),date:tod(),settled:false,sAt:null,sPt:null},...next];
+next=[{id:uid(),g:spGuest,adisyonlar:[newAdisyon],items:t.order,sub:spSub,da:sp.da||0,total:spTotal,tbl:t.lbl,oa:t.oa,cAt:new Date().toISOString(),date:tod(),settled:false,sAt:null,sPt:null},...next];
 }
 });
 return next;
@@ -1074,8 +1078,6 @@ const doPay=(pt,amt)=>{
 const doNewCari=()=>{
   const name=(newCariName||"").trim();
   if(!name)return;
-  const newC={id:uid?uid():Date.now()+"",g:name.toUpperCase(),total,sub,da:discAmt,items:table.order,date:new Date().toISOString().split("T")[0],cAt:new Date().toISOString(),tbl:table.lbl,settled:false,payments:[]};
-  if(setCari)setCari(prev=>[newC,...(prev||[])]);
   onDone([{pt:"credit",amount:total,total,sub,da:discAmt,cariName:name.toUpperCase(),items:null}],true);
 };
 
