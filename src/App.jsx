@@ -313,7 +313,7 @@ if(Object.keys(ordersByDate).length>0){
     const card=dayOrders.filter(x=>x.pt==="card").reduce((s,x)=>s+x.total,0);
     const inc=dayOrders.reduce((s,x)=>s+x.total,0);
     const im={};dayOrders.forEach(ord=>ord.items&&ord.items.forEach(it=>{if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty;im[it.name].total+=it.price*it.qty;}));
-    const gm={};dayOrders.forEach(ord=>{const g=ord.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=ord.total;gm[g].orders.push({id:ord.id,tbl:ord.tn,total:ord.total,pt:ord.pt,items:ord.items});});
+    const gm={};dayOrders.forEach(ord=>{const g=(ord.g||"--").trim().toUpperCase();if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=ord.total;gm[g].orders.push({id:ord.id,tbl:ord.tn,total:ord.total,pt:ord.pt,items:ord.items});});
     return{id:uid(),date,oa:date+"T09:00:00.000Z",ca:date+"T23:59:59.000Z",inc,exp:0,net:inc,cash,card,count:dayOrders.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:[]};
   });
   const merged=[...(l||[]),...newLogs].sort((a,b)=>b.date.localeCompare(a.date));
@@ -415,7 +415,7 @@ const cash=to.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const card=to.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
 const inc=to.reduce((s,o)=>s+o.total,0);const expt=te.reduce((s,e)=>s+e.amount,0);
 const im={};to.forEach(o=>(o.items||[]).forEach(it=>{if(!it||typeof it!=="object")return;if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty||1;im[it.name].total+=(it.price||0)*(it.qty||1);}));
-const gm={};to.forEach(o=>{const g=o.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
+const gm={};to.forEach(o=>{const g=(o.g||"--").trim().toUpperCase();if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
 const prevLog={id:uid(),date:prevDate,oa:day.oa,ca:new Date(prevDate+"T23:59:59").toISOString(),inc,exp:expt,net:inc-expt,cash,card,count:to.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:te};
 setLogs(prev=>[prevLog,...prev]);
 // Eski masaları temizle
@@ -431,7 +431,7 @@ const cash=to.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const card=to.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
 const inc=to.reduce((s,o)=>s+o.total,0);const expt=te.reduce((s,e)=>s+e.amount,0);
 const im={};to.forEach(o=>(o.items||[]).forEach(it=>{if(!it||typeof it!=="object")return;if(!im[it.name])im[it.name]={name:it.name,cat:it.cat||"",qty:0,total:0,price:it.price};im[it.name].qty+=it.qty||1;im[it.name].total+=(it.price||0)*(it.qty||1);}));
-const gm={};to.forEach(o=>{const g=o.g||"--";if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
+const gm={};to.forEach(o=>{const g=(o.g||"--").trim().toUpperCase();if(!gm[g])gm[g]={name:g,count:0,total:0,orders:[]};gm[g].count++;gm[g].total+=o.total;gm[g].orders.push({id:o.id,tbl:o.tn,total:o.total,pt:o.pt,items:o.items});});
 setLogs(prev=>[{id:uid(),date:td,oa:day.oa,ca:new Date().toISOString(),inc,exp:expt,net:inc-expt,cash,card,count:to.length,items:Object.values(im).sort((a,b)=>b.qty-a.qty),guests:Object.values(gm).sort((a,b)=>b.total-a.total),exps:te},...prev]);
 setDay(null);setDayCon(false);msg("Gun kapatıldı");};
 
@@ -445,7 +445,7 @@ if(cfg.requireName){setSel(newId);setGM(newId);}else doOpen(newId,"");
 };
 const doOpen=(id,g)=>{
 const firstCat=Array.from(new Set(menu.filter(m=>m.on).map(m=>m.cat)))[0]||"";
-setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g||t.g}:t));setSel(id);setCat(firstCat);setDisc(null);setPay(false);setGM(null);setV("order");};
+setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g?(g.trim().toUpperCase()):t.g}:t));setSel(id);setCat(firstCat);setDisc(null);setPay(false);setGM(null);setV("order");};
 const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const ex=t.order.find(o=>o.id===item.id);const order=ex?t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o):[...t.order,{...item,qty:1}];return{...t,order,s:"o",oa:t.oa||new Date().toISOString()};}));};
 const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);return{...t,order:newOrder};}).filter(t=>t.id!==tid||t.order.length>0));};
 const cancelOrder=(tid)=>{setTbl(prev=>prev.filter(t=>t.id!==tid));setV("tables");setSel(null);msg("Adisyon iptal edildi","err");};
@@ -3415,7 +3415,7 @@ return(
 function CustomersPageV({orders,cur,fm,fd,T,inp,setV}){
 const custMap={};
 (orders||[]).filter(o=>o.g&&o.g.trim()&&o.g!=="--").forEach(o=>{
-  const name=o.g.trim();const month=o.date?o.date.slice(0,7):"";
+  const name=o.g.trim().toUpperCase();const month=o.date?o.date.slice(0,7):"";
   if(!custMap[name])custMap[name]={name,total:0,count:0,visits:new Set(),months:{},lastVisit:"",items:{}};
   custMap[name].total+=o.total||0;custMap[name].count++;custMap[name].visits.add(o.date);
   if(o.date>custMap[name].lastVisit)custMap[name].lastVisit=o.date;
