@@ -869,6 +869,7 @@ const NAV_CARDS=[
 {k:"reports",label:"Raporlar",sub:"Satış & harcama",val:null,valColor:null},
 {k:"installments",label:"Vadeler",sub:overdueCount>0?overdueCount+" gecikmiş":"Taksit takibi",val:overdueCount||null,valColor:"#FF3B30"},
 {k:"credit",label:"Cari",sub:openCari>0?openCari+" açık":"Müşteri alacakları",val:openCari||null,valColor:"#AF52DE"},
+{k:"customers",label:"Müşteriler",sub:"En çok harcayanlar",val:null,valColor:"#F59E0B"},
 {k:"achievements",label:"Rozetler",sub:earnedCount+"/"+((badges||[]).length),val:null,valColor:null},
 {k:"settings",label:"Ayarlar",sub:"Sistem & menü",val:null,valColor:null},
 ];
@@ -898,7 +899,7 @@ return(
 <button onClick={openDay} style={{background:T.accent,border:"none",borderRadius:12,padding:"12px 24px",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>✓ Evet, Başlat</button>
 </div>}
 
-<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(3,1fr)":"repeat(6,1fr)",gap:8,marginBottom:20}}>
+<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(4,1fr)":"repeat(7,1fr)",gap:8,marginBottom:20}}>
 {NAV_CARDS.map((card)=>(
 <button key={card.k} onClick={()=>setV(card.k)} style={{background:T.isDark?"rgba(255,255,255,0.05)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"14px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",gap:4,minHeight:80}}>
 <div style={{fontSize:12,fontWeight:700,color:T.text}}>{card.label}</div>
