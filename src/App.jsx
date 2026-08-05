@@ -3442,15 +3442,30 @@ return(
 
 function CustomersPageV({orders,cur,fm,fd,T,inp,setV}){
 const now=new Date();
-const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
 
-const months=[...new Set((orders||[]).filter(o=>o.g&&o.g.trim()&&o.g.trim()!=="--").map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+// Birleştirilmiş ay grupları — Haziran+Temmuz 2026 tek grup
+const MERGED_GROUPS=[{key:"2026-06+07",label:"Haziran–Temmuz 2026",months:["2026-06","2026-07"]}];
 
-const monthStart=selMonth+"-01";
-const lastDay=new Date(parseInt(selMonth.slice(0,4)),parseInt(selMonth.slice(5,7)),0).getDate();
-const monthEnd=selMonth+"-"+String(lastDay).padStart(2,"0");
+// Tekil aylar — birleştirilmiş olanlar hariç
+const allMonths=[...new Set((orders||[]).filter(o=>o.g&&o.g.trim()&&o.g.trim()!=="--").map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+const mergedMonths=new Set(MERGED_GROUPS.flatMap(g=>g.months));
+const singleMonths=allMonths.filter(m=>!mergedMonths.has(m));
 
-const monthOrders=(orders||[]).filter(o=>o.date&&o.date>=monthStart&&o.date<=monthEnd&&o.g&&o.g.trim()&&o.g.trim()!=="--");
+// Sekme listesi: birleşik gruplar + tekil aylar
+const tabs=[
+...MERGED_GROUPS.filter(g=>g.months.some(m=>allMonths.includes(m))),
+...singleMonths.map(m=>{const[y,mo]=m.split("-");return{key:m,label:new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"}),months:[m]};})
+];
+
+const[selKey,setSelKey]=useState(tabs[0]?.key||"");
+const selTab=tabs.find(t=>t.key===selKey)||tabs[0];
+
+// Seçili sekmedeki siparişler
+const monthOrders=(orders||[]).filter(o=>{
+if(!o.date||!o.g||!o.g.trim()||o.g.trim()==="--")return false;
+const m=o.date.slice(0,7);
+return selTab?.months.includes(m);
+});
 
 const custMap={};
 monthOrders.forEach(o=>{
@@ -3464,7 +3479,6 @@ if(o.pt)custMap[name].pt[o.pt]=(custMap[name].pt[o.pt]||0)+(o.total||0);
 
 const sorted=Object.values(custMap).sort((a,b)=>b.total-a.total);
 const totalRev=monthOrders.reduce((s,o)=>s+(o.total||0),0);
-const monthLabel=(m)=>{const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
 
 return(
 <div style={{padding:"0 0 80px",maxWidth:680,margin:"0 auto"}}>
@@ -3474,10 +3488,10 @@ return(
 <h2 style={{margin:"0 0 12px",fontWeight:800,fontSize:22,color:T.text}}>👤 Müşteriler</h2>
 
 <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4}}>
-{months.length===0&&<div style={{fontSize:12,color:T.textSub}}>Henüz isimli sipariş yok.</div>}
-{months.map(m=>(
-<button key={m} onClick={()=>setSelMonth(m)} style={{padding:"7px 16px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:700,whiteSpace:"nowrap",flexShrink:0,background:selMonth===m?T.accent:"rgba(255,255,255,0.06)",color:selMonth===m?"#fff":T.textSub}}>
-{monthLabel(m)}
+{tabs.length===0&&<div style={{fontSize:12,color:T.textSub}}>Henüz isimli sipariş yok.</div>}
+{tabs.map(tab=>(
+<button key={tab.key} onClick={()=>setSelKey(tab.key)} style={{padding:"7px 16px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:700,whiteSpace:"nowrap",flexShrink:0,background:selKey===tab.key?T.accent:"rgba(255,255,255,0.06)",color:selKey===tab.key?"#fff":T.textSub}}>
+{tab.label}
 </button>
 ))}
 </div>
@@ -3497,7 +3511,7 @@ return(
 {sorted.length===0
 ?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
 <div style={{fontSize:32,marginBottom:10}}>👤</div>
-<div style={{fontSize:14,fontWeight:600,color:T.textSub}}>{monthLabel(selMonth)} için isimli sipariş yok</div>
+<div style={{fontSize:14,fontWeight:600,color:T.textSub}}>{selTab?.label} için isimli sipariş yok</div>
 </div>
 :<div>
 {sorted.map((c,i)=>(
