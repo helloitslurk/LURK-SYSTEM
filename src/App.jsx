@@ -5,12 +5,12 @@ const DARK={bg:"#0D0D0D",bg2:"#1A1A1A",bg3:"#242424",border:"rgba(255,255,255,0.
 const LIGHT={bg:"#F2F2F7",bg2:"rgba(255,255,255,0.9)",bg3:"rgba(118,118,128,0.12)",border:"rgba(60,60,67,0.12)",border2:"rgba(60,60,67,0.2)",accent:"#34C759",accentL:"#248A3D",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#6C6C70",textDim:"#AEAEB2",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 8px rgba(0,0,0,0.08),0 0 0 0.5px rgba(255,255,255,0.5) inset",shadowM:"0 8px 32px rgba(0,0,0,0.12),0 0 0 0.5px rgba(255,255,255,0.4) inset",glass:"rgba(255,255,255,0.7)",isDark:false};
 
 const MENU=[
-{id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},{id:102,name:"FILTRE KAHVE",price:140,cat:"Kahve",on:true},{id:103,name:"AMERICANO",price:150,cat:"Kahve",on:true},{id:104,name:"LATTE",price:180,cat:"Kahve",on:true},{id:105,name:"SALTED CARAMEL LATTE",price:250,cat:"Kahve",on:true},{id:106,name:"CORTADO",price:150,cat:"Kahve",on:true},{id:107,name:"FLATWHITE",price:170,cat:"Kahve",on:true},{id:108,name:"SÜT REÇELLİ LATTE",price:250,cat:"Kahve",on:true},{id:109,name:"MOCHA",price:230,cat:"Kahve",on:true},{id:110,name:"VANİLYA LATTE",price:200,cat:"Kahve",on:true},{id:111,name:"KIŞ LATTESİ",price:200,cat:"Kahve",on:true},{id:112,name:"V60",price:220,cat:"Kahve",on:true},{id:113,name:"ESPRESSO",price:140,cat:"Kahve",on:true},{id:114,name:"CAPPUCCINO",price:180,cat:"Kahve",on:true},
-{id:201,name:"MATCHA LATTE",price:230,cat:"Matcha",on:true},{id:202,name:"STRAWBERRY MATCHA",price:260,cat:"Matcha",on:true},{id:203,name:"BERRY MATCHA LATTE",price:260,cat:"Matcha",on:true},{id:204,name:"VANILLA MATCHA LATTE",price:250,cat:"Matcha",on:true},{id:205,name:"APPLE & GINGER MATCHA",price:260,cat:"Matcha",on:true},{id:206,name:"CRÈME BRÜLÉE MATCHA",price:250,cat:"Matcha",on:true},{id:207,name:"MEVSİM MEYVELİ MATCHA",price:260,cat:"Matcha",on:true},
-{id:301,name:"SIYAH ÇAY",price:50,cat:"Cay",on:true},{id:302,name:"BİTKİ ÇAYI",price:150,cat:"Cay",on:true},{id:303,name:"ICE TEA",price:200,cat:"Cay",on:true},
-{id:401,name:"MUHAMMARA SANDVIÇ",price:330,cat:"Sandviç",on:true},{id:402,name:"RENÇ SANDVIÇ",price:330,cat:"Sandviç",on:true},{id:403,name:"PESTO SANDVIÇ",price:300,cat:"Sandviç",on:true},{id:404,name:"TON BALIĞI SANDVIÇ",price:300,cat:"Sandviç",on:true},
+{id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},{id:102,name:"FİLTRE KAHVE",price:160,cat:"Kahve",on:true},{id:103,name:"AMERICANO",price:170,cat:"Kahve",on:true},{id:104,name:"LATTE",price:200,cat:"Kahve",on:true},{id:105,name:"SALTED CARAMEL LATTE",price:270,cat:"Kahve",on:true},{id:106,name:"CORTADO",price:170,cat:"Kahve",on:true},{id:107,name:"FLATWHITE",price:190,cat:"Kahve",on:true},{id:109,name:"MOCHA",price:250,cat:"Kahve",on:true},{id:110,name:"VANİLYA LATTE",price:220,cat:"Kahve",on:true},{id:112,name:"V60",price:240,cat:"Kahve",on:true},{id:113,name:"ESPRESSO",price:160,cat:"Kahve",on:true},{id:114,name:"CAPPUCCINO",price:200,cat:"Kahve",on:true},
+{id:201,name:"MATCHA LATTE",price:260,cat:"Matcha",on:true},{id:202,name:"STRAWBERRY MATCHA",price:290,cat:"Matcha",on:true},{id:203,name:"BERRY MATCHA LATTE",price:290,cat:"Matcha",on:true},{id:204,name:"VANILLA MATCHA LATTE",price:280,cat:"Matcha",on:true},{id:205,name:"APPLE & GINGER MATCHA",price:290,cat:"Matcha",on:true},{id:206,name:"CRÈME BRÜLÉE MATCHA",price:280,cat:"Matcha",on:true},
+{id:301,name:"SİYAH ÇAY",price:50,cat:"Cay",on:true},{id:302,name:"BİTKİ ÇAYI",price:180,cat:"Cay",on:true},{id:303,name:"ICE TEA",price:220,cat:"Cay",on:true},
+{id:401,name:"MUHAMMARA SANDVİÇ",price:330,cat:"Sandviç",on:true},{id:402,name:"RENÇ SANDVİÇ",price:330,cat:"Sandviç",on:true},{id:403,name:"PESTO SANDVİÇ",price:300,cat:"Sandviç",on:true},{id:404,name:"TON BALIĞI SANDVİÇ",price:300,cat:"Sandviç",on:true},
 {id:501,name:"TIRAMISU",price:290,cat:"Tatlı",on:true},{id:502,name:"SOFT COOKIE",price:175,cat:"Tatlı",on:true},
-{id:601,name:"+VEGAN SÜT",price:50,cat:"Ekstra",on:true},{id:602,name:"SICAK ÇIKOLATA",price:200,cat:"Ekstra",on:true},{id:603,name:"SAHLEP",price:150,cat:"Ekstra",on:true},{id:604,name:"SODA",price:90,cat:"Ekstra",on:true},{id:605,name:"BAILEYS MATCHA",price:300,cat:"Ekstra",on:true},{id:606,name:"SERVIS",price:200,cat:"Ekstra",on:true},{id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},{id:608,name:"CLAP",price:250,cat:"Ekstra",on:true},{id:609,name:"CHURCHILL",price:120,cat:"Ekstra",on:true},
+{id:601,name:"+VEGAN SÜT",price:70,cat:"Ekstra",on:true},{id:602,name:"SICAK ÇİKOLATA",price:220,cat:"Ekstra",on:true},{id:603,name:"SAHLEP",price:200,cat:"Ekstra",on:true},{id:604,name:"SODA",price:100,cat:"Ekstra",on:true},{id:605,name:"BAILEYS MATCHA",price:340,cat:"Ekstra",on:true},{id:606,name:"SERVİS",price:200,cat:"Ekstra",on:true},{id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},{id:609,name:"CHURCHILL",price:130,cat:"Ekstra",on:true},
 ];
 
 const OLD_LOGS=[]; // Supabase'e taşındı
@@ -630,17 +630,20 @@ BİLDİRİMLER
 <>
 <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(auto-fill,minmax(140px,1fr))":"repeat(auto-fill,minmax(155px,1fr))",gap:isMobile?10:12,marginBottom:14}}>
 {tables.map(t=>{const tot=t.order.reduce((s,o)=>s+o.price*o.qty,0);const dur=t.oa?Math.floor((Date.now()-new Date(t.oa))/60000):0;const occ=t.s==="o";return(
-<button key={t.id} onClick={()=>goTbl(t.id)} style={{background:occ?"#1a3a1a":T.bg2,border:"none",borderRadius:16,padding:isMobile?"12px":"14px 12px",cursor:day?"pointer":"not-allowed",textAlign:"left",color:occ?"#fff":T.text,opacity:day?1:0.5,boxShadow:T.shadow}}>
-<div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><span style={{fontWeight:700,fontSize:isMobile?16:14}}>{t.lbl}</span><span style={{background:occ?"rgba(255,255,255,0.25)":T.bg3,color:occ?"#fff":T.textSub,fontSize:9,fontWeight:700,padding:"2px 6px",borderRadius:20}}>{occ?"DOLU":"BOŞ"}</span></div>
-{t.g&&<div style={{fontSize:11,color:occ?"rgba(255,255,255,0.85)":T.accentL,marginBottom:4}}>{t.g}</div>}
-{occ?<><div style={{fontSize:isMobile?20:18,fontWeight:700}}>{fm(tot,cur)}</div><div style={{fontSize:11,opacity:0.85,marginTop:2}}>{dur}dk - {t.order.length} kalem</div></>:<div style={{fontSize:12,color:T.textDim}}>Boş</div>}
+<button key={t.id} onClick={()=>goTbl(t.id)} style={{background:T.bg2,border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:16,padding:isMobile?"12px":"14px 12px",cursor:day?"pointer":"not-allowed",textAlign:"left",color:T.text,opacity:day?1:0.5,boxShadow:T.shadow,position:"relative",overflow:"hidden"}}>
+{occ&&<div style={{position:"absolute",top:0,left:0,right:0,height:3,background:T.accent,borderRadius:"16px 16px 0 0"}}/>}
+<div style={{display:"flex",justifyContent:"space-between",marginBottom:8,marginTop:occ?6:0}}>
+<span style={{fontWeight:700,fontSize:isMobile?16:14,color:T.text}}>{t.lbl}</span>
+{occ&&<span style={{background:"rgba(52,199,89,0.15)",color:T.accent,fontSize:9,fontWeight:700,padding:"2px 8px",borderRadius:20}}>AÇIK</span>}
+</div>
+{t.g&&<div style={{fontSize:11,color:T.accentL,marginBottom:4,fontWeight:600}}>{t.g}</div>}
+{occ?<><div style={{fontSize:isMobile?20:18,fontWeight:800,color:T.text}}>{fm(tot,cur)}</div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>{dur}dk · {t.order.length} kalem</div></>:<div style={{fontSize:12,color:T.textDim}}>Boş</div>}
 </button>);})}
 <button onClick={addNewTable} disabled={!day} style={{background:"transparent",border:"2px dashed "+T.border2,borderRadius:16,padding:isMobile?"12px":"14px 12px",cursor:day?"pointer":"not-allowed",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:6,color:T.textSub,minHeight:isMobile?90:96,opacity:day?1:0.5}}>
 <span style={{fontSize:22}}>＋</span>
 <span style={{fontSize:11,fontWeight:600}}>Yeni Masa</span>
 </button>
 </div>
-
 </>
 )}
 </div>
@@ -666,7 +669,7 @@ BİLDİRİMLER
 
 {isMobile?(
 /* MOBİL: Tab ile menü/sepet arası geçiş */
-<OrderMobileV curT={curT} T={T} sb={sb} fm={fm} ft={ft} cur={cur} disc={disc} setDisc={setDisc} setDisM={setDisM} setPay={setPay} setV={setV} setSel={setSel} setCancelConfirm={setCancelConfirm} cat={cat} setCat={setCat} oCats={oCats} fMenü={fMenü} addItem={addItem} chQ={chQ} sub={sub} fin={fin} cfg={cfg} setGM={setGM} msg={msg}/>
+<OrderMobileV curT={curT} T={T} sb={sb} fm={fm} ft={ft} cur={cur} disc={disc} setDisc={setDisc} setDisM={setDisM} setPay={setPay} setV={setV} setSel={setSel} setCancelConfirm={setCancelConfirm} cat={cat} setCat={setCat} oCats={oCats} fMenü={fMenü} aMenü={aMenü} addItem={addItem} chQ={chQ} sub={sub} fin={fin} cfg={cfg} setGM={setGM} msg={msg}/>
 ):(
 /* MASAÜSTÜ: yan yana iki sütun */
 <div style={{display:"grid",gridTemplateColumns:"1fr 340px",height:"100%",overflow:"hidden"}}>
@@ -724,7 +727,7 @@ BİLDİRİMLER
 </div>
 );}
 
-function OrderMobileV({curT,T,sb,fm,ft,cur,disc,setDisc,setDisM,setPay,setV,setSel,setCancelConfirm,cat,setCat,oCats,fMenü,addItem,chQ,sub,fin,cfg,setGM,msg}){
+function OrderMobileV({curT,T,sb,fm,ft,cur,disc,setDisc,setDisM,setPay,setV,setSel,setCancelConfirm,cat,setCat,oCats,fMenü,aMenü,addItem,chQ,sub,fin,cfg,setGM,msg}){
 const[openCats,setOpenCats]=useState(()=>{const o={};if(oCats.length>0)o[oCats[0]]=true;return o;});
 const[showMenu,setShowMenu]=useState(curT.order.length===0);
 const orderTotal=fin(curT);
@@ -802,7 +805,7 @@ return(
 <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",zIndex:1}}>
 <div style={{flex:1,overflowY:"auto",paddingBottom:itemCount>0?80:0}}>
 {oCats.map(c=>{
-const catItems=(fMenü||[]).filter(i=>i.cat===c);
+const catItems=(aMenü||fMenü||[]).filter(i=>i.cat===c);
 const isOpen=!!openCats[c];
 const catCount=catItems.reduce((s,item)=>{const o=curT.order.find(o=>o.id===item.id);return s+(o?o.qty:0);},0);
 return(
