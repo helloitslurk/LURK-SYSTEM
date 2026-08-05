@@ -1280,6 +1280,9 @@ const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
 const[expandedDay,setExpandedDay]=useState(null);
 const[showExpForm,setShowExpForm]=useState(false);
 const[newExp,setNewExp]=useState({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});
+const[editExp,setEditExp]=useState(null);
+const[showNewCat,setShowNewCat]=useState(false);
+const[newCatName,setNewCatName]=useState("");
 
 // Ay listesi
 const allMonths=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...exp.map(e=>e.date?e.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
@@ -1427,7 +1430,7 @@ return(
 <div>
 {/* Ekle butonu */}
 <div style={{padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
-<button onClick={()=>setShowExpForm(p=>!p)} style={{background:showExpForm?T.bg3:"rgba(255,59,48,0.1)",border:"1px solid "+(showExpForm?T.border:"rgba(255,59,48,0.3)"),borderRadius:10,padding:"9px 16px",cursor:"pointer",color:showExpForm?T.textSub:T.danger,fontWeight:600,fontSize:13}}>
+<button onClick={()=>{setShowExpForm(p=>!p);setEditExp(null);setNewExp({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});}} style={{background:showExpForm?T.bg3:"rgba(255,59,48,0.1)",border:"1px solid "+(showExpForm?T.border:"rgba(255,59,48,0.3)"),borderRadius:10,padding:"9px 16px",cursor:"pointer",color:showExpForm?T.textSub:T.danger,fontWeight:600,fontSize:13}}>
 {showExpForm?"İptal":"＋ Harcama Ekle"}
 </button>
 {showExpForm&&<div style={{marginTop:12,display:"grid",gap:8}}>
@@ -1435,10 +1438,29 @@ return(
 <input autoFocus placeholder="Açıklama" value={newExp.desc} onChange={e=>setNewExp(p=>({...p,desc:e.target.value}))} style={{...inp,fontSize:14}}/>
 <input type="number" placeholder="Tutar" value={newExp.amount} onChange={e=>setNewExp(p=>({...p,amount:e.target.value}))} style={{...inp,fontSize:14}}/>
 </div>
-<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{/* Kategori seçici + yeni ekle */}
+<div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
 {(ecats||[]).map(cat=><button key={cat} onClick={()=>setNewExp(p=>({...p,cat}))} style={{padding:"5px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:newExp.cat===cat?T.danger:T.bg3,color:newExp.cat===cat?"#fff":T.textSub}}>{cat}</button>)}
+{/* Yeni kategori ekle */}
+{!showNewCat
+?<button onClick={()=>setShowNewCat(true)} style={{padding:"5px 12px",borderRadius:20,border:"1px dashed rgba(255,255,255,0.2)",background:"transparent",cursor:"pointer",fontSize:11,fontWeight:600,color:T.textDim}}>＋ Yeni</button>
+:<div style={{display:"flex",gap:6,alignItems:"center"}}>
+<input autoFocus placeholder="Kategori adı" value={newCatName} onChange={e=>setNewCatName(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newCatName.trim()){const t=newCatName.trim();if(!ecats.includes(t)){setEc(prev=>[...prev,t]);}setNewExp(p=>({...p,cat:t}));setNewCatName("");setShowNewCat(false);}}} style={{...inp,padding:"5px 10px",fontSize:12,width:110}}/>
+<button onClick={()=>{const t=newCatName.trim();if(t){if(!ecats.includes(t)){setEc(prev=>[...prev,t]);}setNewExp(p=>({...p,cat:t}));}setNewCatName("");setShowNewCat(false);}} style={{padding:"5px 10px",background:T.accent,border:"none",borderRadius:8,color:"#fff",fontWeight:600,fontSize:11,cursor:"pointer"}}>Ekle</button>
+<button onClick={()=>{setShowNewCat(false);setNewCatName("");}} style={{padding:"5px 8px",background:T.bg3,border:"none",borderRadius:8,color:T.textSub,fontWeight:600,fontSize:11,cursor:"pointer"}}>İptal</button>
+</div>}
 </div>
-<button onClick={()=>{if(!newExp.desc||!newExp.amount)return;setExp(prev=>[{id:uid(),desc:newExp.desc,amount:parseFloat(newExp.amount),cat:newExp.cat,date:tod()},...prev]);setNewExp({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});setShowExpForm(false);}} style={{...sb(T.danger),opacity:newExp.desc&&newExp.amount?1:0.5}}>Kaydet</button>
+<button onClick={()=>{
+if(!newExp.desc||!newExp.amount)return;
+if(editExp!==null){
+setExp(prev=>prev.map((e,i)=>i===editExp?{...e,desc:newExp.desc,amount:parseFloat(newExp.amount),cat:newExp.cat}:e));
+setEditExp(null);
+}else{
+setExp(prev=>[{id:uid(),desc:newExp.desc,amount:parseFloat(newExp.amount),cat:newExp.cat,date:tod()},...prev]);
+}
+setNewExp({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});
+setShowExpForm(false);
+}} style={{...sb(T.danger),opacity:newExp.desc&&newExp.amount?1:0.5}}>{editExp!==null?"Güncelle":"Kaydet"}</button>
 </div>}
 </div>
 
@@ -1465,18 +1487,23 @@ return(
 {/* Harcama listesi */}
 {monthExp.length===0
 ?<div style={{textAlign:"center",padding:"40px",color:T.textDim}}>Bu ay harcama yok</div>
-:monthExp.sort((a,b)=>b.date.localeCompare(a.date)).map((e,i)=>(
-<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.04)"}}>
-<div>
+:monthExp.sort((a,b)=>b.date.localeCompare(a.date)).map((e,i)=>{
+const realIdx=exp.indexOf(e);
+return(
+<div key={i} style={{padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.04)",background:editExp===realIdx?"rgba(255,149,0,0.05)":"transparent"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div style={{flex:1}}>
 <div style={{fontSize:13,fontWeight:600,color:T.text}}>{e.desc}</div>
 <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{e.cat} · {fd(e.date)}</div>
 </div>
-<div style={{display:"flex",alignItems:"center",gap:12}}>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
 <div style={{fontSize:14,fontWeight:700,color:T.danger}}>{fm(e.amount,cur)}</div>
-<button onClick={()=>setExp(prev=>prev.filter((_,idx)=>idx!==prev.indexOf(e)))} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:16,padding:"0 4px"}}>×</button>
+<button onClick={()=>{setNewExp({desc:e.desc,amount:String(e.amount),cat:e.cat});setEditExp(realIdx);setShowExpForm(true);}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"4px 10px",cursor:"pointer",color:T.textSub,fontSize:11,fontWeight:600}}>Düzenle</button>
+<button onClick={()=>setExp(prev=>prev.filter((_,idx)=>idx!==realIdx))} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:16,padding:"0 4px"}}>×</button>
 </div>
 </div>
-))}
+</div>
+);})}
 </div>
 )}
 
