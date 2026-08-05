@@ -256,7 +256,18 @@ const notif=await ld("lurk_notif",[]);
 const td_=await ld("lurk_todo",[]);
 const tl=await ld("tt_l",[]);
 const tm=await ld("tt_m",null);
-const cf={...DS,...s};setCfg(cf);setCfgF(cf);setMenü(m||MENU);setOrd(o);setExp(e);
+const cf={...DS,...s};setCfg(cf);setCfgF(cf);
+// Menüyü yükle — MENU sabitindeki fiyatları zorla uygula
+const loadedMenu=m||MENU;
+const menuPriceMap={};MENU.forEach(item=>menuPriceMap[item.id]={price:item.price,name:item.name,on:item.on});
+const menuIds=new Set(MENU.map(i=>i.id));
+const mergedMenu=loadedMenu
+.filter(item=>menuIds.has(item.id)) // Silinen ürünleri çıkar
+.map(item=>menuPriceMap[item.id]?{...item,price:menuPriceMap[item.id].price,name:menuPriceMap[item.id].name}:item);
+// MENU'da olup loadedMenu'da olmayan yeni ürünleri ekle
+MENU.forEach(item=>{if(!mergedMenu.find(m=>m.id===item.id))mergedMenu.push(item);});
+setMenü(mergedMenu);
+setOrd(o);setExp(e);
 const oldDef=["Malzeme","Kira","Personel","Fatura","Diger"];
 const isOldEc=!ec||ec.length===0||(ec.length===5&&ec.every((x,i)=>x===oldDef[i]));
 const finalEc=isOldEc?DEC:ec;
