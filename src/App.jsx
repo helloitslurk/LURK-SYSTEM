@@ -261,9 +261,9 @@ const cf={...DS,...s};setCfg(cf);setCfgF(cf);
 const loadedMenu=m||MENU;
 const menuPriceMap={};MENU.forEach(item=>menuPriceMap[item.id]={price:item.price,name:item.name,on:item.on});
 const menuIds=new Set(MENU.map(i=>i.id));
-const mergedMenu=loadedMenu
-.filter(item=>menuIds.has(item.id)) // Silinen ürünleri çıkar
-.map(item=>menuPriceMap[item.id]?{...item,price:menuPriceMap[item.id].price,name:menuPriceMap[item.id].name}:item);
+// Supabase'deki menüyü MENU sabitiyle merge et — özel ürünleri koru
+const mergedMenu=loadedMenu.map(item=>menuPriceMap[item.id]?{...item,price:menuPriceMap[item.id].price,name:menuPriceMap[item.id].name}:item)
+.filter(item=>menuIds.has(item.id)||!MENU.find(m=>m.name===item.name)); // Sadece MENU'dan silinen ürünleri çıkar, özel ürünleri koru
 // MENU'da olup loadedMenu'da olmayan yeni ürünleri ekle
 MENU.forEach(item=>{if(!mergedMenu.find(m=>m.id===item.id))mergedMenu.push(item);});
 setMenü(mergedMenu);
