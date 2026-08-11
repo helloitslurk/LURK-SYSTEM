@@ -2973,10 +2973,10 @@ return(
 <div style={{background:"linear-gradient(135deg,rgba(52,199,89,0.15),rgba(52,199,89,0.05))",border:"1px solid rgba(52,199,89,0.2)",borderRadius:16,padding:"20px",marginBottom:12,position:"relative",overflow:"hidden"}}>
 <div style={{position:"absolute",top:-20,right:-20,width:100,height:100,borderRadius:"50%",background:"rgba(52,199,89,0.08)"}}/>
 <div style={{fontSize:10,color:T.accentL,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>Toplam Ciro</div>
-<div style={{fontSize:38,fontWeight:800,color:T.text,letterSpacing:-1,marginBottom:8}}>{fm(totalRev,cur)} TL</div>
+<div style={{fontSize:38,fontWeight:800,color:T.text,letterSpacing:-1,marginBottom:8}}>{fm(totalRev,cur)}</div>
 <div style={{display:"flex",gap:16}}>
-<div><span style={{fontSize:11,color:T.textSub}}>Nakit  </span><span style={{fontSize:13,fontWeight:700,color:"#34C759"}}>{fm(totalCash,cur)} TL</span></div>
-<div><span style={{fontSize:11,color:T.textSub}}>Kart  </span><span style={{fontSize:13,fontWeight:700,color:"#007AFF"}}>{fm(totalCard,cur)} TL</span></div>
+<div><span style={{fontSize:11,color:T.textSub}}>Nakit  </span><span style={{fontSize:13,fontWeight:700,color:"#34C759"}}>{fm(totalCash,cur)}</span></div>
+<div><span style={{fontSize:11,color:T.textSub}}>Kart  </span><span style={{fontSize:13,fontWeight:700,color:"#007AFF"}}>{fm(totalCard,cur)}</span></div>
 </div>
 </div>
 
@@ -2984,9 +2984,9 @@ return(
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
 {[
 {label:"Toplam Adisyon",val:totalOrders.toLocaleString("tr-TR"),unit:"adet",color:"#007AFF"},
-{label:"Ortalama Adisyon",val:fm(avgOrder,cur),unit:"TL",color:"#FF9500"},
-{label:"En İyi Gün",val:fm(bestDay?.[1]||0,cur),unit:"TL",color:"#AF52DE",sub:bestDayLabel},
-{label:"Günlük Ortalama",val:fm(dayCount>0?Math.round(totalRev/dayCount):0,cur),unit:"TL",color:"#34C759"},
+{label:"Ortalama Adisyon",val:fm(avgOrder,cur),unit:"",color:"#FF9500"},
+{label:"En İyi Gün",val:fm(bestDay?.[1]||0,cur),unit:"",color:"#AF52DE",sub:bestDayLabel},
+{label:"Günlük Ortalama",val:fm(dayCount>0?Math.round(totalRev/dayCount):0,cur),unit:"",color:"#34C759"},
 ].map((s,i)=>(
 <div key={i} style={{background:T.bg2,borderRadius:12,padding:"14px",border:"0.5px solid rgba(255,255,255,0.08)"}}>
 <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:6}}>{s.label}</div>
