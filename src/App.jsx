@@ -725,6 +725,7 @@ BİLDİRİMLER
 
 {view==="online"&&<OnlineV onlineOrders={onlineOrders} setOnlineOrders={setOnlineOrders} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} uid={uid} msg={msg} inp={inp} sb={sb} T={T} cfg={cfg}/>}
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
+{view==="expenses"&&<ExpensesPageV exp={exp} setExp={setExp} ecats={ecats} setEc={setEc} cur={cur} fm={fm} fd={fd} tod={tod} uid={uid} T={T} setV={setV}/>}
 {view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T} tables={tables} setTbl={setTbl} uid={uid}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T} badges={achievements}/>}
@@ -889,6 +890,7 @@ const overdueCount=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filte
 const NAV_CARDS=[
 {k:"tables",label:"Masalar",sub:openT.length>0?openT.length+" açık masa":"Boş",val:openT.length||null,valColor:"#34C759"},
 {k:"reports",label:"Raporlar",sub:"Satış & harcama",val:null,valColor:null},
+{k:"expenses",label:"Harcamalar",sub:todE>0?fm(todE,cur)+" bugün":"Gider takibi",val:null,valColor:"#FF3B30"},
 {k:"installments",label:"Vadeler",sub:overdueCount>0?overdueCount+" gecikmiş":"Taksit takibi",val:overdueCount||null,valColor:"#FF3B30"},
 {k:"customers",label:"Müşteriler",sub:"En çok harcayanlar",val:null,valColor:"#F59E0B"},
 {k:"achievements",label:"Rozetler",sub:earnedCount+"/"+((badges||[]).length),val:null,valColor:null},
@@ -929,7 +931,7 @@ return(
 </div>
 </div>}
 
-<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(3,1fr)":"repeat(6,1fr)",gap:8,marginBottom:20}}>
+<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(4,1fr)":"repeat(7,1fr)",gap:8,marginBottom:20}}>
 {NAV_CARDS.map((card)=>(
 <button key={card.k} onClick={()=>setV(card.k)} style={{background:T.isDark?"rgba(255,255,255,0.05)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"14px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",gap:4,minHeight:80}}>
 <div style={{fontSize:12,fontWeight:700,color:T.text}}>{card.label}</div>
@@ -2911,6 +2913,207 @@ return(
 </div>
 );})}
 </div>}
+</div>
+);}
+
+function ExpensesPageV({exp,setExp,ecats,setEc,cur,fm,fd,tod,uid,T,setV}){
+const COLORS=["#FF3B30","#FF9500","#FFD60A","#34C759","#007AFF","#5856D6","#AF52DE","#FF2D55"];
+const now=new Date();
+const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
+const[step,setStep]=useState(null);
+const[selCat,setSelCat]=useState(null);
+const[amount,setAmount]=useState("");
+const[showNewCat,setShowNewCat]=useState(false);
+const[newCatInput,setNewCatInput]=useState("");
+const[expandedCat,setExpandedCat]=useState(null);
+const[editId,setEditId]=useState(null);
+const[editAmt,setEditAmt]=useState("");
+const[delId,setDelId]=useState(null);
+
+const col=(i)=>COLORS[i%COLORS.length];
+const catCol=(c)=>col((ecats||[]).indexOf(c));
+
+const months=[...new Set((exp||[]).map(e=>e.date?e.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+if(months.length===0||!months.includes(selMonth)){const m=now.toISOString().slice(0,7);if(!months.includes(m))months.unshift(m);}
+
+const monthLabel=(m)=>{const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
+const monthStart=selMonth+"-01";
+const lastDay=new Date(parseInt(selMonth.slice(0,4)),parseInt(selMonth.slice(5,7)),0).getDate();
+const monthEnd=selMonth+"-"+String(lastDay).padStart(2,"0");
+const monthExp=(exp||[]).filter(e=>e.date&&e.date>=monthStart&&e.date<=monthEnd);
+const total=monthExp.reduce((s,e)=>s+e.amount,0);
+
+const byCat={};
+monthExp.forEach(e=>{if(!byCat[e.cat])byCat[e.cat]={cat:e.cat,total:0,items:[]};byCat[e.cat].total+=e.amount;byCat[e.cat].items.push(e);});
+const catList=Object.values(byCat).sort((a,b)=>b.total-a.total);
+const maxCat=catList[0]?.total||1;
+
+const reset=()=>{setStep(null);setSelCat(null);setAmount("");setShowNewCat(false);setNewCatInput("");};
+
+const addNewCat=()=>{
+const t=newCatInput.trim();
+if(!t)return;
+if(!(ecats||[]).includes(t))setEc(prev=>[...(prev||[]),t]);
+setSelCat(t);setShowNewCat(false);setNewCatInput("");setStep("amount");
+};
+
+const save=()=>{
+if(!selCat||!amount)return;
+setExp(prev=>[{id:uid(),desc:selCat,cat:selCat,amount:parseFloat(amount),date:tod()},...(prev||[])]);
+reset();
+};
+
+return(
+<div style={{maxWidth:680,margin:"0 auto",paddingBottom:80}}>
+
+{/* Header */}
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
+<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,padding:0,marginBottom:10,display:"block"}}>← Dashboard</button>
+<h2 style={{margin:"0 0 12px",fontWeight:800,fontSize:22,color:T.text}}>💸 Harcamalar</h2>
+<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4}}>
+{months.map(m=>(
+<button key={m} onClick={()=>setSelMonth(m)} style={{padding:"7px 16px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:700,whiteSpace:"nowrap",flexShrink:0,background:selMonth===m?T.accent:"rgba(255,255,255,0.06)",color:selMonth===m?"#fff":T.textSub}}>
+{monthLabel(m)}
+</button>
+))}
+</div>
+</div>
+
+{/* Toplam */}
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Toplam — {monthLabel(selMonth)}</div>
+<div style={{fontSize:32,fontWeight:800,color:T.danger,letterSpacing:-1}}>{fm(total,cur)}</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{monthExp.length} kalem · {catList.length} kategori</div>
+</div>
+
+{/* Grafik */}
+<div style={{padding:"16px"}}>
+{catList.length===0
+?<div style={{textAlign:"center",padding:"40px",color:T.textDim}}>Bu ay harcama yok</div>
+:catList.map((c,i)=>{
+const pct=Math.round(c.total/total*100);
+const barW=Math.round(c.total/maxCat*100);
+const cc=catCol(c.cat);
+const isOpen=expandedCat===c.cat;
+return(
+<div key={c.cat} style={{marginBottom:20}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+<div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+<div style={{width:10,height:10,borderRadius:"50%",background:cc,flexShrink:0}}/>
+<span style={{fontSize:14,fontWeight:700,color:T.text}}>{c.cat}</span>
+<span style={{fontSize:11,color:T.textDim}}>{c.items.length} kalem</span>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<div style={{textAlign:"right"}}>
+<span style={{fontSize:15,fontWeight:800,color:cc}}>{fm(c.total,cur)}</span>
+<span style={{fontSize:11,color:T.textDim,marginLeft:6}}>%{pct}</span>
+</div>
+<button onClick={()=>setExpandedCat(isOpen?null:c.cat)} style={{width:28,height:28,borderRadius:"50%",border:"0.5px solid rgba(255,255,255,0.15)",background:isOpen?"rgba(255,255,255,0.1)":"transparent",cursor:"pointer",color:T.textSub,fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+{isOpen?"▲":"▽"}
+</button>
+</div>
+</div>
+<div style={{height:10,background:"rgba(255,255,255,0.06)",borderRadius:5,overflow:"hidden",marginBottom:isOpen?10:0}}>
+<div style={{height:"100%",width:barW+"%",background:cc,borderRadius:5,transition:"width 0.4s ease"}}/>
+</div>
+{isOpen&&(
+<div style={{background:"rgba(255,255,255,0.03)",borderRadius:10,border:"0.5px solid rgba(255,255,255,0.08)",marginTop:6,overflow:"hidden"}}>
+{c.items.sort((a,b)=>b.amount-a.amount).map((item,j)=>(
+<div key={j} style={{padding:"11px 14px",borderBottom:j<c.items.length-1?"0.5px solid rgba(255,255,255,0.06)":"none"}}>
+{editId===item.id
+?<div style={{display:"flex",gap:8,alignItems:"center"}}>
+<input autoFocus type="number" value={editAmt} onChange={e=>setEditAmt(e.target.value)}
+style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"8px 12px",color:T.text,fontSize:15,fontWeight:700,outline:"none"}}/>
+<button onClick={()=>{setExp(prev=>prev.map(e=>e.id===item.id?{...e,amount:parseFloat(editAmt)}:e));setEditId(null);}} style={{padding:"8px 14px",background:T.accent,border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>✓</button>
+<button onClick={()=>setEditId(null)} style={{padding:"8px 10px",background:T.bg3,border:"none",borderRadius:8,color:T.textSub,fontSize:13,cursor:"pointer"}}>✕</button>
+</div>
+:<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div>
+<div style={{fontSize:13,fontWeight:600,color:T.text}}>{item.desc||item.cat}</div>
+<div style={{fontSize:10,color:T.textDim,marginTop:1}}>{fd(item.date)}</div>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+<span style={{fontSize:14,fontWeight:700,color:cc}}>{fm(item.amount,cur)}</span>
+<button onClick={()=>{setEditId(item.id);setEditAmt(String(item.amount));}} style={{background:"rgba(255,255,255,0.06)",border:"none",borderRadius:6,padding:"4px 8px",cursor:"pointer",color:T.textSub,fontSize:11}}>Düzenle</button>
+<button onClick={()=>setDelId(item.id)} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:16,padding:"0 2px"}}>×</button>
+</div>
+</div>}
+</div>
+))}
+</div>
+)}
+</div>
+);
+})}
+</div>
+
+{/* FAB */}
+{step===null&&<button onClick={()=>setStep("cat")} style={{position:"fixed",bottom:32,right:20,background:T.danger,border:"none",borderRadius:28,padding:"14px 24px",cursor:"pointer",color:"#fff",fontWeight:800,fontSize:15,boxShadow:"0 8px 24px rgba(255,59,48,0.45)",zIndex:50}}>＋ Ekle</button>}
+
+{/* Kategori sheet */}
+{step==="cat"&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:100,display:"flex",alignItems:"flex-end"}} onClick={e=>e.target===e.currentTarget&&reset()}>
+<div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px",maxHeight:"80vh",overflowY:"auto"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<div style={{fontWeight:800,fontSize:17,color:T.text}}>Kategori Seç</div>
+<button onClick={reset} style={{background:T.bg3,border:"none",borderRadius:"50%",width:30,height:30,cursor:"pointer",color:T.textSub,fontSize:17}}>×</button>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+{(ecats||[]).map((c,i)=>(
+<button key={c} onClick={()=>{setSelCat(c);setStep("amount");}} style={{padding:"16px 14px",borderRadius:14,border:`1.5px solid ${col(i)}44`,background:col(i)+"11",cursor:"pointer",textAlign:"left"}}>
+<div style={{width:10,height:10,borderRadius:"50%",background:col(i),marginBottom:8}}/>
+<div style={{fontSize:13,fontWeight:700,color:T.text}}>{c}</div>
+</button>
+))}
+</div>
+{!showNewCat
+?<button onClick={()=>setShowNewCat(true)} style={{width:"100%",padding:"13px",background:"transparent",border:"1px dashed rgba(255,255,255,0.2)",borderRadius:12,color:T.textSub,fontSize:14,fontWeight:600,cursor:"pointer"}}>＋ Yeni Kategori</button>
+:<div style={{display:"flex",gap:8}}>
+<input autoFocus placeholder="Kategori adı..." value={newCatInput} onChange={e=>setNewCatInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addNewCat()}
+style={{flex:1,background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:12,padding:"13px 14px",color:T.text,fontSize:15,outline:"none"}}/>
+<button onClick={addNewCat} style={{padding:"13px 18px",background:T.accent,border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer"}}>Ekle</button>
+</div>}
+</div>
+</div>
+)}
+
+{/* Tutar sheet */}
+{step==="amount"&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:100,display:"flex",alignItems:"flex-end"}} onClick={e=>e.target===e.currentTarget&&setStep("cat")}>
+<div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<button onClick={()=>setStep("cat")} style={{background:T.bg3,border:"none",borderRadius:20,padding:"6px 14px",color:T.textSub,fontSize:14,cursor:"pointer",fontWeight:600}}>← {selCat}</button>
+<button onClick={reset} style={{background:T.bg3,border:"none",borderRadius:"50%",width:30,height:30,cursor:"pointer",color:T.textSub,fontSize:17}}>×</button>
+</div>
+<div style={{textAlign:"center",padding:"16px 0 24px"}}>
+<div style={{fontSize:11,color:T.textSub,letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>Tutar</div>
+<input autoFocus type="number" placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)}
+style={{background:"transparent",border:"none",borderBottom:`3px solid ${catCol(selCat)}`,padding:"6px 0",color:T.text,fontSize:52,fontWeight:800,outline:"none",width:"100%",textAlign:"center",letterSpacing:-2}}/>
+<div style={{fontSize:14,color:T.textSub,marginTop:8}}>TL</div>
+</div>
+<button onClick={save} disabled={!amount} style={{width:"100%",padding:"16px",background:amount?catCol(selCat):T.bg3,border:"none",borderRadius:14,color:amount?"#fff":T.textDim,fontSize:17,fontWeight:800,cursor:amount?"pointer":"not-allowed",boxShadow:amount?`0 6px 20px ${catCol(selCat)}55`:"none",transition:"all 0.2s"}}>
+Ekle ✓
+</button>
+</div>
+</div>
+)}
+
+{/* Sil onayı */}
+{delId&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
+<div style={{background:"rgba(28,28,30,0.98)",backdropFilter:"blur(40px)",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:14,width:270,overflow:"hidden"}}>
+<div style={{padding:"20px 16px 16px",textAlign:"center"}}>
+<div style={{fontWeight:700,fontSize:17,color:T.text,marginBottom:8}}>Harcamayı Sil</div>
+<div style={{fontSize:13,color:T.textSub}}>Bu işlem geri alınamaz.</div>
+</div>
+<div style={{borderTop:"0.5px solid rgba(255,255,255,0.15)",display:"flex"}}>
+<button onClick={()=>setDelId(null)} style={{flex:1,padding:"14px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.15)",color:T.text,fontWeight:400,fontSize:17,cursor:"pointer"}}>İptal</button>
+<button onClick={()=>{setExp(prev=>prev.filter(e=>e.id!==delId));setDelId(null);}} style={{flex:1,padding:"14px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:17,cursor:"pointer"}}>Sil</button>
+</div>
+</div>
+</div>
+)}
+
 </div>
 );}
 
