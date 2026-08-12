@@ -748,16 +748,22 @@ const[selItems,setSelItems]=useState([]);
 const orderTotal=fin(curT);
 const itemCount=curT.order.reduce((s,i)=>s+i.qty,0);
 
-// Eski siparişlerde oid yoksa ekle
+// Eski siparişlerde oid yoksa ekle — render öncesi
 useEffect(()=>{
 const hasNoOid=curT.order.some(o=>!o.oid);
 if(hasNoOid){
 setTbl(prev=>prev.map(t=>{
 if(t.id!==curT.id)return t;
-return{...t,order:t.order.map(o=>o.oid?o:{...o,oid:Math.random().toString(36).slice(2)})};
+const seen={};
+return{...t,order:t.order.map(o=>{
+if(o.oid)return o;
+// Aynı id'li ürünler için index bazlı unique oid
+const key=o.id+"_"+(seen[o.id]=(seen[o.id]||0)+1);
+return{...o,oid:key};
+})};
 }));
 }
-},[curT.id]);
+},[curT.id,curT.order.length]);
 
 const handleBack=()=>{
 if(showMenu&&curT.order.length>0){setShowMenu(false);}
@@ -793,7 +799,9 @@ return(
 <div style={{fontSize:15,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
 </div>
 :curT.order.map((item,idx)=>{
-const oid=item.oid||item.id;
+const seen={};
+curT.order.slice(0,idx).forEach(o=>{seen[o.id]=(seen[o.id]||0)+1;});
+const oid=item.oid||(item.id+"_"+(seen[item.id]||0)+"_"+idx);
 const isSel=selItems.includes(oid);
 return(
 <div key={oid} style={{display:"flex",alignItems:"center",padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)",background:isSel?"rgba(52,199,89,0.08)":idx%2===0?"transparent":"rgba(255,255,255,0.01)",transition:"background 0.15s"}}>
