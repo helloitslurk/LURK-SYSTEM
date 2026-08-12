@@ -457,8 +457,8 @@ if(cfg.requireName){setSel(newId);setGM(newId);}else doOpen(newId,"");
 const doOpen=(id,g)=>{
 const firstCat=Array.from(new Set(menu.filter(m=>m.on).map(m=>m.cat)))[0]||"";
 setTbl(prev=>prev.map(t=>t.id===id?{...t,s:"o",oa:t.oa||new Date().toISOString(),g:g?(g.trim().toUpperCase()):t.g}:t));setSel(id);setCat(firstCat);setDisc(null);setPay(false);setGM(null);setV("order");};
-const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const ex=t.order.find(o=>o.id===item.id);const order=ex?t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o):[...t.order,{...item,qty:1}];return{...t,order,s:"o",oa:t.oa||new Date().toISOString()};}));};
-const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>o.id===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);return{...t,order:newOrder};}).filter(t=>t.id!==tid||t.order.length>0));};
+const addItem=(tid,item)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const now=new Date().toISOString();const newEntry={...item,qty:1,addedAt:now,oid:uid()};const order=[...t.order,newEntry];return{...t,order,s:"o",oa:t.oa||now};}));};
+const chQ=(tid,iid,d)=>{setTbl(prev=>prev.map(t=>{if(t.id!==tid)return t;const newOrder=t.order.map(o=>(o.oid||o.id)===iid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);return{...t,order:newOrder};}).filter(t=>t.id!==tid||t.order.length>0));};
 const cancelOrder=(tid)=>{setTbl(prev=>prev.filter(t=>t.id!==tid));setV("tables");setSel(null);msg("Adisyon iptal edildi","err");};
 const sub=(t)=>t.order.reduce((s,o)=>s+o.price*o.qty,0);
 const fin=(t)=>{const s=sub(t);return disc?disc.after:s;};
@@ -680,7 +680,7 @@ BİLDİRİMLER
 
 {isMobile?(
 /* MOBİL: Tab ile menü/sepet arası geçiş */
-<OrderMobileV curT={curT} T={T} sb={sb} fm={fm} ft={ft} cur={cur} disc={disc} setDisc={setDisc} setDisM={setDisM} setPay={setPay} setV={setV} setSel={setSel} setCancelConfirm={setCancelConfirm} cat={cat} setCat={setCat} oCats={oCats} fMenü={fMenü} aMenü={aMenü} addItem={addItem} chQ={chQ} sub={sub} fin={fin} cfg={cfg} setGM={setGM} msg={msg}/>
+<OrderMobileV curT={curT} T={T} sb={sb} fm={fm} ft={ft} cur={cur} disc={disc} setDisc={setDisc} setDisM={setDisM} setPay={setPay} setV={setV} setSel={setSel} setCancelConfirm={setCancelConfirm} cat={cat} setCat={setCat} oCats={oCats} fMenü={fMenü} aMenü={aMenü} addItem={addItem} chQ={chQ} sub={sub} fin={fin} cfg={cfg} setGM={setGM} msg={msg} tables={tables} setTbl={setTbl}/>
 ):(
 /* MASAÜSTÜ: yan yana iki sütun */
 <div style={{display:"grid",gridTemplateColumns:"1fr 340px",height:"100%",overflow:"hidden"}}>
@@ -708,9 +708,9 @@ BİLDİRİMLER
 :curT.order.map(item=><div key={item.id} style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
 <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:T.text}}>{item.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(item.price,cur)} x {item.qty} = <span style={{color:T.accentL}}>{fm(item.price*item.qty,cur)}</span></div></div>
 <div style={{display:"flex",gap:3}}>
-<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>-</button>
+<button onClick={()=>chQ(curT.id,item.oid||item.id,-1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>-</button>
 <span style={{width:18,textAlign:"center",fontWeight:700,lineHeight:"24px",fontSize:12,color:T.text}}>{item.qty}</span>
-<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>+</button>
+<button onClick={()=>chQ(curT.id,item.oid||item.id,1)} style={{width:24,height:24,borderRadius:6,border:"0.5px solid "+T.border2,background:T.bg3,cursor:"pointer",fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",color:T.text}}>+</button>
 </div></div>)}
 </div>
 <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"12px 16px",borderTop:"0.5px solid "+T.border,background:T.isDark?"#111":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)"}}>
@@ -740,9 +740,11 @@ BİLDİRİMLER
 </div>
 );}
 
-function OrderMobileV({curT,T,sb,fm,ft,cur,disc,setDisc,setDisM,setPay,setV,setSel,setCancelConfirm,cat,setCat,oCats,fMenü,aMenü,addItem,chQ,sub,fin,cfg,setGM,msg}){
+function OrderMobileV({curT,T,sb,fm,ft,cur,disc,setDisc,setDisM,setPay,setV,setSel,setCancelConfirm,cat,setCat,oCats,fMenü,aMenü,addItem,chQ,sub,fin,cfg,setGM,msg,tables,setTbl}){
 const[openCats,setOpenCats]=useState(()=>{const o={};if(oCats.length>0)o[oCats[0]]=true;return o;});
 const[showMenu,setShowMenu]=useState(curT.order.length===0);
+const[selMode,setSelMode]=useState(false);
+const[selItems,setSelItems]=useState([]);
 const orderTotal=fin(curT);
 const itemCount=curT.order.reduce((s,i)=>s+i.qty,0);
 
@@ -779,36 +781,88 @@ return(
 <div style={{fontSize:36,marginBottom:12}}>🛒</div>
 <div style={{fontSize:15,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
 </div>
-:curT.order.map((item,idx)=>(
-<div key={item.id} style={{display:"flex",alignItems:"center",padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)",background:idx%2===0?"transparent":"rgba(255,255,255,0.01)"}}>
-<div style={{flex:1}}>
+:curT.order.map((item,idx)=>{
+const oid=item.oid||item.id;
+const isSel=selItems.includes(oid);
+return(
+<div key={oid} style={{display:"flex",alignItems:"center",padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)",background:isSel?"rgba(52,199,89,0.08)":idx%2===0?"transparent":"rgba(255,255,255,0.01)",transition:"background 0.15s"}}>
+{/* Seçim checkbox */}
+{selMode&&<button onClick={()=>setSelItems(p=>p.includes(oid)?p.filter(x=>x!==oid):[...p,oid])} style={{width:24,height:24,borderRadius:6,border:`2px solid ${isSel?T.accent:"rgba(255,255,255,0.2)"}`,background:isSel?T.accent:"transparent",cursor:"pointer",marginRight:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:14,fontWeight:800}}>
+{isSel?"✓":""}
+</button>}
+<div style={{flex:1,cursor:selMode?"pointer":"default"}} onClick={selMode?()=>setSelItems(p=>p.includes(oid)?p.filter(x=>x!==oid):[...p,oid]):undefined}>
 <div style={{fontSize:14,fontWeight:700,color:T.text}}>{item.name}</div>
 <div style={{fontSize:13,fontWeight:700,color:T.accentL,marginTop:2}}>{fm(item.price*item.qty,cur)}</div>
-<div style={{fontSize:10,color:T.textDim,marginTop:1}}>{fm(item.price,cur)} × {item.qty}</div>
+<div style={{fontSize:10,color:T.textDim,marginTop:1}}>{fm(item.price,cur)} × {item.qty}{item.addedAt?" · "+new Date(item.addedAt).toLocaleDateString("tr-TR",{day:"numeric",month:"short"})+" "+new Date(item.addedAt).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"}):""}</div>
 </div>
-<div style={{display:"flex",alignItems:"center"}}>
-<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:36,height:36,border:"1px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.1)",color:T.danger,fontSize:20,cursor:"pointer",borderRadius:"8px 0 0 8px",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>−</button>
+{!selMode&&<div style={{display:"flex",alignItems:"center"}}>
+<button onClick={()=>chQ(curT.id,item.oid||item.id,-1)} style={{width:36,height:36,border:"1px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.1)",color:T.danger,fontSize:20,cursor:"pointer",borderRadius:"8px 0 0 8px",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>−</button>
 <div style={{width:40,textAlign:"center",fontWeight:800,fontSize:15,height:36,display:"flex",alignItems:"center",justifyContent:"center",background:T.bg3,borderTop:"1px solid rgba(255,255,255,0.1)",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>{item.qty}</div>
-<button onClick={()=>chQ(curT.id,item.id,1)} style={{width:36,height:36,border:"none",background:T.accent,color:"#fff",fontSize:20,cursor:"pointer",borderRadius:"0 8px 8px 0",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
+<button onClick={()=>chQ(curT.id,item.oid||item.id,1)} style={{width:36,height:36,border:"none",background:T.accent,color:"#fff",fontSize:20,cursor:"pointer",borderRadius:"0 8px 8px 0",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
+</div>}
 </div>
+);})}
 </div>
-))}
-</div>
+
+{/* Alt bar */}
 <div style={{flexShrink:0,padding:"10px 14px 20px",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.95)",backdropFilter:"blur(20px)"}}>
-{disc&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:6}}>
+{disc&&!selMode&&<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.danger,marginBottom:6}}>
 <span>İndirim <button onClick={()=>setDisc(null)} style={{background:"none",border:"none",color:T.danger,cursor:"pointer",fontSize:13}}>×</button></span>
 <span>-{fm(disc.amount,cur)}</span>
 </div>}
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+
+{!selMode&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
 <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
 <span style={{fontSize:22,fontWeight:800,color:T.accentL,letterSpacing:-0.5}}>{fm(orderTotal,cur)}</span>
-</div>
-<div style={{display:"flex",gap:8}}>
+</div>}
+
+{!selMode&&<div style={{display:"flex",gap:8}}>
 <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>＋ Sipariş Ekle</button>
+<button onClick={()=>{setSelMode(true);setSelItems([]);}} style={{padding:"13px 14px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>🔀</button>
 <button onClick={()=>setPay(true)} disabled={curT.order.length===0} style={{flex:2,padding:"13px",background:curT.order.length===0?T.bg3:"linear-gradient(135deg,#34C759,#248A3D)",color:curT.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:curT.order.length===0?"not-allowed":"pointer",boxShadow:curT.order.length>0?"0 4px 16px rgba(52,199,89,0.35)":"none"}}>
 Ödeme Al ↑
 </button>
+</div>}
+
+{/* Seçim modu */}
+{selMode&&(
+<div>
+<div style={{fontSize:12,color:T.textSub,marginBottom:10,textAlign:"center"}}>{selItems.length} ürün seçildi</div>
+{selItems.length>0&&(
+<div style={{marginBottom:10}}>
+<div style={{fontSize:11,color:T.textSub,marginBottom:6,fontWeight:600}}>Hangi masaya taşınsın?</div>
+<div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:6}}>
+{tables.filter(t=>t.id!==curT.id&&t.s==="o").map(t=>(
+<button key={t.id} onClick={()=>{
+const toMove=curT.order.filter(o=>selItems.includes(o.oid||o.id));
+setTbl(prev=>prev.map(tt=>{
+if(tt.id===t.id)return{...tt,order:[...tt.order,...toMove],s:"o",oa:tt.oa||new Date().toISOString()};
+if(tt.id===curT.id){const rem=tt.order.filter(o=>!selItems.includes(o.oid||o.id));return rem.length===0?null:{...tt,order:rem};}
+return tt;
+}).filter(Boolean));
+msg("Ürünler "+t.lbl+"'ya taşındı");
+setSelMode(false);setSelItems([]);
+}} style={{padding:"8px 14px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,color:T.text,fontWeight:600,fontSize:12,cursor:"pointer"}}>
+{t.lbl}{t.g?" — "+t.g:""}
+</button>
+))}
+<button onClick={()=>{
+const toMove=curT.order.filter(o=>selItems.includes(o.oid||o.id));
+const newId=(tables.length>0?Math.max(...tables.map(t=>t.id)):0)+1;
+const newTable={id:newId,lbl:"Masa "+newId,s:"o",order:toMove,oa:new Date().toISOString(),g:""};
+setTbl(prev=>{
+const rem=prev.map(tt=>{if(tt.id!==curT.id)return tt;const r=tt.order.filter(o=>!selItems.includes(o.oid||o.id));return r.length===0?null:{...tt,order:r};}).filter(Boolean);
+return[...rem,newTable];
+});
+msg("Yeni masaya taşındı");setSelMode(false);setSelItems([]);
+}} style={{padding:"8px 14px",background:"rgba(52,199,89,0.1)",border:"0.5px solid rgba(52,199,89,0.3)",borderRadius:10,color:T.accentL,fontWeight:600,fontSize:12,cursor:"pointer"}}>
+＋ Yeni Masa
+</button>
 </div>
+</div>}
+<button onClick={()=>{setSelMode(false);setSelItems([]);}} style={{width:"100%",padding:"12px",background:T.bg3,border:"none",borderRadius:12,color:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>İptal</button>
+</div>
+)}
 </div>
 </div>
 )}
@@ -820,7 +874,7 @@ return(
 {oCats.map(c=>{
 const catItems=(aMenü||fMenü||[]).filter(i=>i.cat===c);
 const isOpen=!!openCats[c];
-const catCount=catItems.reduce((s,item)=>{const o=curT.order.find(o=>o.id===item.id);return s+(o?o.qty:0);},0);
+const catCount=catItems.reduce((s,item)=>{const rows=curT.order.filter(o=>o.id===item.id);return s+rows.reduce((a,r)=>a+r.qty,0);},0);
 return(
 <div key={c}>
 <button onClick={()=>setOpenCats(p=>({...p,[c]:!p[c]}))} style={{width:"100%",padding:"16px 16px",border:"none",borderBottom:"0.5px solid rgba(255,255,255,0.08)",background:isOpen?"rgba(52,199,89,0.05)":T.bg2,display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",color:T.text}}>
@@ -832,17 +886,18 @@ return(
 <span style={{color:T.textSub,fontSize:18,transform:isOpen?"rotate(90deg)":"none",transition:"transform 0.2s",display:"inline-block"}}>›</span>
 </button>
 {isOpen&&catItems.map((item,i)=>{
-const inCart=curT.order.find(o=>o.id===item.id);
+const inCart=curT.order.filter(o=>o.id===item.id);
+const inCartTotal=inCart.reduce((s,o)=>s+o.qty,0);
 return(
-<div key={item.id} style={{display:"flex",alignItems:"center",padding:"13px 16px 13px 24px",borderBottom:"0.5px solid rgba(255,255,255,0.04)",background:inCart?"rgba(52,199,89,0.05)":"rgba(255,255,255,0.01)"}}>
+<div key={item.id} style={{display:"flex",alignItems:"center",padding:"13px 16px 13px 24px",borderBottom:"0.5px solid rgba(255,255,255,0.04)",background:inCartTotal>0?"rgba(52,199,89,0.05)":"rgba(255,255,255,0.01)"}}>
 <div style={{flex:1}}>
 <div style={{fontSize:13,fontWeight:600,color:T.text}}>{item.name}</div>
-<div style={{fontSize:13,fontWeight:800,color:inCart?T.accentL:"#555",marginTop:1}}>{fm(item.price,cur)}</div>
+<div style={{fontSize:13,fontWeight:800,color:inCartTotal>0?T.accentL:"#555",marginTop:1}}>{fm(item.price,cur)}</div>
 </div>
-{inCart?(
+{inCartTotal>0?(
 <div style={{display:"flex",alignItems:"center"}}>
-<button onClick={()=>chQ(curT.id,item.id,-1)} style={{width:32,height:32,border:"1px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.1)",color:T.danger,fontSize:18,cursor:"pointer",borderRadius:"6px 0 0 6px",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>−</button>
-<div style={{width:36,textAlign:"center",fontWeight:800,fontSize:14,height:32,display:"flex",alignItems:"center",justifyContent:"center",background:T.bg3,borderTop:"1px solid rgba(255,255,255,0.1)",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>{inCart.qty}</div>
+<button onClick={()=>{const last=inCart[inCart.length-1];if(last)chQ(curT.id,last.oid||last.id,-1);}} style={{width:32,height:32,border:"1px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.1)",color:T.danger,fontSize:18,cursor:"pointer",borderRadius:"6px 0 0 6px",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>−</button>
+<div style={{width:36,textAlign:"center",fontWeight:800,fontSize:14,height:32,display:"flex",alignItems:"center",justifyContent:"center",background:T.bg3,borderTop:"1px solid rgba(255,255,255,0.1)",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>{inCartTotal}</div>
 <button onClick={()=>addItem(curT.id,item)} style={{width:32,height:32,border:"none",background:T.accent,color:"#fff",fontSize:18,cursor:"pointer",borderRadius:"0 6px 6px 0",fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center"}}>+</button>
 </div>
 ):(
