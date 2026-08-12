@@ -748,6 +748,17 @@ const[selItems,setSelItems]=useState([]);
 const orderTotal=fin(curT);
 const itemCount=curT.order.reduce((s,i)=>s+i.qty,0);
 
+// Eski siparişlerde oid yoksa ekle
+useEffect(()=>{
+const hasNoOid=curT.order.some(o=>!o.oid);
+if(hasNoOid){
+setTbl(prev=>prev.map(t=>{
+if(t.id!==curT.id)return t;
+return{...t,order:t.order.map(o=>o.oid?o:{...o,oid:Math.random().toString(36).slice(2)})};
+}));
+}
+},[curT.id]);
+
 const handleBack=()=>{
 if(showMenu&&curT.order.length>0){setShowMenu(false);}
 else{setV("tables");setSel(null);}
