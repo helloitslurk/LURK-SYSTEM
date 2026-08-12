@@ -942,7 +942,7 @@ return(
 ))}
 </div>
 
-<div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:8,marginBottom:isMobile?16:20}}>
+<div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr",gap:8,marginBottom:isMobile?16:20}}>
 <div style={{background:T.isDark?"rgba(255,255,255,0.05)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,borderRadius:14,padding:"12px 14px"}}>
 <div style={{fontSize:9,color:T.textSub,marginBottom:3,textTransform:"uppercase",letterSpacing:0.5,fontWeight:600}}>Toplam Ciro</div>
 <div style={{fontSize:20,fontWeight:800,letterSpacing:-0.5,color:T.text}}>{fm(todI+(todOpenTables||0),cur)}</div>
@@ -957,11 +957,6 @@ return(
 <div style={{fontSize:9,color:T.textSub,marginBottom:3,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>Kart</div>
 <div style={{fontSize:16,fontWeight:700,color:"#007AFF"}}>{fm(card,cur)}</div>
 {todI>0&&<div style={{fontSize:9,color:T.textDim,marginTop:2}}>%{Math.round(card/todI*100)}</div>}
-</div>
-<div style={{background:T.isDark?"rgba(255,255,255,0.04)":T.bg2,backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:T.isDark?"1px solid rgba(255,255,255,0.08)":"1px solid "+T.border,borderRadius:14,padding:"12px 10px"}}>
-<div style={{fontSize:9,color:T.textSub,marginBottom:3,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>Harcama</div>
-<div style={{fontSize:16,fontWeight:700,color:"#FF3B30"}}>{fm(todE,cur)}</div>
-<div style={{fontSize:9,color:T.textDim,marginTop:2}}>Net: {fm(todI-todE,cur)}</div>
 </div>
 </div>
 
@@ -1363,13 +1358,6 @@ return(
 <div style={{fontSize:15,fontWeight:700,color:"#007AFF"}}>{fm(totalCard,cur)}</div>
 {totalInc>0&&<div style={{fontSize:9,color:T.textDim,marginTop:2}}>%{Math.round(totalCard/totalInc*100)}</div>}
 </div>
-</div>
-
-{/* Net satır */}
-<div style={{display:"flex",gap:20,padding:"10px 16px",borderBottom:"0.5px solid "+T.border}}>
-<div><span style={{fontSize:10,color:T.textSub}}>Harcama  </span><span style={{fontSize:13,fontWeight:700,color:T.danger}}>{fm(totalExp,cur)}</span></div>
-<div><span style={{fontSize:10,color:T.textSub}}>Net  </span><span style={{fontSize:13,fontWeight:700,color:(totalInc-totalExp)>=0?T.accentL:T.danger}}>{fm(totalInc-totalExp,cur)}</span></div>
-<div><span style={{fontSize:10,color:T.textSub}}>Ort/Gün  </span><span style={{fontSize:13,fontWeight:700,color:T.text}}>{dayList.length>0?fm(totalInc/dayList.length,cur):"—"}</span></div>
 </div>
 
 {/* Tab seçici */}
@@ -3057,11 +3045,14 @@ const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
 const[step,setStep]=useState(null);
 const[selCat,setSelCat]=useState(null);
 const[amount,setAmount]=useState("");
+const[desc,setDesc]=useState("");
 const[showNewCat,setShowNewCat]=useState(false);
 const[newCatInput,setNewCatInput]=useState("");
 const[expandedCat,setExpandedCat]=useState(null);
 const[editId,setEditId]=useState(null);
 const[editAmt,setEditAmt]=useState("");
+const[editCat,setEditCat]=useState("");
+const[editDesc,setEditDesc]=useState("");
 const[delId,setDelId]=useState(null);
 
 const col=(i)=>COLORS[i%COLORS.length];
@@ -3082,7 +3073,7 @@ monthExp.forEach(e=>{if(!byCat[e.cat])byCat[e.cat]={cat:e.cat,total:0,items:[]};
 const catList=Object.values(byCat).sort((a,b)=>b.total-a.total);
 const maxCat=catList[0]?.total||1;
 
-const reset=()=>{setStep(null);setSelCat(null);setAmount("");setShowNewCat(false);setNewCatInput("");};
+const reset=()=>{setStep(null);setSelCat(null);setAmount("");setDesc("");setShowNewCat(false);setNewCatInput("");};
 
 const addNewCat=()=>{
 const t=newCatInput.trim();
@@ -3093,7 +3084,7 @@ setSelCat(t);setShowNewCat(false);setNewCatInput("");setStep("amount");
 
 const save=()=>{
 if(!selCat||!amount)return;
-setExp(prev=>[{id:uid(),desc:selCat,cat:selCat,amount:parseFloat(amount),date:tod()},...(prev||[])]);
+setExp(prev=>[{id:uid(),desc:desc||selCat,cat:selCat,amount:parseFloat(amount),date:tod()},...(prev||[])]);
 reset();
 };
 
@@ -3155,11 +3146,21 @@ return(
 {c.items.sort((a,b)=>b.amount-a.amount).map((item,j)=>(
 <div key={j} style={{padding:"11px 14px",borderBottom:j<c.items.length-1?"0.5px solid rgba(255,255,255,0.06)":"none"}}>
 {editId===item.id
-?<div style={{display:"flex",gap:8,alignItems:"center"}}>
+?<div style={{display:"flex",flexDirection:"column",gap:8}}>
+<div style={{display:"flex",gap:8,alignItems:"center"}}>
 <input autoFocus type="number" value={editAmt} onChange={e=>setEditAmt(e.target.value)}
-style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"8px 12px",color:T.text,fontSize:15,fontWeight:700,outline:"none"}}/>
-<button onClick={()=>{setExp(prev=>prev.map(e=>e.id===item.id?{...e,amount:parseFloat(editAmt)}:e));setEditId(null);}} style={{padding:"8px 14px",background:T.accent,border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>✓</button>
+style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"8px 12px",color:T.text,fontSize:15,fontWeight:700,outline:"none"}}
+placeholder="Tutar"/>
+<button onClick={()=>{setExp(prev=>prev.map(e=>e.id===item.id?{...e,amount:parseFloat(editAmt),cat:editCat,desc:editDesc||editCat}:e));setEditId(null);}} style={{padding:"8px 14px",background:T.accent,border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>✓</button>
 <button onClick={()=>setEditId(null)} style={{padding:"8px 10px",background:T.bg3,border:"none",borderRadius:8,color:T.textSub,fontSize:13,cursor:"pointer"}}>✕</button>
+</div>
+<input value={editDesc} onChange={e=>setEditDesc(e.target.value)} placeholder="Açıklama (opsiyonel)"
+style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"8px 12px",color:T.text,fontSize:13,outline:"none"}}/>
+<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{(ecats||[]).map((c,ci)=>(
+<button key={c} onClick={()=>setEditCat(c)} style={{padding:"5px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:editCat===c?col(ci):"rgba(255,255,255,0.06)",color:editCat===c?"#fff":T.textSub}}>{c}</button>
+))}
+</div>
 </div>
 :<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
 <div>
@@ -3168,7 +3169,7 @@ style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.2)",borde
 </div>
 <div style={{display:"flex",alignItems:"center",gap:8}}>
 <span style={{fontSize:14,fontWeight:700,color:cc}}>{fm(item.amount,cur)}</span>
-<button onClick={()=>{setEditId(item.id);setEditAmt(String(item.amount));}} style={{background:"rgba(255,255,255,0.06)",border:"none",borderRadius:6,padding:"4px 8px",cursor:"pointer",color:T.textSub,fontSize:11}}>Düzenle</button>
+<button onClick={()=>{setEditId(item.id);setEditAmt(String(item.amount));setEditCat(item.cat);setEditDesc(item.desc||"");}} style={{background:"rgba(255,255,255,0.06)",border:"none",borderRadius:6,padding:"4px 8px",cursor:"pointer",color:T.textSub,fontSize:11}}>Düzenle</button>
 <button onClick={()=>setDelId(item.id)} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:16,padding:"0 2px"}}>×</button>
 </div>
 </div>}
@@ -3219,12 +3220,14 @@ style={{flex:1,background:T.bg3,border:"0.5px solid "+T.border2,borderRadius:12,
 <button onClick={()=>setStep("cat")} style={{background:T.bg3,border:"none",borderRadius:20,padding:"6px 14px",color:T.textSub,fontSize:14,cursor:"pointer",fontWeight:600}}>← {selCat}</button>
 <button onClick={reset} style={{background:T.bg3,border:"none",borderRadius:"50%",width:30,height:30,cursor:"pointer",color:T.textSub,fontSize:17}}>×</button>
 </div>
-<div style={{textAlign:"center",padding:"16px 0 24px"}}>
+<div style={{textAlign:"center",padding:"16px 0 16px"}}>
 <div style={{fontSize:11,color:T.textSub,letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>Tutar</div>
 <input autoFocus type="number" placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)}
 style={{background:"transparent",border:"none",borderBottom:`3px solid ${catCol(selCat)}`,padding:"6px 0",color:T.text,fontSize:52,fontWeight:800,outline:"none",width:"100%",textAlign:"center",letterSpacing:-2}}/>
 <div style={{fontSize:14,color:T.textSub,marginTop:8}}>TL</div>
 </div>
+<input placeholder="Açıklama (opsiyonel)" value={desc} onChange={e=>setDesc(e.target.value)}
+style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:12,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:16}}/>
 <button onClick={save} disabled={!amount} style={{width:"100%",padding:"16px",background:amount?catCol(selCat):T.bg3,border:"none",borderRadius:14,color:amount?"#fff":T.textDim,fontSize:17,fontWeight:800,cursor:amount?"pointer":"not-allowed",boxShadow:amount?`0 6px 20px ${catCol(selCat)}55`:"none",transition:"all 0.2s"}}>
 Ekle ✓
 </button>
