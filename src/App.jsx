@@ -878,7 +878,8 @@ msg("Yeni masaya taşındı");setSelMode(false);setSelItems([]);
 ＋ Yeni Masa
 </button>
 </div>
-</div>}
+</div>
+)}
 <button onClick={()=>{setSelMode(false);setSelItems([]);}} style={{width:"100%",padding:"12px",background:T.bg3,border:"none",borderRadius:12,color:T.textSub,fontWeight:700,fontSize:13,cursor:"pointer"}}>İptal</button>
 </div>
 )}
