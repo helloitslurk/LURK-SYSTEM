@@ -970,6 +970,7 @@ const NAV_CARDS=[
 {k:"installments",label:"Vadeler",sub:overdueCount>0?overdueCount+" gecikmiş":"Taksit takibi",val:overdueCount||null,valColor:"#FF3B30"},
 {k:"customers",label:"Müşteriler",sub:"En çok harcayanlar",val:null,valColor:"#F59E0B"},
 {k:"alltime",label:"Tüm Zamanlar",sub:"Genel istatistikler",val:null,valColor:"#5856D6"},
+{k:"achievements",label:"Rozetler",sub:earnedCount+"/"+((badges||[]).length),val:null,valColor:"#FF9500"},
 {k:"settings",label:"Ayarlar",sub:"Sistem & menü",val:null,valColor:null},
 ];
 
