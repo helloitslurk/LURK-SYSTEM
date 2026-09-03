@@ -2455,7 +2455,20 @@ const[partialTarget,setPartialTarget]=useState(null);
 const[partialAmt,setPartialAmt]=useState("");
 const[form,setForm]=useState({name:"",amount:"",date:"",type:"single",instCount:""});
 
-const debts=installments||[];
+const debts=(installments||[]).map(d=>{
+// Eski format: totalAmount, installments:[{amount, paid}]
+// Yeni format: total, paid, installments:[{amt, paid, partialPaid}]
+const total=d.total||d.totalAmount||0;
+const insts=(d.installments||[]).map(i=>({
+...i,
+amt:i.amt||i.amount||0,
+paid:i.paid||false,
+partialPaid:i.partialPaid||0,
+due:i.due||i.dueDate||"",
+}));
+const paid=d.paid!=null?d.paid:insts.reduce((s,i)=>s+(i.paid?i.amt:(i.partialPaid||0)),0);
+return{...d,total,paid,installments:insts};
+});
 const totalDebt=debts.reduce((s,d)=>s+d.total,0);
 const totalPaid=debts.reduce((s,d)=>s+d.paid,0);
 const remaining=totalDebt-totalPaid;
@@ -2468,11 +2481,12 @@ setInstallments(prev=>prev.map(d=>{
 if(d.id!==did)return d;
 const insts=d.installments.map((inst,i)=>{
 if(i!==idx)return inst;
+const instAmt=inst.amt||inst.amount||0;
 const nowPaid=!inst.paid;
-return{...inst,paid:nowPaid,partialPaid:nowPaid?inst.amt:0};
+return{...inst,amt:instAmt,paid:nowPaid,partialPaid:nowPaid?instAmt:0};
 });
-const paid=insts.reduce((s,i)=>s+(i.paid?i.amt:(i.partialPaid||0)),0);
-return{...d,installments:insts,paid};
+const paid=insts.reduce((s,i)=>s+(i.paid?(i.amt||i.amount||0):(i.partialPaid||0)),0);
+return{...d,paid};
 }));
 };
 
@@ -2483,12 +2497,13 @@ setInstallments(prev=>prev.map(d=>{
 if(d.id!==partialTarget.did)return d;
 const insts=d.installments.map((inst,i)=>{
 if(i!==partialTarget.idx)return inst;
-const newPartial=Math.min(inst.amt,(inst.partialPaid||0)+amt);
-const nowPaid=newPartial>=inst.amt;
-return{...inst,partialPaid:newPartial,paid:nowPaid};
+const instAmt=inst.amt||inst.amount||0;
+const newPartial=Math.min(instAmt,(inst.partialPaid||0)+amt);
+const nowPaid=newPartial>=instAmt;
+return{...inst,amt:instAmt,partialPaid:newPartial,paid:nowPaid};
 });
-const paid=insts.reduce((s,i)=>s+(i.paid?i.amt:(i.partialPaid||0)),0);
-return{...d,installments:insts,paid};
+const paid=insts.reduce((s,i)=>s+(i.paid?(i.amt||i.amount||0):(i.partialPaid||0)),0);
+return{...d,paid};
 }));
 setShowPartial(false);setPartialAmt("");setPartialTarget(null);
 };
@@ -2508,8 +2523,8 @@ insts.push({due:d.toISOString().slice(0,10),amt:Math.round(amt/count),paid:false
 }else{
 insts.push({due:form.date,amt,paid:false,partialPaid:0});
 }
-const newId=(debts.length>0?Math.max(...debts.map(d=>d.id||0)):0)+1;
-setInstallments(prev=>[...prev,{id:newId,name,total:amt,paid:0,installments:insts}]);
+const newId=(installments&&installments.length>0?Math.max(...installments.map(d=>parseInt(d.id)||0)):0)+1;
+setInstallments(prev=>[...prev,{id:newId,name,total:amt,totalAmount:amt,paid:0,installments:insts}]);
 setExpanded(p=>({...p,[newId]:true}));
 setShowModal(false);setForm({name:"",amount:"",date:"",type:"single",instCount:""});
 };
