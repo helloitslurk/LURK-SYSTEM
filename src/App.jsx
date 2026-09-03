@@ -5,12 +5,12 @@ const DARK={bg:"#0D0D0D",bg2:"#1A1A1A",bg3:"#242424",border:"rgba(255,255,255,0.
 const LIGHT={bg:"#F2F2F7",bg2:"rgba(255,255,255,0.9)",bg3:"rgba(118,118,128,0.12)",border:"rgba(60,60,67,0.12)",border2:"rgba(60,60,67,0.2)",accent:"#34C759",accentL:"#248A3D",accentD:"#248A3D",accentXL:"#8FE3A8",text:"#000000",textSub:"#6C6C70",textDim:"#AEAEB2",success:"#34C759",danger:"#FF3B30",warn:"#FF9500",shadow:"0 2px 8px rgba(0,0,0,0.08),0 0 0 0.5px rgba(255,255,255,0.5) inset",shadowM:"0 8px 32px rgba(0,0,0,0.12),0 0 0 0.5px rgba(255,255,255,0.4) inset",glass:"rgba(255,255,255,0.7)",isDark:false};
 
 const MENU=[
-{id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},{id:102,name:"FILTRE KAHVE",price:140,cat:"Kahve",on:true},{id:103,name:"AMERICANO",price:150,cat:"Kahve",on:true},{id:104,name:"LATTE",price:180,cat:"Kahve",on:true},{id:105,name:"SALTED CARAMEL LATTE",price:250,cat:"Kahve",on:true},{id:106,name:"CORTADO",price:150,cat:"Kahve",on:true},{id:107,name:"FLATWHITE",price:170,cat:"Kahve",on:true},{id:108,name:"SÜT REÇELLİ LATTE",price:250,cat:"Kahve",on:true},{id:109,name:"MOCHA",price:230,cat:"Kahve",on:true},{id:110,name:"VANİLYA LATTE",price:200,cat:"Kahve",on:true},{id:111,name:"KIŞ LATTESİ",price:200,cat:"Kahve",on:true},{id:112,name:"V60",price:220,cat:"Kahve",on:true},{id:113,name:"ESPRESSO",price:140,cat:"Kahve",on:true},{id:114,name:"CAPPUCCINO",price:180,cat:"Kahve",on:true},
-{id:201,name:"MATCHA LATTE",price:230,cat:"Matcha",on:true},{id:202,name:"STRAWBERRY MATCHA",price:260,cat:"Matcha",on:true},{id:203,name:"BERRY MATCHA LATTE",price:260,cat:"Matcha",on:true},{id:204,name:"VANILLA MATCHA LATTE",price:250,cat:"Matcha",on:true},{id:205,name:"APPLE & GINGER MATCHA",price:260,cat:"Matcha",on:true},{id:206,name:"CRÈME BRÜLÉE MATCHA",price:250,cat:"Matcha",on:true},{id:207,name:"MEVSİM MEYVELİ MATCHA",price:260,cat:"Matcha",on:true},
-{id:301,name:"SIYAH ÇAY",price:50,cat:"Cay",on:true},{id:302,name:"BİTKİ ÇAYI",price:150,cat:"Cay",on:true},{id:303,name:"ICE TEA",price:200,cat:"Cay",on:true},
-{id:401,name:"MUHAMMARA SANDVIÇ",price:330,cat:"Sandviç",on:true},{id:402,name:"RENÇ SANDVIÇ",price:330,cat:"Sandviç",on:true},{id:403,name:"PESTO SANDVIÇ",price:300,cat:"Sandviç",on:true},{id:404,name:"TON BALIĞI SANDVIÇ",price:300,cat:"Sandviç",on:true},
+{id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},{id:102,name:"FİLTRE KAHVE",price:160,cat:"Kahve",on:true},{id:103,name:"AMERICANO",price:170,cat:"Kahve",on:true},{id:104,name:"LATTE",price:200,cat:"Kahve",on:true},{id:105,name:"SALTED CARAMEL LATTE",price:270,cat:"Kahve",on:true},{id:106,name:"CORTADO",price:170,cat:"Kahve",on:true},{id:107,name:"FLATWHITE",price:190,cat:"Kahve",on:true},{id:109,name:"MOCHA",price:250,cat:"Kahve",on:true},{id:110,name:"VANİLYA LATTE",price:220,cat:"Kahve",on:true},{id:112,name:"V60",price:240,cat:"Kahve",on:true},{id:113,name:"ESPRESSO",price:160,cat:"Kahve",on:true},{id:114,name:"CAPPUCCINO",price:200,cat:"Kahve",on:true},
+{id:201,name:"MATCHA LATTE",price:260,cat:"Matcha",on:true},{id:202,name:"STRAWBERRY MATCHA",price:290,cat:"Matcha",on:true},{id:203,name:"BERRY MATCHA LATTE",price:290,cat:"Matcha",on:true},{id:204,name:"VANILLA MATCHA LATTE",price:280,cat:"Matcha",on:true},{id:205,name:"APPLE & GINGER MATCHA",price:290,cat:"Matcha",on:true},{id:206,name:"CRÈME BRÜLÉE MATCHA",price:280,cat:"Matcha",on:true},
+{id:301,name:"SİYAH ÇAY",price:50,cat:"Cay",on:true},{id:302,name:"BİTKİ ÇAYI",price:180,cat:"Cay",on:true},{id:303,name:"ICE TEA",price:220,cat:"Cay",on:true},
+{id:401,name:"MUHAMMARA SANDVİÇ",price:330,cat:"Sandviç",on:true},{id:402,name:"RENÇ SANDVİÇ",price:330,cat:"Sandviç",on:true},{id:403,name:"PESTO SANDVİÇ",price:300,cat:"Sandviç",on:true},{id:404,name:"TON BALIĞI SANDVİÇ",price:300,cat:"Sandviç",on:true},
 {id:501,name:"TIRAMISU",price:290,cat:"Tatlı",on:true},{id:502,name:"SOFT COOKIE",price:175,cat:"Tatlı",on:true},
-{id:601,name:"+VEGAN SÜT",price:50,cat:"Ekstra",on:true},{id:602,name:"SICAK ÇIKOLATA",price:200,cat:"Ekstra",on:true},{id:603,name:"SAHLEP",price:150,cat:"Ekstra",on:true},{id:604,name:"SODA",price:90,cat:"Ekstra",on:true},{id:605,name:"BAILEYS MATCHA",price:300,cat:"Ekstra",on:true},{id:606,name:"SERVIS",price:200,cat:"Ekstra",on:true},{id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},{id:608,name:"CLAP",price:250,cat:"Ekstra",on:true},{id:609,name:"CHURCHILL",price:120,cat:"Ekstra",on:true},
+{id:601,name:"+VEGAN SÜT",price:70,cat:"Ekstra",on:true},{id:602,name:"SICAK ÇİKOLATA",price:220,cat:"Ekstra",on:true},{id:603,name:"SAHLEP",price:200,cat:"Ekstra",on:true},{id:604,name:"SODA",price:100,cat:"Ekstra",on:true},{id:605,name:"BAILEYS MATCHA",price:340,cat:"Ekstra",on:true},{id:606,name:"SERVİS",price:200,cat:"Ekstra",on:true},{id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},{id:609,name:"CHURCHILL",price:130,cat:"Ekstra",on:true},
 ];
 
 const OLD_LOGS=[]; // Supabase'e taşındı
@@ -339,7 +339,7 @@ if(hadBroken){
   console.log("Fixed broken orders:",fixedOrders.filter(x=>x.total>0&&(o||[]).find(y=>y.id===x.id&&y.total===0)).length);
 }
 
-setOk(true);
+setOk(true);clearTimeout(fallbackTimer);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
 try{
@@ -348,7 +348,7 @@ const cfAuth=cf.sitePassword;
 if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 }catch{setAuthed(true);}
 setAuthChecked(true);
-})();},[]);
+})().catch(function(){clearTimeout(fallbackTimer);setOk(true);setAuthChecked(true);setAuthed(true);});},[]);
 
 // Debounced toplu kayıt — 800ms bekleyip tek seferde yazar
 const saveTimerRef=useRef(null);
@@ -707,6 +707,8 @@ BİLDİRİMLER
 {view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T} badges={achievements}/>}
 {view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb} setV={setV}/>}
 {view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp} setV={setV}/>}
+{view==="expenses"&&<ExpensesPageV exp={exp} setExp={setExp} ecats={ecats} setEc={setEc} cur={cur} fm={fm} fd={fd} tod={tod} uid={uid} T={T} setV={setV}/>}
+{view==="alltime"&&<AllTimeV orders={orders} cur={cur} fm={fm} T={T} setV={setV}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
 {view==="installments"&&<InstallmentsPageV installments={installments} setInstallments={setInstallments} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} T={T} sb={sb} inp={inp} setV={setV} notifications={notifications} setNotifications={setNotifications}/>}
 {view==="credit"&&<CreditPageV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp} setV={setV} tables={tables} setTbl={setTbl} uid={uid}/>}
@@ -873,9 +875,10 @@ const overdueCount=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filte
 const NAV_CARDS=[
 {k:"tables",label:"Masalar",sub:openT.length>0?openT.length+" açık masa":"Boş",val:openT.length||null,valColor:"#34C759"},
 {k:"reports",label:"Raporlar",sub:"Satış & harcama",val:null,valColor:null},
+{k:"expenses",label:"Harcamalar",sub:"Gider takibi",val:null,valColor:"#FF3B30"},
 {k:"installments",label:"Vadeler",sub:overdueCount>0?overdueCount+" gecikmiş":"Taksit takibi",val:overdueCount||null,valColor:"#FF3B30"},
-{k:"credit",label:"Cari",sub:openCari>0?openCari+" açık":"Müşteri alacakları",val:openCari||null,valColor:"#AF52DE"},
 {k:"customers",label:"Müşteriler",sub:"En çok harcayanlar",val:null,valColor:"#F59E0B"},
+{k:"alltime",label:"Tüm Zamanlar",sub:"Genel istatistikler",val:null,valColor:"#5856D6"},
 {k:"achievements",label:"Rozetler",sub:earnedCount+"/"+((badges||[]).length),val:null,valColor:null},
 {k:"settings",label:"Ayarlar",sub:"Sistem & menü",val:null,valColor:null},
 ];
@@ -3486,22 +3489,380 @@ return(
 </div>
 );}
 
-function CustomersPageV({orders,cur,fm,fd,T,inp,setV}){
-const custMap={};
-(orders||[]).filter(o=>o.g&&o.g.trim()&&o.g!=="--").forEach(o=>{
-  const name=o.g.trim().toUpperCase();const month=o.date?o.date.slice(0,7):"";
-  if(!custMap[name])custMap[name]={name,total:0,count:0,visits:new Set(),months:{},lastVisit:"",items:{}};
-  custMap[name].total+=o.total||0;custMap[name].count++;custMap[name].visits.add(o.date);
-  if(o.date>custMap[name].lastVisit)custMap[name].lastVisit=o.date;
-  if(month){if(!custMap[name].months[month])custMap[name].months[month]=0;custMap[name].months[month]+=o.total||0;}
-  (o.items||[]).forEach(it=>{if(!custMap[name].items[it.name])custMap[name].items[it.name]=0;custMap[name].items[it.name]+=it.qty||0;});
-});
-const custList=Object.values(custMap).map(c=>({...c,visits:c.visits.size,avgOrder:c.count>0?c.total/c.count:0})).sort((a,b)=>b.total-a.total);
+function AllTimeV({orders,cur,fm,T,setV}){
+const[expandedSec,setExpandedSec]=useState("special");
+const totalRev=orders.reduce((s,o)=>s+o.total,0);
+const totalOrders=orders.length;
+const avgOrder=totalOrders>0?Math.round(totalRev/totalOrders):0;
+const totalCash=orders.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
+const totalCard=orders.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
+const byDay={};
+orders.forEach(o=>{if(!byDay[o.date])byDay[o.date]=0;byDay[o.date]+=o.total;});
+const bestDay=Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
+const bestDayLabel=bestDay?new Date(bestDay[0]+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"}):"—";
+const dayCount=Object.keys(byDay).length;
+const itemCounts={};
+const catCounts={};
+orders.forEach(o=>(o.items||[]).forEach(item=>{
+if(!item||typeof item!=="object")return;
+if(!itemCounts[item.name])itemCounts[item.name]=0;
+itemCounts[item.name]+=item.qty||1;
+if(!catCounts[item.cat])catCounts[item.cat]=0;
+catCounts[item.cat]+=item.qty||1;
+}));
+const topItems=Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+const catList=Object.entries(catCounts).sort((a,b)=>b[1]-a[1]);
+const maxCat=catList[0]?.[1]||1;
+const ICONS={"Kahve":"☕","Matcha":"🍵","Cay":"🫖","Sandviç":"🥪","Tatlı":"🍰","Ekstra":"➕"};
+const Section=function({id,title,children}){return(
+<div style={{marginBottom:12}}>
+<button onClick={()=>setExpandedSec(expandedSec===id?null:id)} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:expandedSec===id?"14px 14px 0 0":14,padding:"14px 16px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",color:T.text,borderBottom:expandedSec===id?"none":undefined}}>
+<span style={{fontWeight:700,fontSize:15,color:T.text}}>{title}</span>
+<span style={{color:T.textSub,fontSize:14}}>{expandedSec===id?"▲":"▽"}</span>
+</button>
+{expandedSec===id&&<div style={{background:T.bg2,borderRadius:"0 0 14px 14px",border:"0.5px solid rgba(255,255,255,0.08)",borderTop:"none",overflow:"hidden"}}>{children}</div>}
+</div>
+);};
 return(
-<div style={{padding:"24px 28px",maxWidth:860,margin:"0 auto"}}>
-<button onClick={()=>setV("lurk")} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#888",cursor:"pointer",fontSize:13,fontWeight:600,marginBottom:16,padding:0}}>← Dashboard</button>
-<h2 style={{margin:"0 0 20px",fontWeight:800,fontSize:22,color:T.text}}>👥 Müşteriler</h2>
-<CustomersV orders={orders} custList={custList} cur={cur} fm={fm} fd={fd} T={T} inp={inp}/>
+<div style={{maxWidth:680,margin:"0 auto",paddingBottom:60}}>
+<div style={{padding:"16px 16px 20px",borderBottom:"0.5px solid "+T.border}}>
+<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,padding:0,marginBottom:10,display:"block"}}>Dashboard</button>
+<h2 style={{margin:"0 0 4px",fontWeight:800,fontSize:24,color:T.text}}>Tüm Zamanlar</h2>
+<div style={{fontSize:12,color:T.textDim}}>{totalOrders} adisyon · {dayCount} gün</div>
+</div>
+<div style={{padding:"16px"}}>
+<div style={{background:"linear-gradient(135deg,rgba(52,199,89,0.15),rgba(52,199,89,0.05))",border:"1px solid rgba(52,199,89,0.2)",borderRadius:16,padding:"20px",marginBottom:12}}>
+<div style={{fontSize:10,color:T.accentL,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>Toplam Ciro</div>
+<div style={{fontSize:38,fontWeight:800,color:T.text,letterSpacing:-1,marginBottom:8}}>{fm(totalRev,cur)}</div>
+<div style={{display:"flex",gap:16}}>
+<div><span style={{fontSize:11,color:T.textSub}}>Nakit  </span><span style={{fontSize:13,fontWeight:700,color:"#34C759"}}>{fm(totalCash,cur)}</span></div>
+<div><span style={{fontSize:11,color:T.textSub}}>Kart  </span><span style={{fontSize:13,fontWeight:700,color:"#007AFF"}}>{fm(totalCard,cur)}</span></div>
+</div>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+{[
+{label:"Toplam Adisyon",val:totalOrders.toLocaleString("tr-TR"),unit:"adet",color:"#007AFF"},
+{label:"Ortalama Adisyon",val:fm(avgOrder,cur),unit:"",color:"#FF9500"},
+{label:"En İyi Gün",val:fm(bestDay?.[1]||0,cur),unit:"",color:"#AF52DE",sub:bestDayLabel},
+{label:"Günlük Ortalama",val:fm(dayCount>0?Math.round(totalRev/dayCount):0,cur),unit:"",color:"#34C759"},
+].map((s,i)=>(
+<div key={i} style={{background:T.bg2,borderRadius:12,padding:"14px",border:"0.5px solid rgba(255,255,255,0.08)"}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:6}}>{s.label}</div>
+<div style={{fontSize:16,fontWeight:800,color:s.color}}>{s.val}</div>
+{s.sub&&<div style={{fontSize:10,color:T.textDim,marginTop:3}}>{s.sub}</div>}
+</div>
+))}
+</div>
+<Section id="special" title="✨ Ürün İstatistikleri">
+{[
+{label:"☕ Toplam Kahve",keys:["FİLTRE KAHVE","LATTE","AMERICANO","CAPPUCCINO","CORTADO","FLATWHITE","MOCHA","V60","ESPRESSO","SİGARALIK FİLTRE","SALTED CARAMEL LATTE","VANİLYA LATTE"],unit:"fincan"},
+{label:"🍵 Toplam Matcha",keys:["MATCHA LATTE","STRAWBERRY MATCHA","BERRY MATCHA LATTE","VANILLA MATCHA LATTE","APPLE & GINGER MATCHA","CRÈME BRÜLÉE MATCHA"],unit:"bardak"},
+{label:"🧋 Ice Tea",keys:["ICE TEA"],unit:"bardak"},
+{label:"🫖 Bitki Çayı",keys:["BİTKİ ÇAYI"],unit:"bardak"},
+{label:"🥪 Toplam Sandviç",keys:["MUHAMMARA SANDVİÇ","RENÇ SANDVİÇ","PESTO SANDVİÇ","TON BALIĞI SANDVİÇ"],unit:"adet"},
+{label:"🍰 Toplam Tatlı",keys:["TIRAMISU","SOFT COOKIE"],unit:"adet"},
+].map((s,i)=>{
+const count=s.keys.reduce((sum,k)=>sum+(itemCounts[k]||0),0);
+return(
+<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
+<span style={{fontSize:14,color:T.text}}>{s.label}</span>
+<div><span style={{fontSize:20,fontWeight:800,color:T.accentL}}>{count.toLocaleString("tr-TR")}</span><span style={{fontSize:11,color:T.textSub,marginLeft:4}}>{s.unit}</span></div>
+</div>
+);})}
+</Section>
+<Section id="products" title="🏆 En Çok Satılan Ürünler">
+{topItems.length===0?<div style={{padding:"20px",textAlign:"center",color:T.textDim}}>Henüz veri yok</div>
+:topItems.map(([name,count],i)=>(
+<div key={name} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
+<div style={{width:28,height:28,borderRadius:"50%",background:i===0?"rgba(255,215,0,0.15)":i===1?"rgba(192,192,192,0.1)":i===2?"rgba(205,127,50,0.1)":"rgba(255,255,255,0.04)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:i===0?"#FFD60A":i===1?"#C0C0C0":i===2?"#CD7F32":T.textDim,flexShrink:0}}>{i+1}</div>
+<div style={{flex:1,fontSize:13,fontWeight:600,color:T.text}}>{name}</div>
+<div style={{fontSize:15,fontWeight:800,color:T.accentL}}>{count.toLocaleString("tr-TR")}</div>
+</div>
+))}
+</Section>
+<Section id="categories" title="🏷 Kategori Dağılımı">
+{catList.length===0?<div style={{padding:"20px",textAlign:"center",color:T.textDim}}>Henüz veri yok</div>
+:catList.map(([cat,count])=>(
+<div key={cat} style={{padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
+<div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+<span style={{fontSize:14,fontWeight:600,color:T.text}}>{ICONS[cat]||"•"} {cat}</span>
+<span style={{fontSize:14,fontWeight:800,color:T.accentL}}>{count.toLocaleString("tr-TR")} adet</span>
+</div>
+<div style={{height:4,background:"rgba(255,255,255,0.06)",borderRadius:2,overflow:"hidden"}}>
+<div style={{height:"100%",width:(count/maxCat*100)+"%",background:T.accent,borderRadius:2}}/>
+</div>
+</div>
+))}
+</Section>
+</div>
+</div>
+);}
+
+function ExpensesPageV({exp,setExp,ecats,setEc,cur,fm,fd,tod,uid,T,setV}){
+const COLORS=["#FF3B30","#FF9500","#FFD60A","#34C759","#007AFF","#5856D6","#AF52DE","#FF2D55"];
+const now=new Date();
+const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
+const[step,setStep]=useState(null);
+const[selCat,setSelCat]=useState(null);
+const[amount,setAmount]=useState("");
+const[desc,setDesc]=useState("");
+const[showNewCat,setShowNewCat]=useState(false);
+const[newCatInput,setNewCatInput]=useState("");
+const[expandedCat,setExpandedCat]=useState(null);
+const[editId,setEditId]=useState(null);
+const[editAmt,setEditAmt]=useState("");
+const[editCat,setEditCat]=useState("");
+const[editDesc,setEditDesc]=useState("");
+const[delId,setDelId]=useState(null);
+const col=function(i){return COLORS[i%COLORS.length];};
+const catCol=function(c){return col((ecats||[]).indexOf(c));};
+const months=[...new Set((exp||[]).map(e=>e.date?e.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+if(months.length===0||!months.includes(selMonth)){const m=now.toISOString().slice(0,7);if(!months.includes(m))months.unshift(m);}
+const monthLabel=function(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
+const monthStart=selMonth+"-01";
+const lastDay=new Date(parseInt(selMonth.slice(0,4)),parseInt(selMonth.slice(5,7)),0).getDate();
+const monthEnd=selMonth+"-"+String(lastDay).padStart(2,"0");
+const monthExp=(exp||[]).filter(e=>e.date&&e.date>=monthStart&&e.date<=monthEnd);
+const total=monthExp.reduce((s,e)=>s+e.amount,0);
+const byCat={};
+monthExp.forEach(e=>{if(!byCat[e.cat])byCat[e.cat]={cat:e.cat,total:0,items:[]};byCat[e.cat].total+=e.amount;byCat[e.cat].items.push(e);});
+const catList=Object.values(byCat).sort((a,b)=>b.total-a.total);
+const maxCat=catList[0]?.total||1;
+const reset=function(){setStep(null);setSelCat(null);setAmount("");setDesc("");setShowNewCat(false);setNewCatInput("");};
+const addNewCat=function(){
+const t=newCatInput.trim();
+if(!t)return;
+if(!(ecats||[]).includes(t))setEc(function(prev){return[...(prev||[]),t];});
+setSelCat(t);setShowNewCat(false);setNewCatInput("");setStep("amount");
+};
+const save=function(){
+if(!selCat||!amount)return;
+setExp(function(prev){return[{id:uid(),desc:desc||selCat,cat:selCat,amount:parseFloat(amount),date:tod()},...(prev||[])];});
+reset();
+};
+return(
+<div style={{maxWidth:680,margin:"0 auto",paddingBottom:80}}>
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
+<button onClick={function(){setV("lurk");}} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,padding:0,marginBottom:10,display:"block"}}>Dashboard</button>
+<h2 style={{margin:"0 0 12px",fontWeight:800,fontSize:22,color:T.text}}>Harcamalar</h2>
+<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4}}>
+{months.map(m=>(
+<button key={m} onClick={function(){setSelMonth(m);}} style={{padding:"7px 16px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:700,whiteSpace:"nowrap",flexShrink:0,background:selMonth===m?T.accent:"rgba(255,255,255,0.06)",color:selMonth===m?"#fff":T.textSub}}>
+{monthLabel(m)}
+</button>
+))}
+</div>
+</div>
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:4}}>Toplam — {monthLabel(selMonth)}</div>
+<div style={{fontSize:32,fontWeight:800,color:T.danger,letterSpacing:-1}}>{fm(total,cur)}</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{monthExp.length} kalem · {catList.length} kategori</div>
+</div>
+<div style={{padding:"16px"}}>
+{catList.length===0
+?<div style={{textAlign:"center",padding:"40px",color:T.textDim}}>Bu ay harcama yok</div>
+:catList.map(function(c,i){
+const pct=Math.round(c.total/total*100);
+const barW=Math.round(c.total/maxCat*100);
+const cc=catCol(c.cat);
+const isOpen=expandedCat===c.cat;
+return(
+<div key={c.cat} style={{marginBottom:20}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+<div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
+<div style={{width:10,height:10,borderRadius:"50%",background:cc,flexShrink:0}}/>
+<span style={{fontSize:14,fontWeight:700,color:T.text}}>{c.cat}</span>
+<span style={{fontSize:11,color:T.textDim}}>{c.items.length} kalem</span>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:10}}>
+<div style={{textAlign:"right"}}>
+<span style={{fontSize:15,fontWeight:800,color:cc}}>{fm(c.total,cur)}</span>
+<span style={{fontSize:11,color:T.textDim,marginLeft:6}}>%{pct}</span>
+</div>
+<button onClick={function(){setExpandedCat(isOpen?null:c.cat);}} style={{width:28,height:28,borderRadius:"50%",border:"0.5px solid rgba(255,255,255,0.15)",background:isOpen?"rgba(255,255,255,0.1)":"transparent",cursor:"pointer",color:T.textSub,fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+{isOpen?"▲":"▽"}
+</button>
+</div>
+</div>
+<div style={{height:10,background:"rgba(255,255,255,0.06)",borderRadius:5,overflow:"hidden",marginBottom:isOpen?10:0}}>
+<div style={{height:"100%",width:barW+"%",background:cc,borderRadius:5}}/>
+</div>
+{isOpen&&(
+<div style={{background:"rgba(255,255,255,0.03)",borderRadius:10,border:"0.5px solid rgba(255,255,255,0.08)",marginTop:6,overflow:"hidden"}}>
+{c.items.sort((a,b)=>b.amount-a.amount).map(function(item,j){
+return(
+<div key={j} style={{padding:"11px 14px",borderBottom:j<c.items.length-1?"0.5px solid rgba(255,255,255,0.06)":"none"}}>
+{editId===item.id
+?<div style={{display:"flex",flexDirection:"column",gap:8}}>
+<div style={{display:"flex",gap:8,alignItems:"center"}}>
+<input type="number" value={editAmt} onChange={function(e){setEditAmt(e.target.value);}} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"8px 12px",color:T.text,fontSize:15,fontWeight:700,outline:"none"}}/>
+<button onClick={function(){setExp(function(prev){return prev.map(function(e){return e.id===item.id?{...e,amount:parseFloat(editAmt),cat:editCat,desc:editDesc||editCat}:e;});});setEditId(null);}} style={{padding:"8px 14px",background:T.accent,border:"none",borderRadius:8,color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>✓</button>
+<button onClick={function(){setEditId(null);}} style={{padding:"8px 10px",background:T.bg3,border:"none",borderRadius:8,color:T.textSub,fontSize:13,cursor:"pointer"}}>✕</button>
+</div>
+<input value={editDesc} onChange={function(e){setEditDesc(e.target.value);}} placeholder="Aciklama" style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:8,padding:"8px 12px",color:T.text,fontSize:13,outline:"none"}}/>
+<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+{(ecats||[]).map(function(cat,ci){return(
+<button key={cat} onClick={function(){setEditCat(cat);}} style={{padding:"5px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:editCat===cat?col(ci):"rgba(255,255,255,0.06)",color:editCat===cat?"#fff":T.textSub}}>{cat}</button>
+);})}
+</div>
+</div>
+:<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div>
+<div style={{fontSize:13,fontWeight:600,color:T.text}}>{item.desc||item.cat}</div>
+<div style={{fontSize:10,color:T.textDim,marginTop:1}}>{fd(item.date)}</div>
+</div>
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+<span style={{fontSize:14,fontWeight:700,color:cc}}>{fm(item.amount,cur)}</span>
+<button onClick={function(){setEditId(item.id);setEditAmt(String(item.amount));setEditCat(item.cat);setEditDesc(item.desc||"");}} style={{background:"rgba(255,255,255,0.06)",border:"none",borderRadius:6,padding:"4px 8px",cursor:"pointer",color:T.textSub,fontSize:11}}>Duzenle</button>
+<button onClick={function(){setDelId(item.id);}} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:16,padding:"0 2px"}}>×</button>
+</div>
+</div>}
+</div>
+);})}
+</div>
+)}
+</div>
+);
+})}
+</div>
+{step===null&&<button onClick={function(){setStep("cat");}} style={{position:"fixed",bottom:32,right:20,background:T.danger,border:"none",borderRadius:28,padding:"14px 24px",cursor:"pointer",color:"#fff",fontWeight:800,fontSize:15,boxShadow:"0 8px 24px rgba(255,59,48,0.45)",zIndex:50}}>+ Ekle</button>}
+{step==="cat"&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:100,display:"flex",alignItems:"flex-end"}} onClick={function(e){if(e.target===e.currentTarget)reset();}}>
+<div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px",maxHeight:"80vh",overflowY:"auto"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<div style={{fontWeight:800,fontSize:17,color:T.text}}>Kategori Sec</div>
+<button onClick={reset} style={{background:T.bg3,border:"none",borderRadius:"50%",width:30,height:30,cursor:"pointer",color:T.textSub,fontSize:17}}>×</button>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+{(ecats||[]).map(function(c,i){return(
+<button key={c} onClick={function(){setSelCat(c);setStep("amount");}} style={{padding:"16px 14px",borderRadius:14,border:"1.5px solid "+col(i)+"44",background:col(i)+"11",cursor:"pointer",textAlign:"left"}}>
+<div style={{width:10,height:10,borderRadius:"50%",background:col(i),marginBottom:8}}/>
+<div style={{fontSize:13,fontWeight:700,color:T.text}}>{c}</div>
+</button>
+);})}
+</div>
+{!showNewCat
+?<button onClick={function(){setShowNewCat(true);}} style={{width:"100%",padding:"13px",background:"transparent",border:"1px dashed rgba(255,255,255,0.2)",borderRadius:12,color:T.textSub,fontSize:14,fontWeight:600,cursor:"pointer"}}>+ Yeni Kategori</button>
+:<div style={{display:"flex",gap:8}}>
+<input autoFocus placeholder="Kategori adi..." value={newCatInput} onChange={function(e){setNewCatInput(e.target.value);}} onKeyDown={function(e){if(e.key==="Enter")addNewCat();}} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.2)",borderRadius:12,padding:"13px 14px",color:T.text,fontSize:15,outline:"none"}}/>
+<button onClick={addNewCat} style={{padding:"13px 18px",background:T.accent,border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer"}}>Ekle</button>
+</div>}
+</div>
+</div>
+)}
+{step==="amount"&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:100,display:"flex",alignItems:"flex-end"}} onClick={function(e){if(e.target===e.currentTarget)setStep("cat");}}>
+<div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+<button onClick={function(){setStep("cat");}} style={{background:T.bg3,border:"none",borderRadius:20,padding:"6px 14px",color:T.textSub,fontSize:14,cursor:"pointer",fontWeight:600}}>{selCat}</button>
+<button onClick={reset} style={{background:T.bg3,border:"none",borderRadius:"50%",width:30,height:30,cursor:"pointer",color:T.textSub,fontSize:17}}>×</button>
+</div>
+<div style={{textAlign:"center",padding:"16px 0 16px"}}>
+<div style={{fontSize:11,color:T.textSub,letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>Tutar</div>
+<input autoFocus type="number" placeholder="0" value={amount} onChange={function(e){setAmount(e.target.value);}} style={{background:"transparent",border:"none",borderBottom:"3px solid "+catCol(selCat),padding:"6px 0",color:T.text,fontSize:52,fontWeight:800,outline:"none",width:"100%",textAlign:"center",letterSpacing:-2}}/>
+<div style={{fontSize:14,color:T.textSub,marginTop:8}}>TL</div>
+</div>
+<input placeholder="Aciklama (opsiyonel)" value={desc} onChange={function(e){setDesc(e.target.value);}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:12,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:16}}/>
+<button onClick={save} disabled={!amount} style={{width:"100%",padding:"16px",background:amount?catCol(selCat):T.bg3,border:"none",borderRadius:14,color:amount?"#fff":T.textDim,fontSize:17,fontWeight:800,cursor:amount?"pointer":"not-allowed"}}>Ekle</button>
+</div>
+</div>
+)}
+{delId&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
+<div style={{background:"rgba(28,28,30,0.98)",backdropFilter:"blur(40px)",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:14,width:270,overflow:"hidden"}}>
+<div style={{padding:"20px 16px 16px",textAlign:"center"}}>
+<div style={{fontWeight:700,fontSize:17,color:T.text,marginBottom:8}}>Harcamayı Sil</div>
+<div style={{fontSize:13,color:T.textSub}}>Bu islem geri alinamaz.</div>
+</div>
+<div style={{borderTop:"0.5px solid rgba(255,255,255,0.15)",display:"flex"}}>
+<button onClick={function(){setDelId(null);}} style={{flex:1,padding:"14px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.15)",color:T.text,fontWeight:400,fontSize:17,cursor:"pointer"}}>Iptal</button>
+<button onClick={function(){setExp(function(prev){return prev.filter(function(e){return e.id!==delId;});});setDelId(null);}} style={{flex:1,padding:"14px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:17,cursor:"pointer"}}>Sil</button>
+</div>
+</div>
+</div>
+)}
+</div>
+);}
+
+function CustomersPageV({orders,cur,fm,fd,T,inp,setV}){
+const now=new Date();
+const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
+const MERGED_GROUPS=[{key:"2026-06+07",label:"Haziran-Temmuz 2026",months:["2026-06","2026-07"]}];
+const allMonths=[...new Set((orders||[]).filter(o=>o.g&&o.g.trim()&&o.g.trim()!=="--").map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+const mergedMonths=new Set(MERGED_GROUPS.flatMap(g=>g.months));
+const singleMonths=allMonths.filter(m=>!mergedMonths.has(m));
+const tabs=[
+...MERGED_GROUPS.filter(g=>g.months.some(m=>allMonths.includes(m))),
+...singleMonths.map(m=>{const[y,mo]=m.split("-");return{key:m,label:new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"}),months:[m]};})
+];
+const[selKey,setSelKey]=useState(tabs[0]?.key||"");
+const selTab=tabs.find(t=>t.key===selKey)||tabs[0];
+const monthOrders=(orders||[]).filter(o=>{
+if(!o.date||!o.g||!o.g.trim()||o.g.trim()==="--")return false;
+const m=o.date.slice(0,7);
+return selTab?.months.includes(m);
+});
+const custMap={};
+monthOrders.forEach(o=>{
+const name=o.g.trim().toUpperCase();
+if(!custMap[name])custMap[name]={name,total:0,count:0,lastDate:"",pt:{cash:0,card:0}};
+custMap[name].total+=o.total||0;
+custMap[name].count+=1;
+if(!custMap[name].lastDate||o.date>custMap[name].lastDate)custMap[name].lastDate=o.date;
+if(o.pt&&custMap[name].pt[o.pt]!==undefined)custMap[name].pt[o.pt]=(custMap[name].pt[o.pt]||0)+(o.total||0);
+});
+const sorted=Object.values(custMap).sort((a,b)=>b.total-a.total);
+const totalRev=monthOrders.reduce((s,o)=>s+(o.total||0),0);
+return(
+<div style={{padding:"0 0 80px",maxWidth:680,margin:"0 auto"}}>
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
+<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,padding:0,marginBottom:10,display:"block"}}>Dashboard</button>
+<h2 style={{margin:"0 0 12px",fontWeight:800,fontSize:22,color:T.text}}>Musteriler</h2>
+<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4}}>
+{tabs.length===0&&<div style={{fontSize:12,color:T.textSub}}>Henuz isimli siparis yok.</div>}
+{tabs.map(tab=>(
+<button key={tab.key} onClick={()=>setSelKey(tab.key)} style={{padding:"7px 16px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:700,whiteSpace:"nowrap",flexShrink:0,background:selKey===tab.key?T.accent:"rgba(255,255,255,0.06)",color:selKey===tab.key?"#fff":T.textSub}}>
+{tab.label}
+</button>
+))}
+</div>
+</div>
+{sorted.length>0&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,padding:"12px 16px",borderBottom:"0.5px solid "+T.border}}>
+<div style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.08)"}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Toplam Ciro</div>
+<div style={{fontSize:20,fontWeight:800,color:T.text}}>{fm(totalRev,cur)}</div>
+</div>
+<div style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.08)"}}>
+<div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Musteri</div>
+<div style={{fontSize:20,fontWeight:800,color:T.text}}>{sorted.length} kisi</div>
+</div>
+</div>}
+{sorted.length===0
+?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
+<div style={{fontSize:32,marginBottom:10}}>👤</div>
+<div style={{fontSize:14,fontWeight:600,color:T.textSub}}>{selTab?.label} icin isimli siparis yok</div>
+</div>
+:<div>
+{sorted.map((c,i)=>(
+<div key={c.name} style={{padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center",background:i===0?"rgba(52,199,89,0.06)":"transparent"}}>
+<div style={{display:"flex",alignItems:"center",gap:12}}>
+<div style={{width:32,height:32,borderRadius:"50%",background:i===0?"rgba(52,199,89,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:i===0?T.accent:T.textSub,flexShrink:0}}>{i+1}</div>
+<div>
+<div style={{fontWeight:700,fontSize:14,color:T.text}}>{c.name}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{c.count} siparis · Son: {fd(c.lastDate)}</div>
+{(c.pt.cash>0||c.pt.card>0)&&<div style={{fontSize:10,color:T.textDim,marginTop:1}}>
+{c.pt.cash>0?"Nakit: "+fm(c.pt.cash,cur)+" ":""}
+{c.pt.card>0?"Kart: "+fm(c.pt.card,cur):""}
+</div>}
+</div>
+</div>
+<div style={{textAlign:"right",flexShrink:0}}>
+<div style={{fontSize:18,fontWeight:800,color:i===0?T.accent:T.text}}>{fm(c.total,cur)}</div>
+<div style={{fontSize:10,color:T.textSub,marginTop:2}}>%{totalRev>0?Math.round(c.total/totalRev*100):0}</div>
+</div>
+</div>
+))}
+</div>}
 </div>
 );}
 
