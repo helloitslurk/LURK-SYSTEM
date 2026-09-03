@@ -2451,6 +2451,9 @@ function InstallmentsPageV({installments,setInstallments,cur,fm,fd,ft,tod,T,sb,i
 const[expanded,setExpanded]=useState({});
 const[showModal,setShowModal]=useState(false);
 const[showPartial,setShowPartial]=useState(false);
+const[showEdit,setShowEdit]=useState(false);
+const[editTarget,setEditTarget]=useState(null);
+const[editForm,setEditForm]=useState({name:"",amount:""});
 const[partialTarget,setPartialTarget]=useState(null);
 const[partialAmt,setPartialAmt]=useState("");
 const[form,setForm]=useState({name:"",amount:"",date:"",type:"single",instCount:""});
@@ -2509,7 +2512,32 @@ return{...d,paid};
 setShowPartial(false);setPartialAmt("");setPartialTarget(null);
 };
 
-const saveDebt=()=>{
+const saveEdit=()=>{
+const name=editForm.name.trim();
+const amt=parseFloat(editForm.amount)||0;
+if(!name||!amt||!editTarget)return;
+setInstallments(prev=>prev.map(d=>{
+if(d.id!==editTarget)return d;
+// Tutarı değiştirince taksitleri orantıla
+const ratio=amt/(d.total||1);
+const insts=d.installments.map(i=>({...i,amt:Math.round((i.amt||i.amount||0)*ratio)}));
+return{...d,name,total:amt,totalAmount:amt,installments:insts};
+}));
+setShowEdit(false);setEditTarget(null);
+};
+
+const payAllInst=(did,idx)=>{
+setInstallments(prev=>prev.map(d=>{
+if(d.id!==did)return d;
+const insts=d.installments.map((inst,i)=>{
+if(i!==idx)return inst;
+const instAmt=inst.amt||inst.amount||0;
+return{...inst,paid:true,partialPaid:instAmt,amt:instAmt};
+});
+const paid=insts.reduce((s,i)=>s+(i.paid?(i.amt||i.amount||0):(i.partialPaid||0)),0);
+return{...d,paid};
+}));
+};
 const name=form.name.trim();
 const amt=parseFloat(form.amount)||0;
 if(!name||!amt||!form.date)return;
@@ -2558,20 +2586,6 @@ return(
 </div>
 </div>
 
-{/* İstatistik */}
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,padding:"0 16px 12px"}}>
-{[
-{label:"Toplam",val:debts.length,color:T.text},
-{label:"Ödendi",val:debts.filter(d=>d.paid>=d.total).length,color:"#34C759"},
-{label:"Kalan",val:debts.filter(d=>d.paid<d.total).length,color:T.danger},
-].map((s,i)=>(
-<div key={i} style={{background:T.bg2,borderRadius:12,padding:"12px",textAlign:"center",border:"0.5px solid rgba(255,255,255,0.08)"}}>
-<div style={{fontSize:22,fontWeight:800,color:s.color,marginBottom:2}}>{s.val}</div>
-<div style={{fontSize:10,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5}}>{s.label}</div>
-</div>
-))}
-</div>
-
 {/* Motivasyon */}
 {motivMsg&&<div style={{margin:"0 16px 12px",background:"rgba(52,199,89,0.08)",border:"0.5px solid rgba(52,199,89,0.2)",borderRadius:10,padding:"11px 14px",fontSize:13,color:"#248A3D",fontWeight:600}}>{motivMsg}</div>}
 
@@ -2588,7 +2602,10 @@ return(
 <button onClick={()=>toggleExpand(d.id)} style={{width:"100%",background:"none",border:"none",padding:"14px 14px 10px",cursor:"pointer",textAlign:"left"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
 <div style={{fontSize:13,fontWeight:700,color:isDone?T.textSub:T.text,textDecoration:isDone?"line-through":"none",lineHeight:1.3,flex:1,paddingRight:4}}>{d.name}</div>
-{isDone&&<span style={{fontSize:9,background:"rgba(52,199,89,0.15)",color:"#248A3D",padding:"2px 6px",borderRadius:20,fontWeight:700,flexShrink:0}}>✓</span>}
+<div style={{display:"flex",gap:4,alignItems:"center",flexShrink:0}}>
+{isDone&&<span style={{fontSize:9,background:"rgba(52,199,89,0.15)",color:"#248A3D",padding:"2px 6px",borderRadius:20,fontWeight:700}}>✓</span>}
+<span onClick={e=>{e.stopPropagation();setEditTarget(d.id);setEditForm({name:d.name,amount:String(d.total)});setShowEdit(true);}} style={{fontSize:10,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.25)",borderRadius:5,padding:"2px 7px",cursor:"pointer",fontWeight:600}}>Düzenle</span>
+</div>
 </div>
 <div style={{fontSize:18,fontWeight:800,color:isDone?"#34C759":T.danger,letterSpacing:-0.5,marginBottom:2}}>{fm(d.total,cur)}</div>
 <div style={{fontSize:10,color:T.textSub}}>{isDone?"Tamamlandı":"Kalan: "+fm(d.total-d.paid,cur)}</div>
@@ -2615,7 +2632,10 @@ return(
 </div>
 <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2,flexShrink:0}}>
 <div style={{fontSize:11,fontWeight:700,color:inst.paid?T.textSub:T.text}}>{fm(instAmt,cur)}</div>
-{!inst.paid&&<button onClick={()=>{setPartialTarget({did:d.id,idx:i,inst});setShowPartial(true);}} style={{fontSize:9,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Kısmi</button>}
+{!inst.paid&&<div style={{display:"flex",gap:3}}>
+<button onClick={()=>{setPartialTarget({did:d.id,idx:i,inst});setShowPartial(true);}} style={{fontSize:9,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Kısmi</button>
+<button onClick={()=>payAllInst(d.id,i)} style={{fontSize:9,color:"#248A3D",background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Tümü</button>
+</div>}
 </div>
 </div>
 );})}
@@ -2632,6 +2652,21 @@ return(
 <div style={{padding:"8px 16px"}}>
 <button onClick={()=>setShowModal(true)} style={{width:"100%",padding:"13px",background:"transparent",border:"1px dashed rgba(255,255,255,0.2)",borderRadius:12,color:T.textSub,fontSize:14,cursor:"pointer"}}>＋ Borç Ekle</button>
 </div>
+
+{/* Düzenleme modal */}
+{showEdit&&(
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={e=>e.target===e.currentTarget&&setShowEdit(false)}>
+<div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px",maxWidth:480,margin:"0 auto"}}>
+<div style={{fontWeight:800,fontSize:17,color:T.text,marginBottom:16}}>Borcu Düzenle</div>
+<input placeholder="Borç adı" value={editForm.name} onChange={e=>setEditForm(p=>({...p,name:e.target.value}))}
+style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>
+<input type="number" placeholder="Toplam tutar (TL)" value={editForm.amount} onChange={e=>setEditForm(p=>({...p,amount:e.target.value}))}
+style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:12}}/>
+<button onClick={saveEdit} style={{width:"100%",padding:"15px",background:"#007AFF",border:"none",borderRadius:14,color:"#fff",fontSize:16,fontWeight:800,cursor:"pointer",marginBottom:8}}>Kaydet</button>
+<button onClick={()=>setShowEdit(false)} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
+</div>
+</div>
+)}
 
 {/* Borç ekleme modal */}
 {showModal&&(
