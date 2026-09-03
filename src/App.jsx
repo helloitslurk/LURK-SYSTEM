@@ -2546,13 +2546,13 @@ return(
 
 {/* Hero */}
 <div style={{margin:"12px 16px",background:"rgba(255,59,48,0.06)",border:"0.5px solid rgba(255,59,48,0.2)",borderRadius:14,padding:"20px"}}>
-<div style={{fontSize:10,color:T.textSub,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Toplam Kalan Borç</div>
+<div style={{fontSize:10,color:T.textSub,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Kalan Borç</div>
 <div style={{fontSize:36,fontWeight:800,color:T.danger,letterSpacing:-1,marginBottom:12}}>{fm(remaining,cur)}</div>
 <div style={{height:10,background:"rgba(0,0,0,0.06)",borderRadius:5,overflow:"hidden",marginBottom:8}}>
 <div style={{height:"100%",width:pct+"%",background:"#34C759",borderRadius:5,transition:"width 0.6s ease"}}/>
 </div>
-<div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub}}>
-<span style={{color:"#34C759",fontWeight:600}}>Ödenen: {fm(totalPaid,cur)}</span>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",fontSize:12,color:T.textSub,marginTop:8}}>
+<span style={{color:"#34C759",fontWeight:700}}>Ödenen: {fm(totalPaid,cur)}</span>
 <span>%{pct} tamamlandı</span>
 </div>
 </div>
@@ -2577,55 +2577,54 @@ return(
 {/* Borç listesi */}
 <div style={{padding:"0 16px"}}>
 {debts.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:T.textDim,fontSize:13}}>Henüz borç yok</div>}
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
 {debts.map(d=>{
 const dpct=d.total>0?Math.round(d.paid/d.total*100):0;
 const isDone=d.paid>=d.total;
 return(
-<div key={d.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,marginBottom:10,overflow:"hidden"}}>
-{/* Kart başlığı */}
-<button onClick={()=>toggleExpand(d.id)} style={{width:"100%",background:"none",border:"none",padding:"14px 16px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
-<div style={{flex:1}}>
-<div style={{fontSize:15,fontWeight:700,color:isDone?T.textSub:T.text,textDecoration:isDone?"line-through":"none",marginBottom:3}}>
-{d.name}
-{isDone&&<span style={{fontSize:10,background:"rgba(52,199,89,0.15)",color:"#248A3D",padding:"2px 8px",borderRadius:20,marginLeft:8,fontWeight:600}}>Tamamlandı</span>}
+<div key={d.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,overflow:"hidden"}}>
+{/* Kart başlığı — tıklayınca detay */}
+<button onClick={()=>toggleExpand(d.id)} style={{width:"100%",background:"none",border:"none",padding:"14px 14px 10px",cursor:"pointer",textAlign:"left"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
+<div style={{fontSize:13,fontWeight:700,color:isDone?T.textSub:T.text,textDecoration:isDone?"line-through":"none",lineHeight:1.3,flex:1,paddingRight:4}}>{d.name}</div>
+{isDone&&<span style={{fontSize:9,background:"rgba(52,199,89,0.15)",color:"#248A3D",padding:"2px 6px",borderRadius:20,fontWeight:700,flexShrink:0}}>✓</span>}
 </div>
-<div style={{fontSize:11,color:T.textSub}}>{d.installments.length>1?d.installments.length+" taksit · ":""}{!isDone&&d.paid>0?"Ödenen: "+fm(d.paid,cur):""}</div>
-</div>
-<div style={{textAlign:"right",flexShrink:0,marginRight:8}}>
-<div style={{fontSize:16,fontWeight:800,color:isDone?"#34C759":T.danger}}>{fm(d.total,cur)}</div>
-<div style={{fontSize:11,color:T.textSub}}>{isDone?"Ödendi":"Kalan: "+fm(d.total-d.paid,cur)}</div>
-</div>
-<span style={{color:T.textSub,fontSize:14,transform:expanded[d.id]?"rotate(180deg)":"none",display:"inline-block",transition:"transform 0.2s"}}>▽</span>
+<div style={{fontSize:18,fontWeight:800,color:isDone?"#34C759":T.danger,letterSpacing:-0.5,marginBottom:2}}>{fm(d.total,cur)}</div>
+<div style={{fontSize:10,color:T.textSub}}>{isDone?"Tamamlandı":"Kalan: "+fm(d.total-d.paid,cur)}</div>
 </button>
 
 {/* Progress bar */}
-<div style={{height:4,background:"rgba(0,0,0,0.06)",margin:"0 16px 12px"}}>
-<div style={{height:"100%",width:dpct+"%",background:"#34C759",transition:"width 0.4s"}}/>
+<div style={{height:4,background:"rgba(0,0,0,0.08)",margin:"0 14px 12px"}}>
+<div style={{height:"100%",width:dpct+"%",background:"#34C759",borderRadius:2,transition:"width 0.4s"}}/>
 </div>
 
-{/* Taksit detayı */}
+{/* Detay — açılınca */}
 {expanded[d.id]&&(
-<div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",padding:"8px 16px 14px"}}>
-{d.installments.map((inst,i)=>(
-<div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 0",borderBottom:i<d.installments.length-1?"0.5px solid rgba(255,255,255,0.05)":"none"}}>
-{/* Checkbox */}
-<button onClick={()=>toggleInst(d.id,i)} style={{width:22,height:22,borderRadius:"50%",border:`2px solid ${inst.paid?"#34C759":"rgba(255,255,255,0.2)"}`,background:inst.paid?"#34C759":"transparent",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#fff",fontWeight:800}}>
+<div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",padding:"8px 14px 12px"}}>
+{d.installments.map((inst,i)=>{
+const instAmt=inst.amt||inst.amount||0;
+return(
+<div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 0",borderBottom:i<d.installments.length-1?"0.5px solid rgba(255,255,255,0.05)":"none"}}>
+<button onClick={()=>toggleInst(d.id,i)} style={{width:18,height:18,borderRadius:"50%",border:`2px solid ${inst.paid?"#34C759":"rgba(255,255,255,0.2)"}`,background:inst.paid?"#34C759":"transparent",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#fff",fontWeight:800}}>
 {inst.paid?"✓":""}
 </button>
-<div style={{flex:1}}>
-<div style={{fontSize:13,color:inst.paid?T.textSub:T.text,textDecoration:inst.paid?"line-through":"none"}}>{new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"})}</div>
-{inst.partialPaid>0&&!inst.paid&&<div style={{fontSize:11,color:"#34C759",marginTop:1}}>{fm(inst.partialPaid,cur)} ödendi</div>}
+<div style={{flex:1,minWidth:0}}>
+<div style={{fontSize:11,color:inst.paid?T.textSub:T.text,textDecoration:inst.paid?"line-through":"none",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"short"}):""}</div>
+{inst.partialPaid>0&&!inst.paid&&<div style={{fontSize:10,color:"#34C759"}}>{fm(inst.partialPaid,cur)}</div>}
 </div>
-<div style={{fontSize:14,fontWeight:700,color:inst.paid?T.textSub:T.text,flexShrink:0}}>{fm(inst.amt,cur)}</div>
-{!inst.paid&&<button onClick={()=>{setPartialTarget({did:d.id,idx:i,inst});setShowPartial(true);}} style={{fontSize:11,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.3)",borderRadius:6,padding:"3px 8px",cursor:"pointer",flexShrink:0}}>Kısmi</button>}
+<div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2,flexShrink:0}}>
+<div style={{fontSize:11,fontWeight:700,color:inst.paid?T.textSub:T.text}}>{fm(instAmt,cur)}</div>
+{!inst.paid&&<button onClick={()=>{setPartialTarget({did:d.id,idx:i,inst});setShowPartial(true);}} style={{fontSize:9,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Kısmi</button>}
 </div>
-))}
-<button onClick={()=>deleteDebt(d.id)} style={{marginTop:10,fontSize:12,color:T.danger,background:"rgba(255,59,48,0.06)",border:"0.5px solid rgba(255,59,48,0.2)",borderRadius:8,padding:"6px 14px",cursor:"pointer"}}>Borcu Sil</button>
+</div>
+);})}
+<button onClick={()=>deleteDebt(d.id)} style={{marginTop:8,fontSize:11,color:T.danger,background:"rgba(255,59,48,0.06)",border:"0.5px solid rgba(255,59,48,0.2)",borderRadius:6,padding:"5px 10px",cursor:"pointer",width:"100%"}}>Sil</button>
 </div>
 )}
 </div>
 );
 })}
+</div>
 </div>
 
 {/* Ekle butonu */}
