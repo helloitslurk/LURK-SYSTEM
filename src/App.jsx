@@ -2473,6 +2473,7 @@ const totalDebt=debts.reduce((s,d)=>s+d.total,0);
 const totalPaid=debts.reduce((s,d)=>s+d.paid,0);
 const remaining=totalDebt-totalPaid;
 const pct=totalDebt>0?Math.round(totalPaid/totalDebt*100):0;
+const sortedDebts=[...debts].sort((a,b)=>(a.total-a.paid)-(b.total-b.paid));
 
 const toggleExpand=(id)=>setExpanded(p=>({...p,[id]:!p[id]}));
 
@@ -2578,7 +2579,7 @@ return(
 <div style={{padding:"0 16px"}}>
 {debts.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:T.textDim,fontSize:13}}>Henüz borç yok</div>}
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-{debts.map(d=>{
+{sortedDebts.map(d=>{
 const dpct=d.total>0?Math.round(d.paid/d.total*100):0;
 const isDone=d.paid>=d.total;
 return(
