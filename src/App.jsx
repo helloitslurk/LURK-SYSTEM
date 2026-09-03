@@ -2596,8 +2596,8 @@ return (
 <span onClick={function(e){e.stopPropagation();setEditTarget(d.id);setEditForm({name:d.name,amount:String(d.total)});setShowEdit(true);}} style={{fontSize:10,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.25)",borderRadius:5,padding:"2px 7px",cursor:"pointer",fontWeight:600}}>Düzenle</span>
 </div>
 </div>
-<div style={{fontSize:18,fontWeight:800,color:isDone?"#34C759":T.danger,letterSpacing:-0.5,marginBottom:2}}>{fm(d.total,cur)}</div>
-<div style={{fontSize:10,color:T.textSub}}>{isDone?"Tamamlandı":"Kalan: "+fm(d.total-d.paid,cur)}</div>
+<div style={{fontSize:18,fontWeight:800,color:isDone?"#34C759":T.danger,letterSpacing:-0.5,marginBottom:2}}>{fm(isDone?d.total:d.total-d.paid,cur)}</div>
+<div style={{fontSize:10,color:T.textSub}}>{isDone?"Tamamlandı":"Kalan"}</div>
 </button>
 <div style={{height:4,background:"rgba(0,0,0,0.08)",margin:"0 14px 12px"}}>
 <div style={{height:"100%",width:dpct+"%",background:"#34C759",borderRadius:2,transition:"width 0.4s"}}/>
