@@ -2459,19 +2459,12 @@ const[partialAmt,setPartialAmt]=useState("");
 const[form,setForm]=useState({name:"",amount:"",date:"",type:"single",instCount:""});
 
 const debts=(installments||[]).map(d=>{
-// Eski format: totalAmount, installments:[{amount, paid}]
-// Yeni format: total, paid, installments:[{amt, paid, partialPaid}]
 const total=d.total||d.totalAmount||0;
-const insts=(d.installments||[]).map(i=>({
-...i,
-amt:i.amt||i.amount||0,
-paid:i.paid||false,
-partialPaid:i.partialPaid||0,
-due:i.due||i.dueDate||"",
-}));
+const insts=(d.installments||[]).map(i=>({...i,amt:i.amt||i.amount||0,paid:i.paid||false,partialPaid:i.partialPaid||0,due:i.due||i.dueDate||""}));
 const paid=d.paid!=null?d.paid:insts.reduce((s,i)=>s+(i.paid?i.amt:(i.partialPaid||0)),0);
 return{...d,total,paid,installments:insts};
 });
+
 const totalDebt=debts.reduce((s,d)=>s+d.total,0);
 const totalPaid=debts.reduce((s,d)=>s+d.paid,0);
 const remaining=totalDebt-totalPaid;
@@ -2512,20 +2505,6 @@ return{...d,paid};
 setShowPartial(false);setPartialAmt("");setPartialTarget(null);
 };
 
-const saveEdit=()=>{
-const name=editForm.name.trim();
-const amt=parseFloat(editForm.amount)||0;
-if(!name||!amt||!editTarget)return;
-setInstallments(prev=>prev.map(d=>{
-if(d.id!==editTarget)return d;
-// Tutarı değiştirince taksitleri orantıla
-const ratio=amt/(d.total||1);
-const insts=d.installments.map(i=>({...i,amt:Math.round((i.amt||i.amount||0)*ratio)}));
-return{...d,name,total:amt,totalAmount:amt,installments:insts};
-}));
-setShowEdit(false);setEditTarget(null);
-};
-
 const payAllInst=(did,idx)=>{
 setInstallments(prev=>prev.map(d=>{
 if(d.id!==did)return d;
@@ -2538,6 +2517,21 @@ const paid=insts.reduce((s,i)=>s+(i.paid?(i.amt||i.amount||0):(i.partialPaid||0)
 return{...d,paid};
 }));
 };
+
+const saveEdit=()=>{
+const name=editForm.name.trim();
+const amt=parseFloat(editForm.amount)||0;
+if(!name||!amt||!editTarget)return;
+setInstallments(prev=>prev.map(d=>{
+if(d.id!==editTarget)return d;
+const ratio=amt/(d.total||1);
+const insts=d.installments.map(i=>({...i,amt:Math.round((i.amt||i.amount||0)*ratio)}));
+return{...d,name,total:amt,totalAmount:amt,installments:insts};
+}));
+setShowEdit(false);setEditTarget(null);
+};
+
+const saveDebt=()=>{
 const name=form.name.trim();
 const amt=parseFloat(form.amount)||0;
 if(!name||!amt||!form.date)return;
@@ -2564,16 +2558,14 @@ const motivMsg=pct>=80?"🏆 Muhteşem! Borçların neredeyse bitti. Bitiş çiz
 pct>=50?"🔥 Yarıyı geçtin! "+fm(totalPaid,cur)+" ödendi, devam et!":
 pct>0?"⬆ İyi başlangıç. Her ödeme seni hedefe yaklaştırıyor.":"";
 
-return(
+return (
 <div style={{maxWidth:680,margin:"0 auto",paddingBottom:80}}>
 
-{/* Header */}
 <div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
 <button onClick={()=>setV("lurk")} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,padding:0,marginBottom:10,display:"block"}}>← Dashboard</button>
 <h2 style={{margin:"0 0 0",fontWeight:800,fontSize:22,color:T.text}}>🗓 Vadeler</h2>
 </div>
 
-{/* Hero */}
 <div style={{margin:"12px 16px",background:"rgba(255,59,48,0.06)",border:"0.5px solid rgba(255,59,48,0.2)",borderRadius:14,padding:"20px"}}>
 <div style={{fontSize:10,color:T.textSub,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Kalan Borç</div>
 <div style={{fontSize:36,fontWeight:800,color:T.danger,letterSpacing:-1,marginBottom:12}}>{fm(remaining,cur)}</div>
@@ -2586,44 +2578,37 @@ return(
 </div>
 </div>
 
-{/* Motivasyon */}
-{motivMsg&&<div style={{margin:"0 16px 12px",background:"rgba(52,199,89,0.08)",border:"0.5px solid rgba(52,199,89,0.2)",borderRadius:10,padding:"11px 14px",fontSize:13,color:"#248A3D",fontWeight:600}}>{motivMsg}</div>}
+{motivMsg!=""&&<div style={{margin:"0 16px 12px",background:"rgba(52,199,89,0.08)",border:"0.5px solid rgba(52,199,89,0.2)",borderRadius:10,padding:"11px 14px",fontSize:13,color:"#248A3D",fontWeight:600}}>{motivMsg}</div>}
 
-{/* Borç listesi */}
 <div style={{padding:"0 16px"}}>
 {debts.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:T.textDim,fontSize:13}}>Henüz borç yok</div>}
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-{sortedDebts.map(d=>{
+{sortedDebts.map(function(d){
 const dpct=d.total>0?Math.round(d.paid/d.total*100):0;
 const isDone=d.paid>=d.total;
-return(
+return (
 <div key={d.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,overflow:"hidden"}}>
-{/* Kart başlığı — tıklayınca detay */}
 <button onClick={()=>toggleExpand(d.id)} style={{width:"100%",background:"none",border:"none",padding:"14px 14px 10px",cursor:"pointer",textAlign:"left"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
 <div style={{fontSize:13,fontWeight:700,color:isDone?T.textSub:T.text,textDecoration:isDone?"line-through":"none",lineHeight:1.3,flex:1,paddingRight:4}}>{d.name}</div>
 <div style={{display:"flex",gap:4,alignItems:"center",flexShrink:0}}>
 {isDone&&<span style={{fontSize:9,background:"rgba(52,199,89,0.15)",color:"#248A3D",padding:"2px 6px",borderRadius:20,fontWeight:700}}>✓</span>}
-<span onClick={e=>{e.stopPropagation();setEditTarget(d.id);setEditForm({name:d.name,amount:String(d.total)});setShowEdit(true);}} style={{fontSize:10,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.25)",borderRadius:5,padding:"2px 7px",cursor:"pointer",fontWeight:600}}>Düzenle</span>
+<span onClick={function(e){e.stopPropagation();setEditTarget(d.id);setEditForm({name:d.name,amount:String(d.total)});setShowEdit(true);}} style={{fontSize:10,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.25)",borderRadius:5,padding:"2px 7px",cursor:"pointer",fontWeight:600}}>Düzenle</span>
 </div>
 </div>
 <div style={{fontSize:18,fontWeight:800,color:isDone?"#34C759":T.danger,letterSpacing:-0.5,marginBottom:2}}>{fm(d.total,cur)}</div>
 <div style={{fontSize:10,color:T.textSub}}>{isDone?"Tamamlandı":"Kalan: "+fm(d.total-d.paid,cur)}</div>
 </button>
-
-{/* Progress bar */}
 <div style={{height:4,background:"rgba(0,0,0,0.08)",margin:"0 14px 12px"}}>
 <div style={{height:"100%",width:dpct+"%",background:"#34C759",borderRadius:2,transition:"width 0.4s"}}/>
 </div>
-
-{/* Detay — açılınca */}
 {expanded[d.id]&&(
 <div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",padding:"8px 14px 12px"}}>
-{d.installments.map((inst,i)=>{
+{d.installments.map(function(inst,i){
 const instAmt=inst.amt||inst.amount||0;
-return(
+return (
 <div key={i} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 0",borderBottom:i<d.installments.length-1?"0.5px solid rgba(255,255,255,0.05)":"none"}}>
-<button onClick={()=>toggleInst(d.id,i)} style={{width:18,height:18,borderRadius:"50%",border:`2px solid ${inst.paid?"#34C759":"rgba(255,255,255,0.2)"}`,background:inst.paid?"#34C759":"transparent",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#fff",fontWeight:800}}>
+<button onClick={function(){toggleInst(d.id,i);}} style={{width:18,height:18,borderRadius:"50%",border:"2px solid "+(inst.paid?"#34C759":"rgba(255,255,255,0.2)"),background:inst.paid?"#34C759":"transparent",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#fff",fontWeight:800}}>
 {inst.paid?"✓":""}
 </button>
 <div style={{flex:1,minWidth:0}}>
@@ -2632,14 +2617,17 @@ return(
 </div>
 <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2,flexShrink:0}}>
 <div style={{fontSize:11,fontWeight:700,color:inst.paid?T.textSub:T.text}}>{fm(instAmt,cur)}</div>
-{!inst.paid&&<div style={{display:"flex",gap:3}}>
-<button onClick={()=>{setPartialTarget({did:d.id,idx:i,inst});setShowPartial(true);}} style={{fontSize:9,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Kısmi</button>
-<button onClick={()=>payAllInst(d.id,i)} style={{fontSize:9,color:"#248A3D",background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Tümü</button>
-</div>}
+{!inst.paid&&(
+<div style={{display:"flex",gap:3}}>
+<button onClick={function(){setPartialTarget({did:d.id,idx:i,inst:inst});setShowPartial(true);}} style={{fontSize:9,color:"#007AFF",background:"rgba(0,122,255,0.1)",border:"0.5px solid rgba(0,122,255,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Kısmi</button>
+<button onClick={function(){payAllInst(d.id,i);}} style={{fontSize:9,color:"#248A3D",background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.3)",borderRadius:4,padding:"2px 5px",cursor:"pointer"}}>Tümü</button>
+</div>
+)}
 </div>
 </div>
-);})}
-<button onClick={()=>deleteDebt(d.id)} style={{marginTop:8,fontSize:11,color:T.danger,background:"rgba(255,59,48,0.06)",border:"0.5px solid rgba(255,59,48,0.2)",borderRadius:6,padding:"5px 10px",cursor:"pointer",width:"100%"}}>Sil</button>
+);
+})}
+<button onClick={function(){deleteDebt(d.id);}} style={{marginTop:8,fontSize:11,color:T.danger,background:"rgba(255,59,48,0.06)",border:"0.5px solid rgba(255,59,48,0.2)",borderRadius:6,padding:"5px 10px",cursor:"pointer",width:"100%"}}>Sil</button>
 </div>
 )}
 </div>
@@ -2648,62 +2636,50 @@ return(
 </div>
 </div>
 
-{/* Ekle butonu */}
 <div style={{padding:"8px 16px"}}>
-<button onClick={()=>setShowModal(true)} style={{width:"100%",padding:"13px",background:"transparent",border:"1px dashed rgba(255,255,255,0.2)",borderRadius:12,color:T.textSub,fontSize:14,cursor:"pointer"}}>＋ Borç Ekle</button>
+<button onClick={function(){setShowModal(true);}} style={{width:"100%",padding:"13px",background:"transparent",border:"1px dashed rgba(255,255,255,0.2)",borderRadius:12,color:T.textSub,fontSize:14,cursor:"pointer"}}>+ Borç Ekle</button>
 </div>
 
-{/* Düzenleme modal */}
 {showEdit&&(
-<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={e=>e.target===e.currentTarget&&setShowEdit(false)}>
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={function(e){if(e.target===e.currentTarget)setShowEdit(false);}}>
 <div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px",maxWidth:480,margin:"0 auto"}}>
 <div style={{fontWeight:800,fontSize:17,color:T.text,marginBottom:16}}>Borcu Düzenle</div>
-<input placeholder="Borç adı" value={editForm.name} onChange={e=>setEditForm(p=>({...p,name:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>
-<input type="number" placeholder="Toplam tutar (TL)" value={editForm.amount} onChange={e=>setEditForm(p=>({...p,amount:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:12}}/>
+<input placeholder="Borç adı" value={editForm.name} onChange={function(e){setEditForm(function(p){return{...p,name:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>
+<input type="number" placeholder="Toplam tutar (TL)" value={editForm.amount} onChange={function(e){setEditForm(function(p){return{...p,amount:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:12}}/>
 <button onClick={saveEdit} style={{width:"100%",padding:"15px",background:"#007AFF",border:"none",borderRadius:14,color:"#fff",fontSize:16,fontWeight:800,cursor:"pointer",marginBottom:8}}>Kaydet</button>
-<button onClick={()=>setShowEdit(false)} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
+<button onClick={function(){setShowEdit(false);}} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
 </div>
 </div>
 )}
 
-{/* Borç ekleme modal */}
 {showModal&&(
-<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={e=>e.target===e.currentTarget&&setShowModal(false)}>
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={function(e){if(e.target===e.currentTarget)setShowModal(false);}}>
 <div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px",maxWidth:480,margin:"0 auto"}}>
 <div style={{fontWeight:800,fontSize:17,color:T.text,marginBottom:16}}>Borç Ekle</div>
-<input placeholder="Borç adı (Kira, Fatura...)" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>
+<input placeholder="Borç adı (Kira, Fatura...)" value={form.name} onChange={function(e){setForm(function(p){return{...p,name:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}}>
-<input type="number" placeholder="Tutar (TL)" value={form.amount} onChange={e=>setForm(p=>({...p,amount:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none"}}/>
-<input type="date" value={form.date} onChange={e=>setForm(p=>({...p,date:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none"}}/>
+<input type="number" placeholder="Tutar (TL)" value={form.amount} onChange={function(e){setForm(function(p){return{...p,amount:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none"}}/>
+<input type="date" value={form.date} onChange={function(e){setForm(function(p){return{...p,date:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none"}}/>
 </div>
-<select value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}>
+<select value={form.type} onChange={function(e){setForm(function(p){return{...p,type:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}>
 <option value="single">Tek ödeme</option>
 <option value="monthly">Aylık taksit</option>
 </select>
-{form.type==="monthly"&&<input type="number" placeholder="Taksit sayısı" value={form.instCount} onChange={e=>setForm(p=>({...p,instCount:e.target.value}))}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>}
+{form.type==="monthly"&&<input type="number" placeholder="Taksit sayısı" value={form.instCount} onChange={function(e){setForm(function(p){return{...p,instCount:e.target.value};});}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:15,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:8}}/>}
 <button onClick={saveDebt} style={{width:"100%",padding:"15px",background:T.danger,border:"none",borderRadius:14,color:"#fff",fontSize:16,fontWeight:800,cursor:"pointer",marginBottom:8}}>Kaydet</button>
-<button onClick={()=>setShowModal(false)} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
+<button onClick={function(){setShowModal(false);}} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
 </div>
 </div>
 )}
 
-{/* Kısmi ödeme modal */}
 {showPartial&&partialTarget&&(
-<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={e=>e.target===e.currentTarget&&setShowPartial(false)}>
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:200,display:"flex",alignItems:"flex-end"}} onClick={function(e){if(e.target===e.currentTarget)setShowPartial(false);}}>
 <div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",padding:"20px 16px 36px",maxWidth:480,margin:"0 auto"}}>
 <div style={{fontWeight:800,fontSize:17,color:T.text,marginBottom:6}}>Kısmi Ödeme</div>
-<div style={{fontSize:13,color:T.textSub,marginBottom:16}}>{partialTarget.inst&&fm(partialTarget.inst.amt-(partialTarget.inst.partialPaid||0),cur)+" kalan"}</div>
-<input autoFocus type="number" placeholder="Ödenecek tutar (TL)" value={partialAmt} onChange={e=>setPartialAmt(e.target.value)}
-style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:18,fontWeight:700,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:10}}/>
+<div style={{fontSize:13,color:T.textSub,marginBottom:16}}>{partialTarget.inst&&fm((partialTarget.inst.amt||partialTarget.inst.amount||0)-(partialTarget.inst.partialPaid||0),cur)+" kalan"}</div>
+<input autoFocus type="number" placeholder="Ödenecek tutar (TL)" value={partialAmt} onChange={function(e){setPartialAmt(e.target.value);}} style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",color:T.text,fontSize:18,fontWeight:700,outline:"none",width:"100%",boxSizing:"border-box",marginBottom:10}}/>
 <button onClick={savePartial} style={{width:"100%",padding:"15px",background:"#34C759",border:"none",borderRadius:14,color:"#fff",fontSize:16,fontWeight:800,cursor:"pointer",marginBottom:8}}>Ödemeyi Kaydet</button>
-<button onClick={()=>{setShowPartial(false);setPartialAmt("");}} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
+<button onClick={function(){setShowPartial(false);setPartialAmt("");}} style={{width:"100%",padding:"13px",background:T.bg3,border:"none",borderRadius:14,color:T.textSub,fontSize:14,cursor:"pointer"}}>İptal</button>
 </div>
 </div>
 )}
