@@ -2709,7 +2709,8 @@ style={{background:T.bg3,border:"0.5px solid rgba(255,255,255,0.15)",borderRadiu
 )}
 
 </div>
-);}
+);
+}
 
 function TodoV({todos,setTodos,fd,sb,inp,T,setV}){
 const[newTodo,setNewTodo]=useState("");
