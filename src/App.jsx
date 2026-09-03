@@ -236,7 +236,16 @@ const[drawerOpen,setDrawerOpen]=useState(false);
 const[isMobile,setIsMobile]=useState(()=>window.innerWidth<768);
 useEffect(()=>{const h=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);
 
-useEffect(()=>{(async()=>{
+useEffect(()=>{
+// 8 saniye içinde yüklenemezse zorla aç
+const fallbackTimer=setTimeout(()=>{
+if(!ok){
+setOk(true);
+setAuthChecked(true);
+setAuthed(true);
+}
+},8000);
+(async()=>{
 // Migration: eski p4... anahtarlarını lurk_... formatına taşı (bir kez)
 const oldKeys=["t","o","e","m","s","d","l","c","ec","onl","inst","unl","notif","todo"];
 for(const k of oldKeys){
@@ -349,6 +358,7 @@ if(hadBroken){
 }
 
 setOk(true);
+clearTimeout(fallbackTimer);
 // Bir sonraki render'da save'lere izin ver
 requestAnimationFrame(()=>requestAnimationFrame(()=>{loadedRef.current=true;}));
 try{
@@ -357,7 +367,10 @@ const cfAuth=cf.sitePassword;
 if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 }catch{setAuthed(true);}
 setAuthChecked(true);
-})();},[]);
+})().catch(()=>{
+clearTimeout(fallbackTimer);
+setOk(true);setAuthChecked(true);setAuthed(true);
+});},[]);
 
 // Debounced toplu kayıt — 800ms bekleyip tek seferde yazar
 const saveTimerRef=useRef(null);
@@ -737,6 +750,7 @@ BİLDİRİMLER
 {/* Cari sayfası kaldırıldı */}
 {view==="todo"&&<TodoV todos={todos} setTodos={setTodos} fd={fd} sb={sb} inp={inp} T={T} setV={setV}/>}
 {view==="settings"&&<SetV cfg={cfg} cfgF={cfgF} setCfgF={setCfgF} saveCfg={saveCfg} stab={stab} setStab={setStab} menu={menu} mF={mF} setMF={setMF} mEid={mEid} setMEid={setMEid} mCat={mCat} setMCat={setMCat} saveMI={saveMI} setMenü={setMenü} ecats={ecats} setEc={setEc} newec={newec} setNewec={setNewec} exp={exp} msg={msg} setOrd={setOrd} setExp={setExp} setLogs={setLogs} cur={cur} fm={fm} inp={inp} sb={sb} T={T} logs={logs} onlineOrders={onlineOrders} todos={todos} tacoLogs={tacoLogs} tacoMenu={tacoMenu} notifications={notifications} cari={cari} installments={installments}/>}
+</div>
 </div>
 );}
 
@@ -2166,6 +2180,7 @@ return(
 </div>
 </div>
 
+</div>
 </div>
 );}
 
