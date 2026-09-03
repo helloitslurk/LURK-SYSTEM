@@ -236,7 +236,9 @@ const[drawerOpen,setDrawerOpen]=useState(false);
 const[isMobile,setIsMobile]=useState(()=>window.innerWidth<768);
 useEffect(()=>{const h=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);
 
-useEffect(()=>{(async()=>{
+useEffect(()=>{
+const fallbackTimer=setTimeout(()=>{if(!ok){setOk(true);setAuthChecked(true);setAuthed(true);}},8000);
+(async()=>{
 // Migration: eski p4... anahtarlarını lurk_... formatına taşı (bir kez)
 const oldKeys=["t","o","e","m","s","d","l","c","ec","onl","inst","unl","notif","todo"];
 for(const k of oldKeys){
