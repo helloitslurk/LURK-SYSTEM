@@ -760,8 +760,8 @@ return(
 
 {/* Sipariş görünümü */}
 {!showMenu&&(
-<div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-<div style={{flex:1,overflowY:"auto"}}>
+<div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
+<div style={{flex:1,overflowY:"auto",minHeight:0}}>
 {curT.order.length===0
 ?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
 <div style={{fontSize:36,marginBottom:12}}>🛒</div>
