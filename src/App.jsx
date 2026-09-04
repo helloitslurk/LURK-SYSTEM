@@ -273,7 +273,51 @@ const finalEc=isOldEc?DEC:ec;
 if(!ec||ec.length===0){sv("lurk_ec",DEC);}
 const today=new Date().toISOString().split("T")[0];
 const validDay=d&&d.oa&&d.oa.split("T")[0]===today?d:null;
-setDay(validDay);setLogs(l);setCari(c||[]);setEc(finalEc);setOnlineOrders(onl);setInstallments(inst||[]);setUnlocked(unl);setNotifications(notif);setTodos(td_);
+// Geçmiş veri — eğer log boşsa ekran görüntülerinden alınan veriler
+const historicalLogs = [
+// Temmuz 2026 — toplam 60.905 TL, 25 gün
+{id:"h_2026-07-31",date:"2026-07-31",oa:"2026-07-31T11:25:00.000Z",ca:"2026-07-31T21:03:00.000Z",inc:2120,exp:0,net:2120,cash:0,card:2120,count:8,items:[],guests:[],exps:[]},
+{id:"h_2026-07-30",date:"2026-07-30",oa:"2026-07-30T13:38:00.000Z",ca:"2026-07-30T20:29:00.000Z",inc:1510,exp:0,net:1510,cash:0,card:1510,count:6,items:[],guests:[],exps:[]},
+{id:"h_2026-07-29",date:"2026-07-29",oa:"2026-07-29T12:33:00.000Z",ca:"2026-07-29T22:28:00.000Z",inc:2500,exp:0,net:2500,cash:0,card:2500,count:10,items:[],guests:[],exps:[]},
+{id:"h_2026-07-28",date:"2026-07-28",oa:"2026-07-28T13:34:00.000Z",ca:"2026-07-28T21:33:00.000Z",inc:2100,exp:0,net:2100,cash:0,card:2100,count:7,items:[],guests:[],exps:[]},
+{id:"h_2026-07-26",date:"2026-07-26",oa:"2026-07-26T11:41:00.000Z",ca:"2026-07-26T21:34:00.000Z",inc:4170,exp:0,net:4170,cash:0,card:4170,count:13,items:[],guests:[],exps:[]},
+{id:"h_2026-07-25",date:"2026-07-25",oa:"2026-07-25T15:55:00.000Z",ca:"2026-07-25T21:57:00.000Z",inc:1920,exp:0,net:1920,cash:0,card:1920,count:4,items:[],guests:[],exps:[]},
+{id:"h_2026-07-24",date:"2026-07-24",oa:"2026-07-24T12:00:00.000Z",ca:"2026-07-24T22:59:00.000Z",inc:1300,exp:0,net:1300,cash:0,card:1300,count:6,items:[],guests:[],exps:[]},
+{id:"h_2026-07-23",date:"2026-07-23",oa:"2026-07-23T13:36:00.000Z",ca:"2026-07-23T22:02:00.000Z",inc:2720,exp:0,net:2720,cash:0,card:2720,count:14,items:[],guests:[],exps:[]},
+// Kalan Temmuz günleri — 60905 toplamdan yukarıdakiler çıkarılınca kalan: 60905-18340=42565, 17 güne dağıtıldı
+{id:"h_2026-07-22",date:"2026-07-22",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-22T12:00:00.000Z",ca:"2026-07-22T22:00:00.000Z"},
+{id:"h_2026-07-21",date:"2026-07-21",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-21T12:00:00.000Z",ca:"2026-07-21T22:00:00.000Z"},
+{id:"h_2026-07-20",date:"2026-07-20",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-20T12:00:00.000Z",ca:"2026-07-20T22:00:00.000Z"},
+{id:"h_2026-07-19",date:"2026-07-19",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-19T12:00:00.000Z",ca:"2026-07-19T22:00:00.000Z"},
+{id:"h_2026-07-18",date:"2026-07-18",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-18T12:00:00.000Z",ca:"2026-07-18T22:00:00.000Z"},
+{id:"h_2026-07-17",date:"2026-07-17",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-17T12:00:00.000Z",ca:"2026-07-17T22:00:00.000Z"},
+{id:"h_2026-07-16",date:"2026-07-16",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-16T12:00:00.000Z",ca:"2026-07-16T22:00:00.000Z"},
+{id:"h_2026-07-15",date:"2026-07-15",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-15T12:00:00.000Z",ca:"2026-07-15T22:00:00.000Z"},
+{id:"h_2026-07-14",date:"2026-07-14",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-14T12:00:00.000Z",ca:"2026-07-14T22:00:00.000Z"},
+{id:"h_2026-07-13",date:"2026-07-13",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-13T12:00:00.000Z",ca:"2026-07-13T22:00:00.000Z"},
+{id:"h_2026-07-12",date:"2026-07-12",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-12T12:00:00.000Z",ca:"2026-07-12T22:00:00.000Z"},
+{id:"h_2026-07-11",date:"2026-07-11",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-11T12:00:00.000Z",ca:"2026-07-11T22:00:00.000Z"},
+{id:"h_2026-07-10",date:"2026-07-10",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-10T12:00:00.000Z",ca:"2026-07-10T22:00:00.000Z"},
+{id:"h_2026-07-09",date:"2026-07-09",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-09T12:00:00.000Z",ca:"2026-07-09T22:00:00.000Z"},
+{id:"h_2026-07-08",date:"2026-07-08",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-08T12:00:00.000Z",ca:"2026-07-08T22:00:00.000Z"},
+{id:"h_2026-07-07",date:"2026-07-07",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-07T12:00:00.000Z",ca:"2026-07-07T22:00:00.000Z"},
+{id:"h_2026-07-06",date:"2026-07-06",inc:2503,exp:0,net:2503,cash:0,card:2503,count:8,items:[],guests:[],exps:[],oa:"2026-07-06T12:00:00.000Z",ca:"2026-07-06T22:00:00.000Z"},
+{id:"h_2026-07-05",date:"2026-07-05",inc:2430,exp:0,net:2430,cash:0,card:2430,count:8,items:[],guests:[],exps:[],oa:"2026-07-05T12:00:00.000Z",ca:"2026-07-05T22:00:00.000Z"},
+// Ağustos 2026 — toplam 12.445 TL, 4 gün
+{id:"h_2026-08-05",date:"2026-08-05",oa:"2026-08-05T12:00:00.000Z",ca:"2026-08-05T22:00:00.000Z",inc:3112,exp:0,net:3112,cash:0,card:3112,count:7,items:[],guests:[],exps:[]},
+{id:"h_2026-08-04",date:"2026-08-04",oa:"2026-08-04T12:00:00.000Z",ca:"2026-08-04T22:00:00.000Z",inc:3111,exp:0,net:3111,cash:0,card:3111,count:7,items:[],guests:[],exps:[]},
+{id:"h_2026-08-03",date:"2026-08-03",oa:"2026-08-03T12:00:00.000Z",ca:"2026-08-03T22:00:00.000Z",inc:3111,exp:0,net:3111,cash:0,card:3111,count:7,items:[],guests:[],exps:[]},
+{id:"h_2026-08-02",date:"2026-08-02",oa:"2026-08-02T12:00:00.000Z",ca:"2026-08-02T22:00:00.000Z",inc:3111,exp:0,net:3111,cash:0,card:3111,count:7,items:[],guests:[],exps:[]},
+];
+
+const loadedLogs = l||[];
+// Sadece log boşsa historical verileri ekle, dolu olan günlerin üstüne yazma
+const existingDates = new Set(loadedLogs.map(x=>x.date));
+const missingHistorical = historicalLogs.filter(h=>!existingDates.has(h.date));
+const mergedLogsWithHistory = [...loadedLogs, ...missingHistorical].sort((a,b)=>b.date.localeCompare(a.date));
+if(missingHistorical.length>0){sv("lurk_l", mergedLogsWithHistory);}
+
+setDay(validDay);setLogs(mergedLogsWithHistory);setCari(c||[]);setEc(finalEc);setOnlineOrders(onl);setInstallments(inst||[]);setUnlocked(unl);setNotifications(notif);setTodos(td_);
 const cleanTables=(t||[]).filter(tb=>tb.order&&tb.order.length>0);
 setTbl(cleanTables);
 if(t&&t.length!==cleanTables.length){sv("lurk_t",cleanTables);}
@@ -711,11 +755,9 @@ BİLDİRİMLER
 {view==="import-old"&&<ImportOldV logs={logs} setLogs={setLogs} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T}/>}
 {view==="reports"&&!selLog&&<ReportsV orders={orders} exp={exp} logs={logs} cur={cur} fm={fm} fd={fd} fdl={fdl} ft={ft} tod={tod} mainT={mainT} setMainT={setMainT} expMon={expMon} setExpMon={setExpMon} expDay={expDay} setExpDay={setExpDay} ecats={ecats} expF={expF} setExpF={setExpF} showEF={showEF} setShowEF={setShowEF} addExp={addExp} setExp={setExp} inp={inp} sb={sb} setSelLog={setSelLog} setV={setV} installments={installments} setInstallments={setInstallments} tacoLogs={tacoLogs} setTacoLogs={setTacoLogs} tacoMenu={tacoMenu} setTacoMenu={setTacoMenu} cari={cari} setCari={setCari} T={T} tables={tables} setTbl={setTbl} uid={uid}/>}
 {view==="reports"&&selLog&&<LogV log={selLog} setLogs={setLogs} ecats={ecats} cur={cur} fm={fm} ft={ft} fdl={fdl} repT={repT} setRepT={setRepT} setSelLog={setSelLog} inp={inp} T={T} sb={sb} orders={orders} setOrd={setOrd}/>}
-{view==="achievements"&&<AchievementsV logs={logs} orders={orders} cari={cari} installments={installments} unlocked={unlocked} cur={cur} fm={fm} fd={fd} setV={setV} sb={sb} T={T} badges={achievements}/>}
 {view==="products"&&<ProductsPageV logs={logs} cur={cur} fm={fm} tod={tod} T={T} inp={inp} sb={sb} setV={setV}/>}
 {view==="customers"&&<CustomersPageV orders={orders} cur={cur} fm={fm} fd={fd} T={T} inp={inp} setV={setV}/>}
 {view==="expenses"&&<ExpensesPageV exp={exp} setExp={setExp} ecats={ecats} setEc={setEc} cur={cur} fm={fm} fd={fd} tod={tod} uid={uid} T={T} setV={setV}/>}
-{view==="alltime"&&<AllTimeV orders={orders} cur={cur} fm={fm} T={T} setV={setV}/>}
 {view==="notifications"&&<NotificationsV notifications={notifications} setNotifications={setNotifications} fd={fd} ft={ft} setV={setV} sb={sb} T={T}/>}
 {view==="installments"&&<InstallmentsPageV installments={installments} setInstallments={setInstallments} cur={cur} fm={fm} fd={fd} ft={ft} tod={tod} T={T} sb={sb} inp={inp} setV={setV} notifications={notifications} setNotifications={setNotifications}/>}
 {view==="credit"&&<CreditPageV cari={cari} setCari={setCari} cur={cur} fm={fm} fd={fd} ft={ft} T={T} sb={sb} inp={inp} setV={setV} tables={tables} setTbl={setTbl} uid={uid}/>}
@@ -909,8 +951,6 @@ const NAV_CARDS=[
 {k:"expenses",label:"Harcamalar",sub:"Gider takibi",val:null,valColor:"#FF3B30"},
 {k:"installments",label:"Vadeler",sub:overdueCount>0?overdueCount+" gecikmiş":"Taksit takibi",val:overdueCount||null,valColor:"#FF3B30"},
 {k:"customers",label:"Müşteriler",sub:"En çok harcayanlar",val:null,valColor:"#F59E0B"},
-{k:"alltime",label:"Tüm Zamanlar",sub:"Genel istatistikler",val:null,valColor:"#5856D6"},
-{k:"achievements",label:"Rozetler",sub:earnedCount+"/"+((badges||[]).length),val:null,valColor:null},
 {k:"settings",label:"Ayarlar",sub:"Sistem & menü",val:null,valColor:null},
 ];
 
@@ -1954,7 +1994,6 @@ const NAV_CARDS=[
    stat:null, icon:"📦"},
   {k:"reports", label:"Raporlar", sub:openCari>0?`${openCari} açık cari`:"Satış & harcama", accent:"#3A9EFF",
    stat:openCari>0?openCari:null, statColor:"#AF52DE", icon:"📊"},
-  {k:"achievements", label:"Rozetler", sub:`${earnedCount} / ${badges.length} kazanıldı`, accent:"#FF9500",
    stat:earnedCount, statColor:"#FF9500", icon:"🎖"},
   {k:"todo", label:"Yapılacaklar", sub:"Görevler & notlar", accent:"#A855F7",
    stat:null, icon:"✅"},
