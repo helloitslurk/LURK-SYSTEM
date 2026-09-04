@@ -753,7 +753,8 @@ return(
 <div style={{fontSize:15,fontWeight:800,color:T.text}}>{curT.lbl}</div>
 {curT.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{curT.g}</div>}
 </div>
-{curT.g&&<button onClick={function(){setGM(true);}} style={{padding:"5px 12px",background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.3)",borderRadius:20,color:T.accentL,fontSize:12,fontWeight:700,cursor:"pointer",flexShrink:0}}>{curT.g}</button>}
+{curT.g&&<button onClick={function(){setGM(curT.id);}} style={{padding:"5px 12px",background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.3)",borderRadius:20,color:T.accentL,fontSize:12,fontWeight:700,cursor:"pointer",flexShrink:0}}>{curT.g}</button>}
+{!curT.g&&<button onClick={function(){setGM(curT.id);}} style={{padding:"5px 12px",background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:20,color:T.textSub,fontSize:12,fontWeight:600,cursor:"pointer",flexShrink:0}}>+ İsim</button>}
 <button onClick={function(){setCancelConfirm(true);}} style={{padding:"5px 12px",background:"rgba(255,59,48,0.08)",border:"0.5px solid rgba(255,59,48,0.25)",borderRadius:20,color:T.danger,fontSize:12,fontWeight:700,cursor:"pointer",flexShrink:0}}>İptal</button>
 </div>
 
