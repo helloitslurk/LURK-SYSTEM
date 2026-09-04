@@ -237,7 +237,25 @@ const[isMobile,setIsMobile]=useState(()=>window.innerWidth<768);
 useEffect(()=>{const h=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);
 
 useEffect(()=>{
-const fallbackTimer=setTimeout(()=>{if(!ok){loadedRef.current=true;setOk(true);setAuthChecked(true);setAuthed(true);}},8000);
+const fallbackTimer=setTimeout(async()=>{
+if(!ok){
+// Supabase'e bir daha bağlanmayı dene
+try{
+const t=await ld("lurk_t",null);const o=await ld("lurk_o",[]);
+if(o&&o.length>0){setOrd(o);}
+if(t)setTbl((t||[]).filter(tb=>tb.order&&tb.order.length>0));
+const e=await ld("lurk_e",[]);if(e)setExp(e);
+const l=await ld("lurk_l",[]);if(l)setLogs(l);
+const inst=await ld("lurk_inst",[]);if(inst)setInstallments(inst);
+const d=await ld("lurk_d",null);
+const today=new Date().toISOString().split("T")[0];
+const validDay=d&&d.oa&&d.oa.split("T")[0]===today?d:null;
+setDay(validDay);
+}catch(e2){}
+loadedRef.current=true;
+setOk(true);setAuthChecked(true);setAuthed(true);
+}
+},8000);
 (async()=>{
 // Migration: eski p4... anahtarlarını lurk_... formatına taşı (bir kez)
 const oldKeys=["t","o","e","m","s","d","l","c","ec","onl","inst","unl","notif","todo"];
@@ -348,7 +366,7 @@ const cfAuth=cf.sitePassword;
 if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 }catch{setAuthed(true);}
 setAuthChecked(true);
-})().catch(function(){clearTimeout(fallbackTimer);loadedRef.current=true;setOk(true);setAuthChecked(true);setAuthed(true);});},[]);
+})().catch(function(){clearTimeout(fallbackTimer);setOk(true);setAuthChecked(true);setAuthed(true);});},[]);
 
 // Debounced toplu kayıt — 800ms bekleyip tek seferde yazar
 const saveTimerRef=useRef(null);
