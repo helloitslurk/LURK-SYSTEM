@@ -1994,7 +1994,6 @@ const NAV_CARDS=[
    stat:null, icon:"📦"},
   {k:"reports", label:"Raporlar", sub:openCari>0?`${openCari} açık cari`:"Satış & harcama", accent:"#3A9EFF",
    stat:openCari>0?openCari:null, statColor:"#AF52DE", icon:"📊"},
-   stat:earnedCount, statColor:"#FF9500", icon:"🎖"},
   {k:"todo", label:"Yapılacaklar", sub:"Görevler & notlar", accent:"#A855F7",
    stat:null, icon:"✅"},
   {k:"products", label:"Ürün Analizi", sub:"En çok satanlar", accent:"#3A9EFF",
