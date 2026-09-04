@@ -1281,33 +1281,24 @@ style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"c
 
 function ReportsV({orders,exp,logs,cur,fm,fd,fdl,ft,tod,mainT,setMainT,expMon,setExpMon,expDay,setExpDay,ecats,expF,setExpF,showEF,setShowEF,addExp,setExp,inp,sb,setSelLog,setV,installments,setInstallments,tacoLogs,setTacoLogs,tacoMenu,setTacoMenu,cari,setCari,T=DARK,tables,setTbl,uid}){
 const now=new Date();
-const[activeTab,setActiveTab]=useState("Satış");
 const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
 const[expandedDay,setExpandedDay]=useState(null);
-const[showExpForm,setShowExpForm]=useState(false);
-const[newExp,setNewExp]=useState({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});
-const[editExp,setEditExp]=useState(null);
-const[showNewCat,setShowNewCat]=useState(false);
-const[newCatName,setNewCatName]=useState("");
 
-const allMonths=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...(exp||[]).map(e=>e.date?e.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+const allMonths=[...new Set(orders.map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
 const monthLabel=function(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
 const monthStart=selMonth+"-01";
 const lastDay=new Date(parseInt(selMonth.slice(0,4)),parseInt(selMonth.slice(5,7)),0).getDate();
 const monthEnd=selMonth+"-"+String(lastDay).padStart(2,"0");
 const monthOrders=orders.filter(o=>o.date&&o.date>=monthStart&&o.date<=monthEnd);
-const monthExp=(exp||[]).filter(e=>e.date&&e.date>=monthStart&&e.date<=monthEnd);
 const totalInc=monthOrders.reduce((s,o)=>s+o.total,0);
-const totalExp=monthExp.reduce((s,e)=>s+e.amount,0);
 const totalCash=monthOrders.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
 const totalCard=monthOrders.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
+
 const dayMap={};
 monthOrders.forEach(o=>{const d=o.date;if(!dayMap[d])dayMap[d]={date:d,orders:[],total:0};dayMap[d].orders.push(o);dayMap[d].total+=o.total||0;});
 const logMap={};
 (logs||[]).forEach(l=>{if(l.date)logMap[l.date]=l;});
 const dayList=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
-const byCat={};
-monthExp.forEach(e=>{if(!byCat[e.cat])byCat[e.cat]=0;byCat[e.cat]+=e.amount||0;});
 
 return(
 <div style={{maxWidth:680,margin:"0 auto",paddingBottom:60}}>
@@ -1322,6 +1313,7 @@ return(
 ))}
 </div>
 </div>
+
 <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr",gap:8,padding:"12px 16px",borderBottom:"0.5px solid "+T.border}}>
 <div style={{background:"rgba(52,199,89,0.08)",borderRadius:12,padding:"12px 14px",border:"0.5px solid rgba(52,199,89,0.2)"}}>
 <div style={{fontSize:9,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Toplam Ciro</div>
@@ -1339,14 +1331,7 @@ return(
 {totalInc>0&&<div style={{fontSize:9,color:T.textDim,marginTop:2}}>%{Math.round(totalCard/totalInc*100)}</div>}
 </div>
 </div>
-<div style={{display:"flex",borderBottom:"0.5px solid "+T.border}}>
-{["Satış","Harcama"].map(tab=>(
-<button key={tab} onClick={()=>setActiveTab(tab)} style={{flex:1,padding:"12px 0",border:"none",borderBottom:"2px solid "+(activeTab===tab?T.accent:"transparent"),background:"transparent",cursor:"pointer",fontSize:13,fontWeight:700,color:activeTab===tab?T.accentL:T.textSub}}>
-{tab}
-</button>
-))}
-</div>
-{activeTab==="Satış"&&(
+
 <div>
 {dayList.length===0
 ?<div style={{textAlign:"center",padding:"40px",color:T.textDim}}>Bu ayda sipariş yok</div>
@@ -1381,79 +1366,6 @@ return(
 </div>
 );})}
 </div>
-)}
-{activeTab==="Harcama"&&(
-<div>
-<div style={{padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
-<button onClick={()=>{setShowExpForm(p=>!p);setEditExp(null);setNewExp({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});}} style={{background:showExpForm?T.bg3:"rgba(255,59,48,0.1)",border:"1px solid "+(showExpForm?T.border:"rgba(255,59,48,0.3)"),borderRadius:10,padding:"9px 16px",cursor:"pointer",color:showExpForm?T.textSub:T.danger,fontWeight:600,fontSize:13}}>
-{showExpForm?"İptal":"+ Harcama Ekle"}
-</button>
-{showExpForm&&<div style={{marginTop:12,display:"grid",gap:8}}>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-<input autoFocus placeholder="Açıklama" value={newExp.desc} onChange={e=>setNewExp(p=>({...p,desc:e.target.value}))} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:10,padding:"11px 14px",color:T.text,fontSize:14,outline:"none"}}/>
-<input type="number" placeholder="Tutar" value={newExp.amount} onChange={e=>setNewExp(p=>({...p,amount:e.target.value}))} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:10,padding:"11px 14px",color:T.text,fontSize:14,outline:"none"}}/>
-</div>
-<div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"center"}}>
-{(ecats||[]).map(cat=><button key={cat} onClick={()=>setNewExp(p=>({...p,cat}))} style={{padding:"5px 12px",borderRadius:20,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,background:newExp.cat===cat?T.danger:T.bg3,color:newExp.cat===cat?"#fff":T.textSub}}>{cat}</button>)}
-{!showNewCat
-?<button onClick={()=>setShowNewCat(true)} style={{padding:"5px 12px",borderRadius:20,border:"1px dashed rgba(255,255,255,0.2)",background:"transparent",cursor:"pointer",fontSize:11,color:T.textDim}}>+ Yeni</button>
-:<div style={{display:"flex",gap:6,alignItems:"center"}}>
-<input autoFocus placeholder="Kategori" value={newCatName} onChange={e=>setNewCatName(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newCatName.trim()){const t=newCatName.trim();if(!ecats.includes(t)){if(typeof setEc==="function")setEc(prev=>[...prev,t]);}setNewExp(p=>({...p,cat:t}));setNewCatName("");setShowNewCat(false);}}} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:8,padding:"5px 10px",color:T.text,fontSize:12,outline:"none",width:110}}/>
-<button onClick={()=>{const t=newCatName.trim();if(t){if(!ecats.includes(t)){if(typeof setEc==="function")setEc(prev=>[...prev,t]);}setNewExp(p=>({...p,cat:t}));}setNewCatName("");setShowNewCat(false);}} style={{padding:"5px 10px",background:T.accent,border:"none",borderRadius:8,color:"#fff",fontWeight:600,fontSize:11,cursor:"pointer"}}>Ekle</button>
-</div>}
-</div>
-<button onClick={()=>{
-if(!newExp.desc||!newExp.amount)return;
-if(editExp!==null){
-setExp(prev=>prev.map((e,i)=>i===editExp?{...e,desc:newExp.desc,amount:parseFloat(newExp.amount),cat:newExp.cat}:e));
-setEditExp(null);
-}else{
-setExp(prev=>[{id:uid(),desc:newExp.desc,amount:parseFloat(newExp.amount),cat:newExp.cat,date:tod()},...prev]);
-}
-setNewExp({desc:"",amount:"",cat:(ecats&&ecats[0])||"Malzeme"});
-setShowExpForm(false);
-}} style={{padding:"12px",background:T.danger,border:"none",borderRadius:12,color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",opacity:newExp.desc&&newExp.amount?1:0.5}}>
-{editExp!==null?"Güncelle":"Kaydet"}
-</button>
-</div>}
-</div>
-{Object.keys(byCat).length>0&&<div style={{padding:"12px 16px 0"}}>
-<div style={{fontSize:10,color:T.textSub,fontWeight:600,letterSpacing:1,marginBottom:8,textTransform:"uppercase"}}>Kategori Dağılımı</div>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}}>
-{Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([cat,amt])=>(
-<div key={cat} style={{background:"rgba(255,59,48,0.06)",borderRadius:10,padding:"10px 12px",border:"0.5px solid rgba(255,59,48,0.15)"}}>
-<div style={{fontSize:10,color:T.textSub,marginBottom:2}}>{cat}</div>
-<div style={{fontSize:15,fontWeight:800,color:T.danger}}>{fm(amt,cur)}</div>
-<div style={{fontSize:9,color:T.textDim,marginTop:1}}>%{totalExp>0?Math.round(amt/totalExp*100):0}</div>
-</div>
-))}
-</div>
-</div>}
-{monthExp.length>0&&<div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.08)",borderTop:"0.5px solid rgba(255,255,255,0.08)"}}>
-<span style={{fontSize:12,color:T.textSub,fontWeight:600}}>Toplam Harcama</span>
-<span style={{fontSize:15,fontWeight:800,color:T.danger}}>{fm(totalExp,cur)}</span>
-</div>}
-{monthExp.length===0
-?<div style={{textAlign:"center",padding:"40px",color:T.textDim}}>Bu ay harcama yok</div>
-:monthExp.sort((a,b)=>b.date.localeCompare(a.date)).map((e,i)=>{
-const realIdx=(exp||[]).indexOf(e);
-return(
-<div key={i} style={{padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.04)",background:editExp===realIdx?"rgba(255,149,0,0.05)":"transparent"}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-<div style={{flex:1}}>
-<div style={{fontSize:13,fontWeight:600,color:T.text}}>{e.desc}</div>
-<div style={{fontSize:11,color:T.textSub,marginTop:1}}>{e.cat} · {fd(e.date)}</div>
-</div>
-<div style={{display:"flex",alignItems:"center",gap:8}}>
-<div style={{fontSize:14,fontWeight:700,color:T.danger}}>{fm(e.amount,cur)}</div>
-<button onClick={()=>{setNewExp({desc:e.desc,amount:String(e.amount),cat:e.cat});setEditExp(realIdx);setShowExpForm(true);}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"4px 10px",cursor:"pointer",color:T.textSub,fontSize:11,fontWeight:600}}>Düzenle</button>
-<button onClick={()=>setExp(prev=>prev.filter((_,idx)=>idx!==realIdx))} style={{background:"none",border:"none",color:T.textDim,cursor:"pointer",fontSize:16,padding:"0 4px"}}>×</button>
-</div>
-</div>
-</div>
-);})}
-</div>
-)}
 </div>
 );}
 
