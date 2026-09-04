@@ -237,7 +237,7 @@ const[isMobile,setIsMobile]=useState(()=>window.innerWidth<768);
 useEffect(()=>{const h=()=>setIsMobile(window.innerWidth<768);window.addEventListener("resize",h);return()=>window.removeEventListener("resize",h);},[]);
 
 useEffect(()=>{
-const fallbackTimer=setTimeout(()=>{if(!ok){setOk(true);setAuthChecked(true);setAuthed(true);}},8000);
+const fallbackTimer=setTimeout(()=>{if(!ok){loadedRef.current=true;setOk(true);setAuthChecked(true);setAuthed(true);}},8000);
 (async()=>{
 // Migration: eski p4... anahtarlarını lurk_... formatına taşı (bir kez)
 const oldKeys=["t","o","e","m","s","d","l","c","ec","onl","inst","unl","notif","todo"];
@@ -348,7 +348,7 @@ const cfAuth=cf.sitePassword;
 if(!cfAuth||savedAuth===cfAuth){setAuthed(true);}
 }catch{setAuthed(true);}
 setAuthChecked(true);
-})().catch(function(){clearTimeout(fallbackTimer);setOk(true);setAuthChecked(true);setAuthed(true);});},[]);
+})().catch(function(){clearTimeout(fallbackTimer);loadedRef.current=true;setOk(true);setAuthChecked(true);setAuthed(true);});},[]);
 
 // Debounced toplu kayıt — 800ms bekleyip tek seferde yazar
 const saveTimerRef=useRef(null);
@@ -740,7 +740,7 @@ return{...o,oid:o.id+"_"+seen[o.id]};
 }
 },[curT.id]);
 
-var aMenü=fMenü(cat);
+var aMenü=fMenü;
 var oCatsFiltered=oCats;
 
 return(
