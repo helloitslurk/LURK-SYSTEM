@@ -1842,135 +1842,68 @@ Bu işlem {OLD_LOGS.length} günlük geçmiş satış kaydını mevcut Raporlar 
 );}
 
 function LurkV({setV,T,logs,orders,cfg,cari,installments,unlocked,fm,fd,cur,day,ft,tod,isMobile,badges}){
-const now=new Date();
-const allLogs=logs||[];
-
-// Bu hafta
-const dow=now.getDay();const diffToMon=dow===0?-6:1-dow;
-const weekStart=new Date(now);weekStart.setDate(now.getDate()+diffToMon);
-const weekStartStr=weekStart.toISOString().split("T")[0];
-const weekEnd=new Date(weekStart);weekEnd.setDate(weekStart.getDate()+6);
-const weekEndStr=weekEnd.toISOString().split("T")[0];
-const weeklyRev=[...allLogs,...(orders||[]).filter(o=>o.date&&o.date>=weekStartStr&&o.date<=weekEndStr&&!allLogs.find(l=>l.date===o.date))].filter(l=>l.date&&l.date>=weekStartStr&&l.date<=weekEndStr).reduce((s,l)=>s+(l.inc||l.total||0),0);
-
-// Bu ay
-const thisMonth=now.toISOString().slice(0,7);
-const monthlyRev=[...allLogs,...(orders||[]).filter(o=>o.date&&o.date.startsWith(thisMonth)&&!allLogs.find(l=>l.date===o.date))].filter(l=>l.date&&l.date.startsWith(thisMonth)).reduce((s,l)=>s+(l.inc||l.total||0),0);
-
-const weeklyGoal=cfg?.weeklyGoal||0;
-const monthlyGoal=cfg?.monthlyGoal||0;
-const weekPct=weeklyGoal>0?Math.min(100,Math.round(weeklyRev/weeklyGoal*100)):0;
-const monthPct=monthlyGoal>0?Math.min(100,Math.round(monthlyRev/monthlyGoal*100)):0;
-
-// Gizle/göster
-const[hideAmounts,setHideAmounts]=useState(false);
-const mask=(val)=>hideAmounts?"••••••":val;
-
-// Rozetler
-const earnedCount=badges.filter(b=>b.done).length;
-
-// Açık cari
-const openCari=(cari||[]).filter(c=>!c.settled).length;
-
-// Vadeler
-const overdueCount=(installments||[]).reduce((s,p)=>s+(p.installments||[]).filter(i=>{
-  if(i.paid)return false;
-  return new Date(i.due)<new Date(now.toISOString().split("T")[0]);
-}).length,0);
+const allMonths=[...new Set((logs||[]).map(l=>l.date?l.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+const[selMonth,setSelMonth]=useState(allMonths[0]||new Date().toISOString().slice(0,7));
+const monthLabel=function(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
+const monthLogs=(logs||[]).filter(l=>l.date&&l.date.startsWith(selMonth));
+const totalInc=monthLogs.reduce((s,l)=>s+(l.inc||0),0);
+const totalDays=monthLogs.length;
 
 const NAV_CARDS=[
-  {k:"online", label:"Online Siparişler", sub:"Yemeksepeti · Uber Eats", accent:"#FF6B35",
-   stat:null, icon:"📦"},
-  {k:"reports", label:"Raporlar", sub:openCari>0?`${openCari} açık cari`:"Satış & harcama", accent:"#3A9EFF",
-   stat:openCari>0?openCari:null, statColor:"#AF52DE", icon:"📊"},
-  {k:"todo", label:"Yapılacaklar", sub:"Görevler & notlar", accent:"#A855F7",
-   stat:null, icon:"✅"},
-  {k:"products", label:"Ürün Analizi", sub:"En çok satanlar", accent:"#3A9EFF",
-   stat:null, icon:"📦"},
-  {k:"customers", label:"Müşteriler", sub:earnedCount>0?earnedCount+" müşteri":"isimli müşteri", accent:"#F59E0B",
-   stat:null, icon:"👥"},
+{k:"tables",label:"Masalar",icon:"🪑"},
+{k:"reports",label:"Raporlar",icon:"📊"},
+{k:"customers",label:"Müşteriler",icon:"👤"},
+{k:"settings",label:"Ayarlar",icon:"⚙️"},
 ];
 
 return(
-<div style={{minHeight:"calc(100vh - 60px)",padding:isMobile?"16px":"28px 32px",maxWidth:1000,margin:"0 auto",position:"relative"}}>
-
-{/* Header */}
-<div style={{marginBottom:28,position:"relative",zIndex:1}}>
-<h1 style={{fontSize:isMobile?28:42,fontWeight:800,letterSpacing:-1,margin:"0 0 6px",color:T.text,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>LURK.</h1>
-<div style={{fontSize:13,color:T.textSub}}>
-{now.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}
-{day&&<span style={{marginLeft:12,background:"rgba(52,199,89,0.15)",color:"#34C759",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● AÇIK {ft(day.oa)}</span>}
-{!day&&<span style={{marginLeft:12,background:"rgba(255,59,48,0.1)",color:"#FF3B30",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:600}}>● KAPALI</span>}
+<div style={{maxWidth:680,margin:"0 auto",paddingBottom:40}}>
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+<div style={{fontWeight:600,fontSize:18,color:T.text}}>LURK.</div>
+<div style={{display:"flex",gap:6,overflowX:"auto"}}>
+{allMonths.slice(0,4).map(m=>(
+<button key={m} onClick={()=>setSelMonth(m)} style={{padding:"5px 12px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:500,whiteSpace:"nowrap",flexShrink:0,background:selMonth===m?T.accent:"rgba(255,255,255,0.06)",color:selMonth===m?"#fff":T.textSub}}>
+{monthLabel(m)}
+</button>
+))}
 </div>
 </div>
 
-{/* Navigasyon kartları — üstte */}
-<div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(6,1fr)",gap:10,marginBottom:16,position:"relative",zIndex:1}}>
-{NAV_CARDS.map(card=>(
-<button key={card.k} onClick={()=>setV(card.k)} style={{
-  background:T.isDark?"rgba(255,255,255,0.06)":T.bg2,
-  backdropFilter:"blur(24px)",
-  WebkitBackdropFilter:"blur(24px)",
-  border:T.isDark?"1px solid rgba(255,255,255,0.12)":"1px solid "+T.border,
-  borderRadius:20,
-  padding:"18px 14px",
-  cursor:"pointer",
-  textAlign:"left",
-  color:T.text,
-  position:"relative",
-  overflow:"hidden",
-  transition:"all 0.2s",
-  display:"flex",
-  flexDirection:"column",
-  gap:8,
-  minHeight:110,
-  boxShadow:T.isDark?"0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)":"0 2px 8px rgba(0,0,0,0.06)",
-}}>
-{/* Accent glow top */}
-<div style={{position:"absolute",top:0,left:0,right:0,height:40,background:`linear-gradient(180deg,${card.accent}18 0%,transparent 100%)`,borderRadius:"20px 20px 0 0",pointerEvents:"none"}}/>
-<div style={{position:"absolute",top:0,left:0,right:0,height:1,background:`linear-gradient(90deg,transparent 0%,${card.accent}80 50%,transparent 100%)`,pointerEvents:"none"}}/>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",position:"relative"}}>
-<span style={{fontSize:26}}>{card.icon}</span>
-{card.stat!=null&&<span style={{background:card.statColor+"22",color:card.statColor,fontSize:11,fontWeight:800,borderRadius:20,padding:"2px 8px",border:`1px solid ${card.statColor}44`}}>{card.stat}</span>}
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,padding:"14px 16px",borderBottom:"0.5px solid "+T.border}}>
+<div style={{background:T.bg2,borderRadius:10,padding:"14px",border:"0.5px solid "+T.border}}>
+<div style={{fontSize:10,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Ciro</div>
+<div style={{fontSize:20,fontWeight:500,color:T.text}}>{fm(totalInc,cur)}</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{totalDays} gün</div>
 </div>
-<div style={{position:"relative"}}>
-<div style={{fontSize:12,fontWeight:700,color:T.text,marginBottom:2}}>{card.label}</div>
-<div style={{fontSize:10,color:T.textSub}}>{card.sub}</div>
+<div style={{background:T.bg2,borderRadius:10,padding:"14px",border:"0.5px solid "+T.border}}>
+<div style={{fontSize:10,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Günlük Ort.</div>
+<div style={{fontSize:20,fontWeight:500,color:T.text}}>{totalDays>0?fm(Math.round(totalInc/totalDays),cur):"—"}</div>
+<div style={{fontSize:11,color:T.textDim,marginTop:2}}>{monthLogs.length} kayıt</div>
 </div>
+</div>
+
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,padding:"14px 16px",borderBottom:"0.5px solid "+T.border}}>
+{NAV_CARDS.map(c=>(
+<button key={c.k} onClick={()=>setV(c.k)} style={{background:T.bg2,border:"0.5px solid "+T.border,borderRadius:12,padding:"16px",cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:10}}>
+<span style={{fontSize:20}}>{c.icon}</span>
+<span style={{fontSize:14,fontWeight:500,color:T.text}}>{c.label}</span>
 </button>
 ))}
 </div>
 
-{/* Hedef kartları — altta */}
-<div style={{marginBottom:16,position:"relative",zIndex:1}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-<div style={{fontSize:11,color:T.textDim,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase"}}>Hedefler</div>
-<button onClick={()=>setHideAmounts(p=>!p)} style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:11,fontWeight:600,padding:"4px 8px",borderRadius:8}}>
-{hideAmounts
-  ?<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-  :<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-}
-{hideAmounts?"Göster":"Gizle"}
-</button>
+<div style={{padding:"14px 16px"}}>
+<div style={{fontSize:12,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5,marginBottom:10,fontWeight:500}}>Son Kapanışlar</div>
+{monthLogs.slice(0,5).map((l,i)=>(
+<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:"0.5px solid rgba(255,255,255,0.04)"}}>
+<div>
+<div style={{fontSize:13,color:T.text}}>{new Date(l.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"short",day:"numeric",month:"short"})}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:1}}>{l.count||0} adisyon</div>
 </div>
-<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
-{weeklyGoal>0?<div style={{background:T.isDark?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.9)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",borderRadius:18,padding:"22px 24px",color:T.text,border:T.isDark?"1px solid rgba(255,255,255,0.1)":"1px solid "+T.border,boxShadow:T.isDark?"0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)":"0 2px 8px rgba(0,0,0,0.06)"}}>
-<div style={{fontSize:11,color:T.textSub,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
-<div style={{fontSize:isMobile?24:28,fontWeight:800,letterSpacing:-0.5,marginBottom:4,fontVariantNumeric:"tabular-nums"}}>{mask(fm(weeklyRev,cur))}</div>
-<div style={{background:"rgba(255,255,255,0.1)",borderRadius:4,height:5,overflow:"hidden",marginBottom:5}}>
-{!hideAmounts&&<div style={{height:"100%",width:weekPct+"%",background:weekPct>=100?"#34C759":weekPct>=70?"#FF9500":"#FF3B30",borderRadius:4,transition:"width 0.8s"}}/>}
-{hideAmounts&&<div style={{height:"100%",width:"100%",background:"#2a2a2a",borderRadius:4}}/>}
+<div style={{fontSize:14,fontWeight:500,color:T.text}}>{fm(l.inc||0,cur)}</div>
 </div>
-<div style={{fontSize:11,color:T.textSub}}>{hideAmounts?"/ ••••••":("/ "+fm(weeklyGoal,cur)+" · %"+weekPct+(weekPct>=100?" 🎯":""))}</div>
-</div>:<div style={{background:T.isDark?"#111":T.bg2,borderRadius:18,padding:"22px 24px",border:"1px solid "+T.border,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-<div style={{fontSize:11,color:T.textDim,fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Bu Hafta</div>
-<div style={{fontSize:isMobile?24:28,fontWeight:800,color:T.textDim,marginBottom:8}}>{mask(fm(weeklyRev,cur))}</div>
-<button onClick={()=>setV("settings")} style={{fontSize:11,color:T.textSub,background:"none",border:"1px solid "+T.border,borderRadius:8,cursor:"pointer",padding:"6px 12px",width:"fit-content"}}>Hedef belirle →</button>
-</div>}
-
+))}
+{monthLogs.length===0&&<div style={{textAlign:"center",padding:"20px",color:T.textDim,fontSize:13}}>Bu ay kayıt yok</div>}
 </div>
-</div>
-
 </div>
 );}
 
@@ -2616,88 +2549,6 @@ return(
 </div>}
 </div>
 );}
-
-const now=new Date();
-const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
-const MERGED_GROUPS=[{key:"2026-06+07",label:"Haziran-Temmuz 2026",months:["2026-06","2026-07"]}];
-const allMonths=[...new Set((orders||[]).filter(o=>o.g&&o.g.trim()&&o.g.trim()!=="--").map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
-const mergedMonths=new Set(MERGED_GROUPS.flatMap(g=>g.months));
-const singleMonths=allMonths.filter(m=>!mergedMonths.has(m));
-const tabs=[
-...MERGED_GROUPS.filter(g=>g.months.some(m=>allMonths.includes(m))),
-...singleMonths.map(m=>{const[y,mo]=m.split("-");return{key:m,label:new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"}),months:[m]};})
-];
-const[selKey,setSelKey]=useState(tabs[0]?.key||"");
-const selTab=tabs.find(t=>t.key===selKey)||tabs[0];
-const monthOrders=(orders||[]).filter(o=>{
-if(!o.date||!o.g||!o.g.trim()||o.g.trim()==="--")return false;
-const m=o.date.slice(0,7);
-return selTab?.months.includes(m);
-});
-const custMap={};
-monthOrders.forEach(o=>{
-const name=o.g.trim().toUpperCase();
-if(!custMap[name])custMap[name]={name,total:0,count:0,lastDate:"",pt:{cash:0,card:0}};
-custMap[name].total+=o.total||0;
-custMap[name].count+=1;
-if(!custMap[name].lastDate||o.date>custMap[name].lastDate)custMap[name].lastDate=o.date;
-if(o.pt&&custMap[name].pt[o.pt]!==undefined)custMap[name].pt[o.pt]=(custMap[name].pt[o.pt]||0)+(o.total||0);
-});
-const sorted=Object.values(custMap).sort((a,b)=>b.total-a.total);
-const totalRev=monthOrders.reduce((s,o)=>s+(o.total||0),0);
-return(
-<div style={{padding:"0 0 80px",maxWidth:680,margin:"0 auto"}}>
-<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
-<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600,padding:0,marginBottom:10,display:"block"}}>Dashboard</button>
-<h2 style={{margin:"0 0 12px",fontWeight:800,fontSize:22,color:T.text}}>Musteriler</h2>
-<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4}}>
-{tabs.length===0&&<div style={{fontSize:12,color:T.textSub}}>Henuz isimli siparis yok.</div>}
-{tabs.map(tab=>(
-<button key={tab.key} onClick={()=>setSelKey(tab.key)} style={{padding:"7px 16px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:700,whiteSpace:"nowrap",flexShrink:0,background:selKey===tab.key?T.accent:"rgba(255,255,255,0.06)",color:selKey===tab.key?"#fff":T.textSub}}>
-{tab.label}
-</button>
-))}
-</div>
-</div>
-{sorted.length>0&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,padding:"12px 16px",borderBottom:"0.5px solid "+T.border}}>
-<div style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.08)"}}>
-<div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Toplam Ciro</div>
-<div style={{fontSize:20,fontWeight:800,color:T.text}}>{fm(totalRev,cur)}</div>
-</div>
-<div style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.08)"}}>
-<div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Musteri</div>
-<div style={{fontSize:20,fontWeight:800,color:T.text}}>{sorted.length} kisi</div>
-</div>
-</div>}
-{sorted.length===0
-?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
-<div style={{fontSize:32,marginBottom:10}}>👤</div>
-<div style={{fontSize:14,fontWeight:600,color:T.textSub}}>{selTab?.label} icin isimli siparis yok</div>
-</div>
-:<div>
-{sorted.map((c,i)=>(
-<div key={c.name} style={{padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)",display:"flex",justifyContent:"space-between",alignItems:"center",background:i===0?"rgba(52,199,89,0.06)":"transparent"}}>
-<div style={{display:"flex",alignItems:"center",gap:12}}>
-<div style={{width:32,height:32,borderRadius:"50%",background:i===0?"rgba(52,199,89,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:12,color:i===0?T.accent:T.textSub,flexShrink:0}}>{i+1}</div>
-<div>
-<div style={{fontWeight:700,fontSize:14,color:T.text}}>{c.name}</div>
-<div style={{fontSize:11,color:T.textSub,marginTop:2}}>{c.count} siparis · Son: {fd(c.lastDate)}</div>
-{(c.pt.cash>0||c.pt.card>0)&&<div style={{fontSize:10,color:T.textDim,marginTop:1}}>
-{c.pt.cash>0?"Nakit: "+fm(c.pt.cash,cur)+" ":""}
-{c.pt.card>0?"Kart: "+fm(c.pt.card,cur):""}
-</div>}
-</div>
-</div>
-<div style={{textAlign:"right",flexShrink:0}}>
-<div style={{fontSize:18,fontWeight:800,color:i===0?T.accent:T.text}}>{fm(c.total,cur)}</div>
-<div style={{fontSize:10,color:T.textSub,marginTop:2}}>%{totalRev>0?Math.round(c.total/totalRev*100):0}</div>
-</div>
-</div>
-))}
-</div>}
-</div>
-);}
-
 function CustomersV({orders,custList,cur,fm,fd,T,inp}){
 const[selCust,setSelCust]=useState(null);
 const[sortBy,setSortBy]=useState("total");
@@ -2831,6 +2682,54 @@ return(
 </div>
 );
 }
+
+function CustomersPageV({orders,cur,fm,fd,T,inp,setV}){
+const now=new Date();
+const[selMonth,setSelMonth]=useState(now.toISOString().slice(0,7));
+const allMonths=[...new Set((orders||[]).filter(o=>o.g&&o.g.trim()&&o.g.trim()!=="--").map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+const monthLabel=function(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
+const monthOrders=(orders||[]).filter(o=>o.date&&o.date.startsWith(selMonth)&&o.g&&o.g.trim()&&o.g.trim()!=="--");
+const custMap={};
+monthOrders.forEach(o=>{const n=o.g.trim().toUpperCase();if(!custMap[n])custMap[n]={name:n,total:0,count:0};custMap[n].total+=o.total||0;custMap[n].count++;});
+const sorted=Object.values(custMap).sort((a,b)=>b.total-a.total);
+const totalRev=monthOrders.reduce((s,o)=>s+(o.total||0),0);
+return(
+<div style={{maxWidth:680,margin:"0 auto",paddingBottom:60}}>
+<div style={{padding:"16px 16px 12px",borderBottom:"0.5px solid "+T.border}}>
+<button onClick={()=>setV("lurk")} style={{background:"none",border:"none",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:500,padding:0,marginBottom:10,display:"block"}}>← Dashboard</button>
+<h2 style={{margin:"0 0 12px",fontWeight:500,fontSize:20,color:T.text}}>Müşteriler</h2>
+<div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:4}}>
+{(allMonths.length?allMonths:[now.toISOString().slice(0,7)]).map(m=>(
+<button key={m} onClick={()=>setSelMonth(m)} style={{padding:"7px 14px",border:"none",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:500,whiteSpace:"nowrap",flexShrink:0,background:selMonth===m?T.accent:"rgba(255,255,255,0.06)",color:selMonth===m?"#fff":T.textSub}}>{monthLabel(m)}</button>
+))}
+</div>
+</div>
+{sorted.length>0&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,padding:"12px 16px",borderBottom:"0.5px solid "+T.border}}>
+<div style={{background:T.bg2,borderRadius:10,padding:"12px",border:"0.5px solid "+T.border}}>
+<div style={{fontSize:10,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Toplam Ciro</div>
+<div style={{fontSize:16,fontWeight:500,color:T.text}}>{fm(totalRev,cur)}</div>
+</div>
+<div style={{background:T.bg2,borderRadius:10,padding:"12px",border:"0.5px solid "+T.border}}>
+<div style={{fontSize:10,color:T.textSub,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Müşteri</div>
+<div style={{fontSize:16,fontWeight:500,color:T.text}}>{sorted.length} kişi</div>
+</div>
+</div>}
+{sorted.length===0
+?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim,fontSize:13}}>Bu ay isimli sipariş yok</div>
+:sorted.map((c,i)=>(
+<div key={c.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 16px",borderBottom:"0.5px solid rgba(255,255,255,0.06)",background:i===0?"rgba(52,199,89,0.04)":"transparent"}}>
+<div style={{display:"flex",alignItems:"center",gap:12}}>
+<div style={{width:28,height:28,borderRadius:"50%",background:i===0?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:500,color:i===0?T.accent:T.textSub,flexShrink:0}}>{i+1}</div>
+<div>
+<div style={{fontSize:14,fontWeight:500,color:T.text}}>{c.name}</div>
+<div style={{fontSize:11,color:T.textSub,marginTop:1}}>{c.count} sipariş</div>
+</div>
+</div>
+<div style={{fontSize:15,fontWeight:500,color:i===0?T.accent:T.text}}>{fm(c.total,cur)}</div>
+</div>
+))}
+</div>
+);}
 
 function CariInReportsV({cari,setCari,cur,fm,fd,ft,T,sb,inp,tables,setTbl,uid,tod}){
 const[selC,setSelC]=useState(null);
