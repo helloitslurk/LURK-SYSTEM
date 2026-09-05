@@ -1617,7 +1617,7 @@ return(
           </div>
         )}
       </div>
-      <button onClick={()=>setShowForm(p=>!p)} style={{...sb(showForm?T.bg3:T.accent),border:"1px solid "+(showForm?T.border2:"transparent"),color:showForm?T.textSub:"#fff",display:"flex",alignItems:"center",gap:6,padding:"9px 18px",fontSize:13}}>
+      <button onClick={()=>setShowForm(p=>!p)} style={{background:showForm?T.bg3:T.accent,border:"1px solid "+(showForm?T.border2:"transparent"),color:showForm?T.textSub:"#fff",display:"flex",alignItems:"center",gap:6,padding:"9px 18px",fontSize:13,borderRadius:10,cursor:"pointer",fontWeight:600}}>
         {showForm?"İptal":"+ Sipariş Ekle"}
       </button>
     </div>
