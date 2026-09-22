@@ -127,7 +127,7 @@ function Btn({children,onClick,dark,style={}}){
 
 function Modal({children,onClose}){
   return(
-    <div onClick={e=>e.target===e.currentTarget&&onClose()} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
       <div style={{background:S.card,borderRadius:"16px 16px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"85vh",overflowY:"auto"}}>
         {children}
       </div>
@@ -341,12 +341,18 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,msg}){
 
 function TablesScreen({tables,setTbl,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
-  const[newName,setNewName]=useState("");
-  const[delId,setDelId]=useState(null);
   const[showAll,setShowAll]=useState(false);
+  const[delId,setDelId]=useState(null);
+  const nameRef=useRef(null);
   const openT=tables.filter(t=>t.s==="o");
-  const freeT=tables.filter(t=>t.s!=="o");
   const displayed=showAll?tables:openT;
+
+  function addTable(){
+    const n=(nameRef.current?nameRef.current.value:"").trim();
+    if(!n)return;
+    setTbl(p=>[...p,{id:uid(),lbl:n,s:"free",order:[],g:""}]);
+    setShowNew(false);
+  }
 
   return(
     <div style={{paddingBottom:32}}>
@@ -375,10 +381,17 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
       {showNew&&(
         <Modal onClose={()=>setShowNew(false)}>
           <div style={{fontWeight:600,fontSize:16,marginBottom:14}}>Yeni Masa</div>
-          <input autoFocus placeholder="Masa adı" value={newName} onChange={e=>setNewName(e.target.value)}
-            onKeyDown={e=>{if(e.key==="Enter"&&newName.trim()){setTbl(p=>[...p,{id:uid(),lbl:newName.trim(),s:"free",order:[],g:""}]);setNewName("");setShowNew(false);}}}
+          <input ref={nameRef} autoFocus placeholder="Masa adı"
+            onKeyDown={e=>{if(e.key==="Enter")addTable();}}
             style={{width:"100%",padding:"11px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
-          <Btn dark onClick={()=>{if(!newName.trim())return;setTbl(p=>[...p,{id:uid(),lbl:newName.trim(),s:"free",order:[],g:""}]);setNewName("");setShowNew(false);}}>Ekle</Btn>
+          <button onClick={addTable}
+            style={{width:"100%",padding:"13px",background:S.text,border:"none",borderRadius:8,color:"#fff",fontSize:14,fontWeight:500,cursor:"pointer"}}>
+            Ekle
+          </button>
+          <button onClick={()=>setShowNew(false)}
+            style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:S.sub,fontSize:13,cursor:"pointer",marginTop:4}}>
+            İptal
+          </button>
         </Modal>
       )}
       {delId&&<Confirm title="Masayı Sil" msg="Bu masa silinecek." onOk={()=>{setTbl(p=>p.filter(t=>t.id!==delId));setDelId(null);msg("Masa silindi.");}} onCancel={()=>setDelId(null)}/>}
