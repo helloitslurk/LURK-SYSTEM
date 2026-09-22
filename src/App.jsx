@@ -449,12 +449,18 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
   const[showName,setShowName]=useState(false);
+  const[showFis,setShowFis]=useState(false);
   const[name,setName]=useState(table.g||"");
   const[disc,setDisc]=useState("");
   const[pt,setPt]=useState("cash");
   const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
   const discVal=parseFloat(disc)||0;
   const total=Math.max(0,sub-discVal);
+  const grouped=Object.values(table.order.reduce((acc,item)=>{
+    if(!acc[item.name])acc[item.name]={name:item.name,price:item.price,qty:0};
+    acc[item.name].qty+=item.qty;
+    return acc;
+  },{}));
 
   return(
     <div style={{display:"flex",flexDirection:"column",height:"100vh",background:S.bg}}>
@@ -493,7 +499,8 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
               <span style={{fontSize:18,fontWeight:500}}>{fm(sub)}</span>
             </div>
             <div style={{display:"flex",gap:8}}>
-              <Btn style={{flex:1}} onClick={()=>setShowMenu(true)}>+ Sipariş Ekle</Btn>
+              <Btn style={{flex:1}} onClick={()=>setShowMenu(true)}>+ Ekle</Btn>
+              <Btn style={{flex:1}} onClick={()=>setShowFis(true)}>Fiş</Btn>
               <Btn dark style={{flex:2}} onClick={()=>setShowPay(true)}>Ödeme Al</Btn>
             </div>
           </div>
@@ -534,6 +541,51 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
             <Btn dark onClick={()=>setShowMenu(false)}>← Siparişe Dön {table.order.length>0?"("+table.order.reduce((s,o)=>s+o.qty,0)+")":""}</Btn>
           </div>
         </div>
+      )}
+
+      {showFis&&(
+        <Modal onClose={()=>setShowFis(false)}>
+          <div style={{textAlign:"center",marginBottom:16}}>
+            <div style={{fontSize:20,fontWeight:500,letterSpacing:"-0.3px"}}>LURK.</div>
+            <div style={{fontSize:11,color:S.muted,marginTop:2}}>Beşiktaş, İstanbul</div>
+          </div>
+          <div style={{borderTop:"1px dashed "+S.border,marginBottom:12}}/>
+          <div style={{marginBottom:12}}>
+            <div style={{fontSize:11,color:S.muted}}>{table.lbl}</div>
+            {table.g&&<div style={{fontSize:14,fontWeight:500,marginTop:1}}>{table.g}</div>}
+            <div style={{fontSize:11,color:S.muted,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"})} · {ft(new Date().toISOString())}</div>
+          </div>
+          <div style={{borderTop:"1px dashed "+S.border,marginBottom:8}}/>
+          {grouped.map((item,i)=>(
+            <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",padding:"6px 0",borderBottom:"0.5px solid "+S.border}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:13,color:S.text}}>{item.name}</div>
+                <div style={{fontSize:11,color:S.muted,marginTop:1}}>{item.qty} × {fm(item.price)}</div>
+              </div>
+              <div style={{fontSize:13,fontWeight:500,marginLeft:12}}>{fm(item.price*item.qty)}</div>
+            </div>
+          ))}
+          <div style={{borderTop:"1px dashed "+S.border,marginTop:8,paddingTop:8}}>
+            {discVal>0&&(
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                <span style={{fontSize:12,color:S.muted}}>Ara toplam</span>
+                <span style={{fontSize:12,color:S.muted}}>{fm(sub)}</span>
+              </div>
+            )}
+            {discVal>0&&(
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                <span style={{fontSize:12,color:S.muted}}>İndirim</span>
+                <span style={{fontSize:12,color:S.red}}>-{fm(discVal)}</span>
+              </div>
+            )}
+            <div style={{display:"flex",justifyContent:"space-between",paddingTop:4}}>
+              <span style={{fontSize:15,fontWeight:600}}>Toplam</span>
+              <span style={{fontSize:15,fontWeight:600}}>{fm(discVal>0?total:sub)}</span>
+            </div>
+          </div>
+          <div style={{textAlign:"center",marginTop:16,fontSize:11,color:S.muted}}>Teşekkür ederiz ✦</div>
+          <button onClick={()=>setShowFis(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"0.5px solid "+S.border,borderRadius:8,color:S.sub,fontSize:13,cursor:"pointer",marginTop:16}}>Kapat</button>
+        </Modal>
       )}
 
       {showName&&(
