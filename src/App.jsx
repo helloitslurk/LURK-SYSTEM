@@ -239,7 +239,7 @@ export default function App(){
     setOrd(prev=>[order,...prev]);
     setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:""}:tb));
     msg("Ödeme alındı: "+fm(total));
-    setSel(null);setV("home");
+    setSel(null);setV("tables");
   }
 
   const curT=tables.find(t=>t.id===sel);
@@ -341,7 +341,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,msg}){
 
 function TablesScreen({tables,setTbl,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
-  const[showAll,setShowAll]=useState(false);
+  const[showAll,setShowAll]=useState(true);
   const[delId,setDelId]=useState(null);
   const nameRef=useRef(null);
   const openT=tables.filter(t=>t.s==="o");
@@ -613,6 +613,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
             ))}
           </div>
           <Btn dark onClick={()=>{pay(table.id,pt,discVal);setShowPay(false);}}>Tahsil Et — {fm(total)}</Btn>
+          <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:S.sub,fontSize:13,cursor:"pointer",marginTop:6}}>Vazgeç</button>
         </Modal>
       )}
     </div>
