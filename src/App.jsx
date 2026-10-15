@@ -73,6 +73,14 @@ const HISTORY=[
 {id:"h29",date:"2026-08-02",oa:"2026-08-02T12:00:00Z",ca:"2026-08-02T22:00:00Z",inc:3111,count:7},
 ];
 
+const T={
+  bg:"#0D0D0D",bg2:"#1A1A1A",bg3:"#242424",
+  border:"rgba(255,255,255,0.09)",border2:"rgba(255,255,255,0.15)",
+  accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",
+  text:"#F5F5F5",textSub:"#A0A0A0",textDim:"#555",
+  danger:"#FF3B30",warn:"#FF9500",
+};
+
 async function sbGet(key,fb){
   try{
     const r=await fetch(SB_URL+"/rest/v1/app_storage?key=eq."+key+"&select=value",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
@@ -91,66 +99,6 @@ function fm(v){return(v||0).toLocaleString("tr-TR",{minimumFractionDigits:2})+" 
 function tod(){return new Date().toISOString().split("T")[0];}
 function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
 function ft(iso){if(!iso)return"—";const d=new Date(iso);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
-
-const S={
-  bg:"#F7F7F7",card:"#FFFFFF",border:"#E8E8E8",
-  text:"#1A1A1A",sub:"#888",muted:"#BBB",
-  green:"#2E7D32",red:"#C62828",blue:"#1565C0",
-};
-
-function Row({left,right,sub,onClick,rightSub}){
-  return(
-    <div onClick={onClick} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 16px",borderBottom:"0.5px solid "+S.border,cursor:onClick?"pointer":"default",background:S.card}}>
-      <div style={{flex:1}}>
-        <div style={{fontSize:14,color:S.text}}>{left}</div>
-        {sub&&<div style={{fontSize:12,color:S.muted,marginTop:2}}>{sub}</div>}
-      </div>
-      <div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
-        <div style={{fontSize:14,fontWeight:500,color:S.text}}>{right}</div>
-        {rightSub&&<div style={{fontSize:11,color:S.muted,marginTop:1}}>{rightSub}</div>}
-      </div>
-    </div>
-  );
-}
-
-function Sec({children}){
-  return <div style={{fontSize:10,fontWeight:600,color:S.muted,textTransform:"uppercase",letterSpacing:"1px",padding:"12px 16px 6px",background:S.bg}}>{children}</div>;
-}
-
-function Btn({children,onClick,dark,style={}}){
-  return(
-    <button onClick={onClick} style={{padding:"12px 16px",borderRadius:8,border:dark?"none":"0.5px solid "+S.border,background:dark?S.text:"transparent",color:dark?"#fff":S.sub,fontSize:13,fontWeight:500,cursor:"pointer",width:"100%",...style}}>
-      {children}
-    </button>
-  );
-}
-
-function Modal({children,onClose}){
-  return(
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
-      <div style={{background:S.card,borderRadius:"16px 16px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"85vh",overflowY:"auto"}}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Confirm({title,msg,onOk,onCancel}){
-  return(
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
-      <div style={{background:S.card,borderRadius:14,width:270,overflow:"hidden"}}>
-        <div style={{padding:"20px 16px 16px",textAlign:"center"}}>
-          <div style={{fontWeight:600,fontSize:16,marginBottom:6}}>{title}</div>
-          {msg&&<div style={{fontSize:13,color:S.sub}}>{msg}</div>}
-        </div>
-        <div style={{borderTop:"0.5px solid "+S.border,display:"flex"}}>
-          <button onClick={onCancel} style={{flex:1,padding:"14px 0",background:"transparent",border:"none",borderRight:"0.5px solid "+S.border,color:S.text,fontSize:16,cursor:"pointer"}}>İptal</button>
-          <button onClick={onOk} style={{flex:1,padding:"14px 0",background:"transparent",border:"none",color:S.red,fontWeight:600,fontSize:16,cursor:"pointer"}}>Onayla</button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function App(){
   const[ok,setOk]=useState(false);
@@ -215,19 +163,22 @@ export default function App(){
     setLogs(prev=>[log,...prev]);
     setTbl(prev=>prev.map(t=>t.s==="o"?{...t,order:[],s:"free",g:""}:t));
     setDay(null);sbSet("lurk_d",null);
-    msg("Gün kapatıldı. Ciro: "+fm(inc));
+    msg("Gün kapatıldı · "+fm(inc));
   }
 
   function addItem(tid,item){
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
+      const existing=t.order.find(o=>o.id===item.id);
+      if(existing){return{...t,order:t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o)};}
       return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString()}]};
     }));
   }
-  function chQ(tid,oid,d){
+  function chQ(tid,itemId,d){
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
-      return{...t,order:t.order.map(o=>o.oid===oid?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0)};
+      const order=t.order.map(o=>o.id===itemId?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);
+      return{...t,order,s:order.length>0?"o":"free"};
     }));
   }
   function pay(tid,pt,disc){
@@ -238,7 +189,7 @@ export default function App(){
     const order={id:uid(),date:tod(),total,pt,g:t.g||"",items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat}))};
     setOrd(prev=>[order,...prev]);
     setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:""}:tb));
-    msg("Ödeme alındı: "+fm(total));
+    msg("Ödeme alındı · "+fm(total));
     setSel(null);setV("tables");
   }
 
@@ -246,37 +197,37 @@ export default function App(){
   const cats=[...new Set(menu.filter(m=>m.on).map(m=>m.cat))];
 
   if(!ok)return(
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:S.bg,fontFamily:"-apple-system,sans-serif"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"-apple-system,sans-serif"}}>
       <div style={{textAlign:"center"}}>
-        <div style={{fontSize:22,fontWeight:500,color:S.text,marginBottom:6}}>LURK.</div>
-        <div style={{fontSize:12,color:S.muted}}>Yükleniyor...</div>
+        <div style={{fontSize:28,fontWeight:800,color:T.text,marginBottom:8,letterSpacing:"-1px"}}>LURK.</div>
+        <div style={{fontSize:13,color:T.textSub}}>Yükleniyor...</div>
       </div>
     </div>
   );
 
-  const NAV_ITEMS=[
+  const NAV=[
     {k:"home",label:"Ana Sayfa",icon:"⌂"},
     {k:"tables",label:"Masalar",icon:"⊞"},
-    {k:"reports",label:"Raporlar",icon:"↗"},
+    {k:"reports",label:"Raporlar",icon:"≡"},
     {k:"settings",label:"Ayarlar",icon:"⚙"},
   ];
 
   return(
-    <div style={{background:S.bg,minHeight:"100vh",fontFamily:"-apple-system,sans-serif",color:S.text,maxWidth:480,margin:"0 auto",paddingBottom:56}}>
-      {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:S.text,color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:500,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 16px rgba(0,0,0,0.15)"}}>{toast}</div>}
-      {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV} msg={msg}/>}
+    <div style={{background:T.bg,minHeight:"100vh",fontFamily:"-apple-system,sans-serif",color:T.text,maxWidth:480,margin:"0 auto",paddingBottom:64}}>
+      {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
+      {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} setV={setV}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
-      {view==="settings"&&<SettingsScreen menu={menu} setMenu={setMenu} setV={setV}/>}
+      {view==="settings"&&<SettingsScreen setV={setV}/>}
       {view!=="order"&&(
-        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:S.card,borderTop:"0.5px solid "+S.border,display:"flex",zIndex:50}}>
-          {NAV_ITEMS.map(n=>(
-            <button key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 12px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
-              <span style={{fontSize:18,lineHeight:1,color:view===n.k?S.text:S.muted}}>{n.icon}</span>
-              <span style={{fontSize:10,fontWeight:view===n.k?600:400,color:view===n.k?S.text:S.muted}}>{n.label}</span>
+        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
+          {NAV.map(n=>(
+            <button key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+              <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
+              <span style={{fontSize:10,fontWeight:view===n.k?700:400,color:view===n.k?T.accent:T.textDim}}>{n.label}</span>
             </button>
           ))}
         </div>
@@ -285,7 +236,8 @@ export default function App(){
   );
 }
 
-function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,msg}){
+/* ─── HOME ─── */
+function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   const[confirm,setConfirm]=useState(false);
   const today=tod();
   const todO=orders.filter(o=>o.date===today);
@@ -294,51 +246,74 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,msg}){
   const todCard=todO.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
   const openT=tables.filter(t=>t.s==="o");
   const openInc=openT.reduce((s,t)=>s+t.order.reduce((ss,o)=>ss+o.price*o.qty,0),0);
-  const NAV=[
-    {k:"tables",label:"Masalar",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
-    {k:"reports",label:"Raporlar",sub:"Satış geçmişi"},
-    {k:"customers",label:"Müşteriler",sub:"Aylık sıralama"},
-    {k:"menu",label:"Menü",sub:"Ürün yönetimi"},
-    {k:"settings",label:"Ayarlar",sub:"Sistem ayarları"},
+
+  const PAGES=[
+    {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
+    {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
+    {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
+    {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
   ];
 
   return(
-    <div style={{paddingBottom:32}}>
-      <div style={{padding:"20px 16px 16px",background:S.card,borderBottom:"0.5px solid "+S.border}}>
-        <div style={{fontSize:22,fontWeight:500,letterSpacing:"-0.3px"}}>LURK.</div>
-        <div style={{fontSize:12,color:S.sub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-        <div style={{display:"flex",alignItems:"center",gap:5,marginTop:10}}>
-          <div style={{width:7,height:7,borderRadius:"50%",background:day?S.green:S.muted}}/>
-          <span style={{fontSize:12,color:day?S.green:S.muted}}>{day?"Açık · "+ft(day.oa):"Kapalı"}</span>
+    <div>
+      {/* Header */}
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
+          <div>
+            <div style={{fontSize:28,fontWeight:800,letterSpacing:"-1px",color:T.text}}>LURK.</div>
+            <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(52,199,89,0.12)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(day?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:20,padding:"6px 12px"}}>
+            <div style={{width:7,height:7,borderRadius:"50%",background:day?"#34C759":T.textDim}}/>
+            <span style={{fontSize:12,fontWeight:600,color:day?"#34C759":T.textSub}}>{day?"Açık":"Kapalı"}</span>
+          </div>
+        </div>
+
+        {/* Bugün stat kartları */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+          {[
+            {label:"Toplam",val:fm(todInc+openInc),sub:todO.length+" kapanan"},
+            {label:"Nakit",val:fm(todCash),sub:"bugün"},
+            {label:"Kart",val:fm(todCard),sub:"bugün"},
+          ].map((s,i)=>(
+            <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px 12px",border:"0.5px solid rgba(255,255,255,0.07)"}}>
+              <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
+              <div style={{fontSize:15,fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.3px"}}>{s.val.replace(" TL","")}</div>
+              <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL · {s.sub}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div style={{background:S.card,borderBottom:"0.5px solid "+S.border}}>
-        <Sec>Bugün</Sec>
-        <Row left="Toplam ciro" right={fm(todInc+openInc)} sub={todO.length+" kapanan"+(openInc>0?" · "+fm(openInc)+" açık":"")}/>
-        <Row left="Nakit" right={fm(todCash)}/>
-        <Row left="Kart" right={fm(todCard)}/>
+      {/* Hızlı erişim grid */}
+      <div style={{padding:"16px 14px 0"}}>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {PAGES.map((p,i)=>(
+            <button key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.03)"}}/>
+              <div style={{fontSize:22,marginBottom:10,color:T.textSub,opacity:0.6}}>{p.icon}</div>
+              <div style={{fontSize:14,fontWeight:700,color:T.text}}>{p.label}</div>
+              <div style={{fontSize:11,color:T.textDim,marginTop:3}}>{p.sub}</div>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div style={{background:S.card,borderBottom:"0.5px solid "+S.border}}>
-        <Sec>Sayfalar</Sec>
-        {NAV.map(n=>(
-          <Row key={n.k} left={n.label} sub={n.sub} right="›" onClick={()=>setV(n.k)}/>
-        ))}
-      </div>
-
-      <div style={{padding:"12px 16px",display:"flex",gap:8}}>
+      {/* Gün aç/kapat */}
+      <div style={{padding:"16px 14px"}}>
         {!day
-          ?<Btn dark onClick={openDay}>Günü Aç</Btn>
-          :<Btn onClick={()=>setConfirm(true)}>Günü Kapat</Btn>
+          ?<button onClick={openDay} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:14,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>Günü Aç</button>
+          :<button onClick={()=>setConfirm(true)} style={{width:"100%",padding:"14px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:14,color:T.textSub,fontWeight:600,fontSize:14,cursor:"pointer"}}>Günü Kapat</button>
         }
       </div>
 
-      {confirm&&<Confirm title="Günü Kapat" msg={fm(todInc)+" kazanıldı"} onOk={()=>{closeDay();setConfirm(false);}} onCancel={()=>setConfirm(false)}/>}
+      {confirm&&<Confirm title="Günü Kapat?" msg={fm(todInc)+" kazanıldı"} onOk={()=>{closeDay();setConfirm(false);}} onCancel={()=>setConfirm(false)}/>}
     </div>
   );
 }
 
+/* ─── TABLES ─── */
 function TablesScreen({tables,setTbl,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
   const[showAll,setShowAll]=useState(true);
@@ -351,45 +326,60 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
     const n=(nameRef.current?nameRef.current.value:"").trim();
     if(!n)return;
     setTbl(p=>[...p,{id:uid(),lbl:n,s:"free",order:[],g:""}]);
+    if(nameRef.current)nameRef.current.value="";
     setShowNew(false);
   }
 
   return(
-    <div style={{paddingBottom:32}}>
-      <div style={{padding:"16px 16px 12px",background:S.card,borderBottom:"0.5px solid "+S.border,display:"flex",alignItems:"center",gap:12}}>
-        <div style={{fontSize:17,fontWeight:500,flex:1}}>Masalar</div>
-        <button onClick={()=>setShowAll(p=>!p)} style={{background:"transparent",border:"0.5px solid "+S.border,borderRadius:7,padding:"6px 10px",fontSize:12,cursor:"pointer",color:S.sub,marginRight:4}}>{showAll?"Açıklar":"Tümü"}</button>
-        <button onClick={()=>setShowNew(true)} style={{background:S.text,border:"none",borderRadius:7,padding:"6px 12px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:500}}>+ Masa</button>
+    <div>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Masalar</div>
+        <button onClick={()=>setShowAll(p=>!p)} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:T.textSub,fontWeight:600}}>{showAll?"Açıklar":"Tümü"}</button>
+        <button onClick={()=>setShowNew(true)} style={{background:"#34C759",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Masa</button>
       </div>
-      {displayed.length===0&&(
-        <div style={{padding:"24px 16px",fontSize:13,color:S.muted,background:S.card}}>
-          {showAll?"Henüz masa yok":"Açık masa yok"}
-        </div>
-      )}
-      {displayed.map(t=>(
-        <div key={t.id} style={{background:S.card,borderBottom:"0.5px solid "+S.border,display:"flex",alignItems:"center"}}>
-          <div onClick={()=>{setSel(t.id);setV("order");}} style={{flex:1,padding:"12px 16px",cursor:"pointer"}}>
-            <div style={{fontSize:14,fontWeight:t.s==="o"?600:400}}>{t.lbl}</div>
-            <div style={{fontSize:12,marginTop:2,color:t.s==="o"?S.green:S.muted}}>
-              {t.s==="o"?(t.g?t.g+" · ":"")+fm(t.order.reduce((s,o)=>s+o.price*o.qty,0)):"Boş"}
-            </div>
+
+      <div style={{padding:"14px"}}>
+        {displayed.length===0&&(
+          <div style={{textAlign:"center",padding:"40px 20px",fontSize:13,color:T.textSub}}>
+            {showAll?"Henüz masa yok":"Açık masa yok"}
           </div>
-          <button onClick={()=>setDelId(t.id)} style={{padding:"12px 16px",background:"transparent",border:"none",cursor:"pointer",color:S.muted,fontSize:18,lineHeight:1}}>×</button>
+        )}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {displayed.map(t=>{
+            const total=t.order.reduce((s,o)=>s+o.price*o.qty,0);
+            const isOpen=t.s==="o";
+            return(
+              <div key={t.id} style={{background:isOpen?"rgba(52,199,89,0.08)":T.bg2,border:"0.5px solid "+(isOpen?"rgba(52,199,89,0.25)":"rgba(255,255,255,0.07)"),borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
+                {isOpen&&<div style={{position:"absolute",top:-20,right:-20,width:70,height:70,borderRadius:"50%",background:"rgba(52,199,89,0.06)"}}/>}
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+                  <div style={{fontSize:14,fontWeight:700,color:isOpen?T.accentL:T.text}}>{t.lbl}</div>
+                  <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
+                </div>
+                {t.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600,marginBottom:6}}>{t.g}</div>}
+                <div style={{fontSize:12,color:isOpen?T.textSub:T.textDim,marginBottom:12}}>
+                  {isOpen?fm(total):"Boş"}
+                </div>
+                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:isOpen?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.06)",border:"0.5px solid "+(isOpen?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:10,color:isOpen?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                  {isOpen?"Siparişe Gir →":"Aç →"}
+                </button>
+              </div>
+            );
+          })}
         </div>
-      ))}
+      </div>
 
       {showNew&&(
-        <Modal onClose={()=>setShowNew(false)}>
-          <div style={{fontWeight:600,fontSize:16,marginBottom:14}}>Yeni Masa</div>
+        <Modal>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Masa</div>
           <input ref={nameRef} autoFocus placeholder="Masa adı"
             onKeyDown={e=>{if(e.key==="Enter")addTable();}}
-            style={{width:"100%",padding:"11px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <button onClick={addTable}
-            style={{width:"100%",padding:"13px",background:S.text,border:"none",borderRadius:8,color:"#fff",fontSize:14,fontWeight:500,cursor:"pointer"}}>
+            style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>
             Ekle
           </button>
           <button onClick={()=>setShowNew(false)}
-            style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:S.sub,fontSize:13,cursor:"pointer",marginTop:4}}>
+            style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>
             İptal
           </button>
         </Modal>
@@ -399,51 +389,7 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
   );
 }
 
-function MenuScreen({menu,setMenu,setV}){
-  const[showAdd,setShowAdd]=useState(false);
-  const[newName,setNewName]=useState("");
-  const[newPrice,setNewPrice]=useState("");
-  const[newCat,setNewCat]=useState("Kahve");
-  const cats=[...new Set(menu.map(m=>m.cat))];
-
-  return(
-    <div style={{paddingBottom:32}}>
-      <div style={{padding:"16px 16px 12px",background:S.card,borderBottom:"0.5px solid "+S.border,display:"flex",alignItems:"center",gap:12}}>
-        <button onClick={()=>setV("home")} style={{background:"transparent",border:"none",fontSize:20,cursor:"pointer",padding:0,color:S.sub,lineHeight:1}}>←</button>
-        <div style={{fontSize:17,fontWeight:500,flex:1}}>Menü</div>
-        <button onClick={()=>setShowAdd(true)} style={{background:S.text,border:"none",borderRadius:7,padding:"6px 12px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:500}}>+ Ürün</button>
-      </div>
-      {cats.map(cat=>(
-        <div key={cat}>
-          <Sec>{cat}</Sec>
-          {menu.filter(m=>m.cat===cat).map(item=>(
-            <div key={item.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"11px 16px",borderBottom:"0.5px solid "+S.border,background:S.card}}>
-              <div style={{flex:1}}>
-                <div style={{fontSize:13,color:item.on?S.text:S.muted,textDecoration:item.on?"none":"line-through"}}>{item.name}</div>
-                <div style={{fontSize:12,color:S.muted,marginTop:1}}>{fm(item.price)}</div>
-              </div>
-              <div onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{width:40,height:22,borderRadius:11,background:item.on?S.green:"#CCC",position:"relative",cursor:"pointer",flexShrink:0}}>
-                <div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:item.on?21:3,transition:"left 0.15s"}}/>
-              </div>
-            </div>
-          ))}
-        </div>
-      ))}
-      {showAdd&&(
-        <Modal onClose={()=>setShowAdd(false)}>
-          <div style={{fontWeight:600,fontSize:16,marginBottom:14}}>Yeni Ürün</div>
-          <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"10px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:14,outline:"none",boxSizing:"border-box",marginBottom:8}}/>
-          <input type="number" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>setNewPrice(e.target.value)} style={{width:"100%",padding:"10px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:14,outline:"none",boxSizing:"border-box",marginBottom:8}}/>
-          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"10px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:14,outline:"none",boxSizing:"border-box",marginBottom:14,background:S.card}}>
-            {cats.map(c=><option key={c} value={c}>{c}</option>)}
-          </select>
-          <Btn dark onClick={()=>{if(!newName.trim()||!newPrice)return;setMenu(p=>[...p,{id:Date.now(),name:newName.trim().toUpperCase(),price:parseFloat(newPrice),cat:newCat,on:true}]);setNewName("");setNewPrice("");setShowAdd(false);}}>Ekle</Btn>
-        </Modal>
-      )}
-    </div>
-  );
-}
-
+/* ─── ORDER ─── */
 function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
   const[showMenu,setShowMenu]=useState(table.order.length===0);
   const[selCat,setSelCat]=useState(cats[0]||"");
@@ -452,174 +398,193 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
   const[showFis,setShowFis]=useState(false);
   const[name,setName]=useState(table.g||"");
   const[disc,setDisc]=useState("");
+  const[flash,setFlash]=useState(null);
   const[pt,setPt]=useState("cash");
   const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
   const discVal=parseFloat(disc)||0;
   const total=Math.max(0,sub-discVal);
+  const itemCount=table.order.reduce((s,o)=>s+o.qty,0);
+
+  function handleAdd(item){
+    addItem(table.id,item);
+    setFlash(item.id);
+    setTimeout(()=>setFlash(null),400);
+  }
+
   const grouped=Object.values(table.order.reduce((acc,item)=>{
-    if(!acc[item.name])acc[item.name]={name:item.name,price:item.price,qty:0};
-    acc[item.name].qty+=item.qty;
+    if(!acc[item.id])acc[item.id]={...item,qty:0};
+    acc[item.id].qty+=item.qty;
     return acc;
   },{}));
 
   return(
-    <div style={{display:"flex",flexDirection:"column",height:"100vh",background:S.bg}}>
-      <div style={{padding:"11px 14px",borderBottom:"0.5px solid "+S.border,background:S.card,display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-        <button onClick={()=>{setSel(null);setV("home");}} style={{background:"transparent",border:"none",fontSize:20,cursor:"pointer",padding:0,color:S.sub,lineHeight:1}}>←</button>
+    <div style={{display:"flex",flexDirection:"column",height:"100vh",background:T.bg}}>
+      {/* Top bar */}
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+        <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
         <div style={{flex:1}}>
-          <div style={{fontSize:15,fontWeight:500}}>{table.lbl}</div>
-          {table.g&&<div style={{fontSize:12,color:S.green,marginTop:1}}>{table.g}</div>}
+          <div style={{fontWeight:700,fontSize:15,color:T.text}}>{table.lbl}</div>
+          {table.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{table.g}</div>}
         </div>
-        <button onClick={()=>setShowName(true)} style={{background:"transparent",border:"0.5px solid "+S.border,borderRadius:20,padding:"5px 12px",fontSize:12,cursor:"pointer",color:S.sub}}>{table.g||"+ İsim"}</button>
+        <button onClick={()=>setShowName(true)} style={{background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer",color:table.g?T.accentL:T.textSub}}>{table.g||"+ İsim"}</button>
       </div>
 
-      {!showMenu?(
-        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
-          <div style={{flex:1,overflowY:"auto"}}>
+      {/* SİPARİŞ GÖRÜNÜMÜ */}
+      {!showMenu&&(
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div style={{flex:1,overflowY:"auto",padding:"10px 12px"}}>
             {table.order.length===0
-              ?<div style={{padding:"40px 16px",textAlign:"center",fontSize:13,color:S.muted}}>Sipariş yok</div>
-              :table.order.map(item=>(
-                <div key={item.oid} style={{display:"flex",alignItems:"center",padding:"12px 16px",borderBottom:"0.5px solid "+S.border,background:S.card}}>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:13,fontWeight:500}}>{item.name}</div>
-                    <div style={{fontSize:12,color:S.muted,marginTop:2}}>{fm(item.price)} · {ft(item.addedAt)}</div>
+              ?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
+                  <div style={{fontSize:36,marginBottom:12}}>☕</div>
+                  <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
+                </div>
+              :grouped.map(item=>(
+                <div key={item.id} style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:8,border:"0.5px solid rgba(255,255,255,0.06)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:14,fontWeight:700,color:T.text}}>{item.name}</div>
+                      <div style={{fontSize:13,color:T.accentL,fontWeight:700,marginTop:2}}>{fm(item.price*item.qty)}</div>
+                    </div>
+                    <div style={{fontSize:11,color:T.textSub}}>{fm(item.price)} × {item.qty}</div>
                   </div>
-                  <div style={{display:"flex",alignItems:"center"}}>
-                    <button onClick={()=>chQ(table.id,item.oid,-1)} style={{width:30,height:30,border:"0.5px solid "+S.border,borderRadius:"6px 0 0 6px",background:S.bg,cursor:"pointer",fontSize:16,color:S.red}}>−</button>
-                    <div style={{width:34,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderTop:"0.5px solid "+S.border,borderBottom:"0.5px solid "+S.border,fontSize:13,fontWeight:600,background:S.card}}>{item.qty}</div>
-                    <button onClick={()=>chQ(table.id,item.oid,1)} style={{width:30,height:30,border:"0.5px solid "+S.border,borderRadius:"0 6px 6px 0",background:S.text,cursor:"pointer",fontSize:16,color:"#fff"}}>+</button>
+                  <div style={{display:"flex",alignItems:"center",gap:8}}>
+                    <button onClick={()=>chQ(table.id,item.id,-1)} style={{flex:1,height:36,borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:20,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
+                    <span style={{minWidth:36,textAlign:"center",fontWeight:800,fontSize:17,color:T.text}}>{item.qty}</span>
+                    <button onClick={()=>addItem(table.id,item)} style={{flex:1,height:36,borderRadius:8,border:"none",background:T.accent,cursor:"pointer",fontSize:20,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
                   </div>
                 </div>
               ))
             }
           </div>
-          <div style={{flexShrink:0,padding:"12px 14px 24px",borderTop:"0.5px solid "+S.border,background:S.card}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
-              <span style={{fontSize:13,color:S.sub}}>Toplam</span>
-              <span style={{fontSize:18,fontWeight:500}}>{fm(sub)}</span>
+          {/* Alt bar */}
+          <div style={{flexShrink:0,padding:"10px 12px 24px",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
+              <span style={{fontSize:22,fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(sub)}</span>
             </div>
             <div style={{display:"flex",gap:8}}>
-              <Btn style={{flex:1}} onClick={()=>setShowMenu(true)}>+ Ekle</Btn>
-              <Btn style={{flex:1}} onClick={()=>setShowFis(true)}>Fiş</Btn>
-              <Btn dark style={{flex:2}} onClick={()=>setShowPay(true)}>Ödeme Al</Btn>
+              <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
+              <button onClick={()=>setShowFis(true)} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>Fiş</button>
+              <button onClick={()=>setShowPay(true)} disabled={table.order.length===0} style={{flex:2,padding:"13px",background:table.order.length===0?T.bg3:"linear-gradient(135deg,#34C759,#248A3D)",color:table.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:table.order.length===0?"not-allowed":"pointer",boxShadow:table.order.length>0?"0 4px 16px rgba(52,199,89,0.35)":"none"}}>Ödeme Al ↑</button>
             </div>
           </div>
         </div>
-      ):(
-        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
-          <div style={{display:"flex",gap:8,padding:"10px 14px",overflowX:"auto",borderBottom:"0.5px solid "+S.border,background:S.card,flexShrink:0}}>
+      )}
+
+      {/* MENÜ GÖRÜNÜMÜ */}
+      {showMenu&&(
+        <div style={{flex:1,display:"flex",overflow:"hidden"}}>
+          {/* Sol: dikey kategori */}
+          <div style={{width:72,background:"rgba(255,255,255,0.02)",borderRight:"0.5px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
             {cats.map(c=>(
-              <button key={c} onClick={()=>setSelCat(c)} style={{padding:"6px 14px",border:"0.5px solid "+S.border,borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:500,whiteSpace:"nowrap",flexShrink:0,background:selCat===c?S.text:"transparent",color:selCat===c?"#fff":S.sub}}>
-                {c}
-              </button>
+              <button key={c} onClick={()=>setSelCat(c)} style={{padding:"14px 4px",border:"none",background:selCat===c?"rgba(52,199,89,0.12)":"transparent",borderLeft:"3px solid "+(selCat===c?T.accent:"transparent"),color:selCat===c?T.accent:T.textSub,fontSize:11,fontWeight:selCat===c?700:500,cursor:"pointer",textAlign:"center",lineHeight:1.3,flexShrink:0}}>{c}</button>
             ))}
           </div>
-          <div style={{flex:1,overflowY:"auto"}}>
-            {menu.filter(m=>m.on&&m.cat===selCat).map(item=>{
-              const inCart=table.order.filter(o=>o.id===item.id);
-              const qty=inCart.reduce((s,o)=>s+o.qty,0);
-              return(
-                <div key={item.id} style={{display:"flex",alignItems:"center",padding:"12px 16px",borderBottom:"0.5px solid "+S.border,background:S.card}}>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:13,fontWeight:qty>0?600:400,color:S.text}}>{item.name}</div>
-                    <div style={{fontSize:12,color:qty>0?S.green:S.sub,marginTop:1}}>{fm(item.price)}</div>
-                  </div>
-                  {qty>0?(
-                    <div style={{display:"flex",alignItems:"center"}}>
-                      <button onClick={()=>{const last=inCart[inCart.length-1];if(last)chQ(table.id,last.oid,-1);}} style={{width:30,height:30,border:"0.5px solid "+S.border,borderRadius:"6px 0 0 6px",background:S.bg,cursor:"pointer",fontSize:16,color:S.red}}>−</button>
-                      <div style={{width:34,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderTop:"0.5px solid "+S.border,borderBottom:"0.5px solid "+S.border,fontSize:13,fontWeight:600,background:S.card}}>{qty}</div>
-                      <button onClick={()=>addItem(table.id,item)} style={{width:30,height:30,border:"0.5px solid "+S.border,borderRadius:"0 6px 6px 0",background:S.text,cursor:"pointer",fontSize:16,color:"#fff"}}>+</button>
-                    </div>
-                  ):(
-                    <button onClick={()=>addItem(table.id,item)} style={{width:30,height:30,border:"0.5px solid "+S.border,borderRadius:6,background:S.bg,cursor:"pointer",fontSize:18,color:S.text}}>+</button>
-                  )}
+          {/* Sağ: ürün grid */}
+          <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+            <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
+                {menu.filter(m=>m.on&&m.cat===selCat).map(item=>{
+                  const inCart=table.order.find(o=>o.id===item.id);
+                  const isFlash=flash===item.id;
+                  return(
+                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(52,199,89,0.25)":inCart?"rgba(52,199,89,0.1)":T.bg2,border:"0.5px solid "+(inCart?"rgba(52,199,89,0.35)":"rgba(255,255,255,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
+                      {inCart&&<span style={{position:"absolute",top:6,right:8,background:T.accent,color:"#fff",borderRadius:20,fontSize:10,fontWeight:800,padding:"1px 6px"}}>×{inCart.qty}</span>}
+                      {isFlash&&<div style={{position:"absolute",inset:0,borderRadius:12,border:"2px solid #34C759",pointerEvents:"none"}}/>}
+                      <div style={{fontSize:11,fontWeight:700,marginBottom:5,paddingRight:inCart?28:0,lineHeight:1.3,color:T.text}}>{item.name}</div>
+                      <div style={{fontSize:14,fontWeight:800,color:inCart?T.accentL:T.textDim}}>{fm(item.price)}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            {itemCount>0&&(
+              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
+                <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                  <button onClick={()=>setShowMenu(false)} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"11px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:8}}>
+                    <span style={{background:T.accent,color:"#fff",borderRadius:20,fontSize:11,fontWeight:800,padding:"2px 8px",flexShrink:0}}>{itemCount}</span>
+                    <span style={{fontSize:12,color:T.textSub,flex:1}}>Siparişe dön →</span>
+                  </button>
+                  <button onClick={()=>setShowPay(true)} style={{background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,padding:"11px 18px",color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)",whiteSpace:"nowrap",flexShrink:0}}>{fm(sub)}</button>
                 </div>
-              );
-            })}
-          </div>
-          <div style={{flexShrink:0,padding:"10px 14px 24px",borderTop:"0.5px solid "+S.border,background:S.card}}>
-            <Btn dark onClick={()=>setShowMenu(false)}>← Siparişe Dön {table.order.length>0?"("+table.order.reduce((s,o)=>s+o.qty,0)+")":""}</Btn>
+              </div>
+            )}
+            {itemCount===0&&(
+              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(255,255,255,0.08)"}}>
+                <button onClick={()=>setShowMenu(false)} style={{width:"100%",padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>← Siparişe Dön</button>
+              </div>
+            )}
           </div>
         </div>
       )}
 
+      {/* Fiş modal */}
       {showFis&&(
-        <Modal onClose={()=>setShowFis(false)}>
+        <Modal>
           <div style={{textAlign:"center",marginBottom:16}}>
-            <div style={{fontSize:20,fontWeight:500,letterSpacing:"-0.3px"}}>LURK.</div>
-            <div style={{fontSize:11,color:S.muted,marginTop:2}}>Beşiktaş, İstanbul</div>
+            <div style={{fontSize:22,fontWeight:800,letterSpacing:"-0.5px",color:T.text}}>LURK.</div>
+            <div style={{fontSize:11,color:T.textSub,marginTop:2}}>Beşiktaş, İstanbul</div>
           </div>
-          <div style={{borderTop:"1px dashed "+S.border,marginBottom:12}}/>
+          <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginBottom:12}}/>
           <div style={{marginBottom:12}}>
-            <div style={{fontSize:11,color:S.muted}}>{table.lbl}</div>
-            {table.g&&<div style={{fontSize:14,fontWeight:500,marginTop:1}}>{table.g}</div>}
-            <div style={{fontSize:11,color:S.muted,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"})} · {ft(new Date().toISOString())}</div>
+            <div style={{fontSize:11,color:T.textSub}}>{table.lbl}</div>
+            {table.g&&<div style={{fontSize:14,fontWeight:600,marginTop:1,color:T.text}}>{table.g}</div>}
+            <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long"})} · {ft(new Date().toISOString())}</div>
           </div>
-          <div style={{borderTop:"1px dashed "+S.border,marginBottom:8}}/>
+          <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginBottom:8}}/>
           {grouped.map((item,i)=>(
-            <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",padding:"6px 0",borderBottom:"0.5px solid "+S.border}}>
-              <div style={{flex:1}}>
-                <div style={{fontSize:13,color:S.text}}>{item.name}</div>
-                <div style={{fontSize:11,color:S.muted,marginTop:1}}>{item.qty} × {fm(item.price)}</div>
+            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"0.5px solid rgba(255,255,255,0.05)"}}>
+              <div>
+                <div style={{fontSize:13,color:T.text}}>{item.name}</div>
+                <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{item.qty} × {fm(item.price)}</div>
               </div>
-              <div style={{fontSize:13,fontWeight:500,marginLeft:12}}>{fm(item.price*item.qty)}</div>
+              <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(item.price*item.qty)}</div>
             </div>
           ))}
-          <div style={{borderTop:"1px dashed "+S.border,marginTop:8,paddingTop:8}}>
-            {discVal>0&&(
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                <span style={{fontSize:12,color:S.muted}}>Ara toplam</span>
-                <span style={{fontSize:12,color:S.muted}}>{fm(sub)}</span>
-              </div>
-            )}
-            {discVal>0&&(
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                <span style={{fontSize:12,color:S.muted}}>İndirim</span>
-                <span style={{fontSize:12,color:S.red}}>-{fm(discVal)}</span>
-              </div>
-            )}
-            <div style={{display:"flex",justifyContent:"space-between",paddingTop:4}}>
-              <span style={{fontSize:15,fontWeight:600}}>Toplam</span>
-              <span style={{fontSize:15,fontWeight:600}}>{fm(discVal>0?total:sub)}</span>
-            </div>
+          <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
+            <span style={{fontSize:15,fontWeight:700,color:T.text}}>Toplam</span>
+            <span style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(sub)}</span>
           </div>
-          <div style={{textAlign:"center",marginTop:16,fontSize:11,color:S.muted}}>Teşekkür ederiz ✦</div>
-          <button onClick={()=>setShowFis(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"0.5px solid "+S.border,borderRadius:8,color:S.sub,fontSize:13,cursor:"pointer",marginTop:16}}>Kapat</button>
+          <div style={{textAlign:"center",marginTop:16,fontSize:11,color:T.textDim}}>Teşekkür ederiz ✦</div>
+          <button onClick={()=>setShowFis(false)} style={{width:"100%",padding:"12px",background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:10,color:T.textSub,fontSize:13,cursor:"pointer",marginTop:16}}>Kapat</button>
         </Modal>
       )}
 
+      {/* İsim modal */}
       {showName&&(
-        <Modal onClose={()=>setShowName(false)}>
-          <div style={{fontWeight:600,fontSize:16,marginBottom:14}}>Müşteri Adı</div>
+        <Modal>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Müşteri Adı</div>
           <input autoFocus placeholder="İsim" value={name} onChange={e=>setName(e.target.value)}
             onKeyDown={e=>{if(e.key==="Enter"){setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}}}
-            style={{width:"100%",padding:"11px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
-          <Btn dark onClick={()=>{setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}}>Kaydet</Btn>
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <button onClick={()=>{setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Kaydet</button>
         </Modal>
       )}
 
+      {/* Ödeme modal */}
       {showPay&&(
-        <Modal onClose={()=>setShowPay(false)}>
-          <div style={{fontWeight:600,fontSize:16,marginBottom:4}}>Ödeme Al</div>
-          <div style={{fontSize:12,color:S.sub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
-          <div style={{fontSize:28,fontWeight:500,textAlign:"center",marginBottom:16}}>{fm(total)}</div>
+        <Modal>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
+          <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
+          <div style={{fontSize:32,fontWeight:800,textAlign:"center",marginBottom:16,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</div>
           <input type="number" placeholder="İndirim (TL)" value={disc} onChange={e=>setDisc(e.target.value)}
-            style={{width:"100%",padding:"10px 12px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:14,outline:"none",boxSizing:"border-box",marginBottom:10}}/>
-          <div style={{display:"flex",gap:8,marginBottom:14}}>
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <div style={{display:"flex",gap:8,marginBottom:16}}>
             {["cash","card"].map(p=>(
-              <button key={p} onClick={()=>setPt(p)} style={{flex:1,padding:"10px",border:"0.5px solid "+S.border,borderRadius:8,fontSize:13,fontWeight:500,cursor:"pointer",background:pt===p?S.text:"transparent",color:pt===p?"#fff":S.text}}>
+              <button key={p} onClick={()=>setPt(p)} style={{flex:1,padding:"12px",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:pt===p?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.05)",color:pt===p?T.accentL:T.textSub,borderColor:pt===p?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"}}>
                 {p==="cash"?"Nakit":"Kart"}
               </button>
             ))}
           </div>
-          <Btn dark onClick={()=>{pay(table.id,pt,discVal);setShowPay(false);}}>Tahsil Et — {fm(total)}</Btn>
-          <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:S.sub,fontSize:13,cursor:"pointer",marginTop:6}}>Vazgeç</button>
+          <button onClick={()=>{pay(table.id,pt,discVal);setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>Tahsil Et · {fm(total)}</button>
+          <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Vazgeç</button>
         </Modal>
       )}
     </div>
   );
 }
 
+/* ─── REPORTS ─── */
 function ReportsScreen({orders,logs,setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=new Date().toISOString().slice(0,7);
@@ -635,57 +600,77 @@ function ReportsScreen({orders,logs,setV}){
   const totalCard=mo.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
   const dayMap={};
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
-  ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else dayMap[l.date].log=l;});
+  ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
   return(
-    <div style={{paddingBottom:32}}>
-      <div style={{padding:"16px 16px 12px",background:S.card,borderBottom:"0.5px solid "+S.border,display:"flex",alignItems:"center",gap:12}}>
-        <button onClick={()=>setV("home")} style={{background:"transparent",border:"none",fontSize:20,cursor:"pointer",padding:0,color:S.sub,lineHeight:1}}>←</button>
-        <div style={{fontSize:17,fontWeight:500}}>Raporlar</div>
+    <div>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Raporlar</div>
       </div>
-      <div style={{display:"flex",gap:6,padding:"10px 16px",overflowX:"auto",borderBottom:"0.5px solid "+S.border,background:S.card}}>
+
+      {/* Ay seçici */}
+      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
         {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"5px 12px",border:"0.5px solid "+S.border,borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:500,whiteSpace:"nowrap",flexShrink:0,background:sel===m?S.text:"transparent",color:sel===m?"#fff":S.sub}}>
+          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#34C759":"rgba(255,255,255,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#34C759":"rgba(255,255,255,0.1)"}}>
             {ml(m)}
           </button>
         ))}
       </div>
-      <div style={{background:S.card,borderBottom:"0.5px solid "+S.border}}>
-        <Row left="Toplam ciro" right={fm(totalInc)} sub={mo.length>0?mo.length+" adisyon":days.length+" gün"}/>
-        <Row left="Nakit" right={fm(totalCash)}/>
-        <Row left="Kart" right={fm(totalCard)}/>
-      </div>
-      <Sec>Günler</Sec>
-      {days.length===0&&<div style={{padding:"20px 16px",fontSize:13,color:S.muted,background:S.card}}>Bu ay kayıt yok</div>}
-      {days.map(day=>{
-        const isExp=exp===day.date;
-        const log=day.log;
-        return(
-          <div key={day.date} style={{background:S.card,borderBottom:"0.5px solid "+S.border}}>
-            <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 16px",cursor:"pointer"}}>
-              <div>
-                <div style={{fontSize:14}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-                <div style={{fontSize:12,color:S.muted,marginTop:2}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.length||log?.count||0} adisyon</div>
-              </div>
-              <div style={{textAlign:"right"}}>
-                <div style={{fontSize:14,fontWeight:500}}>{fm(day.inc)}</div>
-                <div style={{fontSize:12,color:S.muted,marginTop:1}}>{isExp?"▲":"▽"}</div>
-              </div>
-            </div>
-            {isExp&&day.orders.length>0&&day.orders.map((o,i)=>(
-              <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"9px 24px",borderTop:"0.5px solid "+S.border,background:S.bg}}>
-                <div><div style={{fontSize:13}}>{o.g||"—"}</div><div style={{fontSize:11,color:S.muted,marginTop:1}}>{o.pt==="cash"?"Nakit":"Kart"}</div></div>
-                <div style={{fontSize:13,fontWeight:500}}>{fm(o.total)}</div>
-              </div>
-            ))}
+
+      {/* Stat kartlar */}
+      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+        {[
+          {label:"Toplam",val:fm(totalInc),color:T.accentL},
+          {label:"Nakit",val:fm(totalCash),color:T.text},
+          {label:"Kart",val:fm(totalCard),color:T.text},
+        ].map((s,i)=>(
+          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(255,255,255,0.07)"}}>
+            <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
+            <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:"-0.3px"}}>{s.val.replace(" TL","")}</div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL</div>
           </div>
-        );
-      })}
+        ))}
+      </div>
+
+      {/* Günler */}
+      <div style={{padding:"0 14px 14px"}}>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Günler</div>
+        {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>Bu ay kayıt yok</div>}
+        {days.map(day=>{
+          const isExp=exp===day.date;
+          const log=day.log;
+          return(
+            <div key={day.date} style={{background:T.bg2,borderRadius:14,marginBottom:8,border:"0.5px solid rgba(255,255,255,0.07)",overflow:"hidden"}}>
+              <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px",cursor:"pointer"}}>
+                <div>
+                  <div style={{fontSize:14,fontWeight:600,color:T.text}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
+                  <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.length||log?.count||0} adisyon</div>
+                </div>
+                <div style={{textAlign:"right"}}>
+                  <div style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(day.inc)}</div>
+                  <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
+                </div>
+              </div>
+              {isExp&&day.orders.length>0&&day.orders.map((o,i)=>(
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(255,255,255,0.05)",background:"rgba(255,255,255,0.02)"}}>
+                  <div>
+                    <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
+                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":"Kart"}</div>
+                  </div>
+                  <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(o.total)}</div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
+/* ─── CUSTOMERS ─── */
 function CustomersScreen({orders,setV}){
   const months=[...new Set(orders.filter(o=>o.g&&o.g.trim()).map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=new Date().toISOString().slice(0,7);
@@ -698,46 +683,140 @@ function CustomersScreen({orders,setV}){
   const totalRev=mo.reduce((s,o)=>s+o.total,0);
 
   return(
-    <div style={{paddingBottom:32}}>
-      <div style={{padding:"16px 16px 12px",background:S.card,borderBottom:"0.5px solid "+S.border,display:"flex",alignItems:"center",gap:12}}>
-        <button onClick={()=>setV("home")} style={{background:"transparent",border:"none",fontSize:20,cursor:"pointer",padding:0,color:S.sub,lineHeight:1}}>←</button>
-        <div style={{fontSize:17,fontWeight:500}}>Müşteriler</div>
+    <div>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Müşteriler</div>
       </div>
-      <div style={{display:"flex",gap:6,padding:"10px 16px",overflowX:"auto",borderBottom:"0.5px solid "+S.border,background:S.card}}>
+      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
         {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"5px 12px",border:"0.5px solid "+S.border,borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:500,whiteSpace:"nowrap",flexShrink:0,background:sel===m?S.text:"transparent",color:sel===m?"#fff":S.sub}}>
+          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#34C759":"rgba(255,255,255,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#34C759":"rgba(255,255,255,0.1)"}}>
             {ml(m)}
           </button>
         ))}
       </div>
-      {totalRev>0&&<Row left="Toplam ciro" right={fm(totalRev)} sub={sorted.length+" müşteri"}/>}
-      <Sec>Sıralama</Sec>
-      {sorted.length===0&&<div style={{padding:"20px 16px",fontSize:13,color:S.muted,background:S.card}}>Bu ay isimli sipariş yok</div>}
-      {sorted.map((c,i)=>(
-        <div key={c.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 16px",borderBottom:"0.5px solid "+S.border,background:S.card}}>
-          <div style={{display:"flex",alignItems:"center",gap:12}}>
-            <div style={{width:22,textAlign:"center",fontSize:12,color:i===0?S.green:S.muted,fontWeight:600}}>{i+1}</div>
-            <div>
-              <div style={{fontSize:14,fontWeight:i===0?600:400}}>{c.name}</div>
-              <div style={{fontSize:12,color:S.muted,marginTop:1}}>{c.count} sipariş · %{totalRev>0?Math.round(c.total/totalRev*100):0}</div>
-            </div>
+      <div style={{padding:"14px"}}>
+        {totalRev>0&&(
+          <div style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.07)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{fontSize:12,color:T.textSub}}>{sorted.length} müşteri</div>
+            <div style={{fontSize:16,fontWeight:800,color:T.accentL}}>{fm(totalRev)}</div>
           </div>
-          <div style={{fontSize:14,fontWeight:500,color:i===0?S.green:S.text}}>{fm(c.total)}</div>
-        </div>
-      ))}
+        )}
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sıralama</div>
+        {sorted.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>Bu ay isimli sipariş yok</div>}
+        {sorted.map((c,i)=>(
+          <div key={c.name} style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:8,border:"0.5px solid "+(i===0?"rgba(52,199,89,0.2)":"rgba(255,255,255,0.07)"),display:"flex",alignItems:"center",gap:12}}>
+            <div style={{width:32,height:32,borderRadius:"50%",background:i===0?"rgba(52,199,89,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:i===0?T.accentL:T.textSub,flexShrink:0}}>{i+1}</div>
+            <div style={{flex:1}}>
+              <div style={{fontSize:14,fontWeight:i===0?700:500,color:T.text}}>{c.name}</div>
+              <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{c.count} sipariş · %{totalRev>0?Math.round(c.total/totalRev*100):0}</div>
+            </div>
+            <div style={{fontSize:15,fontWeight:800,color:i===0?T.accentL:T.text}}>{fm(c.total)}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-function SettingsScreen({menu,setMenu,setV}){
+/* ─── MENU ─── */
+function MenuScreen({menu,setMenu,setV}){
+  const[showAdd,setShowAdd]=useState(false);
+  const[newName,setNewName]=useState("");
+  const[newPrice,setNewPrice]=useState("");
+  const[newCat,setNewCat]=useState("Kahve");
+  const cats=[...new Set(menu.map(m=>m.cat))];
+
   return(
-    <div style={{paddingBottom:32}}>
-      <div style={{padding:"16px 16px 12px",background:S.card,borderBottom:"0.5px solid "+S.border,display:"flex",alignItems:"center",gap:12}}>
-        <button onClick={()=>setV("home")} style={{background:"transparent",border:"none",fontSize:20,cursor:"pointer",padding:0,color:S.sub,lineHeight:1}}>←</button>
-        <div style={{fontSize:17,fontWeight:500}}>Ayarlar</div>
+    <div>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+        <button onClick={()=>setV("settings")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Menü</div>
+        <button onClick={()=>setShowAdd(true)} style={{background:"#34C759",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Ürün</button>
       </div>
-      <Sec>Yönetim</Sec>
-      <Row left="Menü" sub="Ürün ekle, fiyat güncelle" right="›" onClick={()=>setV("menu")}/>
+      <div style={{padding:"14px"}}>
+        {cats.map(cat=>(
+          <div key={cat} style={{marginBottom:20}}>
+            <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>{cat}</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+              {menu.filter(m=>m.cat===cat).map(item=>(
+                <div key={item.id} style={{background:item.on?T.bg2:"rgba(255,255,255,0.02)",border:"0.5px solid "+(item.on?"rgba(255,255,255,0.09)":"rgba(255,255,255,0.04)"),borderRadius:12,padding:"12px",position:"relative"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                    <div style={{fontSize:11,fontWeight:700,color:item.on?T.text:T.textDim,lineHeight:1.3,flex:1,paddingRight:6,textDecoration:item.on?"none":"line-through"}}>{item.name}</div>
+                    <div onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{width:28,height:16,borderRadius:8,background:item.on?"#34C759":"#333",position:"relative",cursor:"pointer",flexShrink:0}}>
+                      <div style={{width:12,height:12,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:item.on?14:2,transition:"left 0.15s"}}/>
+                    </div>
+                  </div>
+                  <div style={{fontSize:13,fontWeight:800,color:item.on?T.accentL:T.textDim}}>{fm(item.price)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {showAdd&&(
+        <Modal>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Ürün</div>
+          <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <input type="number" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>setNewPrice(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:16,background:"#1A1A1A",color:T.text}}>
+            {cats.map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+          <button onClick={()=>{if(!newName.trim()||!newPrice)return;setMenu(p=>[...p,{id:Date.now(),name:newName.trim().toUpperCase(),price:parseFloat(newPrice),cat:newCat,on:true}]);setNewName("");setNewPrice("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
+          <button onClick={()=>setShowAdd(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+/* ─── SETTINGS ─── */
+function SettingsScreen({setV}){
+  return(
+    <div>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Ayarlar</div>
+      </div>
+      <div style={{padding:"14px"}}>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Yönetim</div>
+        <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14}}>
+          <div style={{width:40,height:40,borderRadius:10,background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>☰</div>
+          <div>
+            <div style={{fontSize:14,fontWeight:700}}>Menü</div>
+            <div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div>
+          </div>
+          <div style={{marginLeft:"auto",fontSize:18,color:T.textDim}}>›</div>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── SHARED ─── */
+function Modal({children}){
+  return(
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
+      <div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"88vh",overflowY:"auto",border:"0.5px solid rgba(255,255,255,0.1)"}}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Confirm({title,msg,onOk,onCancel}){
+  return(
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
+      <div style={{background:"#1C1C1E",borderRadius:16,width:280,overflow:"hidden",border:"0.5px solid rgba(255,255,255,0.12)"}}>
+        <div style={{padding:"22px 18px 16px",textAlign:"center"}}>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>{title}</div>
+          {msg&&<div style={{fontSize:13,color:T.textSub}}>{msg}</div>}
+        </div>
+        <div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex"}}>
+          <button onClick={onCancel} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.08)",color:T.text,fontSize:16,cursor:"pointer"}}>İptal</button>
+          <button onClick={onOk} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:16,cursor:"pointer"}}>Onayla</button>
+        </div>
+      </div>
     </div>
   );
 }
