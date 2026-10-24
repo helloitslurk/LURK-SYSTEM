@@ -88,7 +88,8 @@ async function sbGet(key,fb){
   if(d&&d[0])return JSON.parse(d[0].value);
   return fb;
 }
-async function sbSet(key,val){
+const sbWriteQueues=new Map();
+async function sbSetNow(key,val){
   const body=JSON.stringify({key,value:JSON.stringify(val)});
   let lastError;
   for(let attempt=0;attempt<3;attempt++){
@@ -101,6 +102,13 @@ async function sbSet(key,val){
   }
   console.error(lastError||new Error("Supabase write failed for "+key));
   return false;
+}
+function sbSet(key,val){
+  const previous=sbWriteQueues.get(key)||Promise.resolve();
+  const current=previous.catch(()=>false).then(()=>sbSetNow(key,val));
+  sbWriteQueues.set(key,current);
+  current.finally(()=>{if(sbWriteQueues.get(key)===current)sbWriteQueues.delete(key);});
+  return current;
 }
 
 function fm(v){return(v||0).toLocaleString("tr-TR",{minimumFractionDigits:2})+" TL";}
@@ -152,6 +160,7 @@ export default function App(){
   }
 
   async function persistDirect(k,v){
+    if(failedWrites.current[k]!==v)return;
     if(pendingSaves.count===0)pendingSaves.failed=false;
     pendingSaves.count++;
     setSaveStatus("saving");
