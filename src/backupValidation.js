@@ -11,7 +11,11 @@ export function validateBackup(parsed) {
     false
   )));
   const badTables=!Array.isArray(d?.lurk_t)||badFields(d.lurk_t,[["id","string"],["lbl","string"],["s","string"],["order","array"],["g","string"]]);
+  const tableIds=Array.isArray(d?.lurk_t)?d.lurk_t.map(t=>t.id):[];
+  const badTableIds=tableIds.some(id=>typeof id!=="string"||!id.trim())||new Set(tableIds).size!==tableIds.length;
   const badOrders=!Array.isArray(d?.lurk_o)||badFields(d.lurk_o,[["id","string"],["date","string"],["total","number"],["subtotal","number"],["discount","number"],["items","array"],["payments","array"]]);
+  const orderIds=Array.isArray(d?.lurk_o)?d.lurk_o.map(o=>o.id):[];
+  const badOrderIds=orderIds.some(id=>typeof id!=="string"||!id.trim())||new Set(orderIds).size!==orderIds.length;
   const badOrderAmounts=Array.isArray(d?.lurk_o)&&d.lurk_o.some(o=>o.total<0||o.subtotal<0||o.discount<0);
   const badCustomers=!Array.isArray(d?.lurk_customers)||badFields(d.lurk_customers,[["id","string"],["name","string"],["phone","string"]]);
   const badCredit=!Array.isArray(d?.lurk_credit)||badFields(d.lurk_credit,[["id","string"],["customerId","string"],["type","string"],["amount","number"],["date","string"]]);
@@ -27,7 +31,7 @@ export function validateBackup(parsed) {
   const customerIds=Array.isArray(d?.lurk_customers)?d.lurk_customers.map(c=>c.id).filter(id=>typeof id==="string"): [];
   const duplicateCustomerIds=new Set(customerIds).size!==customerIds.length;
   const badCreditTypes=Array.isArray(d?.lurk_credit)&&d.lurk_credit.some(e=>("type" in e)&&!["debt","payment"].includes(e.type));
-  if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badOrderAmounts||badCustomers||badCredit||badCreditAmounts||badMenu||badMenuValues||badMenuIds||duplicateMenuIds||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d))) {
+  if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badTableIds||badOrders||badOrderIds||badOrderAmounts||badCustomers||badCredit||badCreditAmounts||badMenu||badMenuValues||badMenuIds||duplicateMenuIds||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d))) {
     return "Yedek biçimi veya kayıt alanları desteklenmiyor.";
   }
   return null;
