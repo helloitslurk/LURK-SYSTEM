@@ -471,7 +471,6 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
     {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
     {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
     {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
-    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"↗",sub:"Ciro ve en çok kazandıran 5 ürün"},
     {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
   ];
 
