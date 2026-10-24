@@ -247,11 +247,13 @@ export default function App(){
     if(!t)return;
     const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
     const total=Math.max(0,sub-(disc||0));
+    const isCredit=pt==="credit";
     const normalized=(Array.isArray(payments)?payments:[]).filter(p=>p&&Number(p.amount)>0).map(p=>({method:p.method,amount:Math.round(Number(p.amount)*100)/100}));
     const paymentTotal=Math.round(normalized.reduce((sum,p)=>sum+p.amount,0)*100)/100;
-    const isCredit=pt==="credit";
+    if(!Number.isFinite(total)||total<0){msg("Ödenecek tutar geçersiz.");return;}
     if(isCredit&&!t.customerId){msg("Veresiye için kayıtlı müşteri seçmelisin.");return;}
-    if(!isCredit&&normalized.length&&Math.abs(paymentTotal-total)>0.009){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
+    if(!isCredit&&normalized.some(p=>!["cash","card"].includes(p.method))){msg("Ödeme türü geçersiz.");return;}
+    if(!isCredit&&(normalized.length===0||Math.abs(paymentTotal-total)>0.009)){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
     paymentInProgress.current=true;
     setTimeout(()=>{paymentInProgress.current=false;},900);
     const orderId=uid();
@@ -718,7 +720,7 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
               </button>
             ))}
           </div>
-          <button onClick={()=>{setSplitMode(v=>!v);setCashPart("");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
+          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart("");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
           {splitMode&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
             <label style={{fontSize:11,color:T.textSub}}>Nakit (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round((total-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
             <label style={{fontSize:11,color:T.textSub}}>Kart (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
