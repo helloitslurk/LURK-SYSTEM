@@ -358,15 +358,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
         </div>
       </div>
 
-      {/* Gün aç/kapat */}
-      <div style={{padding:"16px 14px"}}>
-        {!day
-          ?<button onClick={openDay} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:14,color:"#fff",fontWeight:800,fontSize:15,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>Günü Aç</button>
-          :<button onClick={()=>setConfirm(true)} style={{width:"100%",padding:"14px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:14,color:T.textSub,fontWeight:600,fontSize:14,cursor:"pointer"}}>Günü Kapat</button>
-        }
-      </div>
-
-      {confirm&&<Confirm title="Günü Kapat?" msg={fm(todInc)+" kazanıldı"} onOk={()=>{closeDay();setConfirm(false);}} onCancel={()=>setConfirm(false)}/>}
+      {/* Gün kapatma arayüzü kaldırıldı; raporlar gün içinde görüntülenebilir. */}
     </div>
   );
 }
