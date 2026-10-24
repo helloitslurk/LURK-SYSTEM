@@ -6,7 +6,7 @@ export function validatePayment({ total, isCredit, customerId, payments }) {
     return { error: "Veresiye için kayıtlı müşteri seçmelisin." };
   }
   const supplied = Array.isArray(payments) ? payments : [];
-  if (supplied.some(p => !p || !Number.isFinite(Number(p.amount)) || Number(p.amount) < 0)) {
+  if (supplied.some(p => !p || p.amount === null || p.amount === "" || !Number.isFinite(Number(p.amount)) || Number(p.amount) < 0)) {
     return { error: "Ödeme tutarı geçersiz." };
   }
   if (!isCredit && supplied.some(p => !["cash", "card"].includes(p.method))) {
