@@ -196,7 +196,7 @@ export default function App(){
     const normalized=(Array.isArray(payments)?payments:[]).filter(p=>p&&Number(p.amount)>0).map(p=>({method:p.method,amount:Math.round(Number(p.amount)*100)/100}));
     const paymentTotal=Math.round(normalized.reduce((sum,p)=>sum+p.amount,0)*100)/100;
     if(normalized.length&&Math.abs(paymentTotal-total)>0.009){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
-    const order={id:uid(),date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:normalized.length>1?"split":(normalized[0]?.method||pt),payments:normalized.length?normalized:[{method:pt,amount:total}],g:t.g||"",table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
+    const order={id:uid(),date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:normalized.length>1?"split":(normalized[0]?.method||pt),payments:normalized.length?normalized:[{method:pt,amount:total}],g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
     setOrd(prev=>[order,...prev]);
     setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:""}:tb));
     msg("Ödeme alındı · "+fm(total));
