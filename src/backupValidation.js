@@ -12,8 +12,10 @@ export function validateBackup(parsed) {
   )));
   const badTables=!Array.isArray(d?.lurk_t)||badFields(d.lurk_t,[["id","string"],["lbl","string"],["s","string"],["order","array"],["g","string"]]);
   const badOrders=!Array.isArray(d?.lurk_o)||badFields(d.lurk_o,[["id","string"],["date","string"],["total","number"],["subtotal","number"],["discount","number"],["items","array"],["payments","array"]]);
+  const badOrderAmounts=Array.isArray(d?.lurk_o)&&d.lurk_o.some(o=>o.total<0||o.subtotal<0||o.discount<0);
   const badCustomers=!Array.isArray(d?.lurk_customers)||badFields(d.lurk_customers,[["id","string"],["name","string"],["phone","string"]]);
   const badCredit=!Array.isArray(d?.lurk_credit)||badFields(d.lurk_credit,[["id","string"],["customerId","string"],["type","string"],["amount","number"],["date","string"]]);
+  const badCreditAmounts=Array.isArray(d?.lurk_credit)&&d.lurk_credit.some(e=>!("amount" in e)||!Number.isFinite(e.amount)||e.amount<0);
   const badMenu=!Array.isArray(d?.lurk_m)||badFields(d.lurk_m,[["id","number"],["name","string"],["price","number"],["cat","string"]]);
   const badMenuValues=Array.isArray(d?.lurk_m)&&d.lurk_m.some(m=>!("price" in m)||!Number.isFinite(m.price)||m.price<=0||!("name" in m)||!m.name.trim());
   const badLogs=!Array.isArray(d?.lurk_l)||badFields(d.lurk_l,[["date","string"],["inc","number"],["count","number"]]);
@@ -22,7 +24,7 @@ export function validateBackup(parsed) {
   const customerIds=Array.isArray(d?.lurk_customers)?d.lurk_customers.map(c=>c.id).filter(id=>typeof id==="string"): [];
   const duplicateCustomerIds=new Set(customerIds).size!==customerIds.length;
   const badCreditTypes=Array.isArray(d?.lurk_credit)&&d.lurk_credit.some(e=>("type" in e)&&!["debt","payment"].includes(e.type));
-  if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badCustomers||badCredit||badMenu||badMenuValues||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d))) {
+  if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badOrderAmounts||badCustomers||badCredit||badCreditAmounts||badMenu||badMenuValues||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d))) {
     return "Yedek biçimi veya kayıt alanları desteklenmiyor.";
   }
   return null;
