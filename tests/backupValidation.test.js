@@ -148,3 +148,10 @@ test("rejects missing, non-integer, and non-positive restored menu IDs",()=>{
   const decimal=validBackup();decimal.data.lurk_m[0].id=1.5;assert.ok(validateBackup(decimal));
   const zero=validBackup();zero.data.lurk_m[0].id=0;assert.ok(validateBackup(zero));
 });
+
+test("rejects duplicate or missing table and order IDs in restored backups",()=>{
+  const duplicateTable=validBackup();duplicateTable.data.lurk_t.push({...duplicateTable.data.lurk_t[0],lbl:"Masa 2"});assert.ok(validateBackup(duplicateTable));
+  const missingTable=validBackup();delete missingTable.data.lurk_t[0].id;assert.ok(validateBackup(missingTable));
+  const duplicateOrder=validBackup();duplicateOrder.data.lurk_o.push({...duplicateOrder.data.lurk_o[0],total:50});assert.ok(validateBackup(duplicateOrder));
+  const missingOrder=validBackup();delete missingOrder.data.lurk_o[0].id;assert.ok(validateBackup(missingOrder));
+});
