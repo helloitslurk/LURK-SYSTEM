@@ -678,7 +678,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
     const headers=["Tarih","Masa","Müşteri","Ara toplam","İndirim","Toplam","Nakit","Kart","Veresiye","Ödeme türü","Ürünler"];
     const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Nakit + Kart":o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":"Veresiye",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
     const csv=[headers,...rows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
-    const blob=new Blob(["\\uFEFF",csv],{type:"text/csv;charset=utf-8"});
+    const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lurk-satis-"+sel+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
   const ms=sel+"-01";
