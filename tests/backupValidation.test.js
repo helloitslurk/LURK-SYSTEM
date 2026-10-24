@@ -73,3 +73,19 @@ test("continues queue after a rejected write", async()=>{
   assert.equal(await queue("orders",2),true);
   assert.deepEqual(calls,[1,2]);
 });
+
+import { validateMenuItemInput } from "../src/menuValidation.js";
+
+test("menu validation rejects blank product names",()=>{
+  assert.equal(validateMenuItemInput("   ","100").error,"Ürün adı zorunlu.");
+});
+test("menu validation rejects missing, zero, negative and non-finite prices",()=>{
+  for (const price of ["", "0", "-1", "Infinity", "not-a-price"]) {
+    assert.ok(validateMenuItemInput("Çay",price).error, "expected rejection for "+price);
+  }
+});
+test("menu validation accepts decimal prices and Turkish uppercase names",()=>{
+  assert.deepEqual(validateMenuItemInput("  çay özel  ","12.5"),{
+    error:null,name:"ÇAY ÖZEL",price:12.5
+  });
+});
