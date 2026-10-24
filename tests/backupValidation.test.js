@@ -136,3 +136,9 @@ test("rejects duplicate menu item IDs in restored backups",()=>{
   b.data.lurk_m.push({...b.data.lurk_m[0],name:"Başka ürün"});
   assert.ok(validateBackup(b));
 });
+
+test("payment validation rejects negative, missing, and non-finite payment amounts",()=>{
+  for (const amount of [-1, "bad", Infinity, null]) {
+    assert.ok(validatePayment({total:100,isCredit:false,payments:[{method:"cash",amount}]}).error);
+  }
+});
