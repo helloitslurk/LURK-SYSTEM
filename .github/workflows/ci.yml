@@ -24,5 +24,7 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
+      - name: Test backup validation
+        run: npm test
       - name: Build app
         run: npm run build
