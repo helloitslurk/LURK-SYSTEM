@@ -104,6 +104,7 @@ function ft(iso){if(!iso)return"—";const d=new Date(iso);return String(d.getHo
 
 export default function App(){
   const[ok,setOk]=useState(false);
+  const[loadError,setLoadError]=useState(false);
   const[view,setV]=useState("home");
   const[sel,setSel]=useState(null);
   const[tables,setTbl]=useState([]);
@@ -150,7 +151,7 @@ export default function App(){
       clearTimeout(fb);
       loaded.current=true;
       setOk(true);
-    })().catch(()=>{clearTimeout(fb);setOk(true);});
+    })().catch(()=>{clearTimeout(fb);setLoadError(true);setOk(true);});
   },[]);
 
   useEffect(()=>{save("lurk_t",tables);},[tables]);
@@ -213,6 +214,17 @@ export default function App(){
 
   const curT=tables.find(t=>t.id===sel);
   const cats=[...new Set(menu.filter(m=>m.on).map(m=>m.cat))];
+
+  if(loadError)return(
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:T.bg,fontFamily:"-apple-system,sans-serif",padding:24,color:T.text}}>
+      <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(255,255,255,.1)",borderRadius:18,padding:24}}>
+        <div style={{fontSize:26,marginBottom:12}}>⚠</div>
+        <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Veriler yüklenemedi</div>
+        <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>Supabase bağlantısı başarısız olduğu için kayıtların üzerine yazmayı önlemek amacıyla uygulama durduruldu. İnternet bağlantısını kontrol edip yeniden dene.</div>
+        <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Yeniden Dene</button>
+      </div>
+    </div>
+  );
 
   if(!ok)return(
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"-apple-system,sans-serif"}}>
