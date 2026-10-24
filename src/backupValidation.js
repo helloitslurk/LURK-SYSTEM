@@ -18,13 +18,15 @@ export function validateBackup(parsed) {
   const badCreditAmounts=Array.isArray(d?.lurk_credit)&&d.lurk_credit.some(e=>!("amount" in e)||!Number.isFinite(e.amount)||e.amount<0);
   const badMenu=!Array.isArray(d?.lurk_m)||badFields(d.lurk_m,[["id","number"],["name","string"],["price","number"],["cat","string"]]);
   const badMenuValues=Array.isArray(d?.lurk_m)&&d.lurk_m.some(m=>!("price" in m)||!Number.isFinite(m.price)||m.price<=0||!("name" in m)||!m.name.trim());
+  const menuIds=Array.isArray(d?.lurk_m)?d.lurk_m.map(m=>m.id):[];
+  const duplicateMenuIds=new Set(menuIds).size!==menuIds.length;
   const badLogs=!Array.isArray(d?.lurk_l)||badFields(d.lurk_l,[["date","string"],["inc","number"],["count","number"]]);
   const badTableLines=Array.isArray(d?.lurk_t)&&d.lurk_t.some(t=>Array.isArray(t.order)&&t.order.some(line=>!isRecord(line)||(("qty" in line)&&(typeof line.qty!=="number"||!Number.isFinite(line.qty)||line.qty<=0))||(("price" in line)&&(typeof line.price!=="number"||!Number.isFinite(line.price)||line.price<0))||(("name" in line)&&typeof line.name!=="string")));
   const badOrderLines=Array.isArray(d?.lurk_o)&&d.lurk_o.some(o=>(Array.isArray(o.items)&&o.items.some(line=>!isRecord(line)||(("qty" in line)&&(typeof line.qty!=="number"||!Number.isFinite(line.qty)||line.qty<=0))||(("price" in line)&&(typeof line.price!=="number"||!Number.isFinite(line.price)||line.price<0))) )||(Array.isArray(o.payments)&&o.payments.some(p=>!isRecord(p)||(("amount" in p)&&(typeof p.amount!=="number"||!Number.isFinite(p.amount)||p.amount<0))||(("method" in p)&&!["cash","card","credit"].includes(p.method)))));
   const customerIds=Array.isArray(d?.lurk_customers)?d.lurk_customers.map(c=>c.id).filter(id=>typeof id==="string"): [];
   const duplicateCustomerIds=new Set(customerIds).size!==customerIds.length;
   const badCreditTypes=Array.isArray(d?.lurk_credit)&&d.lurk_credit.some(e=>("type" in e)&&!["debt","payment"].includes(e.type));
-  if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badOrderAmounts||badCustomers||badCredit||badCreditAmounts||badMenu||badMenuValues||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d))) {
+  if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badOrderAmounts||badCustomers||badCredit||badCreditAmounts||badMenu||badMenuValues||duplicateMenuIds||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d))) {
     return "Yedek biçimi veya kayıt alanları desteklenmiyor.";
   }
   return null;
