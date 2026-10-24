@@ -185,7 +185,7 @@ export default function App(){
     if(!t)return;
     const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
     const total=Math.max(0,sub-(disc||0));
-    const order={id:uid(),date:tod(),total,pt,g:t.g||"",items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat}))};
+    const order={id:uid(),date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt,g:t.g||"",table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
     setOrd(prev=>[order,...prev]);
     setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:""}:tb));
     msg("Ödeme alındı · "+fm(total));
@@ -623,7 +623,12 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
           <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
-          <div style={{fontSize:32,fontWeight:800,textAlign:"center",marginBottom:16,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</div>
+          <div style={{background:T.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.08)"}}>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>Ara toplam</span><span>{fm(sub)}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>İndirim</span><span style={{color:discVal>0?T.accentL:T.textSub}}>−{fm(discVal)}</span></div>
+            <div style={{height:1,background:"rgba(255,255,255,0.09)",marginBottom:8}}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:13,fontWeight:700,color:T.text}}>Ödenecek</span><span style={{fontSize:25,fontWeight:800,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</span></div>
+          </div>
           <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} onChange={e=>setDisc(e.target.value)}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <div style={{display:"flex",gap:8,marginBottom:16}}>
