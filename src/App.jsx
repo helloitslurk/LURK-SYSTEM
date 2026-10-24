@@ -976,7 +976,22 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
       const parsed=JSON.parse(raw);
       const d=parsed?.data;
       const keys=["lurk_t","lurk_o","lurk_l","lurk_customers","lurk_credit","lurk_m"];
-      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!d||typeof d!=="object"||Array.isArray(d)||keys.some(k=>!Array.isArray(d[k])||d[k].some(row=>!row||typeof row!=="object"||Array.isArray(row)))||!("lurk_d" in d)||(d.lurk_d!==null&&(typeof d.lurk_d!=="object"||Array.isArray(d.lurk_d))))throw new Error("Yedek biçimi veya kayıt yapısı desteklenmiyor.");
+      const isRecord=row=>!!row&&typeof row==="object"&&!Array.isArray(row);
+      const badArray=keys.some(k=>!Array.isArray(d?.[k])||d[k].length>100000||d[k].some(row=>!isRecord(row)));
+      const badFields=(rows,checks)=>rows.some(row=>checks.some(([key,type])=>key in row&&(
+        type==="string"?typeof row[key]!=="string":
+        type==="number"?typeof row[key]!=="number"||!Number.isFinite(row[key]):
+        type==="array"?!Array.isArray(row[key]):
+        type==="object"?!isRecord(row[key]):
+        false
+      )));
+      const badTables=!Array.isArray(d?.lurk_t)||badFields(d.lurk_t,[["id","string"],["lbl","string"],["s","string"],["order","array"],["g","string"]]);
+      const badOrders=!Array.isArray(d?.lurk_o)||badFields(d.lurk_o,[["id","string"],["date","string"],["total","number"],["subtotal","number"],["discount","number"],["items","array"],["payments","array"]]);
+      const badCustomers=!Array.isArray(d?.lurk_customers)||badFields(d.lurk_customers,[["id","string"],["name","string"],["phone","string"]]);
+      const badCredit=!Array.isArray(d?.lurk_credit)||badFields(d.lurk_credit,[["id","string"],["customerId","string"],["type","string"],["amount","number"],["date","string"]]);
+      const badMenu=!Array.isArray(d?.lurk_m)||badFields(d.lurk_m,[["id","number"],["name","string"],["price","number"],["cat","string"]]);
+      const badLogs=!Array.isArray(d?.lurk_l)||badFields(d.lurk_l,[["date","string"],["inc","number"],["count","number"]]);
+      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badCustomers||badCredit||badMenu||badLogs||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d)))throw new Error("Yedek biçimi veya kayıt alanları desteklenmiyor.");
       setPendingImport({data:d,filename:file.name});
       setImportMsg("Yedek doğrulandı. Geri yükleme mevcut kayıtların yerine geçecek.");
     }).catch(e=>setImportMsg(e instanceof SyntaxError?"Dosya geçerli JSON değil.":(e?.message||"Yedek okunamadı."))).finally(()=>setImportBusy(false));
