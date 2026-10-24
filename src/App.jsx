@@ -1,5 +1,6 @@
 import{useState,useEffect,useRef}from"react";
 import { createKeyedWriteQueue } from "./writeQueue.js";
+import { validateMenuItemInput } from "./menuValidation.js";
 
 const SB_URL="https://dpucptcrxoddfpvaqsdl.supabase.co";
 const SB_KEY="sb_publishable_YiTDrcX7nnotBkoWqEWaHQ_tYHlT3NK";
@@ -967,7 +968,7 @@ function MenuScreen({menu,setMenu,setV}){
             {cats.map(c=><option key={c} value={c}>{c}</option>)}
           </select>
           {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={()=>{const price=Number(newPrice);if(!newName.trim()){setAddError("Ürün adı zorunlu.");return;}if(!Number.isFinite(price)||price<=0){setAddError("Fiyat sıfırdan büyük geçerli bir tutar olmalı.");return;}setMenu(p=>[...p,{id:Date.now(),name:newName.trim().toLocaleUpperCase("tr-TR"),price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
+          <button onClick={()=>{const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
           <button onClick={()=>setShowAdd(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
         </Modal>
       )}
