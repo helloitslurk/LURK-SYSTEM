@@ -109,3 +109,9 @@ test("credit payment requires a saved customer",()=>{
   assert.ok(validatePayment({total:100,isCredit:true,customerId:null,payments:[{method:"credit",amount:100}]}).error);
   assert.equal(validatePayment({total:100,isCredit:true,customerId:"c1",payments:[]}).error,null);
 });
+
+test("payment validation permits a fully discounted zero-total order",()=>{
+  const result=validatePayment({total:0,isCredit:false,payments:[]});
+  assert.equal(result.error,null);
+  assert.equal(result.paymentTotal,0);
+});
