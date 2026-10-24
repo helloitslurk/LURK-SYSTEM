@@ -674,6 +674,13 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   const[sel,setSel]=useState(months[0]||now);
   const[exp,setExp]=useState(null);
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
+  function exportMonthCsv(){
+    const headers=["Tarih","Masa","Müşteri","Ara toplam","İndirim","Toplam","Nakit","Kart","Veresiye","Ödeme türü","Ürünler"];
+    const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Nakit + Kart":o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":"Veresiye",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
+    const csv=[headers,...rows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
+    const blob=new Blob(["\\uFEFF",csv],{type:"text/csv;charset=utf-8"});
+    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lurk-satis-"+sel+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
   const ms=sel+"-01";
   const me=sel+"-"+String(new Date(parseInt(sel.slice(0,4)),parseInt(sel.slice(5,7)),0).getDate()).padStart(2,"0");
   const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
@@ -692,7 +699,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
     <div className="lurk-screen lurk-reports-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Raporlar</div>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Raporlar</div><button onClick={exportMonthCsv} style={{background:T.bg2,color:T.accentL,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,padding:"9px 11px",fontSize:12,fontWeight:700,cursor:"pointer"}}>↓ CSV</button>
       </div>
 
       {/* Ay seçici */}
