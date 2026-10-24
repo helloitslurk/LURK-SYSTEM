@@ -177,6 +177,10 @@ export default function App(){
       return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString()}]};
     }));
   }
+  function setTableCustomer(tid,customer){
+    const clean=typeof customer==="string"?customer.trim():(customer?.name||"").trim();
+    setTbl(prev=>prev.map(t=>t.id===tid?{...t,g:clean,customerId:typeof customer==="object"&&customer?customer.id:null}:t));
+  }
   function chQ(tid,lineId,d){
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
@@ -282,7 +286,7 @@ export default function App(){
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
-      {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
+      {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
@@ -447,7 +451,7 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
 }
 
 /* ─── ORDER ─── */
-function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
+function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay,setTbl,setV,setSel}){
   const[showMenu,setShowMenu]=useState(table.order.length===0);
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
@@ -612,9 +616,10 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
       {showName&&(
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>Müşteri Seçimi</div>
-          <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Adisyonu başlatmak için müşteri adını gir.</div>
-          <input autoFocus placeholder="Müşteri adı (zorunlu)" value={name} onChange={e=>setName(e.target.value)}
-            onKeyDown={e=>{if(e.key==="Enter"&&name.trim()){setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}}}
+          <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Kayıtlı müşteriyi seç veya yeni müşteri adını gir.</div>
+          {customers?.length>0&&<div style={{maxHeight:150,overflowY:"auto",marginBottom:12}}>{customers.map(c=><button key={c.id} onClick={()=>{setTableCustomer(table.id,c);setName(c.name);setShowName(false);}} style={{display:"block",width:"100%",padding:11,marginBottom:5,textAlign:"left",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}>{c.name}<span style={{display:"block",fontSize:11,color:T.textSub,marginTop:3}}>{c.phone||"Telefon yok"}</span></button>)}</div>}
+          <input autoFocus placeholder="Yeni müşteri adı (zorunlu)" value={name} onChange={e=>setName(e.target.value)}
+            onKeyDown={e=>{if(e.key==="Enter"&&name.trim()){setTableCustomer(table.id,name.trim());setShowName(false);}}}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <button disabled={!name.trim()} onClick={()=>{if(!name.trim())return;setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}} style={{width:"100%",padding:"14px",background:name.trim()?"linear-gradient(135deg,#34C759,#248A3D)":T.bg3,border:"none",borderRadius:12,color:name.trim()?"#fff":T.textDim,fontSize:15,fontWeight:700,cursor:name.trim()?"pointer":"not-allowed"}}>Müşteriyi Onayla</button>
         </Modal>
