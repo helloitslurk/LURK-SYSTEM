@@ -976,7 +976,7 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
       const parsed=JSON.parse(raw);
       const d=parsed?.data;
       const keys=["lurk_t","lurk_o","lurk_l","lurk_customers","lurk_credit","lurk_m"];
-      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!d||typeof d!=="object"||keys.some(k=>!Array.isArray(d[k]))||!("lurk_d" in d)||(d.lurk_d!==null&&typeof d.lurk_d!=="object"))throw new Error("Yedek biçimi veya sürümü desteklenmiyor.");
+      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!d||typeof d!=="object"||Array.isArray(d)||keys.some(k=>!Array.isArray(d[k])||d[k].some(row=>!row||typeof row!=="object"||Array.isArray(row)))||!("lurk_d" in d)||(d.lurk_d!==null&&(typeof d.lurk_d!=="object"||Array.isArray(d.lurk_d))))throw new Error("Yedek biçimi veya kayıt yapısı desteklenmiyor.");
       setPendingImport({data:d,filename:file.name});
       setImportMsg("Yedek doğrulandı. Geri yükleme mevcut kayıtların yerine geçecek.");
     }).catch(e=>setImportMsg(e instanceof SyntaxError?"Dosya geçerli JSON değil.":(e?.message||"Yedek okunamadı."))).finally(()=>setImportBusy(false));
