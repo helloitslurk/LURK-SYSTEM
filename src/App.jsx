@@ -242,6 +242,21 @@ export default function App(){
       return{...t,order,s:order.length>0?"o":"free"};
     }));
   }
+  function moveTableOrder(sourceId,targetId){
+    if(sourceId===targetId){msg("Ürünleri farklı bir masaya taşımalısın.");return;}
+    const source=tables.find(t=>t.id===sourceId);
+    const target=tables.find(t=>t.id===targetId);
+    if(!source||!target||!Array.isArray(source.order)||source.order.length===0){msg("Taşınacak açık sipariş bulunamadı.");return;}
+    setTbl(prev=>prev.map(t=>{
+      if(t.id===sourceId)return {...t,order:[],s:"free",g:"",customerId:null,oa:null};
+      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...source.order],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null};
+      return t;
+    }));
+    msg(source.order.length+" ürün satırı "+target.lbl+" masasına taşındı.");
+    setSel(null);
+    setV("tables");
+  }
+
   function pay(tid,pt,disc,payments){
     if(paymentInProgress.current)return;
     const t=tables.find(x=>x.id===tid);
@@ -359,7 +374,7 @@ export default function App(){
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
-      {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
+      {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
@@ -524,12 +539,13 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
 }
 
 /* ─── ORDER ─── */
-function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay,setTbl,setV,setSel}){
+function OrderScreen({table,tables,menu,cats,customers,setTableCustomer,addItem,chQ,pay,moveTableOrder,setTbl,setV,setSel}){
   const[showMenu,setShowMenu]=useState(table.order.length===0);
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
   const[showName,setShowName]=useState(table.order.length===0&&!table.g);
   const[showFis,setShowFis]=useState(false);
+  const[showMove,setShowMove]=useState(false);
   const[name,setName]=useState(table.g||"");
   const[disc,setDisc]=useState("");
   const[search,setSearch]=useState("");
@@ -598,6 +614,7 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
             </div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
+              <button onClick={()=>setShowMove(true)} disabled={table.order.length===0||tables.filter(t=>t.id!==table.id).length===0} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:table.order.length===0?T.textDim:T.textSub,fontWeight:600,fontSize:12,cursor:table.order.length===0?"not-allowed":"pointer"}}>⇄ Taşı</button>
               <button onClick={()=>setShowFis(true)} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>Fiş</button>
               <button onClick={()=>setShowPay(true)} disabled={table.order.length===0} style={{flex:2,padding:"13px",background:table.order.length===0?T.bg3:"linear-gradient(135deg,#34C759,#248A3D)",color:table.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:table.order.length===0?"not-allowed":"pointer",boxShadow:table.order.length>0?"0 4px 16px rgba(52,199,89,0.35)":"none"}}>Ödeme Al ↑</button>
             </div>
@@ -651,6 +668,23 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
             )}
           </div>
         </div>
+      )}
+
+      {showMove&&(
+        <Modal>
+          <div style={{fontWeight:800,fontSize:18,color:T.text,marginBottom:6}}>Ürünleri Başka Masaya Taşı</div>
+          <div style={{fontSize:12,color:T.textSub,lineHeight:1.5,marginBottom:14}}>{table.lbl} masasındaki {itemCount} ürün başka masaya aktarılacak. Hedef masadaki ürünler korunur ve üzerine eklenir.</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:"45vh",overflowY:"auto"}}>
+            {tables.filter(t=>t.id!==table.id).map(target=>{
+              const targetTotal=(target.order||[]).reduce((sum,item)=>sum+item.price*item.qty,0);
+              return <button key={target.id} onClick={()=>{setShowMove(false);moveTableOrder(table.id,target.id);}} style={{width:"100%",padding:"13px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(52,199,89,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(52,199,89,.3)":"rgba(255,255,255,.1)"),borderRadius:11,color:T.text,cursor:"pointer"}}>
+                <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Açık masa · "+fm(targetTotal):"Boş masa"}</span></span>
+                <span style={{color:T.accentL,fontSize:18}}>→</span>
+              </button>;
+            })}
+          </div>
+          <button onClick={()=>setShowMove(false)} style={{width:"100%",padding:12,marginTop:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+        </Modal>
       )}
 
       {/* Fiş modal */}
