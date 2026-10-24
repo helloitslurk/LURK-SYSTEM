@@ -12,7 +12,7 @@ export function validatePayment({ total, isCredit, customerId, payments }) {
     return { error: "Ödeme türü geçersiz." };
   }
   const paymentTotal = Math.round(normalized.reduce((sum, p) => sum + p.amount, 0) * 100) / 100;
-  if (!isCredit && (normalized.length === 0 || Math.abs(paymentTotal - total) > 0.009)) {
+  if (!isCredit && (total > 0 && normalized.length === 0 || Math.abs(paymentTotal - total) > 0.009)) {
     return { error: "Ödeme tutarları toplamı eşleşmiyor." };
   }
   return { error: null, payments: normalized, paymentTotal };
