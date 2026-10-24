@@ -170,15 +170,13 @@ export default function App(){
   function addItem(tid,item){
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
-      const existing=t.order.find(o=>o.id===item.id);
-      if(existing){return{...t,order:t.order.map(o=>o.id===item.id?{...o,qty:o.qty+1}:o)};}
       return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString()}]};
     }));
   }
-  function chQ(tid,itemId,d){
+  function chQ(tid,lineId,d){
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
-      const order=t.order.map(o=>o.id===itemId?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);
+      const order=t.order.map(o=>(o.oid||String(o.id))===lineId?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);
       return{...t,order,s:order.length>0?"o":"free"};
     }));
   }
@@ -472,11 +470,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
     setTimeout(()=>setFlash(null),400);
   }
 
-  const grouped=Object.values(table.order.reduce((acc,item)=>{
-    if(!acc[item.id])acc[item.id]={...item,qty:0};
-    acc[item.id].qty+=item.qty;
-    return acc;
-  },{}));
+  const grouped=table.order;
 
   return(
     <div className="lurk-screen lurk-order-screen" style={{display:"flex",flexDirection:"column",height:"100vh",background:T.bg}}>
@@ -500,7 +494,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
                 </div>
               :grouped.map(item=>(
-                <div key={item.id} style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:8,border:"0.5px solid rgba(255,255,255,0.06)"}}>
+                <div key={item.oid||item.id} style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:8,border:"0.5px solid rgba(255,255,255,0.06)"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
                     <div style={{flex:1}}>
                       <div style={{fontSize:14,fontWeight:700,color:T.text}}>{item.name}</div>
@@ -509,9 +503,9 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
                     <div style={{fontSize:11,color:T.textSub}}>{fm(item.price)} × {item.qty}</div>
                   </div>
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
-                    <button onClick={()=>chQ(table.id,item.id,-1)} style={{flex:1,height:36,borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:20,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
+                    <button onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:36,borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:20,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
                     <span style={{minWidth:36,textAlign:"center",fontWeight:800,fontSize:17,color:T.text}}>{item.qty}</span>
-                    <button onClick={()=>addItem(table.id,item)} style={{flex:1,height:36,borderRadius:8,border:"none",background:T.accent,cursor:"pointer",fontSize:20,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
+                    <button onClick={()=>chQ(table.id,item.oid||String(item.id),1)} style={{flex:1,height:36,borderRadius:8,border:"none",background:T.accent,cursor:"pointer",fontSize:20,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
                   </div>
                 </div>
               ))
