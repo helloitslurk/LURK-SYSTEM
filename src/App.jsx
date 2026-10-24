@@ -988,7 +988,7 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
       const parsed=JSON.parse(raw);
       const validationError=validateBackup(parsed);
       if(validationError)throw new Error(validationError);
-      setPendingImport({data:d,filename:file.name});
+      setPendingImport({data:parsed.data,filename:file.name});
       setImportMsg("Yedek doğrulandı. Geri yükleme mevcut kayıtların yerine geçecek.");
     }).catch(e=>setImportMsg(e instanceof SyntaxError?"Dosya geçerli JSON değil.":(e?.message||"Yedek okunamadı."))).finally(()=>setImportBusy(false));
   }
