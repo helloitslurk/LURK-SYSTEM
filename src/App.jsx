@@ -295,7 +295,7 @@ export default function App(){
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
-      {view==="reports"&&<ReportsScreen orders={orders} logs={logs} setV={setV}/>}
+      {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV}/>}
@@ -668,7 +668,7 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
 }
 
 /* ─── REPORTS ─── */
-function ReportsScreen({orders,logs,setV}){
+function ReportsScreen({orders,logs,creditEntries,setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
@@ -681,6 +681,8 @@ function ReportsScreen({orders,logs,setV}){
   const totalInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
   const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
   const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0);
+  const outstanding=creditEntries.reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
+  const creditSales=mo.filter(o=>o.pt==="credit").reduce((sum,o)=>sum+(Number(o.total)||0),0);
   const dayMap={};
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
@@ -703,11 +705,12 @@ function ReportsScreen({orders,logs,setV}){
       </div>
 
       {/* Stat kartlar */}
-      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8}}>
         {[
-          {label:"Toplam",val:fm(totalInc),color:T.accentL},
-          {label:"Nakit",val:fm(totalCash),color:T.text},
-          {label:"Kart",val:fm(totalCard),color:T.text},
+          {label:"Satış",val:fm(totalInc),color:T.accentL},
+          {label:"Nakit tahsilat",val:fm(totalCash),color:T.text},
+          {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
+          {label:"Açık veresiye",val:fm(Math.max(0,outstanding)),color:outstanding>0?T.warn:T.text},
         ].map((s,i)=>(
           <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(255,255,255,0.07)"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
@@ -740,7 +743,7 @@ function ReportsScreen({orders,logs,setV}){
                 <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(255,255,255,0.05)",background:"rgba(255,255,255,0.02)"}}>
                   <div>
                     <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
-                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":"Kart"}</div>
+                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":o.pt==="credit"?"Veresiye":o.pt==="split"?"Nakit + Kart":"Kart"}</div>
                   </div>
                   <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(o.total)}</div>
                 </div>
