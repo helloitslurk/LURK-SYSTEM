@@ -142,3 +142,9 @@ test("payment validation rejects negative, missing, and non-finite payment amoun
     assert.ok(validatePayment({total:100,isCredit:false,payments:[{method:"cash",amount}]}).error);
   }
 });
+
+test("rejects missing, non-integer, and non-positive restored menu IDs",()=>{
+  const missing=validBackup();delete missing.data.lurk_m[0].id;assert.ok(validateBackup(missing));
+  const decimal=validBackup();decimal.data.lurk_m[0].id=1.5;assert.ok(validateBackup(decimal));
+  const zero=validBackup();zero.data.lurk_m[0].id=0;assert.ok(validateBackup(zero));
+});
