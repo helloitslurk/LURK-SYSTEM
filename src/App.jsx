@@ -133,7 +133,7 @@ export default function App(){
   }
 
   useEffect(()=>{
-    const fb=setTimeout(()=>{if(!ok)setOk(true);},12000);
+    const fb=setTimeout(()=>{if(!ok){setLoadError(true);setOk(true);}},12000);
     (async()=>{
       const t=await sbGet("lurk_t",[]);
       const o=await sbGet("lurk_o",[]);
@@ -158,6 +158,7 @@ export default function App(){
       if(d&&d.oa&&d.oa.startsWith(tod()))setDay(d);
       clearTimeout(fb);
       loaded.current=true;
+      setLoadError(false);
       setOk(true);
     })().catch(()=>{clearTimeout(fb);setLoadError(true);setOk(true);});
   },[]);
