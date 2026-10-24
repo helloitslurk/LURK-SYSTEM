@@ -36,3 +36,40 @@ test("rejects duplicate customer IDs and unsupported credit types",()=>{
 test("rejects arrays where an object is required",()=>{
   const b=validBackup();b.data.lurk_d=[];assert.ok(validateBackup(b));
 });
+
+import { createKeyedWriteQueue } from "../src/writeQueue.js";
+
+test("serializes writes to the same key in call order", async()=>{
+  const events=[];
+  const queue=createKeyedWriteQueue(async(key,value)=>{
+    events.push("start:"+key+":"+value);
+    await new Promise(resolve=>setTimeout(resolve,value===1?20:0));
+    events.push("end:"+key+":"+value);
+    return true;
+  });
+  await Promise.all([queue("orders",1),queue("orders",2),queue("orders",3)]);
+  assert.deepEqual(events,[
+    "start:orders:1","end:orders:1",
+    "start:orders:2","end:orders:2",
+    "start:orders:3","end:orders:3"
+  ]);
+});
+test("allows independent keys to write concurrently", async()=>{
+  const started=[];
+  let release;
+  const gate=new Promise(resolve=>{release=resolve;});
+  const queue=createKeyedWriteQueue(async(key)=>{started.push(key);if(key==="orders")await gate;return true;});
+  const first=queue("orders",1);
+  const second=queue("customers",1);
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.deepEqual(started.sort(),["customers","orders"]);
+  release();
+  await Promise.all([first,second]);
+});
+test("continues queue after a rejected write", async()=>{
+  const calls=[];
+  const queue=createKeyedWriteQueue(async(key,value)=>{calls.push(value);if(value===1)throw new Error("offline");return true;});
+  await assert.rejects(queue("orders",1));
+  assert.equal(await queue("orders",2),true);
+  assert.deepEqual(calls,[1,2]);
+});
