@@ -928,6 +928,7 @@ function MenuScreen({menu,setMenu,setV}){
   const[newName,setNewName]=useState("");
   const[newPrice,setNewPrice]=useState("");
   const[newCat,setNewCat]=useState("Kahve");
+  const[addError,setAddError]=useState("");
   const cats=[...new Set(menu.map(m=>m.cat))];
 
   return(
@@ -961,11 +962,12 @@ function MenuScreen({menu,setMenu,setV}){
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Ürün</div>
           <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <input type="number" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>setNewPrice(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <input type="number" min="0.01" step="0.01" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:16,background:"#1A1A1A",color:T.text}}>
             {cats.map(c=><option key={c} value={c}>{c}</option>)}
           </select>
-          <button onClick={()=>{if(!newName.trim()||!newPrice)return;setMenu(p=>[...p,{id:Date.now(),name:newName.trim().toUpperCase(),price:parseFloat(newPrice),cat:newCat,on:true}]);setNewName("");setNewPrice("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
+          {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
+          <button onClick={()=>{const price=Number(newPrice);if(!newName.trim()){setAddError("Ürün adı zorunlu.");return;}if(!Number.isFinite(price)||price<=0){setAddError("Fiyat sıfırdan büyük geçerli bir tutar olmalı.");return;}setMenu(p=>[...p,{id:Date.now(),name:newName.trim().toLocaleUpperCase("tr-TR"),price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
           <button onClick={()=>setShowAdd(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
         </Modal>
       )}
