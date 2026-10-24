@@ -471,6 +471,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
     {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
     {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
     {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
+    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"↗",sub:"Ciro ve en çok kazandıran 5 ürün"},
     {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
   ];
 
@@ -502,39 +503,6 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
               <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL · {s.sub}</div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* İçinde bulunulan ayın ciro grafiği */}
-      <div style={{padding:"16px 14px 0"}}>
-        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:16,padding:"16px 14px"}}>
-          <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:12}}>
-            <div>
-              <div style={{fontSize:15,fontWeight:800,color:T.text}}>{new Date().toLocaleDateString("tr-TR",{month:"long",year:"numeric"})} cirosu</div>
-              <div style={{fontSize:11,color:T.textSub,marginTop:4}}>Günlük toplam · TL</div>
-            </div>
-            <div style={{textAlign:"right"}}>
-              <div style={{fontSize:17,fontWeight:800,color:T.accentL}}>{fm(monthTotal)}</div>
-              <div style={{fontSize:10,color:T.textDim}}>Aylık toplam</div>
-            </div>
-          </div>
-          <div style={{display:"flex",gap:8,alignItems:"stretch"}}>
-            <div style={{display:"flex",flexDirection:"column",justifyContent:"space-between",height:132,paddingBottom:22,fontSize:9,color:T.textDim,textAlign:"right",flexShrink:0}}>
-              <span>{chartTicks[2].toLocaleString("tr-TR")}</span>
-              <span>{chartTicks[1].toLocaleString("tr-TR")}</span>
-              <span>0</span>
-            </div>
-            <div style={{display:"flex",flex:1,alignItems:"stretch",gap:5,minWidth:0,height:132,borderBottom:"1px solid rgba(255,255,255,.12)",background:"repeating-linear-gradient(to bottom, transparent 0, transparent 43px, rgba(255,255,255,.05) 44px, transparent 45px)"}}>
-              {monthDays.map((d,i)=>(
-                <div key={d.key} title={d.key+" · "+fm(d.total)} style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"flex-end",alignItems:"center",gap:5}}>
-                  <div style={{fontSize:8,color:d.key===today?T.accentL:T.textSub,whiteSpace:"nowrap",fontWeight:700}}>{d.total>0?Math.round(d.total).toLocaleString("tr-TR"):""}</div>
-                  <div style={{width:"100%",maxWidth:28,height:Math.max(3,(d.total/chartMax)*78),minHeight:3,borderRadius:"5px 5px 2px 2px",background:d.key===today?"#34C759":"rgba(52,199,89,.45)"}}/>
-                  <div style={{fontSize:9,color:d.key===today?T.accentL:T.textSub,whiteSpace:"nowrap"}}>{d.day}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{fontSize:10,color:T.textDim,marginTop:10}}>Bugün açık masalardaki mevcut siparişler de bugünün toplamına dahildir.</div>
         </div>
       </div>
 
