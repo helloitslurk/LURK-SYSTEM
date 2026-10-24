@@ -239,6 +239,34 @@ export default function App(){
         @media (max-width: 699px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
         }
+
+        .lurk-nav-button { min-width: 0; }
+        .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
+        @media (min-width: 1000px) {
+          .lurk-app { padding-left: 104px !important; padding-bottom: 0 !important; }
+          .lurk-bottom-nav {
+            left: 0 !important; top: 0 !important; bottom: 0 !important;
+            transform: none !important; width: 104px !important; max-width: 104px !important;
+            flex-direction: column !important; justify-content: flex-start !important;
+            gap: 8px !important; padding: 22px 10px !important;
+            background: rgba(13,15,14,.98) !important;
+            border-top: 0 !important; border-right: 1px solid rgba(255,255,255,.09) !important;
+            backdrop-filter: blur(24px) !important;
+          }
+          .lurk-nav-button {
+            flex: 0 0 auto !important; width: 100% !important; min-height: 72px !important;
+            padding: 13px 4px !important; border-radius: 14px !important;
+          }
+          .lurk-nav-button:hover { background: rgba(255,255,255,.055) !important; }
+          .lurk-nav-button span:first-child { font-size: 22px !important; }
+          .lurk-nav-button span:last-child { font-size: 11px !important; }
+          .lurk-screen:not(.lurk-order-screen) { max-width: 1600px !important; }
+          .lurk-order-screen { width: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+        }
+
         @media (min-width: 700px) {
           .lurk-modal-backdrop { align-items: center !important; padding: 24px; }
           .lurk-modal-panel { max-width: 520px !important; border-radius: 20px !important; padding: 28px !important; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
@@ -253,9 +281,9 @@ export default function App(){
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV}/>}
       {view!=="order"&&(
-        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
+        <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
-            <button key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+            <button className="lurk-nav-button" key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
               <span style={{fontSize:10,fontWeight:view===n.k?700:400,color:view===n.k?T.accent:T.textDim}}>{n.label}</span>
             </button>
