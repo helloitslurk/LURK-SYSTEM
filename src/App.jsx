@@ -567,11 +567,17 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
   const displayed=showAll?tables:openT;
 
   function addTable(){
-    const n=(nameRef.current?nameRef.current.value:"").trim();
-    if(!n)return;
-    setTbl(p=>[...p,{id:uid(),lbl:n,s:"free",order:[],g:""}]);
+    const customerName=(nameRef.current?nameRef.current.value:"").trim();
+    if(!customerName){msg("Müşteri adı gir.");return;}
+    const usedNumbers=tables.map(t=>/^Masa (\\d+)$/.exec(t.lbl||"")).filter(Boolean).map(m=>Number(m[1]));
+    let number=1;
+    while(usedNumbers.includes(number))number++;
+    const id=uid();
+    setTbl(p=>[...p,{id,lbl:"Masa "+number,s:"free",order:[],g:customerName}]);
     if(nameRef.current)nameRef.current.value="";
     setShowNew(false);
+    setSel(id);
+    setV("order");
   }
 
   return(
@@ -614,13 +620,14 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
 
       {showNew&&(
         <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Masa</div>
-          <input ref={nameRef} autoFocus placeholder="Masa adı"
+          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Adisyon</div>
+          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Müşteri adı</label>
+          <input ref={nameRef} autoFocus placeholder="Müşteri adı"
             onKeyDown={e=>{if(e.key==="Enter")addTable();}}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <button onClick={addTable}
             style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>
-            Ekle
+            Müşteriyi Ekle ve Siparişe Geç
           </button>
           <button onClick={()=>setShowNew(false)}
             style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>
