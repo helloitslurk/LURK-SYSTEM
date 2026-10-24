@@ -991,7 +991,12 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
       const badCredit=!Array.isArray(d?.lurk_credit)||badFields(d.lurk_credit,[["id","string"],["customerId","string"],["type","string"],["amount","number"],["date","string"]]);
       const badMenu=!Array.isArray(d?.lurk_m)||badFields(d.lurk_m,[["id","number"],["name","string"],["price","number"],["cat","string"]]);
       const badLogs=!Array.isArray(d?.lurk_l)||badFields(d.lurk_l,[["date","string"],["inc","number"],["count","number"]]);
-      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badCustomers||badCredit||badMenu||badLogs||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d)))throw new Error("Yedek biçimi veya kayıt alanları desteklenmiyor.");
+      const badTableLines=Array.isArray(d?.lurk_t)&&d.lurk_t.some(t=>Array.isArray(t.order)&&t.order.some(line=>!isRecord(line)||(("qty" in line)&&(typeof line.qty!=="number"||!Number.isFinite(line.qty)||line.qty<=0))||(("price" in line)&&(typeof line.price!=="number"||!Number.isFinite(line.price)||line.price<0))||(("name" in line)&&typeof line.name!=="string")));
+      const badOrderLines=Array.isArray(d?.lurk_o)&&d.lurk_o.some(o=>(Array.isArray(o.items)&&o.items.some(line=>!isRecord(line)||(("qty" in line)&&(typeof line.qty!=="number"||!Number.isFinite(line.qty)||line.qty<=0))||(("price" in line)&&(typeof line.price!=="number"||!Number.isFinite(line.price)||line.price<0))) )||(Array.isArray(o.payments)&&o.payments.some(p=>!isRecord(p)||(("amount" in p)&&(typeof p.amount!=="number"||!Number.isFinite(p.amount)||p.amount<0))||(("method" in p)&&!["cash","card","credit"].includes(p.method)))));
+      const customerIds=Array.isArray(d?.lurk_customers)?d.lurk_customers.map(c=>c.id).filter(id=>typeof id==="string"): [];
+      const duplicateCustomerIds=new Set(customerIds).size!==customerIds.length;
+      const badCreditTypes=Array.isArray(d?.lurk_credit)&&d.lurk_credit.some(e=>("type" in e)&&!["debt","payment"].includes(e.type));
+      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!isRecord(d)||badArray||badTables||badOrders||badCustomers||badCredit||badMenu||badLogs||badTableLines||badOrderLines||duplicateCustomerIds||badCreditTypes||!("lurk_d" in d)||(d.lurk_d!==null&&!isRecord(d.lurk_d)))throw new Error("Yedek biçimi veya kayıt alanları desteklenmiyor.");
       setPendingImport({data:d,filename:file.name});
       setImportMsg("Yedek doğrulandı. Geri yükleme mevcut kayıtların yerine geçecek.");
     }).catch(e=>setImportMsg(e instanceof SyntaxError?"Dosya geçerli JSON değil.":(e?.message||"Yedek okunamadı."))).finally(()=>setImportBusy(false));
