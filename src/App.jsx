@@ -298,7 +298,7 @@ export default function App(){
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
-      {view==="settings"&&<SettingsScreen setV={setV}/>}
+      {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day}/>}
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
@@ -893,7 +893,18 @@ function MenuScreen({menu,setMenu,setV}){
 }
 
 /* ─── SETTINGS ─── */
-function SettingsScreen({setV}){
+function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,day}){
+  const [backupMsg,setBackupMsg]=useState("");
+  function exportBackup(){
+    const backup={app:"LURK POS",formatVersion:1,exportedAt:new Date().toISOString(),data:{lurk_t:tables,lurk_o:orders,lurk_l:logs,lurk_customers:customers,lurk_credit:creditEntries,lurk_m:menu,lurk_d:day}};
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download="lurk-pos-yedek-"+tod()+".json";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    setBackupMsg("Yedek dosyası indirildi. Güvenli bir yerde sakla.");
+  }
   return(
     <div className="lurk-screen lurk-settings-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
@@ -902,19 +913,23 @@ function SettingsScreen({setV}){
       </div>
       <div style={{padding:"14px"}}>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Yönetim</div>
-        <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14}}>
+        <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14,marginBottom:10}}>
           <div style={{width:40,height:40,borderRadius:10,background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>☰</div>
-          <div>
-            <div style={{fontSize:14,fontWeight:700}}>Menü</div>
-            <div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div>
-          </div>
+          <div><div style={{fontSize:14,fontWeight:700}}>Menü</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div></div>
           <div style={{marginLeft:"auto",fontSize:18,color:T.textDim}}>›</div>
         </button>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Veri güvenliği</div>
+        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:15}}>
+          <div style={{fontSize:14,fontWeight:750,color:T.text}}>Veri yedeği</div>
+          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:13}}>Masa durumları, adisyonlar, raporlar, müşteriler, veresiye defteri ve menüyü tek bir JSON dosyasına indirir. Bu işlem mevcut kayıtları değiştirmez.</div>
+          <button onClick={exportBackup} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>↓ Yedek İndir</button>
+          {backupMsg&&<div role="status" style={{fontSize:12,color:T.accentL,marginTop:10}}>{backupMsg}</div>}
+          <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Son yedek almak için uygulamayı kullandığın cihazdan indir. Dosya hassas müşteri ve satış bilgileri içerebilir.</div>
+        </div>
       </div>
     </div>
   );
 }
-
 /* ─── SHARED ─── */
 function Modal({children}){
   return(
