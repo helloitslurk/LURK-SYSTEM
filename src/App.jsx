@@ -789,8 +789,8 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
     if(!clean){msg("Müşteri adı zorunlu.");return;}
     const duplicateName=customers.find(c=>c.id!==editing?.id&&c.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));
     if(duplicateName){msg("Bu isimde bir müşteri zaten kayıtlı. Mevcut kaydı düzenle.");return;}
-    const normalizedPhone=tel.replace(/\s+/g,"");
-    const duplicate=customers.find(c=>c.id!==editing?.id&&normalizedPhone&&String(c.phone||"").replace(/\s+/g,"")===normalizedPhone);
+    const normalizedPhone=tel.replace(/\D/g,"");
+    const duplicate=customers.find(c=>c.id!==editing?.id&&normalizedPhone&&String(c.phone||"").replace(/\D/g,"")===normalizedPhone);
     if(duplicate){msg("Bu telefon numarası başka bir müşteride kayıtlı.");return;}
     if(editing){setCustomers(prev=>prev.map(c=>c.id===editing.id?{...c,name:clean,phone:tel,updatedAt:new Date().toISOString()}:c));setDetail({...editing,name:clean,phone:tel});msg("Müşteri güncellendi.");}
     else{const c={id:uid(),name:clean,phone:tel,createdAt:new Date().toISOString(),points:0,creditBalance:0};setCustomers(prev=>[c,...prev]);msg("Müşteri kaydedildi.");}
