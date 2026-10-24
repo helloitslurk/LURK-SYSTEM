@@ -82,17 +82,25 @@ const T={
 };
 
 async function sbGet(key,fb){
-  try{
-    const r=await fetch(SB_URL+"/rest/v1/app_storage?key=eq."+key+"&select=value",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
-    const d=await r.json();
-    if(d&&d[0])return JSON.parse(d[0].value);
-  }catch(e){}
+  const r=await fetch(SB_URL+"/rest/v1/app_storage?key=eq."+key+"&select=value",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+  if(!r.ok)throw new Error("Supabase read failed for "+key+" ("+r.status+")");
+  const d=await r.json();
+  if(d&&d[0])return JSON.parse(d[0].value);
   return fb;
 }
 async function sbSet(key,val){
-  try{
-    await fetch(SB_URL+"/rest/v1/app_storage",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates"},body:JSON.stringify({key,value:JSON.stringify(val)})});
-  }catch(e){}
+  const body=JSON.stringify({key,value:JSON.stringify(val)});
+  let lastError;
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const r=await fetch(SB_URL+"/rest/v1/app_storage",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates"},body});
+      if(r.ok)return true;
+      lastError=new Error("Supabase write failed for "+key+" ("+r.status+")");
+    }catch(e){lastError=e;}
+    if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
+  }
+  console.error(lastError||new Error("Supabase write failed for "+key));
+  return false;
 }
 
 function fm(v){return(v||0).toLocaleString("tr-TR",{minimumFractionDigits:2})+" TL";}
