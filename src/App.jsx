@@ -1,3 +1,4 @@
+// Production deployment sync: customer form, day controls, and neutral table styling.
 import{useState,useEffect,useRef}from"react";
 import { createKeyedWriteQueue } from "./writeQueue.js";
 import { validateMenuItemInput } from "./menuValidation.js";
