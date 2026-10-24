@@ -678,36 +678,38 @@ function OrderScreen({table,tables,menu,cats,customers,setTableCustomer,addItem,
       {/* SİPARİŞ GÖRÜNÜMÜ */}
       {!showMenu&&(
         <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-          <div style={{flex:1,overflowY:"auto",padding:"10px 12px"}}>
+          <div style={{flex:1,overflowY:"auto",padding:"8px 10px"}}>
             {table.order.length===0
               ?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
                   <div style={{fontSize:36,marginBottom:12}}>☕</div>
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
                 </div>
               :grouped.map(item=>(
-                <div key={item.oid||item.id} style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:8,border:"0.5px solid rgba(255,255,255,0.06)"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:14,fontWeight:700,color:T.text}}>{item.name}</div>
+                <div key={item.oid||item.id} style={{background:T.bg2,borderRadius:12,padding:"10px 11px",marginBottom:6,border:"0.5px solid rgba(255,255,255,0.07)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:7}}>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:13,fontWeight:750,color:T.text,lineHeight:1.25,overflowWrap:"anywhere"}}>{item.name}</div>
                       <div style={{fontSize:10,color:T.textDim,marginTop:3}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Eklenme saati kayıtlı değil"}</div>
-                      <div style={{fontSize:13,color:T.accentL,fontWeight:700,marginTop:3}}>{fm(item.price*item.qty)}</div>
                     </div>
-                    <div style={{fontSize:11,color:T.textSub}}>{fm(item.price)} × {item.qty}</div>
+                    <div style={{textAlign:"right",flexShrink:0}}>
+                      <div style={{fontSize:10,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
+                      <div style={{fontSize:14,color:T.accentL,fontWeight:800,marginTop:2,whiteSpace:"nowrap"}}>{fm(item.price*item.qty)}</div>
+                    </div>
                   </div>
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
-                    <button onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:36,borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:20,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
-                    <span style={{minWidth:36,textAlign:"center",fontWeight:800,fontSize:17,color:T.text}}>{item.qty}</span>
-                    <button onClick={()=>chQ(table.id,item.oid||String(item.id),1)} style={{flex:1,height:36,borderRadius:8,border:"none",background:T.accent,cursor:"pointer",fontSize:20,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
+                    <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
+                    <span style={{minWidth:32,textAlign:"center",fontWeight:800,fontSize:15,color:T.text}}>{item.qty}</span>
+                    <button aria-label={item.name+" artır"} onClick={()=>chQ(table.id,item.oid||String(item.id),1)} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(52,199,89,0.3)",background:"rgba(52,199,89,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
                   </div>
                 </div>
               ))
             }
           </div>
           {/* Alt bar */}
-          <div style={{flexShrink:0,padding:"10px 12px 24px",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
+          <div style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
-              <span style={{fontSize:22,fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(sub)}</span>
+              <span style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(sub)}</span>
             </div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
