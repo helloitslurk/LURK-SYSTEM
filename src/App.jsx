@@ -109,6 +109,7 @@ export default function App(){
   const[tables,setTbl]=useState([]);
   const[orders,setOrd]=useState([]);
   const[logs,setLogs]=useState([]);
+  const[customers,setCustomers]=useState([]);
   const[menu,setMenu]=useState(MENU);
   const[day,setDay]=useState(null);
   const[toast,setToast]=useState(null);
@@ -129,8 +130,10 @@ export default function App(){
       const l=await sbGet("lurk_l",[]);
       const m=await sbGet("lurk_m",null);
       const d=await sbGet("lurk_d",null);
+      const c=await sbGet("lurk_customers",[]);
       setTbl(Array.isArray(t)?t:[]);
       setOrd(Array.isArray(o)?o:[]);
+      setCustomers(Array.isArray(c)?c:[]);
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -150,6 +153,7 @@ export default function App(){
   useEffect(()=>{save("lurk_t",tables);},[tables]);
   useEffect(()=>{save("lurk_o",orders);},[orders]);
   useEffect(()=>{save("lurk_l",logs);},[logs]);
+  useEffect(()=>{save("lurk_customers",customers);},[customers]);
   useEffect(()=>{save("lurk_m",menu);},[menu]);
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
@@ -280,7 +284,7 @@ export default function App(){
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} setV={setV}/>}
-      {view==="customers"&&<CustomersScreen orders={orders} setV={setV}/>}
+      {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV}/>}
       {view!=="order"&&(
@@ -737,50 +741,57 @@ function ReportsScreen({orders,logs,setV}){
 }
 
 /* ─── CUSTOMERS ─── */
-function CustomersScreen({orders,setV}){
-  const months=[...new Set(orders.filter(o=>o.g&&o.g.trim()).map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
-  const now=thisMonth();
-  const[sel,setSel]=useState(months[0]||now);
-  function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
-  const mo=orders.filter(o=>o.date&&o.date.startsWith(sel)&&o.g&&o.g.trim());
-  const map={};
-  mo.forEach(o=>{const n=o.g.trim().toUpperCase();if(!map[n])map[n]={name:n,total:0,count:0};map[n].total+=o.total;map[n].count++;});
-  const sorted=Object.values(map).sort((a,b)=>b.total-a.total);
-  const totalRev=mo.reduce((s,o)=>s+o.total,0);
-
+function CustomersScreen({orders,customers,setCustomers,setV,msg}){
+  const [query,setQuery]=useState("");
+  const [editing,setEditing]=useState(null);
+  const [name,setName]=useState("");
+  const [phone,setPhone]=useState("");
+  const [showForm,setShowForm]=useState(false);
+  const [detail,setDetail]=useState(null);
+  const totalFor=(c)=>orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const filtered=customers.filter(c=>(c.name+" "+(c.phone||"")).toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR"))).sort((a,b)=>a.name.localeCompare(b.name,"tr"));
+  function openNew(){setEditing(null);setName("");setPhone("");setShowForm(true);}
+  function openEdit(c){setEditing(c);setName(c.name);setPhone(c.phone||"");setShowForm(true);}
+  function saveCustomer(){
+    const clean=name.trim(), tel=phone.trim();
+    if(!clean){msg("Müşteri adı zorunlu.");return;}
+    const duplicate=customers.find(c=>c.id!==editing?.id&&tel&&c.phone===tel);
+    if(duplicate){msg("Bu telefon numarası başka bir müşteride kayıtlı.");return;}
+    if(editing){setCustomers(prev=>prev.map(c=>c.id===editing.id?{...c,name:clean,phone:tel,updatedAt:new Date().toISOString()}:c));msg("Müşteri güncellendi.");}
+    else{setCustomers(prev=>[{id:uid(),name:clean,phone:tel,createdAt:new Date().toISOString(),points:0,creditBalance:0},...prev]);msg("Müşteri kaydedildi.");}
+    setShowForm(false);
+  }
   return(
     <div className="lurk-screen lurk-customers-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Müşteriler</div>
+        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Müşteriler</div>
+        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:10,color:"#fff",fontWeight:700,cursor:"pointer"}}>+ Müşteri</button>
       </div>
-      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
-        {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#34C759":"rgba(255,255,255,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#34C759":"rgba(255,255,255,0.1)"}}>
-            {ml(m)}
+      <div style={{padding:14}}>
+        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="İsim veya telefon ara" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
+        <div style={{fontSize:12,color:T.textSub,marginBottom:10}}>{filtered.length} kayıtlı müşteri</div>
+        {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:13,padding:14,marginBottom:8,display:"flex",alignItems:"center",gap:12}}>
+          <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
+            <div style={{fontWeight:750,fontSize:14}}>{c.name}</div><div style={{fontSize:12,color:T.textSub,marginTop:4}}>{c.phone||"Telefon eklenmemiş"}</div>
+            <div style={{fontSize:11,color:T.accentL,marginTop:5}}>Toplam alışveriş: {fm(totalFor(c))} · Puan: {Number(c.points)||0}</div>
           </button>
-        ))}
+          <button onClick={()=>openEdit(c)} style={{background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,padding:"8px 10px",cursor:"pointer"}}>Düzenle</button>
+        </div>)}
+        {!filtered.length&&<div style={{padding:24,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub}}>{query?"Eşleşen müşteri bulunamadı.":"Henüz kayıtlı müşteri yok. İlk müşterini ekleyebilirsin."}</div>}
       </div>
-      <div style={{padding:"14px"}}>
-        {totalRev>0&&(
-          <div style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.07)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{fontSize:12,color:T.textSub}}>{sorted.length} müşteri</div>
-            <div style={{fontSize:16,fontWeight:800,color:T.accentL}}>{fm(totalRev)}</div>
-          </div>
-        )}
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sıralama</div>
-        {sorted.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>Bu ay isimli sipariş yok</div>}
-        {sorted.map((c,i)=>(
-          <div key={c.name} style={{background:T.bg2,borderRadius:14,padding:"14px",marginBottom:8,border:"0.5px solid "+(i===0?"rgba(52,199,89,0.2)":"rgba(255,255,255,0.07)"),display:"flex",alignItems:"center",gap:12}}>
-            <div style={{width:32,height:32,borderRadius:"50%",background:i===0?"rgba(52,199,89,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:i===0?T.accentL:T.textSub,flexShrink:0}}>{i+1}</div>
-            <div style={{flex:1}}>
-              <div style={{fontSize:14,fontWeight:i===0?700:500,color:T.text}}>{c.name}</div>
-              <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{c.count} sipariş · %{totalRev>0?Math.round(c.total/totalRev*100):0}</div>
-            </div>
-            <div style={{fontSize:15,fontWeight:800,color:i===0?T.accentL:T.text}}>{fm(c.total)}</div>
-          </div>
-        ))}
-      </div>
+      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,marginBottom:16,color:T.text}}>{editing?"Müşteriyi Düzenle":"Yeni Müşteri"}</div>
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Telefon</label><input value={phone} onChange={e=>setPhone(e.target.value)} placeholder="05xx xxx xx xx" inputMode="tel" style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
+        <button onClick={saveCustomer} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Kaydet</button>
+        <button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+      </Modal>}
+      {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:13,color:T.textSub,margin:"5px 0 16px"}}>{detail.phone||"Telefon kayıtlı değil"}</div>
+        <div style={{background:T.bg2,borderRadius:12,padding:14,marginBottom:12}}><div style={{fontSize:11,color:T.textSub}}>Toplam alışveriş</div><div style={{fontSize:23,fontWeight:800,color:T.accentL}}>{fm(totalFor(detail))}</div><div style={{fontSize:12,color:T.textSub,marginTop:8}}>Puan: {Number(detail.points)||0} · Veresiye bakiyesi: {fm(Number(detail.creditBalance)||0)}</div></div>
+        <div style={{fontWeight:700,fontSize:13,color:T.text,marginBottom:8}}>Son adisyonlar</div>
+        {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,10).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
+        <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
+      </Modal>}
     </div>
   );
 }
