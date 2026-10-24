@@ -120,5 +120,6 @@ test("rejects restored menu items with blank names or invalid prices",()=>{
   const blank=validBackup();blank.data.lurk_m[0].name="   ";assert.ok(validateBackup(blank));
   const missing=validBackup();delete missing.data.lurk_m[0].price;assert.ok(validateBackup(missing));
   const negative=validBackup();negative.data.lurk_m[0].price=-1;assert.ok(validateBackup(negative));
+  const zero=validBackup();zero.data.lurk_m[0].price=0;assert.ok(validateBackup(zero));
   const nonFinite=validBackup();nonFinite.data.lurk_m[0].price=Infinity;assert.ok(validateBackup(nonFinite));
 });
