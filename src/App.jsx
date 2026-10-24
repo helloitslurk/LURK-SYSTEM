@@ -96,7 +96,8 @@ async function sbSet(key,val){
 }
 
 function fm(v){return(v||0).toLocaleString("tr-TR",{minimumFractionDigits:2})+" TL";}
-function tod(){return new Date().toISOString().split("T")[0];}
+function tod(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function thisMonth(){return tod().slice(0,7);}
 function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
 function ft(iso){if(!iso)return"—";const d=new Date(iso);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
 
@@ -111,12 +112,12 @@ export default function App(){
   const[day,setDay]=useState(null);
   const[toast,setToast]=useState(null);
   const loaded=useRef(false);
-  const timer=useRef(null);
+  const timers=useRef({});
 
   function save(k,v){
     if(!loaded.current)return;
-    clearTimeout(timer.current);
-    timer.current=setTimeout(()=>sbSet(k,v),800);
+    clearTimeout(timers.current[k]);
+    timers.current[k]=setTimeout(()=>{sbSet(k,v);delete timers.current[k];},800);
   }
 
   useEffect(()=>{
@@ -213,7 +214,36 @@ export default function App(){
   ];
 
   return(
-    <div style={{background:T.bg,minHeight:"100vh",fontFamily:"-apple-system,sans-serif",color:T.text,maxWidth:480,margin:"0 auto",paddingBottom:64}}>
+    <div className="lurk-app" style={{background:T.bg,minHeight:"100vh",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:76,boxSizing:"border-box"}}>
+      <style>{`
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #0D0F0E; }
+        button, input, select { font: inherit; }
+        button { transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease; }
+        button:hover { filter: brightness(1.08); }
+        button:active { transform: translateY(1px) scale(.99); }
+        input:focus, select:focus { border-color: rgba(91,220,130,.75) !important; box-shadow: 0 0 0 3px rgba(52,199,89,.1); }
+        .lurk-screen:not(.lurk-order-screen) { width: 100%; max-width: 1440px; margin: 0 auto; }
+        .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+        @media (min-width: 1100px) {
+          .lurk-home-screen > div:first-child { padding: 28px 32px 24px !important; }
+          .lurk-home-screen > div:nth-child(2), .lurk-home-screen > div:nth-child(3) { padding-left: 32px !important; padding-right: 32px !important; }
+          .lurk-tables-screen > div:nth-child(2), .lurk-reports-screen > div:nth-child(n+2), .lurk-customers-screen > div:nth-child(n+2), .lurk-menu-screen > div:nth-child(2), .lurk-settings-screen > div:nth-child(2) { padding-left: 28px !important; padding-right: 28px !important; }
+          .lurk-order-screen { height: 100vh; }
+          .lurk-order-screen > div:first-child { padding: 16px 24px !important; }
+          .lurk-order-screen > div:nth-child(2) { max-width: 1500px; width: 100%; margin: 0 auto; }
+        }
+        @media (min-width: 700px) and (max-width: 1099px) {
+          .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+        }
+        @media (max-width: 699px) {
+          .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        }
+        @media (min-width: 700px) {
+          .lurk-modal-backdrop { align-items: center !important; padding: 24px; }
+          .lurk-modal-panel { max-width: 520px !important; border-radius: 20px !important; padding: 28px !important; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+        }
+      `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
@@ -223,7 +253,7 @@ export default function App(){
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV}/>}
       {view!=="order"&&(
-        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
+        <div style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
             <button key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
@@ -255,7 +285,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   ];
 
   return(
-    <div>
+    <div className="lurk-screen lurk-home-screen">
       {/* Header */}
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
@@ -331,7 +361,7 @@ function TablesScreen({tables,setTbl,setV,setSel,msg}){
   }
 
   return(
-    <div>
+    <div className="lurk-screen lurk-tables-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Masalar</div>
         <button onClick={()=>setShowAll(p=>!p)} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:T.textSub,fontWeight:600}}>{showAll?"Açıklar":"Tümü"}</button>
@@ -398,10 +428,11 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
   const[showFis,setShowFis]=useState(false);
   const[name,setName]=useState(table.g||"");
   const[disc,setDisc]=useState("");
+  const[search,setSearch]=useState("");
   const[flash,setFlash]=useState(null);
   const[pt,setPt]=useState("cash");
   const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
-  const discVal=parseFloat(disc)||0;
+  const discVal=Math.min(sub,Math.max(0,parseFloat(disc)||0));
   const total=Math.max(0,sub-discVal);
   const itemCount=table.order.reduce((s,o)=>s+o.qty,0);
 
@@ -418,7 +449,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
   },{}));
 
   return(
-    <div style={{display:"flex",flexDirection:"column",height:"100vh",background:T.bg}}>
+    <div className="lurk-screen lurk-order-screen" style={{display:"flex",flexDirection:"column",height:"100vh",background:T.bg}}>
       {/* Top bar */}
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
         <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
@@ -483,8 +514,9 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
           {/* Sağ: ürün grid */}
           <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
             <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
-                {menu.filter(m=>m.on&&m.cat===selCat).map(item=>{
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
+              <div className="lurk-product-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
+                {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
                   const inCart=table.order.find(o=>o.id===item.id);
                   const isFlash=flash===item.id;
                   return(
@@ -567,7 +599,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
           <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
           <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
           <div style={{fontSize:32,fontWeight:800,textAlign:"center",marginBottom:16,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</div>
-          <input type="number" placeholder="İndirim (TL)" value={disc} onChange={e=>setDisc(e.target.value)}
+          <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} onChange={e=>setDisc(e.target.value)}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <div style={{display:"flex",gap:8,marginBottom:16}}>
             {["cash","card"].map(p=>(
@@ -587,7 +619,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
 /* ─── REPORTS ─── */
 function ReportsScreen({orders,logs,setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
-  const now=new Date().toISOString().slice(0,7);
+  const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
   const[exp,setExp]=useState(null);
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
@@ -604,7 +636,7 @@ function ReportsScreen({orders,logs,setV}){
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
   return(
-    <div>
+    <div className="lurk-screen lurk-reports-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Raporlar</div>
@@ -673,7 +705,7 @@ function ReportsScreen({orders,logs,setV}){
 /* ─── CUSTOMERS ─── */
 function CustomersScreen({orders,setV}){
   const months=[...new Set(orders.filter(o=>o.g&&o.g.trim()).map(o=>o.date?o.date.slice(0,7):"").filter(Boolean))].sort((a,b)=>b.localeCompare(a));
-  const now=new Date().toISOString().slice(0,7);
+  const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
   const mo=orders.filter(o=>o.date&&o.date.startsWith(sel)&&o.g&&o.g.trim());
@@ -683,7 +715,7 @@ function CustomersScreen({orders,setV}){
   const totalRev=mo.reduce((s,o)=>s+o.total,0);
 
   return(
-    <div>
+    <div className="lurk-screen lurk-customers-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Müşteriler</div>
@@ -728,7 +760,7 @@ function MenuScreen({menu,setMenu,setV}){
   const cats=[...new Set(menu.map(m=>m.cat))];
 
   return(
-    <div>
+    <div className="lurk-screen lurk-menu-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("settings")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Menü</div>
@@ -773,7 +805,7 @@ function MenuScreen({menu,setMenu,setV}){
 /* ─── SETTINGS ─── */
 function SettingsScreen({setV}){
   return(
-    <div>
+    <div className="lurk-screen lurk-settings-screen">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px"}}>Ayarlar</div>
@@ -796,8 +828,8 @@ function SettingsScreen({setV}){
 /* ─── SHARED ─── */
 function Modal({children}){
   return(
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
-      <div style={{background:"#1C1C1E",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"88vh",overflowY:"auto",border:"0.5px solid rgba(255,255,255,0.1)"}}>
+    <div className="lurk-modal-backdrop" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
+      <div className="lurk-modal-panel" style={{background:"#171B18",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"88vh",overflowY:"auto",border:"1px solid rgba(255,255,255,0.1)"}}>
         {children}
       </div>
     </div>
