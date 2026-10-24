@@ -1,6 +1,7 @@
 import{useState,useEffect,useRef}from"react";
 import { createKeyedWriteQueue } from "./writeQueue.js";
 import { validateMenuItemInput } from "./menuValidation.js";
+import { validatePayment } from "./paymentValidation.js";
 
 const SB_URL="https://dpucptcrxoddfpvaqsdl.supabase.co";
 const SB_KEY="sb_publishable_YiTDrcX7nnotBkoWqEWaHQ_tYHlT3NK";
@@ -248,12 +249,9 @@ export default function App(){
     const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
     const total=Math.max(0,sub-(disc||0));
     const isCredit=pt==="credit";
-    const normalized=(Array.isArray(payments)?payments:[]).filter(p=>p&&Number(p.amount)>0).map(p=>({method:p.method,amount:Math.round(Number(p.amount)*100)/100}));
-    const paymentTotal=Math.round(normalized.reduce((sum,p)=>sum+p.amount,0)*100)/100;
-    if(!Number.isFinite(total)||total<0){msg("Ödenecek tutar geçersiz.");return;}
-    if(isCredit&&!t.customerId){msg("Veresiye için kayıtlı müşteri seçmelisin.");return;}
-    if(!isCredit&&normalized.some(p=>!["cash","card"].includes(p.method))){msg("Ödeme türü geçersiz.");return;}
-    if(!isCredit&&(normalized.length===0||Math.abs(paymentTotal-total)>0.009)){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
+    const validation=validatePayment({total,isCredit,customerId:t.customerId,payments});
+    if(validation.error){msg(validation.error);return;}
+    const normalized=validation.payments;
     paymentInProgress.current=true;
     setTimeout(()=>{paymentInProgress.current=false;},900);
     const orderId=uid();
