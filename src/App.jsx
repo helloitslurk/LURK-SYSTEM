@@ -115,6 +115,7 @@ export default function App(){
   const[loadError,setLoadError]=useState(false);
   const[saveStatus,setSaveStatus]=useState("saved");
   const[pendingSaves]=useState(()=>({count:0,failed:false}));
+  const failedWrites=useRef({});
   const[view,setV]=useState("home");
   const[sel,setSel]=useState(null);
   const[tables,setTbl]=useState([]);
@@ -138,8 +139,11 @@ export default function App(){
       setSaveStatus("saving");
       const success=await sbSet(k,v);
       if(!success){
+        failedWrites.current[k]=v;
         pendingSaves.failed=true;
-        msg("Kayıt başarısız. Bağlantıyı kontrol et.");
+        msg("Kayıt başarısız. Yeniden denemek için üstteki uyarıya dokun.");
+      }else{
+        delete failedWrites.current[k];
       }
       pendingSaves.count=Math.max(0,pendingSaves.count-1);
       if(pendingSaves.count===0)setSaveStatus(pendingSaves.failed?"error":"saved");
@@ -152,8 +156,11 @@ export default function App(){
     setSaveStatus("saving");
     const success=await sbSet(k,v);
     if(!success){
+      failedWrites.current[k]=v;
       pendingSaves.failed=true;
-      msg("Kayıt başarısız. Bağlantıyı kontrol et.");
+      msg("Kayıt başarısız. Yeniden denemek için üstteki uyarıya dokun.");
+    }else{
+      delete failedWrites.current[k];
     }
     pendingSaves.count=Math.max(0,pendingSaves.count-1);
     if(pendingSaves.count===0)setSaveStatus(pendingSaves.failed?"error":"saved");
@@ -340,7 +347,7 @@ export default function App(){
         }
       `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
-      <div role="status" aria-live="polite" style={{position:"fixed",top:12,right:12,zIndex:90,padding:"6px 10px",borderRadius:20,fontSize:11,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(52,199,89,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" )}}>{saveStatus==="error"?"Kayıt başarısız":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</div>
+      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;for(const [key,value] of entries){await persistDirect(key,value);}}} style={{position:"fixed",top:12,right:12,zIndex:90,padding:"6px 10px",borderRadius:20,fontSize:11,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(52,199,89,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
