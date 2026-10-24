@@ -355,7 +355,7 @@ export default function App(){
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
-      {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day}/>}
+      {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
@@ -962,8 +962,32 @@ function MenuScreen({menu,setMenu,setV}){
 }
 
 /* ─── SETTINGS ─── */
-function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,day}){
+function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,day,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay}){
   const [backupMsg,setBackupMsg]=useState("");
+  const [importMsg,setImportMsg]=useState("");
+  const [pendingImport,setPendingImport]=useState(null);
+  const [importBusy,setImportBusy]=useState(false);
+  function inspectBackup(file){
+    setImportMsg("");setPendingImport(null);
+    if(!file)return;
+    if(file.size>20*1024*1024){setImportMsg("Dosya 20 MB sınırını aşıyor.");return;}
+    setImportBusy(true);
+    file.text().then(raw=>{
+      const parsed=JSON.parse(raw);
+      const d=parsed?.data;
+      const keys=["lurk_t","lurk_o","lurk_l","lurk_customers","lurk_credit","lurk_m"];
+      if(parsed?.app!=="LURK POS"||parsed?.formatVersion!==1||!d||typeof d!=="object"||keys.some(k=>!Array.isArray(d[k]))||!("lurk_d" in d)||(d.lurk_d!==null&&typeof d.lurk_d!=="object"))throw new Error("Yedek biçimi veya sürümü desteklenmiyor.");
+      setPendingImport({data:d,filename:file.name});
+      setImportMsg("Yedek doğrulandı. Geri yükleme mevcut kayıtların yerine geçecek.");
+    }).catch(e=>setImportMsg(e instanceof SyntaxError?"Dosya geçerli JSON değil.":(e?.message||"Yedek okunamadı."))).finally(()=>setImportBusy(false));
+  }
+  function applyBackup(){
+    if(!pendingImport)return;
+    const d=pendingImport.data;
+    setTables(d.lurk_t);setOrders(d.lurk_o);setLogs(d.lurk_l);setCustomers(d.lurk_customers);setCreditEntries(d.lurk_credit);setMenu(d.lurk_m);setDay(d.lurk_d);
+    setImportMsg("Yedek içeri aktarıldı. Kayıt göstergesi tamamlanana kadar uygulamayı kapatma.");
+    setPendingImport(null);
+  }
   function exportBackup(){
     const backup={app:"LURK POS",formatVersion:1,exportedAt:new Date().toISOString(),data:{lurk_t:tables,lurk_o:orders,lurk_l:logs,lurk_customers:customers,lurk_credit:creditEntries,lurk_m:menu,lurk_d:day}};
     const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
@@ -992,8 +1016,21 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Veri yedeği</div>
           <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:13}}>Masa durumları, adisyonlar, raporlar, müşteriler, veresiye defteri ve menüyü tek bir JSON dosyasına indirir. Bu işlem mevcut kayıtları değiştirmez.</div>
           <button onClick={exportBackup} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>↓ Yedek İndir</button>
-          {backupMsg&&<div role="status" style={{fontSize:12,color:T.accentL,marginTop:10}}>{backupMsg}</div>}
-          <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Son yedek almak için uygulamayı kullandığın cihazdan indir. Dosya hassas müşteri ve satış bilgileri içerebilir.</div>
+          {backupMsg&&<div role="status" style={{fontSize:12,color:T.accentL,marginTop:10}}>{backupMsg}</div>
+          <div style={{height:1,background:"rgba(255,255,255,.08)",margin:"16px 0"}}/>
+          <div style={{fontSize:14,fontWeight:750,color:T.text}}>Yedekten geri yükle</div>
+          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:12}}>LURK POS tarafından oluşturulmuş, biçimi doğrulanmış JSON yedeği seç. Geri yükleme mevcut kayıtların yerine geçer.</div>
+          <label style={{display:"block",boxSizing:"border-box",padding:13,textAlign:"center",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,color:T.text,fontWeight:750,cursor:"pointer"}}>
+            {importBusy?"Yedek okunuyor…":"↑ Yedek Dosyası Seç"}
+            <input type="file" accept=".json,application/json" disabled={importBusy} onChange={e=>inspectBackup(e.target.files?.[0])} style={{display:"none"}}/>
+          </label>
+          {importMsg&&<div role="status" style={{fontSize:12,lineHeight:1.5,color:pendingImport?T.warn:T.textSub,marginTop:10}}>{importMsg}</div>}
+          {pendingImport&&<div style={{marginTop:10}}>
+            <div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Seçilen dosya: <b style={{color:T.text}}>{pendingImport.filename}</b></div>
+            <button onClick={applyBackup} style={{width:"100%",padding:13,background:T.danger,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Mevcut Verileri Değiştir ve Geri Yükle</button>
+            <button onClick={()=>{setPendingImport(null);setImportMsg("Geri yükleme iptal edildi.");}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer",marginTop:4}}>İptal</button>
+          </div>}
+          <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Önce mevcut verilerin yedeğini indir. Yedek hassas müşteri ve satış bilgileri içerebilir.</div>
         </div>
       </div>
     </div>
