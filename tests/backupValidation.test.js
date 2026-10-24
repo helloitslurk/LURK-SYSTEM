@@ -89,3 +89,23 @@ test("menu validation accepts decimal prices and Turkish uppercase names",()=>{
     error:null,name:"ÇAY ÖZEL",price:12.5
   });
 });
+
+import { validatePayment } from "../src/paymentValidation.js";
+
+test("payment validation accepts matching cash and card split",()=>{
+  const result=validatePayment({total:100,isCredit:false,payments:[{method:"cash",amount:40},{method:"card",amount:60}]});
+  assert.equal(result.error,null);
+  assert.equal(result.paymentTotal,100);
+});
+test("payment validation rejects missing or mismatched tender",()=>{
+  assert.ok(validatePayment({total:100,isCredit:false,payments:[]}).error);
+  assert.ok(validatePayment({total:100,isCredit:false,payments:[{method:"cash",amount:99}]}).error);
+});
+test("payment validation rejects invalid methods and invalid totals",()=>{
+  assert.ok(validatePayment({total:100,isCredit:false,payments:[{method:"credit",amount:100}]}).error);
+  assert.ok(validatePayment({total:NaN,isCredit:false,payments:[{method:"cash",amount:100}]}).error);
+});
+test("credit payment requires a saved customer",()=>{
+  assert.ok(validatePayment({total:100,isCredit:true,customerId:null,payments:[{method:"credit",amount:100}]}).error);
+  assert.equal(validatePayment({total:100,isCredit:true,customerId:"c1",payments:[]}).error,null);
+});
