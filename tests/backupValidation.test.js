@@ -123,3 +123,10 @@ test("rejects restored menu items with blank names or invalid prices",()=>{
   const zero=validBackup();zero.data.lurk_m[0].price=0;assert.ok(validateBackup(zero));
   const nonFinite=validBackup();nonFinite.data.lurk_m[0].price=Infinity;assert.ok(validateBackup(nonFinite));
 });
+
+test("rejects negative restored order and credit amounts",()=>{
+  const order=validBackup();order.data.lurk_o[0].total=-1;assert.ok(validateBackup(order));
+  const subtotal=validBackup();subtotal.data.lurk_o[0].subtotal=-1;assert.ok(validateBackup(subtotal));
+  const discount=validBackup();discount.data.lurk_o[0].discount=-1;assert.ok(validateBackup(discount));
+  const credit=validBackup();credit.data.lurk_credit[0].amount=-1;assert.ok(validateBackup(credit));
+});
