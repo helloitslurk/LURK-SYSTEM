@@ -96,6 +96,7 @@ async function sbSet(key,val){
 }
 
 function fm(v){return(v||0).toLocaleString("tr-TR",{minimumFractionDigits:2})+" TL";}
+function paymentAmount(order,method){if(Array.isArray(order.payments))return order.payments.filter(p=>p.method===method).reduce((sum,p)=>sum+(Number(p.amount)||0),0);return order.pt===method?(Number(order.total)||0):0;}
 function tod(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function thisMonth(){return tod().slice(0,7);}
 function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
@@ -158,8 +159,8 @@ export default function App(){
     if(!day)return;
     const closed=orders.filter(o=>o.date===tod());
     const inc=closed.reduce((s,o)=>s+o.total,0);
-    const cash=closed.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
-    const card=closed.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
+    const cash=closed.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
+    const card=closed.reduce((s,o)=>s+paymentAmount(o,"card"),0);
     const log={id:uid(),date:tod(),oa:day.oa,ca:new Date().toISOString(),inc,cash,card,count:closed.length};
     setLogs(prev=>[log,...prev]);
     setTbl(prev=>prev.map(t=>t.s==="o"?{...t,order:[],s:"free",g:""}:t));
@@ -303,8 +304,8 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   const today=tod();
   const todO=orders.filter(o=>o.date===today);
   const todInc=todO.reduce((s,o)=>s+o.total,0);
-  const todCash=todO.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
-  const todCard=todO.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
+  const todCash=todO.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
+  const todCard=todO.reduce((s,o)=>s+paymentAmount(o,"card"),0);
   const openT=tables.filter(t=>t.s==="o");
   const openInc=openT.reduce((s,t)=>s+t.order.reduce((ss,o)=>ss+o.price*o.qty,0),0);
 
@@ -662,8 +663,8 @@ function ReportsScreen({orders,logs,setV}){
   const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
   const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
   const totalInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
-  const totalCash=mo.filter(o=>o.pt==="cash").reduce((s,o)=>s+o.total,0);
-  const totalCard=mo.filter(o=>o.pt==="card").reduce((s,o)=>s+o.total,0);
+  const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
+  const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0);
   const dayMap={};
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
