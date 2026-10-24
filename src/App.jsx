@@ -113,6 +113,8 @@ function ft(iso){if(!iso)return"—";const d=new Date(iso);return String(d.getHo
 export default function App(){
   const[ok,setOk]=useState(false);
   const[loadError,setLoadError]=useState(false);
+  const[saveStatus,setSaveStatus]=useState("saved");
+  const[pendingSaves]=useState(()=>({count:0,failed:false}));
   const[view,setV]=useState("home");
   const[sel,setSel]=useState(null);
   const[tables,setTbl]=useState([]);
@@ -129,7 +131,32 @@ export default function App(){
   function save(k,v){
     if(!loaded.current)return;
     clearTimeout(timers.current[k]);
-    timers.current[k]=setTimeout(()=>{sbSet(k,v);delete timers.current[k];},800);
+    timers.current[k]=setTimeout(async()=>{
+      delete timers.current[k];
+      if(pendingSaves.count===0)pendingSaves.failed=false;
+      pendingSaves.count++;
+      setSaveStatus("saving");
+      const success=await sbSet(k,v);
+      if(!success){
+        pendingSaves.failed=true;
+        msg("Kayıt başarısız. Bağlantıyı kontrol et.");
+      }
+      pendingSaves.count=Math.max(0,pendingSaves.count-1);
+      if(pendingSaves.count===0)setSaveStatus(pendingSaves.failed?"error":"saved");
+    },800);
+  }
+
+  async function persistDirect(k,v){
+    if(pendingSaves.count===0)pendingSaves.failed=false;
+    pendingSaves.count++;
+    setSaveStatus("saving");
+    const success=await sbSet(k,v);
+    if(!success){
+      pendingSaves.failed=true;
+      msg("Kayıt başarısız. Bağlantıyı kontrol et.");
+    }
+    pendingSaves.count=Math.max(0,pendingSaves.count-1);
+    if(pendingSaves.count===0)setSaveStatus(pendingSaves.failed?"error":"saved");
   }
 
   useEffect(()=>{
@@ -172,7 +199,7 @@ export default function App(){
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
 
-  function openDay(){const d={oa:new Date().toISOString(),date:tod()};setDay(d);sbSet("lurk_d",d);}
+  function openDay(){const d={oa:new Date().toISOString(),date:tod()};setDay(d);persistDirect("lurk_d",d);}
   function closeDay(){
     if(!day)return;
     const closed=orders.filter(o=>o.date===tod());
@@ -181,7 +208,7 @@ export default function App(){
     const card=closed.reduce((s,o)=>s+paymentAmount(o,"card"),0);
     const log={id:uid(),date:tod(),oa:day.oa,ca:new Date().toISOString(),inc,cash,card,count:closed.length};
     setLogs(prev=>[log,...prev]);
-    setDay(null);sbSet("lurk_d",null);
+    setDay(null);persistDirect("lurk_d",null);
     msg("Gün kapatıldı · "+fm(inc));
   }
 
@@ -313,6 +340,8 @@ export default function App(){
         }
       `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
+      <div role="status" aria-live="polite" style={{position:"fixed",top:12,right:12,zIndex:90,padding:"6px 10px",borderRadius:20,fontSize:11,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(52,199,89,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" )}}>{saveStatus==="error"?"Kayıt başarısız":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</div>
+
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
