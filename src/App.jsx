@@ -163,7 +163,6 @@ export default function App(){
     const card=closed.reduce((s,o)=>s+paymentAmount(o,"card"),0);
     const log={id:uid(),date:tod(),oa:day.oa,ca:new Date().toISOString(),inc,cash,card,count:closed.length};
     setLogs(prev=>[log,...prev]);
-    setTbl(prev=>prev.map(t=>t.s==="o"?{...t,order:[],s:"free",g:""}:t));
     setDay(null);sbSet("lurk_d",null);
     msg("Gün kapatıldı · "+fm(inc));
   }
