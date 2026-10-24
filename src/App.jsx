@@ -521,7 +521,17 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
         </div>
       </div>
 
-      {/* Gün kapatma arayüzü kaldırıldı; raporlar gün içinde görüntülenebilir. */}
+      <div style={{padding:"14px 14px 0"}}>
+        {day?(
+          <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
+            Günü Kapat
+          </button>
+        ):(
+          <button onClick={openDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
+            Günü Başlat
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -572,17 +582,17 @@ function TablesScreen({tables,customers=[],setTbl,setV,setSel,msg}){
             const total=t.order.reduce((s,o)=>s+o.price*o.qty,0);
             const isOpen=t.s==="o";
             return(
-              <div key={t.id} style={{background:isOpen?"rgba(52,199,89,0.08)":T.bg2,border:"0.5px solid "+(isOpen?"rgba(52,199,89,0.25)":"rgba(255,255,255,0.07)"),borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
-                {isOpen&&<div style={{position:"absolute",top:-20,right:-20,width:70,height:70,borderRadius:"50%",background:"rgba(52,199,89,0.06)"}}/>}
+              <div key={t.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
+                
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                  <div style={{fontSize:14,fontWeight:700,color:isOpen?T.accentL:T.text}}>{t.lbl}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:T.text}}>{t.lbl}</div>
                   <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
                 </div>
-                {t.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600,marginBottom:6}}>{t.g}</div>}
+                {t.g&&<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:6}}>{t.g}</div>}
                 <div style={{fontSize:12,color:isOpen?T.textSub:T.textDim,marginBottom:12}}>
                   {isOpen?fm(total):"Boş"}
                 </div>
-                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:isOpen?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.06)",border:"0.5px solid "+(isOpen?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:10,color:isOpen?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:10,color:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
                   {isOpen?"Siparişe Gir →":"Aç →"}
                 </button>
               </div>
@@ -1037,13 +1047,10 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   function openNew(){setEditing(null);setName("");setPhone("");setShowForm(true);}
   function openEdit(c){setEditing(c);setName(c.name);setPhone(c.phone||"");setShowForm(true);}
   function saveCustomer(){
-    const clean=name.trim(), tel=phone.trim();
+    const clean=name.trim(), tel=editing?(editing.phone||""):"";
     if(!clean){msg("Müşteri adı zorunlu.");return;}
     const duplicateName=customers.find(c=>c.id!==editing?.id&&c.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));
     if(duplicateName){msg("Bu isimde bir müşteri zaten kayıtlı. Mevcut kaydı düzenle.");return;}
-    const normalizedPhone=tel.replace(/\D/g,"");
-    const duplicate=customers.find(c=>c.id!==editing?.id&&normalizedPhone&&String(c.phone||"").replace(/\D/g,"")===normalizedPhone);
-    if(duplicate){msg("Bu telefon numarası başka bir müşteride kayıtlı.");return;}
     if(editing){setCustomers(prev=>prev.map(c=>c.id===editing.id?{...c,name:clean,phone:tel,updatedAt:new Date().toISOString()}:c));setDetail({...editing,name:clean,phone:tel});msg("Müşteri güncellendi.");}
     else{const c={id:uid(),name:clean,phone:tel,createdAt:new Date().toISOString(),points:0,creditBalance:0};setCustomers(prev=>[c,...prev]);msg("Müşteri kaydedildi.");}
     setShowForm(false);
