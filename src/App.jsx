@@ -403,6 +403,16 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   const todCard=todO.reduce((s,o)=>s+paymentAmount(o,"card"),0);
   const openT=tables.filter(t=>t.s==="o");
   const openInc=openT.reduce((s,t)=>s+t.order.reduce((ss,o)=>ss+o.price*o.qty,0),0);
+  const lastSevenDays=Array.from({length:7},(_,i)=>{
+    const d=new Date();
+    d.setDate(d.getDate()-(6-i));
+    const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const closed=orders.filter(o=>o.date===key).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+    const open=key===today?openInc:0;
+    return {key,label:d.toLocaleDateString("tr-TR",{weekday:"short"}),day:String(d.getDate()),total:closed+open};
+  });
+  const chartMax=Math.max(1,...lastSevenDays.map(d=>d.total));
+  const chartTicks=[0,0.5,1].map(f=>Math.round(chartMax*f));
 
   const PAGES=[
     {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
@@ -439,6 +449,40 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
               <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL · {s.sub}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Son 7 gün ciro grafiği */}
+      <div style={{padding:"16px 14px 0"}}>
+        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:16,padding:"16px 14px"}}>
+          <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:12}}>
+            <div>
+              <div style={{fontSize:15,fontWeight:800,color:T.text}}>Son 7 günün cirosu</div>
+              <div style={{fontSize:11,color:T.textSub,marginTop:4}}>Günlük toplam · TL</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontSize:17,fontWeight:800,color:T.accentL}}>{fm(lastSevenDays.reduce((sum,d)=>sum+d.total,0))}</div>
+              <div style={{fontSize:10,color:T.textDim}}>7 günlük toplam</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,alignItems:"stretch"}}>
+            <div style={{display:"flex",flexDirection:"column",justifyContent:"space-between",height:132,paddingBottom:22,fontSize:9,color:T.textDim,textAlign:"right",flexShrink:0}}>
+              <span>{chartTicks[2].toLocaleString("tr-TR")}</span>
+              <span>{chartTicks[1].toLocaleString("tr-TR")}</span>
+              <span>0</span>
+            </div>
+            <div style={{display:"flex",flex:1,alignItems:"stretch",gap:5,minWidth:0,height:132,borderBottom:"1px solid rgba(255,255,255,.12)",background:"repeating-linear-gradient(to bottom, transparent 0, transparent 43px, rgba(255,255,255,.05) 44px, transparent 45px)"}}>
+              {lastSevenDays.map((d,i)=>(
+                <div key={d.key} title={d.key+" · "+fm(d.total)} style={{flex:1,minWidth:0,display:"flex",flexDirection:"column",justifyContent:"flex-end",alignItems:"center",gap:5}}>
+                  <div style={{fontSize:9,color:d.key===today?T.accentL:T.textSub,whiteSpace:"nowrap",fontWeight:700}}>{d.total>0?Math.round(d.total).toLocaleString("tr-TR"):""}</div>
+                  <div style={{width:"100%",maxWidth:28,height:Math.max(3,(d.total/chartMax)*78),minHeight:3,borderRadius:"5px 5px 2px 2px",background:d.key===today?"#34C759":"rgba(52,199,89,.45)"}}/>
+                  <div style={{fontSize:10,color:d.key===today?T.accentL:T.textSub,whiteSpace:"nowrap"}}>{d.label}</div>
+                  <div style={{fontSize:9,color:T.textDim,marginTop:-4}}>{d.day}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{fontSize:10,color:T.textDim,marginTop:10}}>Bugün açık masalardaki mevcut siparişler de bugünün toplamına dahildir.</div>
         </div>
       </div>
 
