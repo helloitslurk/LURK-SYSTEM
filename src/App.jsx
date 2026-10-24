@@ -841,6 +841,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const [method,setMethod]=useState("cash");
   const [note,setNote]=useState("");
   const [ledgerSubmitting,setLedgerSubmitting]=useState(false);
+  const ledgerSubmittingRef=useRef(false);
   const totalFor=(c)=>orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+(Number(o.total)||0),0);
   const pointsFor=(c)=>Math.floor((orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+paymentAmount(o,"cash")+paymentAmount(o,"card"),0)+ledgerFor(c).filter(e=>e.type==="payment").reduce((sum,e)=>sum+(Number(e.amount)||0),0))/100);
   const ledgerFor=(c)=>creditEntries.filter(e=>e.customerId===c.id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
@@ -861,11 +862,12 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
     setShowForm(false);
   }
   function saveLedger(){
-    if(ledgerSubmitting)return;
+    if(ledgerSubmittingRef.current)return;
     const value=Math.round(Number(amount)*100)/100;
     if(!detail){return;}
     if(!Number.isFinite(value)||value<=0){msg("Geçerli bir tutar gir.");return;}
     if(ledgerAction==="payment"&&value>Math.max(0,balanceFor(detail))+.009){msg("Tahsilat açık bakiyeden fazla olamaz.");return;}
+    ledgerSubmittingRef.current=true;
     setLedgerSubmitting(true);
     const entry={id:uid(),customerId:detail.id,customerName:detail.name,type:ledgerAction==="debt"?"debt":"payment",amount:value,method:ledgerAction==="debt"?"credit":method,date:new Date().toISOString(),note:note.trim()};
     setCreditEntries(prev=>[entry,...prev]);
@@ -899,7 +901,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
       </Modal>}
       {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:13,color:T.textSub,margin:"5px 0 16px"}}>{detail.phone||"Telefon kayıtlı değil"}</div>
         <div style={{background:T.bg2,borderRadius:12,padding:14,marginBottom:12}}><div style={{fontSize:11,color:T.textSub}}>Toplam alışveriş</div><div style={{fontSize:23,fontWeight:800,color:T.accentL}}>{fm(totalFor(detail))}</div><div style={{fontSize:12,color:balanceFor(detail)>0?T.warn:T.textSub,marginTop:8}}>Açık veresiye: {fm(balanceFor(detail))} · Puan: {pointsFor(detail)}</div></div>
-        <div style={{display:"flex",gap:8,marginBottom:14}}><button onClick={()=>{setLedgerSubmitting(false);setLedgerAction("debt");setAmount("");setNote("");}} style={{flex:1,padding:11,background:"rgba(255,149,0,.14)",border:"1px solid rgba(255,149,0,.35)",color:T.warn,borderRadius:10,fontWeight:700,cursor:"pointer"}}>+ Borç Ekle</button><button onClick={()=>{setLedgerSubmitting(false);setLedgerAction("payment");setAmount("");setNote("");setMethod("cash");}} disabled={balanceFor(detail)<=0} style={{flex:1,padding:11,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:700,cursor:"pointer",opacity:balanceFor(detail)<=0 ? 0.45 : 1}}>Tahsilat Al</button></div>
+        <div style={{display:"flex",gap:8,marginBottom:14}}><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction("debt");setAmount("");setNote("");}} style={{flex:1,padding:11,background:"rgba(255,149,0,.14)",border:"1px solid rgba(255,149,0,.35)",color:T.warn,borderRadius:10,fontWeight:700,cursor:"pointer"}}>+ Borç Ekle</button><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction("payment");setAmount("");setNote("");setMethod("cash");}} disabled={balanceFor(detail)<=0} style={{flex:1,padding:11,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:700,cursor:"pointer",opacity:balanceFor(detail)<=0 ? 0.45 : 1}}>Tahsilat Al</button></div>
         <div style={{fontWeight:700,fontSize:13,color:T.text,marginBottom:8}}>Veresiye hareketleri</div>
         <div style={{maxHeight:180,overflowY:"auto"}}>
           {ledgerFor(detail).map(e=><div key={e.id} style={{display:"flex",justifyContent:"space-between",gap:10,padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><div><div>{e.type==="debt"?"Borç":"Tahsilat"} · {e.method==="cash"?"Nakit":e.method==="card"?"Kart":"Veresiye"}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(e.date).toLocaleString("tr-TR")} {e.note?"· "+e.note:""}</div></div><b style={{color:e.type==="debt"?T.warn:T.accentL}}>{e.type==="debt"?"+":"−"}{fm(e.amount)}</b></div>)}
@@ -913,7 +915,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
         <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tutar (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="0,00" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
         {ledgerAction==="payment"&&<><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tahsilat yöntemi</label><div style={{display:"flex",gap:8,marginBottom:12}}>{["cash","card"].map(m=><button key={m} onClick={()=>setMethod(m)} style={{flex:1,padding:10,background:method===m?"rgba(52,199,89,.15)":T.bg2,color:method===m?T.accentL:T.textSub,border:"1px solid "+(method===m?T.accent:"rgba(255,255,255,.1)"),borderRadius:9,cursor:"pointer"}}>{m==="cash"?"Nakit":"Kart"}</button>)}</div></>}
         <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Örn. önceki sipariş" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
-        <button onClick={saveLedger} disabled={ledgerSubmitting} style={{width:"100%",padding:13,background:ledgerSubmitting?T.bg3:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:ledgerSubmitting?"not-allowed":"pointer",opacity:ledgerSubmitting ? 0.65 : 1}}>{ledgerSubmitting?"Kaydediliyor…":ledgerAction==="debt"?"Borcu Kaydet":"Tahsilatı Kaydet"}</button><button onClick={()=>{setLedgerSubmitting(false);setLedgerAction(null);}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+        <button onClick={saveLedger} disabled={ledgerSubmitting} style={{width:"100%",padding:13,background:ledgerSubmitting?T.bg3:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:ledgerSubmitting?"not-allowed":"pointer",opacity:ledgerSubmitting ? 0.65 : 1}}>{ledgerSubmitting?"Kaydediliyor…":ledgerAction==="debt"?"Borcu Kaydet":"Tahsilatı Kaydet"}</button><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction(null);}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
       </Modal>}
     </div>
   );
