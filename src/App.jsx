@@ -334,7 +334,7 @@ export default function App(){
         @media (min-width: 700px) and (max-width: 1099px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
         }
-        @media (max-width: 699px) {
+        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        @media (max-width: 699px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
         }
 
@@ -490,17 +490,17 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
           </div>
         </div>
 
-        {/* Bugün stat kartları */}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+        {/* Bugün ciro özeti: mobilde taşmayan kompakt kartlar */}
+        <div className="lurk-home-stats" style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:6,width:"100%",minWidth:0}}>
           {[
             {label:"Toplam",val:fm(todInc+openInc),sub:todO.length+" kapanan"},
             {label:"Nakit",val:fm(todCash),sub:"bugün"},
             {label:"Kart",val:fm(todCard),sub:"bugün"},
           ].map((s,i)=>(
-            <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px 12px",border:"0.5px solid rgba(255,255,255,0.07)"}}>
-              <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
-              <div style={{fontSize:15,fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.3px"}}>{s.val.replace(" TL","")}</div>
-              <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL · {s.sub}</div>
+            <div key={i} style={{background:"rgba(255,255,255,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.07)",minWidth:0,overflow:"hidden"}}>
+              <div style={{fontSize:9,color:T.textSub,fontWeight:650,textTransform:"uppercase",letterSpacing:"0.45px",marginBottom:5,whiteSpace:"nowrap"}}>{s.label}</div>
+              <div style={{fontSize:"clamp(11px, 2.8vw, 15px)",fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.45px",whiteSpace:"nowrap",fontVariantNumeric:"tabular-nums"}}>{s.val.replace(" TL","")}</div>
+              <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
             </div>
           ))}
         </div>
