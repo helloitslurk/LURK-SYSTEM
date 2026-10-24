@@ -1,7 +1,7 @@
 {
-  "name": "NICCHIA System",
-  "short_name": "NICCHIA",
-  "description": "LURK & Taco n Tortilla POS Sistemi",
+  "name": "LURK | Adisyon Sistemi",
+  "short_name": "LURK",
+  "description": "Lurk adisyon ve satış yönetim sistemi",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F0F0F5",

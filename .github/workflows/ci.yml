@@ -1,0 +1,30 @@
+name: LURK build check
+
+on:
+  push:
+    branches:
+      - lurk-update-test
+  pull_request:
+    branches:
+      - main
+      - lurk-update-test
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Test backup validation
+        run: npm test
+      - name: Build app
+        run: npm run build

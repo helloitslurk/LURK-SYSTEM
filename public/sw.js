@@ -1,4 +1,4 @@
-const CACHE = "nicchia-v1";
+const CACHE = "lurk-v3";
 const ASSETS = ["/", "/index.html"];
 
 self.addEventListener("install", e => {
