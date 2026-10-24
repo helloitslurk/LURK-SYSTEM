@@ -77,11 +77,11 @@ const HISTORY=[
 ];
 
 const T={
-  bg:"#0D0D0D",bg2:"#1A1A1A",bg3:"#242424",
-  border:"rgba(255,255,255,0.09)",border2:"rgba(255,255,255,0.15)",
+  bg:"#090B0A",bg2:"rgba(255,255,255,0.055)",bg3:"rgba(255,255,255,0.085)",
+  border:"rgba(255,255,255,0.12)",border2:"rgba(255,255,255,0.2)",
   accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",
-  text:"#F5F5F5",textSub:"#A0A0A0",textDim:"#555",
-  danger:"#FF3B30",warn:"#FF9500",
+  text:"#F5F5F5",textSub:"#A0A0A0",textDim:"#666",
+  danger:"#FF453A",warn:"#FF9F0A",
 };
 
 async function sbGet(key,fb){
@@ -337,7 +337,56 @@ export default function App(){
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
         }
 
-        .lurk-nav-button { min-width: 0; }
+        /* Liquid Glass-inspired surfaces: translucent layers, fine highlights and soft depth. */
+        .lurk-app {
+          background:
+            radial-gradient(ellipse at 12% 0%, rgba(52,199,89,.075), transparent 34%),
+            radial-gradient(ellipse at 88% 18%, rgba(100,160,255,.045), transparent 30%),
+            #090B0A !important;
+        }
+        .lurk-app div[style*="background: rgba(255, 255, 255, 0.055)"],
+        .lurk-app div[style*="background:rgba(255,255,255,0.055)"] {
+          -webkit-backdrop-filter: blur(22px) saturate(155%);
+          backdrop-filter: blur(22px) saturate(155%);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 10px 30px rgba(0,0,0,.12);
+        }
+        .lurk-app [style*="background: rgb(26, 26, 26)"],
+        .lurk-app [style*="background: rgb(36, 36, 36)"] {
+          -webkit-backdrop-filter: blur(22px) saturate(155%);
+          backdrop-filter: blur(22px) saturate(155%);
+        }
+        .lurk-bottom-nav {
+          background: rgba(24,27,25,.68) !important;
+          -webkit-backdrop-filter: blur(34px) saturate(180%) !important;
+          backdrop-filter: blur(34px) saturate(180%) !important;
+          border: 1px solid rgba(255,255,255,.13) !important;
+          box-shadow: 0 -8px 32px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.09);
+        }
+        .lurk-nav-button { min-width: 0; border-radius: 14px !important; }
+        .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
+        .lurk-nav-button:hover { background: rgba(255,255,255,.07) !important; }
+        .lurk-app input, .lurk-app select {
+          background-color: rgba(255,255,255,.055) !important;
+          border-color: rgba(255,255,255,.14) !important;
+          -webkit-backdrop-filter: blur(18px) saturate(150%);
+          backdrop-filter: blur(18px) saturate(150%);
+        }
+        .lurk-modal-backdrop {
+          background: rgba(0,0,0,.52) !important;
+          -webkit-backdrop-filter: blur(8px) saturate(125%);
+          backdrop-filter: blur(8px) saturate(125%);
+        }
+        .lurk-modal-panel {
+          background: rgba(28,32,29,.88) !important;
+          border: 1px solid rgba(255,255,255,.16) !important;
+          box-shadow: 0 24px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08) !important;
+          -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
+          backdrop-filter: blur(36px) saturate(180%) !important;
+        }
+        .lurk-app button:not(.lurk-nav-button) {
+          -webkit-tap-highlight-color: transparent;
+        }
+
         .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
         @media (min-width: 1000px) {
           .lurk-app { padding-left: 104px !important; padding-bottom: 0 !important; }
