@@ -110,6 +110,7 @@ export default function App(){
   const[orders,setOrd]=useState([]);
   const[logs,setLogs]=useState([]);
   const[customers,setCustomers]=useState([]);
+  const[creditEntries,setCreditEntries]=useState([]);
   const[menu,setMenu]=useState(MENU);
   const[day,setDay]=useState(null);
   const[toast,setToast]=useState(null);
@@ -131,9 +132,11 @@ export default function App(){
       const m=await sbGet("lurk_m",null);
       const d=await sbGet("lurk_d",null);
       const c=await sbGet("lurk_customers",[]);
+      const ce=await sbGet("lurk_credit",[]);
       setTbl(Array.isArray(t)?t:[]);
       setOrd(Array.isArray(o)?o:[]);
       setCustomers(Array.isArray(c)?c:[]);
+      setCreditEntries(Array.isArray(ce)?ce:[]);
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -154,6 +157,7 @@ export default function App(){
   useEffect(()=>{save("lurk_o",orders);},[orders]);
   useEffect(()=>{save("lurk_l",logs);},[logs]);
   useEffect(()=>{save("lurk_customers",customers);},[customers]);
+  useEffect(()=>{save("lurk_credit",creditEntries);},[creditEntries]);
   useEffect(()=>{save("lurk_m",menu);},[menu]);
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
@@ -195,11 +199,15 @@ export default function App(){
     const total=Math.max(0,sub-(disc||0));
     const normalized=(Array.isArray(payments)?payments:[]).filter(p=>p&&Number(p.amount)>0).map(p=>({method:p.method,amount:Math.round(Number(p.amount)*100)/100}));
     const paymentTotal=Math.round(normalized.reduce((sum,p)=>sum+p.amount,0)*100)/100;
-    if(normalized.length&&Math.abs(paymentTotal-total)>0.009){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
-    const order={id:uid(),date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:normalized.length>1?"split":(normalized[0]?.method||pt),payments:normalized.length?normalized:[{method:pt,amount:total}],g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
+    const isCredit=pt==="credit";
+    if(isCredit&&!t.customerId){msg("Veresiye için kayıtlı müşteri seçmelisin.");return;}
+    if(!isCredit&&normalized.length&&Math.abs(paymentTotal-total)>0.009){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
+    const orderId=uid();
+    const order={id:orderId,date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:isCredit?"credit":(normalized.length>1?"split":(normalized[0]?.method||pt)),payments:isCredit?[{method:"credit",amount:total}]:(normalized.length?normalized:[{method:pt,amount:total}]),g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
     setOrd(prev=>[order,...prev]);
-    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:""}:tb));
-    msg("Ödeme alındı · "+fm(total));
+    if(isCredit&&total>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:total,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
+    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:"",customerId:null}:tb));
+    msg(isCredit?"Veresiye kaydedildi · "+fm(total):"Ödeme alındı · "+fm(total));
     setSel(null);setV("tables");
   }
 
@@ -288,7 +296,7 @@ export default function App(){
       {view==="tables"&&<TablesScreen tables={tables} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} setV={setV}/>}
-      {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg}/>}
+      {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV}/>}
       {view!=="order"&&(
@@ -639,9 +647,9 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
           <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} onChange={e=>setDisc(e.target.value)}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           <div style={{display:"flex",gap:8,marginBottom:10}}>
-            {["cash","card"].map(p=>(
+            {["cash","card","credit"].map(p=>(
               <button key={p} onClick={()=>{setPt(p);setSplitMode(false);}} style={{flex:1,padding:"12px",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:!splitMode&&pt===p?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.05)",color:!splitMode&&pt===p?T.accentL:T.textSub,borderColor:!splitMode&&pt===p?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"}}>
-                {p==="cash"?"Nakit":"Kart"}
+                {p==="cash"?"Nakit":p==="card"?"Kart":"Veresiye"}
               </button>
             ))}
           </div>
@@ -651,7 +659,7 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
             <label style={{fontSize:11,color:T.textSub}}>Kart (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
           </div>}
           {splitMode&&<div style={{fontSize:11,color:Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)<0.009?T.accentL:"#FF6B6B",marginBottom:12}}>Ödeme toplamı: {fm((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0))} / {fm(total)}</div>}
-          <button onClick={()=>{const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:total}];if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)>0.009){msg("Nakit ve kart toplamı ödenecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,payments);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>Tahsil Et · {fm(total)}</button>
+          <button onClick={()=>{const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:total}];if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)>0.009){msg("Nakit ve kart toplamı ödenecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments);if(pt==="credit")setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>Tahsil Et · {fm(total)}</button>
           <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Vazgeç</button>
         </Modal>
       )}
@@ -746,14 +754,20 @@ function ReportsScreen({orders,logs,setV}){
 }
 
 /* ─── CUSTOMERS ─── */
-function CustomersScreen({orders,customers,setCustomers,setV,msg}){
+function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditEntries,setV,msg}){
   const [query,setQuery]=useState("");
   const [editing,setEditing]=useState(null);
   const [name,setName]=useState("");
   const [phone,setPhone]=useState("");
   const [showForm,setShowForm]=useState(false);
   const [detail,setDetail]=useState(null);
+  const [ledgerAction,setLedgerAction]=useState(null);
+  const [amount,setAmount]=useState("");
+  const [method,setMethod]=useState("cash");
+  const [note,setNote]=useState("");
   const totalFor=(c)=>orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const ledgerFor=(c)=>creditEntries.filter(e=>e.customerId===c.id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const balanceFor=(c)=>ledgerFor(c).reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
   const filtered=customers.filter(c=>(c.name+" "+(c.phone||"")).toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR"))).sort((a,b)=>a.name.localeCompare(b.name,"tr"));
   function openNew(){setEditing(null);setName("");setPhone("");setShowForm(true);}
   function openEdit(c){setEditing(c);setName(c.name);setPhone(c.phone||"");setShowForm(true);}
@@ -762,9 +776,19 @@ function CustomersScreen({orders,customers,setCustomers,setV,msg}){
     if(!clean){msg("Müşteri adı zorunlu.");return;}
     const duplicate=customers.find(c=>c.id!==editing?.id&&tel&&c.phone===tel);
     if(duplicate){msg("Bu telefon numarası başka bir müşteride kayıtlı.");return;}
-    if(editing){setCustomers(prev=>prev.map(c=>c.id===editing.id?{...c,name:clean,phone:tel,updatedAt:new Date().toISOString()}:c));msg("Müşteri güncellendi.");}
-    else{setCustomers(prev=>[{id:uid(),name:clean,phone:tel,createdAt:new Date().toISOString(),points:0,creditBalance:0},...prev]);msg("Müşteri kaydedildi.");}
+    if(editing){setCustomers(prev=>prev.map(c=>c.id===editing.id?{...c,name:clean,phone:tel,updatedAt:new Date().toISOString()}:c));setDetail({...editing,name:clean,phone:tel});msg("Müşteri güncellendi.");}
+    else{const c={id:uid(),name:clean,phone:tel,createdAt:new Date().toISOString(),points:0,creditBalance:0};setCustomers(prev=>[c,...prev]);msg("Müşteri kaydedildi.");}
     setShowForm(false);
+  }
+  function saveLedger(){
+    const value=Math.round(Number(amount)*100)/100;
+    if(!detail){return;}
+    if(!Number.isFinite(value)||value<=0){msg("Geçerli bir tutar gir.");return;}
+    if(ledgerAction==="payment"&&value>Math.max(0,balanceFor(detail))+.009){msg("Tahsilat açık bakiyeden fazla olamaz.");return;}
+    const entry={id:uid(),customerId:detail.id,customerName:detail.name,type:ledgerAction==="debt"?"debt":"payment",amount:value,method:ledgerAction==="debt"?"credit":method,date:new Date().toISOString(),note:note.trim()};
+    setCreditEntries(prev=>[entry,...prev]);
+    setAmount("");setNote("");setLedgerAction(null);
+    msg(ledgerAction==="debt"?"Borç kaydedildi.":"Tahsilat kaydedildi.");
   }
   return(
     <div className="lurk-screen lurk-customers-screen">
@@ -779,7 +803,7 @@ function CustomersScreen({orders,customers,setCustomers,setV,msg}){
         {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:13,padding:14,marginBottom:8,display:"flex",alignItems:"center",gap:12}}>
           <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
             <div style={{fontWeight:750,fontSize:14}}>{c.name}</div><div style={{fontSize:12,color:T.textSub,marginTop:4}}>{c.phone||"Telefon eklenmemiş"}</div>
-            <div style={{fontSize:11,color:T.accentL,marginTop:5}}>Toplam alışveriş: {fm(totalFor(c))} · Puan: {Number(c.points)||0}</div>
+            <div style={{fontSize:11,color:balanceFor(c)>0?T.warn:T.accentL,marginTop:5}}>Veresiye: {fm(balanceFor(c))} · Alışveriş: {fm(totalFor(c))} · Puan: {Number(c.points)||0}</div>
           </button>
           <button onClick={()=>openEdit(c)} style={{background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,padding:"8px 10px",cursor:"pointer"}}>Düzenle</button>
         </div>)}
@@ -792,10 +816,22 @@ function CustomersScreen({orders,customers,setCustomers,setV,msg}){
         <button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
       </Modal>}
       {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:13,color:T.textSub,margin:"5px 0 16px"}}>{detail.phone||"Telefon kayıtlı değil"}</div>
-        <div style={{background:T.bg2,borderRadius:12,padding:14,marginBottom:12}}><div style={{fontSize:11,color:T.textSub}}>Toplam alışveriş</div><div style={{fontSize:23,fontWeight:800,color:T.accentL}}>{fm(totalFor(detail))}</div><div style={{fontSize:12,color:T.textSub,marginTop:8}}>Puan: {Number(detail.points)||0} · Veresiye bakiyesi: {fm(Number(detail.creditBalance)||0)}</div></div>
-        <div style={{fontWeight:700,fontSize:13,color:T.text,marginBottom:8}}>Son adisyonlar</div>
-        {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,10).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
-        <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
+        <div style={{background:T.bg2,borderRadius:12,padding:14,marginBottom:12}}><div style={{fontSize:11,color:T.textSub}}>Toplam alışveriş</div><div style={{fontSize:23,fontWeight:800,color:T.accentL}}>{fm(totalFor(detail))}</div><div style={{fontSize:12,color:balanceFor(detail)>0?T.warn:T.textSub,marginTop:8}}>Açık veresiye: {fm(balanceFor(detail))} · Puan: {Number(detail.points)||0}</div></div>
+        <div style={{display:"flex",gap:8,marginBottom:14}}><button onClick={()=>{setLedgerAction("debt");setAmount("");setNote("");}} style={{flex:1,padding:11,background:"rgba(255,149,0,.14)",border:"1px solid rgba(255,149,0,.35)",color:T.warn,borderRadius:10,fontWeight:700,cursor:"pointer"}}>+ Borç Ekle</button><button onClick={()=>{setLedgerAction("payment");setAmount("");setNote("");setMethod("cash");}} disabled={balanceFor(detail)<=0} style={{flex:1,padding:11,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:700,cursor:"pointer",opacity:balanceFor(detail)<=0?.45:1}}>Tahsilat Al</button></div>
+        <div style={{fontWeight:700,fontSize:13,color:T.text,marginBottom:8}}>Veresiye hareketleri</div>
+        <div style={{maxHeight:180,overflowY:"auto"}}>
+          {ledgerFor(detail).map(e=><div key={e.id} style={{display:"flex",justifyContent:"space-between",gap:10,padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><div><div>{e.type==="debt"?"Borç":"Tahsilat"} · {e.method==="cash"?"Nakit":e.method==="card"?"Kart":"Veresiye"}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(e.date).toLocaleString("tr-TR")} {e.note?"· "+e.note:""}</div></div><b style={{color:e.type==="debt"?T.warn:T.accentL}}>{e.type==="debt"?"+":"−"}{fm(e.amount)}</b></div>)}
+          {!ledgerFor(detail).length&&<div style={{fontSize:12,color:T.textSub,padding:"10px 0"}}>Henüz veresiye hareketi yok.</div>}
+        </div>
+        <div style={{fontWeight:700,fontSize:13,color:T.text,margin:"14px 0 8px"}}>Son adisyonlar</div>
+        {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,6).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
+        <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
+      </Modal>}
+      {ledgerAction&&detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>{ledgerAction==="debt"?"Borç Ekle":"Tahsilat Al"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{detail.name} · Mevcut bakiye {fm(balanceFor(detail))}</div>
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tutar (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="0,00" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
+        {ledgerAction==="payment"&&<><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tahsilat yöntemi</label><div style={{display:"flex",gap:8,marginBottom:12}}>{["cash","card"].map(m=><button key={m} onClick={()=>setMethod(m)} style={{flex:1,padding:10,background:method===m?"rgba(52,199,89,.15)":T.bg2,color:method===m?T.accentL:T.textSub,border:"1px solid "+(method===m?T.accent:"rgba(255,255,255,.1)"),borderRadius:9,cursor:"pointer"}}>{m==="cash"?"Nakit":"Kart"}</button>)}</div></>}
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Örn. önceki sipariş" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
+        <button onClick={saveLedger} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>{ledgerAction==="debt"?"Borcu Kaydet":"Tahsilatı Kaydet"}</button><button onClick={()=>setLedgerAction(null)} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
       </Modal>}
     </div>
   );
