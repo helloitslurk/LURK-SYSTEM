@@ -138,7 +138,7 @@ test("rejects duplicate menu item IDs in restored backups",()=>{
 });
 
 test("payment validation rejects negative, missing, and non-finite payment amounts",()=>{
-  for (const amount of [-1, "bad", Infinity, null]) {
+  for (const amount of [-1, "bad", Infinity, null, ""]) {
     assert.ok(validatePayment({total:100,isCredit:false,payments:[{method:"cash",amount}]}).error);
   }
 });
