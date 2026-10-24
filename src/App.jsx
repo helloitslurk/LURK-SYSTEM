@@ -191,7 +191,7 @@ export default function App(){
       setLogs(merged);
       if(m&&Array.isArray(m)){
         const ids=new Set(MENU.map(x=>x.id));
-        const mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,price:f.price,on:f.on}:mi;});
+        const mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,name:f.name||mi.name,price:f.price,on:f.on,cat:f.cat||mi.cat}:mi;});
         m.filter(x=>!ids.has(x.id)).forEach(x=>mm.push(x));
         setMenu(mm);
       }
@@ -1066,11 +1066,19 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
 /* ─── MENU ─── */
 function MenuScreen({menu,setMenu,setV}){
   const[showAdd,setShowAdd]=useState(false);
+  const[editingItem,setEditingItem]=useState(null);
   const[newName,setNewName]=useState("");
   const[newPrice,setNewPrice]=useState("");
   const[newCat,setNewCat]=useState("Kahve");
   const[addError,setAddError]=useState("");
   const cats=[...new Set(menu.map(m=>m.cat))];
+  function openEdit(item){setEditingItem(item);setNewName(item.name);setNewPrice(String(item.price));setNewCat(item.cat);setAddError("");}
+  function saveEdit(){
+    const validated=validateMenuItemInput(newName,newPrice);
+    if(validated.error){setAddError(validated.error);return;}
+    setMenu(prev=>prev.map(m=>m.id===editingItem.id?{...m,name:validated.name,price:validated.price}:m));
+    setEditingItem(null);setNewName("");setNewPrice("");setAddError("");
+  }
 
   return(
     <div className="lurk-screen lurk-menu-screen">
@@ -1092,13 +1100,28 @@ function MenuScreen({menu,setMenu,setV}){
                       <div style={{width:12,height:12,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:item.on?14:2,transition:"left 0.15s"}}/>
                     </div>
                   </div>
-                  <div style={{fontSize:13,fontWeight:800,color:item.on?T.accentL:T.textDim}}>{fm(item.price)}</div>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
+                    <div style={{fontSize:13,fontWeight:800,color:item.on?T.accentL:T.textDim}}>{fm(item.price)}</div>
+                    <button onClick={()=>openEdit(item)} style={{padding:"6px 9px",background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Düzenle</button>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
+      {editingItem&&(
+        <Modal>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Ürünü Düzenle</div>
+          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ürün adı</label>
+          <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Ürün adı" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Fiyat (TL)</label>
+          <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="Fiyat (TL)" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
+          <button onClick={saveEdit} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
+          <button onClick={()=>{setEditingItem(null);setAddError("");}} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
+        </Modal>
+      )}
       {showAdd&&(
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Ürün</div>
