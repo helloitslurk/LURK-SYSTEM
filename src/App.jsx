@@ -669,7 +669,7 @@ function OrderScreen({table,menu,cats,customers,setTableCustomer,addItem,chQ,pay
 
 /* ─── REPORTS ─── */
 function ReportsScreen({orders,logs,creditEntries,setV}){
-  const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+  const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
   const[exp,setExp]=useState(null);
