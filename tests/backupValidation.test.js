@@ -130,3 +130,9 @@ test("rejects negative restored order and credit amounts",()=>{
   const discount=validBackup();discount.data.lurk_o[0].discount=-1;assert.ok(validateBackup(discount));
   const credit=validBackup();credit.data.lurk_credit[0].amount=-1;assert.ok(validateBackup(credit));
 });
+
+test("rejects duplicate menu item IDs in restored backups",()=>{
+  const b=validBackup();
+  b.data.lurk_m.push({...b.data.lurk_m[0],name:"Başka ürün"});
+  assert.ok(validateBackup(b));
+});
