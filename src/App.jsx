@@ -452,7 +452,7 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
   const[showMenu,setShowMenu]=useState(table.order.length===0);
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
-  const[showName,setShowName]=useState(false);
+  const[showName,setShowName]=useState(table.order.length===0&&!table.g);
   const[showFis,setShowFis]=useState(false);
   const[name,setName]=useState(table.g||"");
   const[disc,setDisc]=useState("");
@@ -609,11 +609,12 @@ function OrderScreen({table,menu,cats,addItem,chQ,pay,setTbl,setV,setSel}){
       {/* İsim modal */}
       {showName&&(
         <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Müşteri Adı</div>
-          <input autoFocus placeholder="İsim" value={name} onChange={e=>setName(e.target.value)}
-            onKeyDown={e=>{if(e.key==="Enter"){setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}}}
+          <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>Müşteri Seçimi</div>
+          <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Adisyonu başlatmak için müşteri adını gir.</div>
+          <input autoFocus placeholder="Müşteri adı (zorunlu)" value={name} onChange={e=>setName(e.target.value)}
+            onKeyDown={e=>{if(e.key==="Enter"&&name.trim()){setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}}}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <button onClick={()=>{setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Kaydet</button>
+          <button disabled={!name.trim()} onClick={()=>{if(!name.trim())return;setTbl(p=>p.map(t=>t.id===table.id?{...t,g:name.trim()}:t));setShowName(false);}} style={{width:"100%",padding:"14px",background:name.trim()?"linear-gradient(135deg,#34C759,#248A3D)":T.bg3,border:"none",borderRadius:12,color:name.trim()?"#fff":T.textDim,fontSize:15,fontWeight:700,cursor:name.trim()?"pointer":"not-allowed"}}>Müşteriyi Onayla</button>
         </Modal>
       )}
 
