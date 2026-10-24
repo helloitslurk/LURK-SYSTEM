@@ -311,8 +311,9 @@ export default function App(){
   ];
 
   return(
-    <div className="lurk-app" style={{background:T.bg,minHeight:"100vh",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:76,boxSizing:"border-box"}}>
+    <div className="lurk-app" style={{background:T.bg,minHeight:"100vh",fontFamily:"Inter,'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:76,boxSizing:"border-box"}}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; }
         body { margin: 0; background: #0D0F0E; }
         button, input, select { font: inherit; }
@@ -687,7 +688,8 @@ function OrderScreen({table,tables,menu,cats,customers,setTableCustomer,addItem,
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
                     <div style={{flex:1}}>
                       <div style={{fontSize:14,fontWeight:700,color:T.text}}>{item.name}</div>
-                      <div style={{fontSize:13,color:T.accentL,fontWeight:700,marginTop:2}}>{fm(item.price*item.qty)}</div>
+                      <div style={{fontSize:10,color:T.textDim,marginTop:3}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Eklenme saati kayıtlı değil"}</div>
+                      <div style={{fontSize:13,color:T.accentL,fontWeight:700,marginTop:3}}>{fm(item.price*item.qty)}</div>
                     </div>
                     <div style={{fontSize:11,color:T.textSub}}>{fm(item.price)} × {item.qty}</div>
                   </div>
