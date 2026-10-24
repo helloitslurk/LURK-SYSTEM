@@ -116,6 +116,7 @@ export default function App(){
   const[saveStatus,setSaveStatus]=useState("saved");
   const[pendingSaves]=useState(()=>({count:0,failed:false}));
   const failedWrites=useRef({});
+  const paymentInProgress=useRef(false);
   const[view,setV]=useState("home");
   const[sel,setSel]=useState(null);
   const[tables,setTbl]=useState([]);
@@ -237,6 +238,7 @@ export default function App(){
     }));
   }
   function pay(tid,pt,disc,payments){
+    if(paymentInProgress.current)return;
     const t=tables.find(x=>x.id===tid);
     if(!t)return;
     const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
@@ -246,6 +248,8 @@ export default function App(){
     const isCredit=pt==="credit";
     if(isCredit&&!t.customerId){msg("Veresiye için kayıtlı müşteri seçmelisin.");return;}
     if(!isCredit&&normalized.length&&Math.abs(paymentTotal-total)>0.009){msg("Ödeme tutarları toplamı eşleşmiyor.");return;}
+    paymentInProgress.current=true;
+    setTimeout(()=>{paymentInProgress.current=false;},900);
     const orderId=uid();
     const order={id:orderId,date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:isCredit?"credit":(normalized.length>1?"split":(normalized[0]?.method||pt)),payments:isCredit?[{method:"credit",amount:total}]:(normalized.length?normalized:[{method:pt,amount:total}]),g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
     setOrd(prev=>[order,...prev]);
