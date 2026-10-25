@@ -839,6 +839,10 @@ function OrderScreen({table,tables,menu,cats,customers,setTableCustomer,addItem,
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>Müşteri Seçimi</div>
           <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Kayıtlı müşteriyi seç veya yeni müşteri adını gir.</div>
+          {lurkPlusMembers.length>0&&<div style={{marginBottom:12}}>
+            <div style={{fontSize:11,fontWeight:800,color:T.accentL,marginBottom:6}}>LURK+ ÜYELERİ</div>
+            <div style={{maxHeight:125,overflowY:"auto"}}>{lurkPlusMembers.map(m=><button key={m.id} onClick={()=>{setTableCustomer(table.id,{...m,lurkPlus:true});setName(m.name);setShowName(false);}} style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",padding:11,marginBottom:5,textAlign:"left",background:table.lurkPlusId===m.id?"rgba(52,199,89,.13)":T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}><span>{m.name}</span><span style={{fontSize:11,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</span></button>)}</div>
+          </div>}
           {customers?.length>0&&<div style={{maxHeight:150,overflowY:"auto",marginBottom:12}}>{customers.map(c=><button key={c.id} onClick={()=>{setTableCustomer(table.id,c);setName(c.name);setShowName(false);}} style={{display:"block",width:"100%",padding:11,marginBottom:5,textAlign:"left",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}>{c.name}<span style={{display:"block",fontSize:11,color:T.textSub,marginTop:3}}>{c.phone||"Telefon yok"}</span></button>)}</div>}
           <input autoFocus placeholder="Yeni müşteri adı (zorunlu)" value={name} onChange={e=>setName(e.target.value)}
             onKeyDown={e=>{if(e.key==="Enter"&&name.trim()){setTableCustomer(table.id,name.trim());setShowName(false);}}}
@@ -1034,6 +1038,40 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/* ─── LURK+ ─── */
+function LurkPlusScreen({members,setMembers,msg,setV}){
+  const [showForm,setShowForm]=useState(false);
+  const [name,setName]=useState("");
+  const [balance,setBalance]=useState("");
+  function addMember(){
+    const clean=name.trim();
+    const amount=Math.round(Number(balance)*100)/100;
+    if(!clean){msg("Üye adı gir.");return;}
+    if(!balance.trim()||!Number.isFinite(amount)||amount<0){msg("Geçerli bir bakiye gir.");return;}
+    if(members.some(m=>m.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde LURK+ üyesi zaten var.");return;}
+    setMembers(prev=>[{id:uid(),name:clean,balance:amount,createdAt:new Date().toISOString()},...prev]);
+    setName("");setBalance("");setShowForm(false);msg("LURK+ üyesi eklendi.");
+  }
+  return(
+    <div className="lurk-screen">
+      <div style={{background:"rgba(13,13,13,0.98)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"18px 16px",display:"flex",alignItems:"center",gap:12}}>
+        <button onClick={()=>setV("home")} style={{background:"transparent",border:0,color:T.textSub,fontSize:24,cursor:"pointer"}}>←</button>
+        <div style={{flex:1}}><div style={{fontSize:24,fontWeight:850,letterSpacing:"-0.8px",color:T.text}}>LURK<span style={{color:T.accentL}}>+</span></div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>Ön ödemeli üye bakiyeleri</div></div>
+        <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Üye Ekle</button>
+      </div>
+      <div style={{padding:14}}>
+        <div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:16,padding:16,marginBottom:14}}>
+          <div style={{fontSize:11,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".8px"}}>Toplam üye bakiyesi</div>
+          <div style={{fontSize:28,fontWeight:850,color:T.accentL,marginTop:5}}>{fm(members.reduce((sum,m)=>sum+(Number(m.balance)||0),0))}</div>
+          <div style={{fontSize:12,color:T.textSub,marginTop:4}}>{members.length} üye</div>
+        </div>
+        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><div key={m.id} style={{display:"flex",alignItems:"center",gap:12,background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:"14px",marginBottom:9}}><div style={{width:42,height:42,borderRadius:13,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:17,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,color:T.text,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>LURK+ üyesi</div></div><div style={{fontSize:16,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</div></div>)}
+      </div>
+      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>Yeni LURK+ Üyesi</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Üyenin adını ve mevcut ön ödemeli bakiyesini gir.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Üye adı *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Başlangıç bakiyesi (TL) *</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode="decimal" placeholder="Örn. 500" onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Üyeyi Kaydet</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button></Modal>}
     </div>
   );
 }
