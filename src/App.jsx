@@ -652,7 +652,7 @@ function TablesScreen({tables,customers=[],setTbl,setV,setSel,msg}){
 }
 
 /* ─── ORDER ─── */
-function OrderScreen({table,tables,menu,cats,customers,setTableCustomer,addItem,chQ,pay,moveTableOrder,setTbl,setV,setSel}){
+function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTableCustomer,addItem,chQ,pay,moveTableOrder,setTbl,setV,setSel}){
   const[showMenu,setShowMenu]=useState(table.order.length===0);
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
