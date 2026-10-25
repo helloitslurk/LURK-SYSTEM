@@ -306,7 +306,6 @@ export default function App(){
     {k:"home",label:"Ana Sayfa",icon:"⌂"},
     {k:"tables",label:"Masalar",icon:"⊞"},
     {k:"customers",label:"Müşteriler",icon:"◎"},
-    {k:"menu",label:"Menü",icon:"☰"},
     {k:"reports",label:"Raporlar",icon:"≡"},
     {k:"settings",label:"Ayarlar",icon:"⚙"},
   ];
