@@ -232,7 +232,7 @@ export default function App(){
     const table=tables.find(t=>t.id===tid);
     const member=table?.lurkPlusId?lurkPlusMembers.find(m=>m.id===table.lurkPlusId):null;
     if(member&&(Number(member.balance)||0)<Number(item.price||0)){msg("LURK+ bakiyesi yetersiz. "+member.name+" · "+fm(member.balance));return false;}
-    if(member)setLurkPlusMembers(prev=>prev.map(m=>m.id===member.id?{...m,balance:Math.max(0,Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100),updatedAt:new Date().toISOString()}:m));
+    if(member)setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.max(0,Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100);return{...m,balance:nextBalance,updatedAt:new Date().toISOString(),history:[...(m.history||[]),{id:uid(),type:"purchase",date:new Date().toISOString(),amount:Number(item.price)||0,balanceAfter:nextBalance,itemName:item.name,table:table?.lbl||""}]};}));
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
       return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString(),lurkPlusCharged:!!member}]};
@@ -250,7 +250,7 @@ export default function App(){
     const member=table?.lurkPlusId?lurkPlusMembers.find(m=>m.id===table.lurkPlusId):null;
     if(member&&line?.lurkPlusCharged){
       if(d>0&&(Number(member.balance)||0)<Number(line.price||0)){msg("LURK+ bakiyesi yetersiz.");return;}
-      setLurkPlusMembers(prev=>prev.map(m=>m.id===member.id?{...m,balance:Math.max(0,Math.round(((Number(m.balance)||0)-(d*Number(line.price||0)))*100)/100),updatedAt:new Date().toISOString()}:m));
+      setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const amount=Math.abs(d*Number(line.price||0));const nextBalance=Math.max(0,Math.round(((Number(m.balance)||0)-(d*Number(line.price||0)))*100)/100);return{...m,balance:nextBalance,updatedAt:new Date().toISOString(),history:[...(m.history||[]),{id:uid(),type:d<0?"refund":"purchase",date:new Date().toISOString(),amount,balanceAfter:nextBalance,itemName:line.name,table:table?.lbl||""}]};}));
     }
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
@@ -1046,6 +1046,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
 /* ─── LURK+ ─── */
 function LurkPlusScreen({members,setMembers,msg,setV}){
   const [showForm,setShowForm]=useState(false);
+  const [selectedMemberId,setSelectedMemberId]=useState(null);
   const [name,setName]=useState("");
   const [balance,setBalance]=useState("");
   function addMember(){
@@ -1054,7 +1055,8 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     if(!clean){msg("Üye adı gir.");return;}
     if(!balance.trim()||!Number.isFinite(amount)||amount<0){msg("Geçerli bir bakiye gir.");return;}
     if(members.some(m=>m.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde LURK+ üyesi zaten var.");return;}
-    setMembers(prev=>[{id:uid(),name:clean,balance:amount,createdAt:new Date().toISOString()},...prev]);
+    const createdAt=new Date().toISOString();
+    setMembers(prev=>[{id:uid(),name:clean,balance:amount,createdAt,history:[{id:uid(),type:"topup",date:createdAt,amount,balanceAfter:amount,note:"Başlangıç bakiyesi"}]},...prev]);
     setName("");setBalance("");setShowForm(false);msg("LURK+ üyesi eklendi.");
   }
   return(
