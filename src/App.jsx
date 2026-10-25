@@ -555,7 +555,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
 }
 
 /* ─── TABLES ─── */
-function TablesScreen({tables,customers=[],setTbl,setV,setSel,msg}){
+function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
   const[selectedCustomerId,setSelectedCustomerId]=useState("");
   const[customerQuery,setCustomerQuery]=useState("");
@@ -566,14 +566,15 @@ function TablesScreen({tables,customers=[],setTbl,setV,setSel,msg}){
   const displayed=showAll?tables:openT;
 
   function addTable(){
+    const selectedMember=selectedCustomerId.startsWith("lurk:")?lurkPlusMembers.find(m=>m.id===selectedCustomerId.slice(5)):null;
     const selectedCustomer=customers.find(c=>c.id===selectedCustomerId);
-    const customerName=selectedCustomer?selectedCustomer.name:(nameRef.current?nameRef.current.value:"").trim();
+    const customerName=selectedMember?selectedMember.name:selectedCustomer?selectedCustomer.name:(nameRef.current?nameRef.current.value:"").trim();
     if(!customerName){msg("Kayıtlı müşteri seç veya yeni müşteri adını gir.");return;}
     const usedNumbers=tables.map(t=>/^Masa (\\d+)$/.exec(t.lbl||"")).filter(Boolean).map(m=>Number(m[1]));
     let number=1;
     while(usedNumbers.includes(number))number++;
     const id=uid();
-    setTbl(p=>[...p,{id,lbl:"Masa "+number,s:"free",order:[],g:customerName,customerId:selectedCustomer?.id||null}]);
+    setTbl(p=>[...p,{id,lbl:"Masa "+number,s:"free",order:[],g:customerName,customerId:selectedCustomer?.id||null,lurkPlusId:selectedMember?.id||null}]);
     if(nameRef.current)nameRef.current.value="";
     setSelectedCustomerId("");setCustomerQuery("");
     setShowNew(false);
@@ -623,12 +624,13 @@ function TablesScreen({tables,customers=[],setTbl,setV,setSel,msg}){
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>Yeni Adisyon</div>
           <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Kayıtlı müşterini seç veya yeni bir isim gir.</div>
-          {customers.length>0&&<>
-            <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Kayıtlı müşteri ara</label>
+          {(customers.length>0||lurkPlusMembers.length>0)&&<>
+            <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Kayıtlı müşteri veya LURK+ üyesi ara</label>
             <input value={customerQuery} onChange={e=>{setCustomerQuery(e.target.value);setSelectedCustomerId("");if(nameRef.current)nameRef.current.value="";}} placeholder="Müşteri ismi yaz..." style={{width:"100%",padding:"11px 12px",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,fontSize:14,boxSizing:"border-box",marginBottom:8,background:"rgba(255,255,255,.06)",color:T.text}}/>
             <div style={{maxHeight:135,overflowY:"auto",marginBottom:12}}>
-              {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(c=><button key={c.id} onClick={()=>{setSelectedCustomerId(c.id);setCustomerQuery(c.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId===c.id?"rgba(52,199,89,.15)":T.bg2,color:selectedCustomerId===c.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId===c.id?"rgba(52,199,89,.4)":"rgba(255,255,255,.08)"),borderRadius:9,cursor:"pointer"}}>{c.name}</button>)}
-              {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&<div style={{fontSize:12,color:T.textSub,padding:8}}>Eşleşen kayıt yok. Yeni isim girebilirsin.</div>}
+              {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(c=><button key={"customer:"+c.id} onClick={()=>{setSelectedCustomerId(c.id);setCustomerQuery(c.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId===c.id?"rgba(52,199,89,.15)":T.bg2,color:selectedCustomerId===c.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId===c.id?"rgba(52,199,89,.4)":"rgba(255,255,255,.08)"),borderRadius:9,cursor:"pointer"}}>{c.name} · Müşteri</button>)}
+              {lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(m=><button key={"lurk:"+m.id} onClick={()=>{setSelectedCustomerId("lurk:"+m.id);setCustomerQuery(m.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId==="lurk:"+m.id?"rgba(52,199,89,.15)":T.bg2,color:selectedCustomerId==="lurk:"+m.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId==="lurk:"+m.id?"rgba(52,199,89,.4)":"rgba(255,255,255,.08)"),borderRadius:9,cursor:"pointer"}}>{m.name} · LURK+ · {fm(m.balance)}</button>)}
+              {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&<div style={{fontSize:12,color:T.textSub,padding:8}}>Eşleşen kayıt yok. Yeni isim girebilirsin.</div>}
             </div>
           </>}
           <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Yeni müşteri adı</label>
