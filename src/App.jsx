@@ -264,8 +264,8 @@ export default function App(){
     const target=tables.find(t=>t.id===targetId);
     if(!source||!target||!Array.isArray(source.order)||source.order.length===0){msg("Taşınacak açık sipariş bulunamadı.");return;}
     setTbl(prev=>prev.map(t=>{
-      if(t.id===sourceId)return {...t,order:[],s:"free",g:"",customerId:null,oa:null};
-      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...source.order],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null};
+      if(t.id===sourceId)return {...t,order:[],s:"free",g:"",customerId:null,lurkPlusId:null,oa:null};
+      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...source.order],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null,lurkPlusId:t.lurkPlusId||source.lurkPlusId||null};
       return t;
     }));
     msg(source.order.length+" ürün satırı "+target.lbl+" masasına taşındı.");
@@ -280,17 +280,18 @@ export default function App(){
     const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
     const total=Math.max(0,sub-(disc||0));
     const isCredit=pt==="credit";
-    const validation=validatePayment({total,isCredit,customerId:t.customerId,payments});
+    const isLurkPlus=!!t.lurkPlusId;
+    const validation=isLurkPlus?{error:null,payments:[]}:validatePayment({total,isCredit,customerId:t.customerId,payments});
     if(validation.error){msg(validation.error);return;}
     const normalized=validation.payments;
     paymentInProgress.current=true;
     setTimeout(()=>{paymentInProgress.current=false;},900);
     const orderId=uid();
-    const order={id:orderId,date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:isCredit?"credit":(normalized.length>1?"split":(normalized[0]?.method||pt)),payments:isCredit?[{method:"credit",amount:total}]:(normalized.length?normalized:[{method:pt,amount:total}]),g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
+    const order={id:orderId,date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(normalized.length>1?"split":(normalized[0]?.method||pt)),payments:isLurkPlus?[{method:"lurkPlus",amount:total}]:isCredit?[{method:"credit",amount:total}]:(normalized.length?normalized:[{method:pt,amount:total}]),g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
     setOrd(prev=>[order,...prev]);
     if(isCredit&&total>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:total,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
     setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:"",customerId:null,lurkPlusId:null}:tb));
-    msg(isCredit?"Veresiye kaydedildi · "+fm(total):"Ödeme alındı · "+fm(total));
+    msg(isLurkPlus?"LURK+ siparişi kapatıldı · "+fm(total):isCredit?"Veresiye kaydedildi · "+fm(total):"Ödeme alındı · "+fm(total));
     setSel(null);setV("tables");
   }
 
