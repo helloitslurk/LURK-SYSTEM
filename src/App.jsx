@@ -128,6 +128,7 @@ export default function App(){
   const[orders,setOrd]=useState([]);
   const[logs,setLogs]=useState([]);
   const[customers,setCustomers]=useState([]);
+  const[lurkPlusMembers,setLurkPlusMembers]=useState([]);
   const[creditEntries,setCreditEntries]=useState([]);
   const[menu,setMenu]=useState(MENU);
   const[day,setDay]=useState(null);
@@ -208,6 +209,7 @@ export default function App(){
   useEffect(()=>{save("lurk_o",orders);},[orders]);
   useEffect(()=>{save("lurk_l",logs);},[logs]);
   useEffect(()=>{save("lurk_customers",customers);},[customers]);
+  useEffect(()=>{save("lurk_plus_members",lurkPlusMembers);},[lurkPlusMembers]);
   useEffect(()=>{save("lurk_credit",creditEntries);},[creditEntries]);
   useEffect(()=>{save("lurk_m",menu);},[menu]);
 
@@ -227,16 +229,29 @@ export default function App(){
   }
 
   function addItem(tid,item){
+    const table=tables.find(t=>t.id===tid);
+    const member=table?.lurkPlusId?lurkPlusMembers.find(m=>m.id===table.lurkPlusId):null;
+    if(member&&(Number(member.balance)||0)<Number(item.price||0)){msg("LURK+ bakiyesi yetersiz. "+member.name+" · "+fm(member.balance));return false;}
+    if(member)setLurkPlusMembers(prev=>prev.map(m=>m.id===member.id?{...m,balance:Math.max(0,Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100),updatedAt:new Date().toISOString()}:m));
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
-      return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString()}]};
+      return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString(),lurkPlusCharged:!!member}]};
     }));
+    if(member)msg(member.name+" · "+fm(item.price)+" LURK+ bakiyesinden düştü.");
+    return true;
   }
   function setTableCustomer(tid,customer){
     const clean=typeof customer==="string"?customer.trim():(customer?.name||"").trim();
-    setTbl(prev=>prev.map(t=>t.id===tid?{...t,g:clean,customerId:typeof customer==="object"&&customer?customer.id:null}:t));
+    setTbl(prev=>prev.map(t=>t.id===tid?{...t,g:clean,customerId:typeof customer==="object"&&customer&&!customer.lurkPlus?customer.id:null,lurkPlusId:typeof customer==="object"&&customer?.lurkPlus?customer.id:null}:t));
   }
   function chQ(tid,lineId,d){
+    const table=tables.find(t=>t.id===tid);
+    const line=table?.order.find(o=>(o.oid||String(o.id))===lineId);
+    const member=table?.lurkPlusId?lurkPlusMembers.find(m=>m.id===table.lurkPlusId):null;
+    if(member&&line?.lurkPlusCharged){
+      if(d>0&&(Number(member.balance)||0)<Number(line.price||0)){msg("LURK+ bakiyesi yetersiz.");return;}
+      setLurkPlusMembers(prev=>prev.map(m=>m.id===member.id?{...m,balance:Math.max(0,Math.round(((Number(m.balance)||0)-(d*Number(line.price||0)))*100)/100),updatedAt:new Date().toISOString()}:m));
+    }
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
       const order=t.order.map(o=>(o.oid||String(o.id))===lineId?{...o,qty:o.qty+d}:o).filter(o=>o.qty>0);
@@ -274,7 +289,7 @@ export default function App(){
     const order={id:orderId,date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:isCredit?"credit":(normalized.length>1?"split":(normalized[0]?.method||pt)),payments:isCredit?[{method:"credit",amount:total}]:(normalized.length?normalized:[{method:pt,amount:total}]),g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
     setOrd(prev=>[order,...prev]);
     if(isCredit&&total>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:total,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
-    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:"",customerId:null}:tb));
+    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:"",customerId:null,lurkPlusId:null}:tb));
     msg(isCredit?"Veresiye kaydedildi · "+fm(total):"Ödeme alındı · "+fm(total));
     setSel(null);setV("tables");
   }
@@ -424,9 +439,10 @@ export default function App(){
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} customers={customers} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
-      {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
+      {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} setV={setV}/>}
+      {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
@@ -471,6 +487,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
     {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
     {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
     {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
+    {k:"lurkPlus",label:"LURK+",icon:"＋",sub:"Ön ödemeli üyeler"},
     {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"↗",sub:"Ciro ve en çok kazandıran 5 ürün"},
     {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
   ];
