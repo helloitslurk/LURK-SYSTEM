@@ -202,9 +202,10 @@ export default function App(){
       setLogs(merged);
       if(m&&Array.isArray(m)){
         const ids=new Set(MENU.map(x=>x.id));
-        const refreshedIds=new Set([102,103,104,106,107,110,113,114,202,203,204,601]);
+        const refreshedIds=new Set([102,103,104,106,107,110,113,114,201,202,203,204,205,601]);
+        const retiredIds=new Set([201,205]);
         const mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,name:refreshedIds.has(mi.id)?mi.name:(f.name||mi.name),price:refreshedIds.has(mi.id)?mi.price:f.price,on:f.on,cat:refreshedIds.has(mi.id)?mi.cat:(f.cat||mi.cat)}:mi;});
-        m.filter(x=>!ids.has(x.id)).forEach(x=>mm.push(x));
+        m.filter(x=>!ids.has(x.id)&&!retiredIds.has(x.id)).forEach(x=>mm.push(x));
         setMenu(mm);
       }
       if(d&&d.oa&&d.oa.startsWith(tod()))setDay(d);
