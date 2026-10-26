@@ -604,10 +604,10 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setV,setSel
               <div key={t.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
                 
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                  <div style={{fontSize:14,fontWeight:700,color:T.text}}>{t.lbl}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:T.text}}>{t.g||t.lbl}</div>
                   <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
                 </div>
-                {t.g&&<div style={{fontSize:11,color:T.textSub,fontWeight:600,marginBottom:6}}>{t.g}</div>}
+                
                 <div style={{fontSize:12,color:isOpen?T.textSub:T.textDim,marginBottom:12}}>
                   {isOpen?fm(total):"Boş"}
                 </div>
