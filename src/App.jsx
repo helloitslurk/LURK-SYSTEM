@@ -301,25 +301,37 @@ export default function App(){
     setSel(null);setV("tables");
   }
 
-  function pay(tid,pt,disc,payments){
+  function pay(tid,pt,disc,payments,partial=false){
     if(paymentInProgress.current)return;
     const t=tables.find(x=>x.id===tid);
     if(!t)return;
     const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
-    const total=Math.max(0,sub-(disc||0));
+    const previousPayments=Array.isArray(t.partialPayments)?t.partialPayments:[];
+    const previousPaid=previousPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
     const isCredit=pt==="credit";
     const isLurkPlus=!!t.lurkPlusId;
-    const validation=isLurkPlus?{error:null,payments:[]}:validatePayment({total,isCredit,customerId:t.customerId,payments});
+    if(partial&&(isCredit||isLurkPlus)){msg("Kısmi ödeme şu anda yalnızca nakit/kart adisyonlarında kullanılabilir.");return;}
+    const finalTotal=Math.max(0,sub-(partial?0:Math.max(0,Number(disc)||0)));
+    const due=Math.max(0,Math.round((finalTotal-previousPaid)*100)/100);
+    const validation=isLurkPlus?{error:null,payments:[]}:validatePayment({total:due,isCredit,customerId:t.customerId,payments});
     if(validation.error){msg(validation.error);return;}
-    const normalized=validation.payments;
-    paymentInProgress.current=true;
-    setTimeout(()=>{paymentInProgress.current=false;},900);
+    const normalized=isLurkPlus?[{method:"lurkPlus",amount:due}]:isCredit?[{method:"credit",amount:due}]:validation.payments;
+    const paidNow=normalized.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
+    if(partial&&paidNow<due-0.009){
+      paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
+      setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,partialPayments:[...previousPayments,...normalized],s:"o"}:tb));
+      msg("Kısmi tahsilat kaydedildi · "+fm(paidNow)+" · Kalan "+fm(due-paidNow));
+      return;
+    }
+    const allPayments=[...previousPayments,...normalized];
     const orderId=uid();
-    const order={id:orderId,date:tod(),total,subtotal:sub,discount:Math.max(0,sub-total),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(normalized.length>1?"split":(normalized[0]?.method||pt)),payments:isLurkPlus?[{method:"lurkPlus",amount:total}]:isCredit?[{method:"credit",amount:total}]:(normalized.length?normalized:[{method:pt,amount:total}]),g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
+    const methodSet=[...new Set(allPayments.map(p=>p.method))];
+    const order={id:orderId,date:tod(),total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
+    paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
-    if(isCredit&&total>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:total,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
-    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],s:"free",g:"",customerId:null,lurkPlusId:null}:tb));
-    msg(isLurkPlus?"LURK+ siparişi kapatıldı · "+fm(total):isCredit?"Veresiye kaydedildi · "+fm(total):"Ödeme alındı · "+fm(total));
+    if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
+    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],partialPayments:[],s:"free",g:"",customerId:null,lurkPlusId:null}:tb));
+    msg(isLurkPlus?"LURK+ siparişi kapatıldı · "+fm(finalTotal):isCredit?"Veresiye kaydedildi · "+fm(finalTotal):"Ödeme alındı · "+fm(finalTotal));
     setSel(null);setV("tables");
   }
 
@@ -696,11 +708,15 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const[flash,setFlash]=useState(null);
   const[pt,setPt]=useState("cash");
   const[splitMode,setSplitMode]=useState(false);
+  const[partialMode,setPartialMode]=useState(false);
+  const[partialAmount,setPartialAmount]=useState("");
   const[cashPart,setCashPart]=useState("");
   const[cardPart,setCardPart]=useState("");
   const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
-  const discVal=Math.min(sub,Math.max(0,parseFloat(disc)||0));
-  const total=Math.max(0,sub-discVal);
+  const previousPaid=(Array.isArray(table.partialPayments)?table.partialPayments:[]).reduce((sum,p)=>sum+(Number(p.amount)||0),0);
+  const discVal=Math.min(Math.max(0,sub-previousPaid),Math.max(0,parseFloat(disc)||0));
+  const total=Math.max(0,Math.round((sub-previousPaid-discVal)*100)/100);
+  const paymentTarget=partialMode?Math.min(total,Math.max(0,parseFloat(partialAmount)||0)):total;
   const itemCount=table.order.reduce((s,o)=>s+o.qty,0);
 
   function handleAdd(item){
@@ -901,6 +917,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
       {showPay&&(
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
+          {previousPaid>0&&<div style={{fontSize:11,color:T.accentL,marginBottom:8}}>Önceden tahsil edilen: {fm(previousPaid)}</div>}
           <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
           <div style={{background:T.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.08)"}}>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>Ara toplam</span><span>{fm(sub)}</span></div>
@@ -908,22 +925,24 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             <div style={{height:1,background:"rgba(255,255,255,0.09)",marginBottom:8}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:13,fontWeight:700,color:T.text}}>Ödenecek</span><span style={{fontSize:25,fontWeight:800,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</span></div>
           </div>
-          <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} onChange={e=>setDisc(e.target.value)}
-            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} disabled={partialMode||previousPaid>0} onChange={e=>setDisc(e.target.value)}
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:8,background:"rgba(255,255,255,0.07)",color:T.text,opacity:partialMode||previousPaid>0?0.5:1}}/>
+          {!table.lurkPlusId&&pt!=="credit"&&<button onClick={()=>{setPartialMode(v=>!v);setPartialAmount("");setSplitMode(false);setDisc("");}} style={{width:"100%",padding:10,marginBottom:10,background:partialMode?"rgba(52,199,89,.15)":T.bg2,border:"1px solid "+(partialMode?"rgba(52,199,89,.4)":"rgba(255,255,255,.1)"),borderRadius:10,color:partialMode?T.accentL:T.textSub,fontWeight:700,fontSize:12}}>{partialMode?"✓ Kısmi ödeme açık":"＋ Kısmi ödeme yap"}</button>}
+          {partialMode&&<input type="number" min="0.01" max={total} value={partialAmount} onChange={e=>{setPartialAmount(e.target.value);setCashPart(e.target.value);setCardPart("");}} placeholder={"Şimdi alınacak tutar · kalan "+fm(total)} style={{width:"100%",padding:"12px 14px",border:"1px solid rgba(52,199,89,.35)",borderRadius:10,fontSize:16,boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,.06)",color:T.text}}/>}
           <div style={{display:"flex",gap:8,marginBottom:10}}>
             {["cash","card","credit"].map(p=>(
-              <button key={p} onClick={()=>{setPt(p);setSplitMode(false);}} style={{flex:1,padding:"12px",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:!splitMode&&pt===p?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.05)",color:!splitMode&&pt===p?T.accentL:T.textSub,borderColor:!splitMode&&pt===p?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"}}>
+              <button key={p} onClick={()=>{setPt(p);setSplitMode(false);if(p==="credit")setPartialMode(false);}} style={{flex:1,padding:"12px",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:!splitMode&&pt===p?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.05)",color:!splitMode&&pt===p?T.accentL:T.textSub,borderColor:!splitMode&&pt===p?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"}}>
                 {p==="cash"?"Nakit":p==="card"?"Kart":"Veresiye"}
               </button>
             ))}
           </div>
-          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart("");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
+          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
           {splitMode&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-            <label style={{fontSize:11,color:T.textSub}}>Nakit (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round((total-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
+            <label style={{fontSize:11,color:T.textSub}}>Nakit (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round(((partialMode?paymentTarget:total)-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
             <label style={{fontSize:11,color:T.textSub}}>Kart (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
           </div>}
           {splitMode&&<div style={{fontSize:11,color:Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)<0.009?T.accentL:"#FF6B6B",marginBottom:12}}>Ödeme toplamı: {fm((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0))} / {fm(total)}</div>}
-          <button onClick={()=>{const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:total}];if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)>0.009){msg("Nakit ve kart toplamı ödenecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments);if(pt==="credit"&&table.customerId)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>Tahsil Et · {fm(total)}</button>
+          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Kısmi ödeme tutarı kalan borçtan büyük olamaz.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("Nakit ve kart toplamı tahsil edilecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>{partialMode?"Kısmi Tahsil Et · "+fm(paymentTarget):"Tahsil Et · "+fm(total)}</button>
           <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Vazgeç</button>
         </Modal>
       )}
