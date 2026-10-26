@@ -277,19 +277,28 @@ export default function App(){
       return{...t,order,s:order.length>0?"o":"free"};
     }));
   }
-  function moveTableOrder(sourceId,targetId){
+  function moveTableOrder(sourceId,targetId,selections){
     if(sourceId===targetId){msg("Ürünleri farklı bir masaya taşımalısın.");return;}
     const source=tables.find(t=>t.id===sourceId);
     const target=tables.find(t=>t.id===targetId);
     if(!source||!target||!Array.isArray(source.order)||source.order.length===0){msg("Taşınacak açık sipariş bulunamadı.");return;}
+    const requested=Array.isArray(selections)?selections:[];
+    const moving=[],remaining=[];
+    source.order.forEach(line=>{
+      const key=line.oid||String(line.id);
+      const qty=Math.max(0,Math.min(Number(line.qty)||0,Number(requested.find(x=>x.key===key)?.qty)||0));
+      if(qty>0)moving.push({...line,qty});
+      if((Number(line.qty)||0)-qty>0)remaining.push({...line,qty:(Number(line.qty)||0)-qty});
+    });
+    if(!moving.length){msg("Taşımak için en az bir ürün/adet seç.");return;}
+    if((source.lurkPlusId||target.lurkPlusId)&&source.lurkPlusId!==target.lurkPlusId){msg("LURK+ bakiyesiyle ilişkilendirilmiş ürünler farklı üyeye ait masaya taşınamaz.");return;}
     setTbl(prev=>prev.map(t=>{
-      if(t.id===sourceId)return {...t,order:[],s:"free",g:"",customerId:null,lurkPlusId:null,oa:null};
-      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...source.order],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null,lurkPlusId:t.lurkPlusId||source.lurkPlusId||null};
+      if(t.id===sourceId)return {...t,order:remaining,s:remaining.length?"o":"free",g:remaining.length?t.g:"",customerId:remaining.length?t.customerId:null,lurkPlusId:remaining.length?t.lurkPlusId:null,oa:remaining.length?t.oa:null};
+      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...moving],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null,lurkPlusId:t.lurkPlusId||source.lurkPlusId||null};
       return t;
     }));
-    msg(source.order.length+" ürün satırı "+target.lbl+" masasına taşındı.");
-    setSel(null);
-    setV("tables");
+    msg(moving.reduce((sum,line)=>sum+line.qty,0)+" adet ürün "+target.lbl+" masasına taşındı.");
+    setSel(null);setV("tables");
   }
 
   function pay(tid,pt,disc,payments){
@@ -680,6 +689,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const[showName,setShowName]=useState(table.order.length===0&&!table.g);
   const[showFis,setShowFis]=useState(false);
   const[showMove,setShowMove]=useState(false);
+  const[moveSelections,setMoveSelections]=useState({});
   const[name,setName]=useState(table.g||"");
   const[disc,setDisc]=useState("");
   const[search,setSearch]=useState("");
@@ -810,17 +820,31 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
       {showMove&&(
         <Modal>
           <div style={{fontWeight:800,fontSize:18,color:T.text,marginBottom:6}}>Ürünleri Başka Masaya Taşı</div>
-          <div style={{fontSize:12,color:T.textSub,lineHeight:1.5,marginBottom:14}}>{table.lbl} masasındaki {itemCount} ürün başka masaya aktarılacak. Hedef masadaki ürünler korunur ve üzerine eklenir.</div>
-          <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:"45vh",overflowY:"auto"}}>
+          <div style={{fontSize:12,color:T.textSub,lineHeight:1.5,marginBottom:12}}>Taşınacak ürünleri ve adetlerini seç. Seçilmeyen ürünler bu masada kalır.</div>
+          <div style={{display:"flex",flexDirection:"column",gap:7,maxHeight:"32vh",overflowY:"auto",marginBottom:14}}>
+            {table.order.map(line=>{
+              const key=line.oid||String(line.id);
+              const qty=Math.max(0,Math.min(line.qty,Number(moveSelections[key]??0)));
+              return <div key={key} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 10px",background:T.bg2,border:"1px solid rgba(255,255,255,.08)",borderRadius:10}}>
+                <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:700,color:T.text}}>{line.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(line.price)} · mevcut {line.qty}</div></div>
+                <button onClick={()=>setMoveSelections(p=>({...p,[key]:Math.max(0,Number(p[key]??0)-1)}))} style={{width:30,height:30,borderRadius:8,border:"1px solid rgba(255,255,255,.12)",background:"transparent",color:T.text,fontSize:18}}>−</button>
+                <span style={{minWidth:18,textAlign:"center",fontSize:13,fontWeight:800,color:T.accentL}}>{qty}</span>
+                <button onClick={()=>setMoveSelections(p=>({...p,[key]:Math.min(line.qty,Number(p[key]??0)+1)}))} style={{width:30,height:30,borderRadius:8,border:"1px solid rgba(52,199,89,.25)",background:"rgba(52,199,89,.1)",color:T.accentL,fontSize:18}}>+</button>
+              </div>;
+            })}
+          </div>
+          <div style={{fontSize:12,fontWeight:700,color:T.text,marginBottom:8}}>Hedef masa</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:"24vh",overflowY:"auto"}}>
             {tables.filter(t=>t.id!==table.id).map(target=>{
               const targetTotal=(target.order||[]).reduce((sum,item)=>sum+item.price*item.qty,0);
-              return <button key={target.id} onClick={()=>{setShowMove(false);moveTableOrder(table.id,target.id);}} style={{width:"100%",padding:"13px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(52,199,89,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(52,199,89,.3)":"rgba(255,255,255,.1)"),borderRadius:11,color:T.text,cursor:"pointer"}}>
+              const selectedQty=table.order.reduce((sum,line)=>sum+Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0))),0);
+              return <button key={target.id} onClick={()=>{moveTableOrder(table.id,target.id,table.order.map(line=>({key:line.oid||String(line.id),qty:Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0)))})));setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(52,199,89,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(52,199,89,.3)":"rgba(255,255,255,.1)"),borderRadius:11,color:T.text,cursor:"pointer",opacity:selectedQty?1:.55}}>
                 <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Açık masa · "+fm(targetTotal):"Boş masa"}</span></span>
                 <span style={{color:T.accentL,fontSize:18}}>→</span>
               </button>;
             })}
           </div>
-          <button onClick={()=>setShowMove(false)} style={{width:"100%",padding:12,marginTop:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+          <button onClick={()=>{setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:12,marginTop:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
         </Modal>
       )}
 
