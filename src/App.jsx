@@ -291,10 +291,11 @@ export default function App(){
       if((Number(line.qty)||0)-qty>0)remaining.push({...line,qty:(Number(line.qty)||0)-qty});
     });
     if(!moving.length){msg("Taşımak için en az bir ürün/adet seç.");return;}
+    if(source.partialPayments?.length&&remaining.length){msg("Kısmi ödeme alınmış bir hesabı bölmeden önce kalan ürünlerin tamamını aynı masada tutmalısın.");return;}
     if((source.lurkPlusId||target.lurkPlusId)&&source.lurkPlusId!==target.lurkPlusId){msg("LURK+ bakiyesiyle ilişkilendirilmiş ürünler farklı üyeye ait masaya taşınamaz.");return;}
     setTbl(prev=>prev.map(t=>{
       if(t.id===sourceId)return {...t,order:remaining,s:remaining.length?"o":"free",g:remaining.length?t.g:"",customerId:remaining.length?t.customerId:null,lurkPlusId:remaining.length?t.lurkPlusId:null,oa:remaining.length?t.oa:null};
-      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...moving],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null,lurkPlusId:t.lurkPlusId||source.lurkPlusId||null};
+      if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...moving],partialPayments:[...(Array.isArray(t.partialPayments)?t.partialPayments:[]),...(remaining.length?[]:(source.partialPayments||[]))],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null,lurkPlusId:t.lurkPlusId||source.lurkPlusId||null};
       return t;
     }));
     msg(moving.reduce((sum,line)=>sum+line.qty,0)+" adet ürün "+target.lbl+" masasına taşındı.");
@@ -313,7 +314,7 @@ export default function App(){
     if(partial&&(isCredit||isLurkPlus)){msg("Kısmi ödeme şu anda yalnızca nakit/kart adisyonlarında kullanılabilir.");return;}
     const finalTotal=Math.max(0,sub-(partial?0:Math.max(0,Number(disc)||0)));
     const due=Math.max(0,Math.round((finalTotal-previousPaid)*100)/100);
-    const validation=isLurkPlus?{error:null,payments:[]}:validatePayment({total:due,isCredit,customerId:t.customerId,payments});
+    const validation=isLurkPlus?{error:null,payments:[]}:validatePayment({total:partial?(Array.isArray(payments)?payments.reduce((sum,p)=>sum+(Number(p.amount)||0),0):0):due,isCredit,customerId:t.customerId,payments});
     if(validation.error){msg(validation.error);return;}
     const normalized=isLurkPlus?[{method:"lurkPlus",amount:due}]:isCredit?[{method:"credit",amount:due}]:validation.payments;
     const paidNow=normalized.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
@@ -773,7 +774,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
           <div style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
-              <span style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(sub)}</span>
+              <span style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(Math.max(0,sub-previousPaid))}</span>
             </div>
             <div style={{display:"flex",gap:8}}>
               <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
