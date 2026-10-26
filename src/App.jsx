@@ -9,40 +9,50 @@ const SB_KEY="sb_publishable_YiTDrcX7nnotBkoWqEWaHQ_tYHlT3NK";
 
 const MENU=[
 {id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},
-{id:102,name:"FİLTRE KAHVE",price:160,cat:"Kahve",on:true},
-{id:103,name:"AMERICANO",price:170,cat:"Kahve",on:true},
-{id:104,name:"LATTE",price:200,cat:"Kahve",on:true},
+{id:102,name:"FILTER COFFEE",price:180,cat:"Kahve",on:true},
+{id:103,name:"AMERICANO",price:200,cat:"Kahve",on:true},
+{id:104,name:"LATTE",price:220,cat:"Kahve",on:true},
 {id:105,name:"SALTED CARAMEL LATTE",price:270,cat:"Kahve",on:true},
-{id:106,name:"CORTADO",price:170,cat:"Kahve",on:true},
-{id:107,name:"FLATWHITE",price:190,cat:"Kahve",on:true},
+{id:106,name:"CORTADO",price:190,cat:"Kahve",on:true},
+{id:107,name:"FLAT WHITE",price:210,cat:"Kahve",on:true},
 {id:109,name:"MOCHA",price:250,cat:"Kahve",on:true},
-{id:110,name:"VANİLYA LATTE",price:220,cat:"Kahve",on:true},
+{id:110,name:"VANILLA LATTE",price:250,cat:"Kahve",on:true},
 {id:112,name:"V60",price:240,cat:"Kahve",on:true},
-{id:113,name:"ESPRESSO",price:160,cat:"Kahve",on:true},
-{id:114,name:"CAPPUCCINO",price:200,cat:"Kahve",on:true},
+{id:113,name:"ESPRESSO",price:180,cat:"Kahve",on:true},
+{id:114,name:"CAPPUCCINO",price:220,cat:"Kahve",on:true},
 {id:201,name:"MATCHA LATTE",price:260,cat:"Matcha",on:true},
-{id:202,name:"STRAWBERRY MATCHA",price:290,cat:"Matcha",on:true},
-{id:203,name:"BERRY MATCHA LATTE",price:290,cat:"Matcha",on:true},
-{id:204,name:"VANILLA MATCHA LATTE",price:280,cat:"Matcha",on:true},
+{id:202,name:"STRAWBERRY MATCHA",price:310,cat:"Matcha",on:true},
+{id:203,name:"BERRY MATCHA",price:310,cat:"Matcha",on:true},
+{id:204,name:"VANILLA MATCHA",price:310,cat:"Matcha",on:true},
 {id:205,name:"APPLE GINGER MATCHA",price:290,cat:"Matcha",on:true},
+{id:210,name:"PURE MATCHA",price:285,cat:"Matcha",on:true},
+{id:211,name:"APPLE CINNAMON",price:310,cat:"Matcha",on:true},
 {id:206,name:"CREME BRULEE MATCHA",price:280,cat:"Matcha",on:true},
 {id:301,name:"SİYAH ÇAY",price:50,cat:"Cay",on:true},
 {id:302,name:"BİTKİ ÇAYI",price:180,cat:"Cay",on:true},
 {id:303,name:"ICE TEA",price:220,cat:"Cay",on:true},
+{id:610,name:"HOMEMADE AZAHAR LEMONADE",price:350,cat:"Signature Drinks",on:true},
+{id:611,name:"SMOOTHIE",price:350,cat:"Signature Drinks",on:true},
+{id:612,name:"HOMEMADE AYRAN",price:250,cat:"Signature Drinks",on:true},
+{id:613,name:"HOMEMADE ICE TEA",price:250,cat:"Signature Drinks",on:true},
+{id:614,name:"COLA & ICE TEA",price:100,cat:"Soft Drinks",on:true},
+{id:615,name:"ICE",price:20,cat:"Ekstra",on:true},
+{id:616,name:"+ ESPRESSO",price:50,cat:"Ekstra",on:true},
+{id:617,name:"TURKISH COFFEE",price:100,cat:"Kahve",on:true},
 {id:401,name:"MUHAMMARA SANDVİÇ",price:330,cat:"Sandvic",on:true},
 {id:402,name:"RENÇ SANDVİÇ",price:330,cat:"Sandvic",on:true},
 {id:403,name:"PESTO SANDVİÇ",price:300,cat:"Sandvic",on:true},
 {id:404,name:"TON BALIĞI SANDVİÇ",price:300,cat:"Sandvic",on:true},
 {id:501,name:"TIRAMISU",price:290,cat:"Tatli",on:true},
 {id:502,name:"SOFT COOKIE",price:175,cat:"Tatli",on:true},
-{id:601,name:"+VEGAN SUT",price:70,cat:"Ekstra",on:true},
+{id:601,name:"+ VEGAN MILK",price:70,cat:"Ekstra",on:true},
 {id:602,name:"SICAK CIKOLATA",price:220,cat:"Ekstra",on:true},
 {id:603,name:"SAHLEP",price:200,cat:"Ekstra",on:true},
 {id:604,name:"SODA",price:100,cat:"Ekstra",on:true},
 {id:605,name:"BAILEYS MATCHA",price:340,cat:"Ekstra",on:true},
 {id:606,name:"SERVIS",price:200,cat:"Ekstra",on:true},
 {id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},
-{id:609,name:"CHURCHILL",price:130,cat:"Ekstra",on:true},
+{id:609,name:"CHURCHILL",price:130,cat:"Ekstra",on:true}{id:618,name:"SALep",price:200,cat:"Soft Drinks",on:true},
 ];
 
 const HISTORY=[
@@ -193,7 +203,8 @@ export default function App(){
       setLogs(merged);
       if(m&&Array.isArray(m)){
         const ids=new Set(MENU.map(x=>x.id));
-        const mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,name:f.name||mi.name,price:f.price,on:f.on,cat:f.cat||mi.cat}:mi;});
+        const refreshedIds=new Set([102,103,104,106,107,110,113,114,202,203,204,601]);
+        const mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,name:refreshedIds.has(mi.id)?mi.name:(f.name||mi.name),price:refreshedIds.has(mi.id)?mi.price:f.price,on:f.on,cat:refreshedIds.has(mi.id)?mi.cat:(f.cat||mi.cat)}:mi;});
         m.filter(x=>!ids.has(x.id)).forEach(x=>mm.push(x));
         setMenu(mm);
       }
