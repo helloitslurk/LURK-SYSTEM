@@ -209,7 +209,14 @@ export default function App(){
         m.filter(x=>!ids.has(x.id)&&!retiredIds.has(x.id)).forEach(x=>mm.push(x));
         setMenu(mm);
       }
-      if(d&&(d.date===tod()||(!d.date&&d.oa&&new Date(d.oa).getFullYear()===new Date().getFullYear()&&new Date(d.oa).getMonth()===new Date().getMonth()&&new Date(d.oa).getDate()===new Date().getDate())))setDay(d);
+      let savedDay=d;
+      try{
+        const localDay=JSON.parse(localStorage.getItem("lurk_day_state")||"null");
+        const sameLocalDate=x=>x&&(x.date===tod()||(!x.date&&x.oa&&new Date(x.oa).getFullYear()===new Date().getFullYear()&&new Date(x.oa).getMonth()===new Date().getMonth()&&new Date(x.oa).getDate()===new Date().getDate()));
+        if(sameLocalDate(localDay)&&(!sameLocalDate(savedDay)||new Date(localDay.oa||0)>new Date(savedDay.oa||0)))savedDay=localDay;
+      }catch(e){}
+      if(savedDay&&(savedDay.date===tod()||(!savedDay.date&&savedDay.oa&&new Date(savedDay.oa).getFullYear()===new Date().getFullYear()&&new Date(savedDay.oa).getMonth()===new Date().getMonth()&&new Date(savedDay.oa).getDate()===new Date().getDate())))setDay(savedDay);
+      else {setDay(null);try{localStorage.removeItem("lurk_day_state");}catch(e){}}
       clearTimeout(fb);
       loaded.current=true;
       setLoadError(false);
@@ -227,7 +234,7 @@ export default function App(){
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
 
-  function openDay(){const d={oa:new Date().toISOString(),date:tod()};setDay(d);persistDirect("lurk_d",d);}
+  function openDay(){const d={oa:new Date().toISOString(),date:tod()};setDay(d);try{localStorage.setItem("lurk_day_state",JSON.stringify(d));}catch(e){}persistDirect("lurk_d",d);}
   function closeDay(){
     if(!day)return;
     const closed=orders.filter(o=>o.date===tod());
@@ -236,7 +243,7 @@ export default function App(){
     const card=closed.reduce((s,o)=>s+paymentAmount(o,"card"),0);
     const log={id:uid(),date:tod(),oa:day.oa,ca:new Date().toISOString(),inc,cash,card,count:closed.length};
     setLogs(prev=>[log,...prev]);
-    setDay(null);persistDirect("lurk_d",null);
+    setDay(null);try{localStorage.removeItem("lurk_day_state");}catch(e){}persistDirect("lurk_d",null);
     msg("Gün kapatıldı · "+fm(inc));
   }
 
