@@ -237,7 +237,7 @@ export default function App(){
   function openDay(){const d={oa:new Date().toISOString(),date:tod()};setDay(d);try{localStorage.setItem("lurk_day_state",JSON.stringify(d));}catch(e){}persistDirect("lurk_d",d);}
   function closeDay(){
     if(!day)return;
-    const closed=orders.filter(o=>o.date===tod());
+    const closed=orders.filter(o=>o.date===tod()&&!o.partialPayment);
     const inc=closed.reduce((s,o)=>s+o.total,0);
     const cash=closed.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
     const card=closed.reduce((s,o)=>s+paymentAmount(o,"card"),0);
@@ -508,7 +508,7 @@ export default function App(){
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   const[confirm,setConfirm]=useState(false);
   const today=tod();
-  const todO=orders.filter(o=>o.date===today);
+  const todO=orders.filter(o=>o.date===today&&!o.partialPayment);
   const todInc=todO.reduce((s,o)=>s+o.total,0);
   const todCash=todO.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
   const todCard=todO.reduce((s,o)=>s+paymentAmount(o,"card"),0);
@@ -1086,14 +1086,14 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
               <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px",cursor:"pointer"}}>
                 <div>
                   <div style={{fontSize:14,fontWeight:600,color:T.text}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-                  <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.length||log?.count||0} adisyon</div>
+                  <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
                 </div>
                 <div style={{textAlign:"right"}}>
                   <div style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(day.inc)}</div>
                   <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
                 </div>
               </div>
-              {isExp&&day.orders.length>0&&day.orders.map((o,i)=>(
+              {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
                 <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(255,255,255,0.05)",background:"rgba(255,255,255,0.02)"}}>
                   <div>
                     <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
