@@ -393,8 +393,13 @@ export default function App(){
         @media (min-width: 700px) and (max-width: 1099px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
         }
-        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        @media (max-width: 699px) {
+        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        .lurk-customer-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+        @media (min-width: 700px) and (max-width: 1099px) {
+          .lurk-customer-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+        }
+        @media (max-width: 699px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+          .lurk-customer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 7px !important; }
         }
 
         /* Liquid Glass-inspired surfaces: translucent layers, fine highlights and soft depth. */
@@ -1232,19 +1237,17 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
-        {filtered.map(c=><div key={c.id} style={{background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.085)",borderRadius:16,padding:"13px",marginBottom:9,display:"flex",alignItems:"center",gap:11,boxShadow:"0 6px 18px rgba(0,0,0,.12)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:46,height:46,borderRadius:15,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:16,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
-          <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
-            <div style={{fontWeight:800,fontSize:14,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
-            <div style={{fontSize:11,color:T.textSub,marginTop:4}}>{orderCountFor(c)} sipariş</div>
-            <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{monthLabel(selectedMonth)} · {fm(monthlyTotalFor(c))}</div>
+        <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,minmax(0,1fr))",gap:8}}>
+        {filtered.map(c=><div key={c.id} style={{background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.085)",borderRadius:11,padding:"9px 8px",minWidth:0,minHeight:112,display:"flex",flexDirection:"column",alignItems:"stretch",gap:5,boxShadow:"0 4px 14px rgba(0,0,0,.12)"}}>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
+          <button onClick={()=>setDetail(c)} style={{minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
+            <div style={{fontWeight:800,fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
+            <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş</div>
+            <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(totalFor(c))}</div>
           </button>
-          <div style={{textAlign:"right",flexShrink:0,minWidth:76}}>
-            <div style={{fontSize:12,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(totalFor(c))}</div>
-            <div style={{fontSize:9,color:T.textSub,marginTop:2}}>Toplam harcama</div>
-            <button onClick={()=>openEdit(c)} style={{marginTop:4,background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:7,padding:"4px 7px",fontSize:10,cursor:"pointer"}}>Düzenle</button>
-          </div>
+          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:6,padding:"3px 4px",fontSize:9,cursor:"pointer"}}>Düzenle</button>
         </div>)}
+        </div>
         {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(255,255,255,.035)",border:"1px dashed rgba(255,255,255,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
       </div>
       {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,marginBottom:16,color:T.text}}>{editing?"Müşteriyi Düzenle":"Yeni Müşteri"}</div>
