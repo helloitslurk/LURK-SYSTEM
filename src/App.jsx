@@ -704,21 +704,21 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
                 </div>
               :grouped.map(item=>(
-                <div key={item.oid||item.id} style={{background:T.bg2,borderRadius:12,padding:"10px 11px",marginBottom:6,border:"0.5px solid rgba(255,255,255,0.07)"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:7}}>
+                <div key={item.oid||item.id} style={{background:T.bg2,borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid rgba(255,255,255,0.07)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:5}}>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:13,fontWeight:750,color:T.text,lineHeight:1.25,overflowWrap:"anywhere"}}>{item.name}</div>
-                      <div style={{fontSize:10,color:T.textDim,marginTop:3}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Eklenme saati kayıtlı değil"}</div>
+                      <div style={{fontSize:12,fontWeight:750,color:T.text,lineHeight:1.2,overflowWrap:"anywhere"}}>{item.name}</div>
+                      <div style={{fontSize:9,color:T.textDim,marginTop:2}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Eklenme saati kayıtlı değil"}</div>
                     </div>
                     <div style={{textAlign:"right",flexShrink:0}}>
-                      <div style={{fontSize:10,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
-                      <div style={{fontSize:14,color:T.accentL,fontWeight:800,marginTop:2,whiteSpace:"nowrap"}}>{fm(item.price*item.qty)}</div>
+                      <div style={{fontSize:9,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
+                      <div style={{fontSize:12,color:T.accentL,fontWeight:800,marginTop:1,whiteSpace:"nowrap"}}>{fm(item.price*item.qty)}</div>
                     </div>
                   </div>
-                  <div style={{display:"flex",alignItems:"center",gap:8}}>
-                    <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
-                    <span style={{minWidth:32,textAlign:"center",fontWeight:800,fontSize:15,color:T.text}}>{item.qty}</span>
-                    <button aria-label={item.name+" artır"} onClick={()=>chQ(table.id,item.oid||String(item.id),1)} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(52,199,89,0.3)",background:"rgba(52,199,89,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>
+                    <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:26,borderRadius:7,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
+                    <span style={{minWidth:20,textAlign:"center",fontWeight:800,fontSize:13,color:T.text}}>{item.qty}</span>
+                    <button aria-label={item.name+" artır"} onClick={()=>addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on})} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(52,199,89,0.3)",background:"rgba(52,199,89,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
                   </div>
                 </div>
               ))
