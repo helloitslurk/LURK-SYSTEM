@@ -1209,17 +1209,17 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   }
   return(
     <div className="lurk-screen lurk-customers-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Müşteriler</div>
-        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:10,color:"#fff",fontWeight:700,cursor:"pointer"}}>+ Müşteri</button>
+        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
+        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:10,color:"#fff",fontWeight:700,cursor:"pointer"}}>＋ Ekle</button>
       </div>
       <div style={{padding:14}}>
-        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="İsim veya telefon ara" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
-        <div style={{display:"flex",gap:8,marginBottom:12}}>
-          <div style={{flex:1,minWidth:0,background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:12,padding:"10px 12px"}}>
+        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:14}}>
+          <div style={{flex:1,minWidth:0,background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:16,padding:"15px 14px"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
-            <div style={{fontSize:20,fontWeight:850,color:T.text,marginTop:3}}>{customers.length}</div>
+            <div style={{fontSize:26,fontWeight:850,color:T.text,marginTop:5}}>{customers.length}</div>
           </div>
           <div style={{flex:1,minWidth:0,background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:"10px 12px"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Toplam harcama</div>
@@ -1232,10 +1232,10 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
-        {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:11,padding:"10px 11px",marginBottom:6,display:"flex",alignItems:"center",gap:10}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:34,height:34,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(52,199,89,.12)",color:T.accentL,fontSize:14,fontWeight:850,border:"1px solid rgba(52,199,89,.15)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
+        {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:15,padding:"12px",marginBottom:9,display:"flex",alignItems:"center",gap:11,boxShadow:"0 5px 18px rgba(0,0,0,.08)"}}>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:42,height:42,borderRadius:14,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(52,199,89,.12)",color:T.accentL,fontSize:14,fontWeight:850,border:"1px solid rgba(52,199,89,.15)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
           <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
-            <div style={{fontWeight:750,fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
+            <div style={{fontWeight:800,fontSize:14,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
             <div style={{fontSize:10,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş · {c.phone||"Telefon yok"}</div>
             <div style={{fontSize:10,color:balanceFor(c)>0?T.warn:T.textSub,marginTop:3}}>Bu ay {fm(monthlyTotalFor(c))}{balanceFor(c)>0?" · Veresiye "+fm(balanceFor(c)):""}</div>
           </button>
@@ -1245,7 +1245,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             <button onClick={()=>openEdit(c)} style={{marginTop:4,background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:7,padding:"4px 7px",fontSize:10,cursor:"pointer"}}>Düzenle</button>
           </div>
         </div>)}
-        {!filtered.length&&<div style={{padding:24,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub}}>{query?"Eşleşen müşteri bulunamadı.":"Henüz kayıtlı müşteri yok. İlk müşterini ekleyebilirsin."}</div>}
+        {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(255,255,255,.035)",border:"1px dashed rgba(255,255,255,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
       </div>
       {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,marginBottom:16,color:T.text}}>{editing?"Müşteriyi Düzenle":"Yeni Müşteri"}</div>
         <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
