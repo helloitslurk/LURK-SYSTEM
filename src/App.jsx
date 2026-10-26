@@ -327,7 +327,7 @@ export default function App(){
   ];
 
   return(
-    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:"100vh",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:76,boxSizing:"border-box"}}>
+    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; }
@@ -683,7 +683,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const grouped=table.order;
 
   return(
-    <div className="lurk-screen lurk-order-screen" style={{display:"flex",flexDirection:"column",height:"100vh",background:T.bg}}>
+    <div className="lurk-screen lurk-order-screen" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
       {/* Top bar */}
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
         <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
@@ -696,8 +696,8 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
 
       {/* SİPARİŞ GÖRÜNÜMÜ */}
       {!showMenu&&(
-        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-          <div style={{flex:1,overflowY:"auto",padding:"8px 10px"}}>
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
+          <div style={{flex:1,minHeight:0,overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"8px 10px"}}>
             {table.order.length===0
               ?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
                   <div style={{fontSize:36,marginBottom:12}}>☕</div>
