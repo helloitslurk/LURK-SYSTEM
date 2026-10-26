@@ -703,8 +703,8 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                   <div style={{fontSize:36,marginBottom:12}}>☕</div>
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
                 </div>
-              :grouped.map(item=>(
-                <div key={item.oid||item.id} style={{background:T.bg2,borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid rgba(255,255,255,0.07)"}}>
+              :grouped.map((item,index)=>(
+                <div key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(255,255,255,0.08)")}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:5}}>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{fontSize:12,fontWeight:750,color:T.text,lineHeight:1.2,overflowWrap:"anywhere"}}>{item.name}</div>
