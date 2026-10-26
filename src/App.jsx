@@ -294,7 +294,7 @@ export default function App(){
     if(source.partialPayments?.length&&remaining.length){msg("Kısmi ödeme alınmış bir hesabı bölmeden önce kalan ürünlerin tamamını aynı masada tutmalısın.");return;}
     if((source.lurkPlusId||target.lurkPlusId)&&source.lurkPlusId!==target.lurkPlusId){msg("LURK+ bakiyesiyle ilişkilendirilmiş ürünler farklı üyeye ait masaya taşınamaz.");return;}
     setTbl(prev=>prev.map(t=>{
-      if(t.id===sourceId)return {...t,order:remaining,s:remaining.length?"o":"free",g:remaining.length?t.g:"",customerId:remaining.length?t.customerId:null,lurkPlusId:remaining.length?t.lurkPlusId:null,oa:remaining.length?t.oa:null};
+      if(t.id===sourceId)return {...t,order:remaining,partialPayments:remaining?(t.partialPayments||[]):[],s:remaining.length?"o":"free",g:remaining.length?t.g:"",customerId:remaining.length?t.customerId:null,lurkPlusId:remaining.length?t.lurkPlusId:null,oa:remaining.length?t.oa:null};
       if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...moving],partialPayments:[...(Array.isArray(t.partialPayments)?t.partialPayments:[]),...(remaining.length?[]:(source.partialPayments||[]))],s:"o",oa:t.oa||source.oa||new Date().toISOString(),g:t.g||source.g||"",customerId:t.customerId||source.customerId||null,lurkPlusId:t.lurkPlusId||source.lurkPlusId||null};
       return t;
     }));
