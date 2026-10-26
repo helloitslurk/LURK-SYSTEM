@@ -1209,10 +1209,10 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   }
   return(
     <div className="lurk-screen lurk-customers-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12}}>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"linear-gradient(135deg,rgba(29,63,42,.72),rgba(17,20,18,.96))"}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
-        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:10,color:"#fff",fontWeight:700,cursor:"pointer"}}>＋ Ekle</button>
+        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:12,color:"#fff",fontWeight:750,cursor:"pointer",boxShadow:"0 5px 18px rgba(52,199,89,.18)"}}>＋ Yeni</button>
       </div>
       <div style={{padding:14}}>
         <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
@@ -1221,7 +1221,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
             <div style={{fontSize:26,fontWeight:850,color:T.text,marginTop:5}}>{customers.length}</div>
           </div>
-          <div style={{flex:1,minWidth:0,background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:"10px 12px"}}>
+          <div style={{flex:1,minWidth:0,background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.09)",borderRadius:15,padding:"14px 15px"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Toplam harcama</div>
             <div style={{fontSize:16,fontWeight:850,color:T.accentL,marginTop:5}}>{fm(customers.reduce((sum,c)=>sum+totalFor(c),0))}</div>
           </div>
@@ -1232,8 +1232,8 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
-        {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:15,padding:"12px",marginBottom:9,display:"flex",alignItems:"center",gap:11,boxShadow:"0 5px 18px rgba(0,0,0,.08)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:42,height:42,borderRadius:14,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(52,199,89,.12)",color:T.accentL,fontSize:14,fontWeight:850,border:"1px solid rgba(52,199,89,.15)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
+        {filtered.map(c=><div key={c.id} style={{background:"linear-gradient(125deg,rgba(29,42,33,.72),rgba(24,27,25,.96))",border:"1px solid rgba(255,255,255,.085)",borderRadius:16,padding:"13px",marginBottom:9,display:"flex",alignItems:"center",gap:11,boxShadow:"0 6px 18px rgba(0,0,0,.12)"}}>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:46,height:46,borderRadius:15,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:16,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
           <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
             <div style={{fontWeight:800,fontSize:14,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
             <div style={{fontSize:10,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş · {c.phone||"Telefon yok"}</div>
