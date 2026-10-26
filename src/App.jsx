@@ -1209,7 +1209,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   }
   return(
     <div className="lurk-screen lurk-customers-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"linear-gradient(135deg,rgba(29,63,42,.72),rgba(17,20,18,.96))"}}>
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"rgba(13,13,13,0.98)"}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
         <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:12,color:"#fff",fontWeight:750,cursor:"pointer",boxShadow:"0 5px 18px rgba(52,199,89,.18)"}}>＋ Yeni</button>
@@ -1232,12 +1232,12 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
-        {filtered.map(c=><div key={c.id} style={{background:"linear-gradient(125deg,rgba(29,42,33,.72),rgba(24,27,25,.96))",border:"1px solid rgba(255,255,255,.085)",borderRadius:16,padding:"13px",marginBottom:9,display:"flex",alignItems:"center",gap:11,boxShadow:"0 6px 18px rgba(0,0,0,.12)"}}>
+        {filtered.map(c=><div key={c.id} style={{background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.085)",borderRadius:16,padding:"13px",marginBottom:9,display:"flex",alignItems:"center",gap:11,boxShadow:"0 6px 18px rgba(0,0,0,.12)"}}>
           <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:46,height:46,borderRadius:15,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:16,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
           <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
             <div style={{fontWeight:800,fontSize:14,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
-            <div style={{fontSize:10,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş · {c.phone||"Telefon yok"}</div>
-            <div style={{fontSize:10,color:balanceFor(c)>0?T.warn:T.textSub,marginTop:3}}>Bu ay {fm(monthlyTotalFor(c))}{balanceFor(c)>0?" · Veresiye "+fm(balanceFor(c)):""}</div>
+            <div style={{fontSize:11,color:T.textSub,marginTop:4}}>{orderCountFor(c)} sipariş</div>
+            <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{monthLabel(selectedMonth)} · {fm(monthlyTotalFor(c))}</div>
           </button>
           <div style={{textAlign:"right",flexShrink:0,minWidth:76}}>
             <div style={{fontSize:12,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(totalFor(c))}</div>
@@ -1252,15 +1252,9 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
         <button onClick={saveCustomer} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Kaydet</button>
         <button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
       </Modal>}
-      {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:13,color:T.textSub,margin:"5px 0 16px"}}>{detail.phone||"Telefon kayıtlı değil"}</div>
-        <div style={{background:T.bg2,borderRadius:12,padding:14,marginBottom:12}}><div style={{fontSize:11,color:T.textSub,textTransform:"capitalize"}}>{monthLabel(selectedMonth)} harcaması</div><div style={{fontSize:23,fontWeight:800,color:T.accentL}}>{fm(monthlyTotalFor(detail))}</div><div style={{fontSize:12,color:T.textSub,marginTop:8}}>Tüm zamanlar: {fm(totalFor(detail))}</div><div style={{fontSize:12,color:balanceFor(detail)>0?T.warn:T.textSub,marginTop:5}}>Açık veresiye: {fm(balanceFor(detail))} · Puan: {pointsFor(detail)}</div></div>
-        <div style={{display:"flex",gap:8,marginBottom:14}}><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction("debt");setAmount("");setNote("");}} style={{flex:1,padding:11,background:"rgba(255,149,0,.14)",border:"1px solid rgba(255,149,0,.35)",color:T.warn,borderRadius:10,fontWeight:700,cursor:"pointer"}}>+ Borç Ekle</button><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction("payment");setAmount("");setNote("");setMethod("cash");}} disabled={balanceFor(detail)<=0} style={{flex:1,padding:11,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:700,cursor:"pointer",opacity:balanceFor(detail)<=0 ? 0.45 : 1}}>Tahsilat Al</button></div>
-        <div style={{fontWeight:700,fontSize:13,color:T.text,marginBottom:8}}>Veresiye hareketleri</div>
-        <div style={{maxHeight:180,overflowY:"auto"}}>
-          {ledgerFor(detail).map(e=><div key={e.id} style={{display:"flex",justifyContent:"space-between",gap:10,padding:"9px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><div><div>{e.type==="debt"?"Borç":"Tahsilat"} · {e.method==="cash"?"Nakit":e.method==="card"?"Kart":"Veresiye"}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(e.date).toLocaleString("tr-TR")} {e.note?"· "+e.note:""}</div></div><b style={{color:e.type==="debt"?T.warn:T.accentL}}>{e.type==="debt"?"+":"−"}{fm(e.amount)}</b></div>)}
-          {!ledgerFor(detail).length&&<div style={{fontSize:12,color:T.textSub,padding:"10px 0"}}>Henüz veresiye hareketi yok.</div>}
-        </div>
-        <div style={{fontWeight:700,fontSize:13,color:T.text,margin:"14px 0 8px"}}>Son adisyonlar</div>
+      {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:12,color:T.textSub,margin:"5px 0 16px"}}>Müşteri özeti</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}><div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.16)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>{monthLabel(selectedMonth)} harcaması</div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(monthlyTotalFor(detail))}</div></div><div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>Toplam harcama</div><div style={{fontSize:18,fontWeight:850,color:T.text}}>{fm(totalFor(detail))}</div></div></div>
+        <div style={{fontWeight:750,fontSize:13,color:T.text,marginBottom:8}}>Son adisyonlar</div>
         {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,6).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
         <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
       </Modal>}
