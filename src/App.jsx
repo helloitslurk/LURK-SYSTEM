@@ -320,11 +320,13 @@ export default function App(){
     const paidNow=normalized.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
     if(partial&&paidNow<due-0.009){
       paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
+      const paymentRecord={id:uid(),date:tod(),total:0,subtotal:0,discount:0,pt:normalized.length>1?"split":(normalized[0]?.method||pt),payments:normalized,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:[],partialPayment:true};
+      setOrd(prev=>[paymentRecord,...prev]);
       setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,partialPayments:[...previousPayments,...normalized],s:"o"}:tb));
       msg("Kısmi tahsilat kaydedildi · "+fm(paidNow)+" · Kalan "+fm(due-paidNow));
       return;
     }
-    const allPayments=[...previousPayments,...normalized];
+    const allPayments=normalized;
     const orderId=uid();
     const methodSet=[...new Set(allPayments.map(p=>p.method))];
     const order={id:orderId,date:tod(),total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
