@@ -482,7 +482,7 @@ export default function App(){
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(52,199,89,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
-      {view==="tables"&&<TablesScreen tables={tables} customers={customers} setTbl={setTbl} setV={setV} setSel={setSel} msg={msg}/>}
+      {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} setV={setV}/>}
@@ -598,7 +598,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
 }
 
 /* ─── TABLES ─── */
-function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setV,setSel,msg}){
+function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomers,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
   const[selectedCustomerId,setSelectedCustomerId]=useState("");
   const[customerQuery,setCustomerQuery]=useState("");
@@ -610,9 +610,18 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setV,setSel
 
   function addTable(){
     const selectedMember=selectedCustomerId.startsWith("lurk:")?lurkPlusMembers.find(m=>m.id===selectedCustomerId.slice(5)):null;
-    const selectedCustomer=customers.find(c=>c.id===selectedCustomerId);
-    const customerName=selectedMember?selectedMember.name:selectedCustomer?selectedCustomer.name:(nameRef.current?nameRef.current.value:"").trim();
+    let selectedCustomer=customers.find(c=>c.id===selectedCustomerId);
+    const typedName=(nameRef.current?nameRef.current.value:"").trim();
+    const customerName=selectedMember?selectedMember.name:selectedCustomer?selectedCustomer.name:typedName;
     if(!customerName){msg("Kayıtlı müşteri seç veya yeni müşteri adını gir.");return;}
+    if(!selectedMember&&!selectedCustomer){
+      const normalized=customerName.toLocaleLowerCase("tr-TR");
+      selectedCustomer=customers.find(c=>c.name.trim().toLocaleLowerCase("tr-TR")===normalized);
+      if(!selectedCustomer){
+        selectedCustomer={id:uid(),name:customerName,phone:"",createdAt:new Date().toISOString(),points:0,creditBalance:0};
+        setCustomers(prev=>prev.some(c=>c.name.trim().toLocaleLowerCase("tr-TR")===normalized)?prev:[selectedCustomer,...prev]);
+      }
+    }
     const usedNumbers=tables.map(t=>/^Masa (\\d+)$/.exec(t.lbl||"")).filter(Boolean).map(m=>Number(m[1]));
     let number=1;
     while(usedNumbers.includes(number))number++;
@@ -1166,7 +1175,9 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const availableMonths=[...new Set([currentMonth,...orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\\d{4}-\\d{2}$/.test(m))])].sort((a,b)=>b.localeCompare(a));
   const monthLabel=(month)=>{const [year,mm]=month.split("-").map(Number);return new Date(year,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
   const matchesCustomer=(o,c)=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"));
-  const totalFor=(c)=>orders.filter(o=>matchesCustomer(o,c)).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const customerOrders=(c)=>orders.filter(o=>matchesCustomer(o,c));
+  const totalFor=(c)=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const orderCountFor=(c)=>customerOrders(c).filter(o=>!o.partialPayment).length;
   const monthlyTotalFor=(c,month=selectedMonth)=>orders.filter(o=>matchesCustomer(o,c)&&(o.date||"").slice(0,7)===month).reduce((sum,o)=>sum+(Number(o.total)||0),0);
   const pointsFor=(c)=>Math.floor((orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+paymentAmount(o,"cash")+paymentAmount(o,"card"),0)+ledgerFor(c).filter(e=>e.type==="payment").reduce((sum,e)=>sum+(Number(e.amount)||0),0))/100);
   const ledgerFor=(c)=>creditEntries.filter(e=>e.customerId===c.id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
@@ -1205,17 +1216,34 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
       </div>
       <div style={{padding:14}}>
         <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="İsim veya telefon ara" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
-        <label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:6}}>Aylık harcama görünümü</label>
-        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,textTransform:"capitalize"}}>
-          {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
-        </select>
-        <div style={{fontSize:12,color:T.textSub,marginBottom:10}}>{filtered.length} kayıtlı müşteri · {monthLabel(selectedMonth)} harcamaları</div>
-        {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:13,padding:14,marginBottom:8,display:"flex",alignItems:"center",gap:12}}>
+        <div style={{display:"flex",gap:8,marginBottom:12}}>
+          <div style={{flex:1,minWidth:0,background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:12,padding:"10px 12px"}}>
+            <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
+            <div style={{fontSize:20,fontWeight:850,color:T.text,marginTop:3}}>{customers.length}</div>
+          </div>
+          <div style={{flex:1,minWidth:0,background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:"10px 12px"}}>
+            <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Toplam harcama</div>
+            <div style={{fontSize:16,fontWeight:850,color:T.accentL,marginTop:5}}>{fm(customers.reduce((sum,c)=>sum+totalFor(c),0))}</div>
+          </div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+          <div style={{fontSize:12,color:T.textSub,flex:1}}>{filtered.length} müşteri</div>
+          <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç" style={{maxWidth:155,padding:"8px 10px",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,textTransform:"capitalize",fontSize:11}}>
+            {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
+          </select>
+        </div>
+        {filtered.map(c=><div key={c.id} style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:11,padding:"10px 11px",marginBottom:6,display:"flex",alignItems:"center",gap:10}}>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:34,height:34,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(52,199,89,.12)",color:T.accentL,fontSize:14,fontWeight:850,border:"1px solid rgba(52,199,89,.15)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
           <button onClick={()=>setDetail(c)} style={{flex:1,minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
-            <div style={{fontWeight:750,fontSize:14}}>{c.name}</div><div style={{fontSize:12,color:T.textSub,marginTop:4}}>{c.phone||"Telefon eklenmemiş"}</div>
-            <div style={{fontSize:11,color:balanceFor(c)>0?T.warn:T.accentL,marginTop:5}}>Bu ay: {fm(monthlyTotalFor(c))} · Veresiye: {fm(balanceFor(c))} · Puan: {pointsFor(c)}</div>
+            <div style={{fontWeight:750,fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
+            <div style={{fontSize:10,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş · {c.phone||"Telefon yok"}</div>
+            <div style={{fontSize:10,color:balanceFor(c)>0?T.warn:T.textSub,marginTop:3}}>Bu ay {fm(monthlyTotalFor(c))}{balanceFor(c)>0?" · Veresiye "+fm(balanceFor(c)):""}</div>
           </button>
-          <button onClick={()=>openEdit(c)} style={{background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,padding:"8px 10px",cursor:"pointer"}}>Düzenle</button>
+          <div style={{textAlign:"right",flexShrink:0,minWidth:76}}>
+            <div style={{fontSize:12,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(totalFor(c))}</div>
+            <div style={{fontSize:9,color:T.textSub,marginTop:2}}>Toplam harcama</div>
+            <button onClick={()=>openEdit(c)} style={{marginTop:4,background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:7,padding:"4px 7px",fontSize:10,cursor:"pointer"}}>Düzenle</button>
+          </div>
         </div>)}
         {!filtered.length&&<div style={{padding:24,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub}}>{query?"Eşleşen müşteri bulunamadı.":"Henüz kayıtlı müşteri yok. İlk müşterini ekleyebilirsin."}</div>}
       </div>
