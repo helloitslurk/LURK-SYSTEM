@@ -52,7 +52,7 @@ const MENU=[
 {id:605,name:"BAILEYS MATCHA",price:340,cat:"Ekstra",on:true},
 {id:606,name:"SERVIS",price:200,cat:"Ekstra",on:true},
 {id:607,name:"ORALET",price:50,cat:"Ekstra",on:true},
-{id:609,name:"CHURCHILL",price:130,cat:"Ekstra",on:true}{id:618,name:"SALep",price:200,cat:"Soft Drinks",on:true},
+{id:609,name:"CHURCHILL",price:130,cat:"Ekstra",on:true}{id:618,name:"SALEP",price:200,cat:"Soft Drinks",on:true},
 ];
 
 const HISTORY=[
