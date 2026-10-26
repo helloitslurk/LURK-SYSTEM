@@ -312,7 +312,7 @@ export default function App(){
   if(!ok)return(
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"-apple-system,sans-serif"}}>
       <div style={{textAlign:"center"}}>
-        <div style={{fontSize:28,fontWeight:800,color:T.text,marginBottom:8,letterSpacing:"-1px"}}>LURK.</div>
+        <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:190,maxWidth:"65vw",height:"auto",margin:"0 auto 18px"}} />
         <div style={{fontSize:13,color:T.textSub}}>Yükleniyor...</div>
       </div>
     </div>
@@ -499,7 +499,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
           <div>
-            <div style={{fontSize:28,fontWeight:800,letterSpacing:"-1px",color:T.text}}>LURK.</div>
+            <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:112,maxWidth:"38vw",height:"auto"}} />
             <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(52,199,89,0.12)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(day?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:20,padding:"6px 12px"}}>
