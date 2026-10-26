@@ -299,7 +299,7 @@ export default function App(){
   const cats=[...new Set(menu.filter(m=>m.on).map(m=>m.cat))];
 
   if(loadError)return(
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:T.bg,fontFamily:"-apple-system,sans-serif",padding:24,color:T.text}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",padding:24,color:T.text}}>
       <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(255,255,255,.1)",borderRadius:18,padding:24}}>
         <div style={{fontSize:26,marginBottom:12}}>⚠</div>
         <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Veriler yüklenemedi</div>
@@ -310,7 +310,7 @@ export default function App(){
   );
 
   if(!ok)return(
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"-apple-system,sans-serif"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>
       <div style={{textAlign:"center"}}>
         <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:190,maxWidth:"65vw",height:"auto",margin:"0 auto 18px"}} />
         <div style={{fontSize:13,color:T.textSub}}>Yükleniyor...</div>
@@ -327,7 +327,7 @@ export default function App(){
   ];
 
   return(
-    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:"100vh",fontFamily:"Inter,'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:76,boxSizing:"border-box"}}>
+    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:"100vh",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:76,boxSizing:"border-box"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; }
