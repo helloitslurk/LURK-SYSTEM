@@ -209,7 +209,7 @@ export default function App(){
         m.filter(x=>!ids.has(x.id)&&!retiredIds.has(x.id)).forEach(x=>mm.push(x));
         setMenu(mm);
       }
-      if(d&&d.oa&&d.oa.startsWith(tod()))setDay(d);
+      if(d&&(d.date===tod()||(!d.date&&d.oa&&new Date(d.oa).getFullYear()===new Date().getFullYear()&&new Date(d.oa).getMonth()===new Date().getMonth()&&new Date(d.oa).getDate()===new Date().getDate())))setDay(d);
       clearTimeout(fb);
       loaded.current=true;
       setLoadError(false);
