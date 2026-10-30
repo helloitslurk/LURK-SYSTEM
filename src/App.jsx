@@ -820,6 +820,10 @@ export default function App(){
 @media(max-width:850px){.lurk-settings-layout{grid-template-columns:1fr;padding:18px}.lurk-settings-rail{display:grid;grid-template-columns:1fr 1fr}.lurk-settings-note{display:none}}
 @media(max-width:560px){.lurk-settings-header{padding:15px}.lurk-settings-header h1{font-size:21px}.lurk-settings-layout{padding:14px}.lurk-settings-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.lurk-settings-backupgrid{grid-template-columns:1fr}.lurk-settings-overview{align-items:flex-start;flex-direction:column}.lurk-settings-backupcard p{min-height:0}}
 @media(orientation:landscape) and (max-height:650px){.lurk-settings-header{padding:12px 3%}.lurk-settings-layout{grid-template-columns:190px minmax(0,1fr);padding:15px 3%;gap:18px}.lurk-settings-stats{margin-bottom:15px}.lurk-settings-stats article{padding:10px}.lurk-settings-stats article b{font-size:21px}.lurk-settings-backupcard{padding:14px}.lurk-settings-backupcard p{min-height:48px}}
+
+.lurk-month-review{min-height:100%;background:#F7F1E7;color:#302820}.lurk-month-header{display:flex;align-items:center;gap:16px;padding:22px 4.2%;background:#FFF9EF;border-bottom:1px solid #E9DDCE}.lurk-month-header>button{width:42px;height:42px;border:1px solid #E9DDCE;border-radius:13px;background:#F7F1E7;color:#655343;font-size:24px;cursor:pointer}.lurk-month-header>div:nth-child(2){flex:1}.lurk-month-header span,.lurk-month-kicker{font-size:9px;font-weight:850;letter-spacing:1.5px;color:#A18A73}.lurk-month-header h1{font-size:25px;margin:5px 0 2px;letter-spacing:-.8px}.lurk-month-header p{font-size:11px;color:#897968;margin:0}.lurk-month-stamp{width:46px;height:46px;display:grid;place-items:center;border-radius:15px;background:#F36B3F;color:#fff;font: bold 27px Georgia}.lurk-month-content{max-width:1250px;margin:auto;padding:26px 4.2%;display:grid;grid-template-columns:1fr 1fr;gap:16px}.lurk-month-hero{grid-column:1/-1;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;gap:12px;padding:25px 28px;border-radius:19px;background:#FBE4D6;border:1px solid #F1C9B4}.lurk-month-hero h2{font-size:24px;text-transform:capitalize;margin:7px 0 3px}.lurk-month-hero p,.lurk-month-year p,.lurk-month-products>p{font-size:11px;color:#8C7563;margin:0}.lurk-month-hero select,.lurk-month-year select{align-self:start;padding:10px 12px;border:1px solid #E8C9B8;border-radius:9px;background:#FFF9EF;color:#554638;font-size:11px;text-transform:capitalize}.lurk-month-total{grid-column:1/-1;font-size:clamp(32px,5vw,48px);font-weight:900;letter-spacing:-1.8px;color:#C9512E}.lurk-month-spark{position:absolute;right:26px;bottom:10px;font-size:90px;color:rgba(201,81,46,.1)}.lurk-month-year,.lurk-month-products{padding:21px;border:1px solid #E9DDCE;border-radius:16px;background:#FFF9EF}.lurk-month-year{display:grid;grid-template-columns:1fr auto;gap:10px}.lurk-month-year h3,.lurk-month-sectionhead h3{font-size:17px;margin:6px 0}.lurk-month-year>b{grid-column:1/-1;font-size:29px;color:#C9512E}.lurk-month-products{grid-row:span 2}.lurk-month-sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.lurk-month-sectionhead>span{font-size:9px;font-weight:900;color:#C9512E;background:#FBE5D8;padding:8px;border-radius:8px}.lurk-month-products>p{margin:0 0 14px}.lurk-month-products article{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #F0E7DC}.lurk-month-rank{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#FBE5D8;color:#C9512E;font-size:11px;font-weight:900}.lurk-month-productinfo{flex:1;min-width:0}.lurk-month-productinfo b,.lurk-month-productinfo small{display:block}.lurk-month-productinfo b{font-size:12px}.lurk-month-productinfo small{font-size:10px;color:#998876;margin-top:3px}.lurk-month-products article>strong{font-size:12px;white-space:nowrap;color:#C15D38}.lurk-month-track{height:4px;background:#F0E7DC;border-radius:5px;margin-top:8px;overflow:hidden}.lurk-month-track i{display:block;height:100%;background:#F36B3F;border-radius:5px}.lurk-month-empty{padding:24px;text-align:center;color:#998876;font-size:11px;background:#FBF5EC;border-radius:10px}
+@media(max-width:700px){.lurk-month-content{grid-template-columns:1fr;padding:15px}.lurk-month-products{grid-row:auto}.lurk-month-header{padding:15px}.lurk-month-header h1{font-size:21px}.lurk-month-hero{padding:20px}.lurk-month-hero h2{font-size:20px}}
+@media(orientation:landscape) and (max-height:650px){.lurk-month-header{padding:11px 3%}.lurk-month-content{padding:14px 3%;grid-template-columns:1fr 1fr}.lurk-month-hero{padding:16px 22px}.lurk-month-total{font-size:34px}.lurk-month-year,.lurk-month-products{padding:15px}}
 </style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -1295,7 +1299,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
 function MonthReviewScreen({orders,tables,setV}){
   const now=new Date();
   const [selectedMonth,setSelectedMonth]=useState(thisMonth());
-  const months=[...new Set([thisMonth(),...orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m))])].sort((a,b)=>b.localeCompare(a));
+  const months=[...new Set([thisMonth(),...orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\\d{4}-\\d{2}$/.test(m))])].sort((a,b)=>b.localeCompare(a));
   const [year,setYear]=useState(String(now.getFullYear()));
   const monthLabel=(m)=>{const [y,mm]=m.split("-").map(Number);return new Date(y,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
   const monthOrders=orders.filter(o=>(o.date||"").slice(0,7)===selectedMonth);
@@ -1304,50 +1308,21 @@ function MonthReviewScreen({orders,tables,setV}){
   const openRevenue=selectedMonth===thisMonth()?openOrders.reduce((s,o)=>s+o.total,0):0;
   const revenue=closedRevenue+openRevenue;
   const productTotals={};
-  [...monthOrders,...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{
-    const key=(item.name||"Ürün").trim();
-    if(!productTotals[key])productTotals[key]={name:key,revenue:0,qty:0};
-    productTotals[key].revenue+=(Number(item.price)||0)*(Number(item.qty)||0);
-    productTotals[key].qty+=Number(item.qty)||0;
-  }));
+  [...monthOrders,...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{const key=(item.name||"Ürün").trim();if(!productTotals[key])productTotals[key]={name:key,revenue:0,qty:0};productTotals[key].revenue+=(Number(item.price)||0)*(Number(item.qty)||0);productTotals[key].qty+=Number(item.qty)||0;}));
   const topProducts=Object.values(productTotals).sort((a,b)=>b.revenue-a.revenue).slice(0,5);
   const yearRevenue=orders.filter(o=>(o.date||"").startsWith(year+"-")).reduce((s,o)=>s+(Number(o.total)||0),0);
-  const yearOptions=[...new Set([String(now.getFullYear()),...orders.map(o=>(o.date||"").slice(0,4)).filter(y=>/^\d{4}$/.test(y))])].sort((a,b)=>b.localeCompare(a));
-  return(
-    <div className="lurk-screen lurk-reports-screen">
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:19,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Bu ay nasıl geçti?</div>
-      </div>
-      <div style={{padding:14}}>
-        <label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:6}}>Ay seç</label>
-        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10,textTransform:"capitalize"}}>
-          {months.map(m=><option key={m} value={m}>{monthLabel(m)}</option>)}
-        </select>
-        <div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.08)",borderRadius:16,padding:16,marginBottom:16}}>
-          <div style={{fontSize:12,color:T.textSub,textTransform:"capitalize"}}>{monthLabel(selectedMonth)} cirosu</div>
-          <div style={{fontSize:28,fontWeight:850,color:T.accentL,marginTop:6}}>{fm(revenue)}</div>
-          <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}</div>
-        </div>
-        <div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.08)",borderRadius:16,padding:16,marginBottom:16}}>
-          <div style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:4}}>Yıllık ciro</div>
-          <label style={{display:"block",fontSize:11,color:T.textSub,margin:"10px 0 6px"}}>Yıl seç</label>
-          <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10}}>
-            {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
-          </select>
-          <div style={{fontSize:24,fontWeight:800,color:T.accentL,marginTop:12}}>{fm(yearRevenue)}</div>
-          <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Seçilen yılın kapanmış adisyon cirosu</div>
-        </div>
-        <div style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:4}}>En çok kazandıran 5 ürün</div>
-        <div style={{fontSize:11,color:T.textSub,marginBottom:10}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
-        {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:T.bg2,border:"1px solid rgba(91,65,43,.07)",borderRadius:12,padding:13,marginBottom:8}}>
-          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(243,107,63,.12)",color:T.accentL,fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:T.text}}>{p.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{p.qty} adet satıldı</div></div>
-          <div style={{fontSize:13,fontWeight:800,color:T.accentL,textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
-        </div>):<div style={{padding:20,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub,fontSize:12}}>Bu ay için ürün satışı kaydı bulunamadı.</div>}
-      </div>
-    </div>
-  );
+  const yearOptions=[...new Set([String(now.getFullYear()),...orders.map(o=>(o.date||"").slice(0,4)).filter(y=>/^\\d{4}$/.test(y))])].sort((a,b)=>b.localeCompare(a));
+  const maxProduct=Math.max(1,...topProducts.map(p=>p.revenue));
+  return <div className="lurk-screen lurk-month-review">
+    <header className="lurk-month-header"><button onClick={()=>setV("home")}>←</button><div><span>THE LURK JOURNAL · MONTHLY EDITION</span><h1>Bu ay nasıl geçti?</h1><p>İşletmenin ritmini ve satış hikâyesini keşfet.</p></div><div className="lurk-month-stamp">L.</div></header>
+    <main className="lurk-month-content">
+      <section className="lurk-month-hero"><div><span className="lurk-month-kicker">AYLIK PERFORMANS</span><h2>{monthLabel(selectedMonth)}</h2><p>Kapanan adisyonlar{selectedMonth===thisMonth()?" ve açık masalardaki ürünler":""}</p></div><select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)}>{months.map(m=><option key={m} value={m}>{monthLabel(m)}</option>)}</select><div className="lurk-month-total">{fm(revenue)}</div><span className="lurk-month-spark">✳</span></section>
+      <section className="lurk-month-year"><div><span className="lurk-month-kicker">BÜYÜK RESİM</span><h3>Yıllık ciro</h3><p>Seçilen yılın kapanmış adisyon cirosu</p></div><select value={year} onChange={e=>setYear(e.target.value)}>{yearOptions.map(y=><option key={y} value={y}>{y}</option>)}</select><b>{fm(yearRevenue)}</b></section>
+      <section className="lurk-month-products"><div className="lurk-month-sectionhead"><div><span className="lurk-month-kicker">MENÜNÜN YILDIZLARI</span><h3>En çok kazandıran 5 ürün</h3></div><span>₺ TOP 5</span></div><p>Ürünler satış tutarına göre sıralanır.</p>
+        {topProducts.length?topProducts.map((p,i)=><article key={p.name}><div className="lurk-month-rank">{String(i+1).padStart(2,"0")}</div><div className="lurk-month-productinfo"><b>{p.name}</b><small>{p.qty} adet satıldı</small><div className="lurk-month-track"><i style={{width:(p.revenue/maxProduct*100)+"%"}}/></div></div><strong>{fm(p.revenue)}</strong></article>):<div className="lurk-month-empty">Bu ay için ürün satışı kaydı bulunamadı.</div>}
+      </section>
+    </main>
+  </div>;
 }
 
 /* ─── REPORTS ─── */
