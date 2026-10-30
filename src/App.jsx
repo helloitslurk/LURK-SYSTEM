@@ -88,11 +88,11 @@ const HISTORY=[
 ];
 
 const T={
-  bg:"#090B0A",bg2:"rgba(255,255,255,0.055)",bg3:"rgba(255,255,255,0.085)",
-  border:"rgba(255,255,255,0.12)",border2:"rgba(255,255,255,0.2)",
-  accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",
-  text:"#F5F5F5",textSub:"#A0A0A0",textDim:"#666",
-  danger:"#FF453A",warn:"#FF9F0A",
+  bg:"#F7F1E7",bg2:"#FFF9EF",bg3:"#F1E5D4",
+  border:"rgba(91,65,43,0.14)",border2:"rgba(91,65,43,0.24)",
+  accent:"#F36B3F",accentL:"#F36B3F",accentD:"#D94D2B",
+  text:"#302820",textSub:"#75695E",textDim:"#A39789",
+  danger:"#D94B43",warn:"#B8751B",
 };
 
 async function sbGet(key,fb){
@@ -343,7 +343,7 @@ export default function App(){
 
   if(loadError)return(
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",padding:24,color:T.text}}>
-      <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(255,255,255,.1)",borderRadius:18,padding:24}}>
+      <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(91,65,43,.1)",borderRadius:18,padding:24}}>
         <div style={{fontSize:26,marginBottom:12}}>⚠</div>
         <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Veriler yüklenemedi</div>
         <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>Supabase bağlantısı başarısız olduğu için kayıtların üzerine yazmayı önlemek amacıyla uygulama durduruldu. İnternet bağlantısını kontrol edip yeniden dene.</div>
@@ -363,9 +363,9 @@ export default function App(){
 
   const NAV=[
     {k:"home",label:"Ana Sayfa",icon:"⌂"},
-    {k:"tables",label:"Masalar",icon:"⊞"},
-    {k:"customers",label:"Müşteriler",icon:"◎"},
-    {k:"reports",label:"Raporlar",icon:"≡"},
+    {k:"tables",label:"Masalar",icon:"🪑"},
+    {k:"customers",label:"Müşteriler",icon:"👥"},
+    {k:"reports",label:"Raporlar",icon:"⭐"},
     {k:"settings",label:"Ayarlar",icon:"⚙"},
   ];
 
@@ -374,12 +374,12 @@ export default function App(){
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; }
-        body { margin: 0; background: #0D0F0E; }
+        body { margin: 0; background: #F7F1E7; }
         button, input, select { font: inherit; }
         button { transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease; }
         button:hover { filter: brightness(1.08); }
         button:active { transform: translateY(1px) scale(.99); }
-        input:focus, select:focus { border-color: rgba(91,220,130,.75) !important; box-shadow: 0 0 0 3px rgba(52,199,89,.1); }
+        input:focus, select:focus { border-color: rgba(243,107,63,.75) !important; box-shadow: 0 0 0 3px rgba(243,107,63,.1); }
         .lurk-screen:not(.lurk-order-screen) { width: 100%; max-width: 1440px; margin: 0 auto; }
         .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
         @media (min-width: 1100px) {
@@ -405,15 +405,15 @@ export default function App(){
         /* Liquid Glass-inspired surfaces: translucent layers, fine highlights and soft depth. */
         .lurk-app {
           background:
-            radial-gradient(ellipse at 12% 0%, rgba(52,199,89,.075), transparent 34%),
+            radial-gradient(ellipse at 12% 0%, rgba(243,107,63,.075), transparent 34%),
             radial-gradient(ellipse at 88% 18%, rgba(100,160,255,.045), transparent 30%),
-            #090B0A !important;
+            #F7F1E7 !important;
         }
         .lurk-app div[style*="background: rgba(255, 255, 255, 0.055)"],
-        .lurk-app div[style*="background:rgba(255,255,255,0.055)"] {
+        .lurk-app div[style*="background:rgba(91,65,43,0.055)"] {
           -webkit-backdrop-filter: blur(22px) saturate(155%);
           backdrop-filter: blur(22px) saturate(155%);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 10px 30px rgba(0,0,0,.12);
+          box-shadow: inset 0 1px 0 rgba(91,65,43,.055), 0 10px 30px rgba(0,0,0,.12);
         }
         .lurk-app [style*="background: rgb(26, 26, 26)"],
         .lurk-app [style*="background: rgb(36, 36, 36)"] {
@@ -424,15 +424,15 @@ export default function App(){
           background: rgba(24,27,25,.68) !important;
           -webkit-backdrop-filter: blur(34px) saturate(180%) !important;
           backdrop-filter: blur(34px) saturate(180%) !important;
-          border: 1px solid rgba(255,255,255,.13) !important;
-          box-shadow: 0 -8px 32px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.09);
+          border: 1px solid rgba(91,65,43,.13) !important;
+          box-shadow: 0 -8px 32px rgba(0,0,0,.22), inset 0 1px 0 rgba(91,65,43,.09);
         }
         .lurk-nav-button { min-width: 0; border-radius: 14px !important; }
-        .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
-        .lurk-nav-button:hover { background: rgba(255,255,255,.07) !important; }
+        .lurk-nav-button:focus-visible { outline: 2px solid rgba(243,107,63,.95); outline-offset: -3px; }
+        .lurk-nav-button:hover { background: rgba(91,65,43,.07) !important; }
         .lurk-app input, .lurk-app select {
-          background-color: rgba(255,255,255,.055) !important;
-          border-color: rgba(255,255,255,.14) !important;
+          background-color: rgba(91,65,43,.055) !important;
+          border-color: rgba(91,65,43,.14) !important;
           -webkit-backdrop-filter: blur(18px) saturate(150%);
           backdrop-filter: blur(18px) saturate(150%);
         }
@@ -442,9 +442,9 @@ export default function App(){
           backdrop-filter: blur(8px) saturate(125%);
         }
         .lurk-modal-panel {
-          background: rgba(28,32,29,.88) !important;
-          border: 1px solid rgba(255,255,255,.16) !important;
-          box-shadow: 0 24px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08) !important;
+          background: rgba(255,249,239,.97) !important;
+          border: 1px solid rgba(91,65,43,.16) !important;
+          box-shadow: 0 24px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(91,65,43,.08) !important;
           -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
           backdrop-filter: blur(36px) saturate(180%) !important;
         }
@@ -452,7 +452,7 @@ export default function App(){
           -webkit-tap-highlight-color: transparent;
         }
 
-        .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
+        .lurk-nav-button:focus-visible { outline: 2px solid rgba(243,107,63,.95); outline-offset: -3px; }
         @media (min-width: 1000px) {
           .lurk-app { padding-left: 104px !important; padding-bottom: 0 !important; }
           .lurk-bottom-nav {
@@ -461,14 +461,14 @@ export default function App(){
             flex-direction: column !important; justify-content: flex-start !important;
             gap: 8px !important; padding: 22px 10px !important;
             background: rgba(13,15,14,.98) !important;
-            border-top: 0 !important; border-right: 1px solid rgba(255,255,255,.09) !important;
+            border-top: 0 !important; border-right: 1px solid rgba(91,65,43,.09) !important;
             backdrop-filter: blur(24px) !important;
           }
           .lurk-nav-button {
             flex: 0 0 auto !important; width: 100% !important; min-height: 72px !important;
             padding: 13px 4px !important; border-radius: 14px !important;
           }
-          .lurk-nav-button:hover { background: rgba(255,255,255,.055) !important; }
+          .lurk-nav-button:hover { background: rgba(91,65,43,.055) !important; }
           .lurk-nav-button span:first-child { font-size: 22px !important; }
           .lurk-nav-button span:last-child { font-size: 11px !important; }
           .lurk-screen:not(.lurk-order-screen) { max-width: 1600px !important; }
@@ -482,9 +482,94 @@ export default function App(){
           .lurk-modal-backdrop { align-items: center !important; padding: 24px; }
           .lurk-modal-panel { max-width: 520px !important; border-radius: 20px !important; padding: 28px !important; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
         }
+
+        /* LURK PLAYFUL / NINTENDO-INSPIRED THEME */
+        body { background:#F7F1E7 !important; color:#302820 !important; }
+        .lurk-app {
+          color:#302820 !important;
+          background:
+            radial-gradient(ellipse at 8% 0%, rgba(243,107,63,.11), transparent 34%),
+            radial-gradient(ellipse at 92% 14%, rgba(75,170,116,.09), transparent 28%),
+            #F7F1E7 !important;
+          font-family: Inter, "Arial Rounded MT Bold", ui-rounded, system-ui, sans-serif !important;
+        }
+        .lurk-app [style*="rgba(13,13,13"] {
+          background:rgba(255,249,239,.97) !important;
+          border-color:rgba(91,65,43,.12) !important;
+          color:#302820 !important;
+        }
+        .lurk-app [style*="#090B0A"], .lurk-app [style*="#0D0F0E"],
+        .lurk-app [style*="#171B18"], .lurk-app [style*="#1C1C1E"] {
+          background:#FFF9EF !important;
+          color:#302820 !important;
+        }
+        .lurk-app [style*="rgba(255,255,255"] {
+          border-color:rgba(91,65,43,.13) !important;
+        }
+        .lurk-app input, .lurk-app select, .lurk-app textarea {
+          background:#FFFCF6 !important;
+          color:#302820 !important;
+          border:1px solid #E5D7C5 !important;
+          border-radius:13px !important;
+        }
+        .lurk-app input::placeholder { color:#A39789 !important; }
+        .lurk-app button {
+          border-radius:15px;
+          font-family:inherit !important;
+        }
+        .lurk-home-screen > div:first-child {
+          background:linear-gradient(135deg,#FFF9EF 0%,#F6EBDD 100%) !important;
+          border-bottom:1px solid #E9DCCB !important;
+        }
+        .lurk-home-screen > div:nth-child(2) button {
+          border:1px solid #E9D9C5 !important;
+          border-radius:21px !important;
+          background:linear-gradient(145deg,#FFFCF6,#F5EBDD) !important;
+          box-shadow:0 5px 0 #E7D5BE,0 10px 22px rgba(91,65,43,.08) !important;
+          transition:transform .16s ease,box-shadow .16s ease !important;
+        }
+        .lurk-home-screen > div:nth-child(2) button:active {
+          transform:translateY(3px) !important;
+          box-shadow:0 2px 0 #E7D5BE,0 5px 12px rgba(91,65,43,.07) !important;
+        }
+        .lurk-home-screen > div:nth-child(2) button > div:nth-child(2) {
+          font-size:30px !important;
+          opacity:1 !important;
+          filter:saturate(1.15);
+        }
+        .lurk-home-stats > div {
+          background:#FFFDF8 !important;
+          border:1px solid #E9DCCB !important;
+          box-shadow:0 3px 10px rgba(91,65,43,.045) !important;
+        }
+        .lurk-bottom-nav {
+          background:rgba(255,249,239,.96) !important;
+          border:1px solid #E7D8C6 !important;
+          box-shadow:0 -5px 24px rgba(91,65,43,.09) !important;
+          backdrop-filter:blur(22px) saturate(140%) !important;
+        }
+        .lurk-nav-button:hover { background:#F4E8D9 !important; }
+        .lurk-modal-backdrop { background:rgba(49,38,28,.35) !important; }
+        .lurk-modal-panel {
+          background:#FFF9EF !important;
+          border:1px solid #E7D8C6 !important;
+          box-shadow:0 22px 65px rgba(49,38,28,.2) !important;
+        }
+        .lurk-app [style*="linear-gradient(135deg,#F36B3F"] {
+          color:#fff !important;
+          box-shadow:0 4px 0 #D94D2B,0 8px 18px rgba(243,107,63,.18) !important;
+        }
+        @media (min-width:1000px) {
+          .lurk-bottom-nav {
+            background:rgba(255,249,239,.98) !important;
+            border-right:1px solid #E7D8C6 !important;
+            box-shadow:5px 0 24px rgba(91,65,43,.07) !important;
+          }
+        }
+
       `}</style>
-      {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
-      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(52,199,89,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
+      {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
+      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV}/>}
       {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
@@ -496,7 +581,7 @@ export default function App(){
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
       {view!=="order"&&(
-        <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
+        <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(91,65,43,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
             <button className="lurk-nav-button" key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
@@ -536,23 +621,23 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
     {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
     {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
     {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
-    {k:"lurkPlus",label:"LURK+",icon:"＋",sub:"Ön ödemeli üyeler"},
-    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"↗",sub:"Ciro ve en çok kazandıran 5 ürün"},
-    {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
+    {k:"lurkPlus",label:"LURK+",icon:"🎟️",sub:"Ön ödemeli üyeler"},
+    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"🏆",sub:"Ciro ve en çok kazandıran 5 ürün"},
+    {k:"menu",label:"Menü",icon:"☕",sub:"Ürün yönetimi"},
   ];
 
   return(
     <div className="lurk-screen lurk-home-screen">
       {/* Header */}
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"20px 16px 16px"}}>
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
           <div>
             <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:112,maxWidth:"38vw",height:"auto"}} />
             <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(52,199,89,0.12)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(day?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:20,padding:"6px 12px"}}>
-            <div style={{width:7,height:7,borderRadius:"50%",background:day?"#34C759":T.textDim}}/>
-            <span style={{fontSize:12,fontWeight:600,color:day?"#34C759":T.textSub}}>{day?"Açık":"Kapalı"}</span>
+          <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(243,107,63,0.12)":"rgba(91,65,43,0.05)",border:"0.5px solid "+(day?"rgba(243,107,63,0.3)":"rgba(91,65,43,0.1)"),borderRadius:20,padding:"6px 12px"}}>
+            <div style={{width:7,height:7,borderRadius:"50%",background:day?"#F36B3F":T.textDim}}/>
+            <span style={{fontSize:12,fontWeight:600,color:day?"#F36B3F":T.textSub}}>{day?"Açık":"Kapalı"}</span>
           </div>
         </div>
 
@@ -563,7 +648,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
             {label:"Nakit",val:fm(todCash),sub:"bugün"},
             {label:"Kart",val:fm(todCard),sub:"bugün"},
           ].map((s,i)=>(
-            <div key={i} style={{background:"rgba(255,255,255,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.07)",minWidth:0,overflow:"hidden"}}>
+            <div key={i} style={{background:"rgba(91,65,43,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(91,65,43,0.07)",minWidth:0,overflow:"hidden"}}>
               <div style={{fontSize:9,color:T.textSub,fontWeight:650,textTransform:"uppercase",letterSpacing:"0.45px",marginBottom:5,whiteSpace:"nowrap"}}>{s.label}</div>
               <div style={{fontSize:"clamp(11px, 2.8vw, 15px)",fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.45px",whiteSpace:"nowrap",fontVariantNumeric:"tabular-nums"}}>{s.val.replace(" TL","")}</div>
               <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
@@ -577,8 +662,8 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {PAGES.map((p,i)=>(
-            <button key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.03)"}}/>
+            <button key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(91,65,43,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(91,65,43,0.03)"}}/>
               <div style={{fontSize:22,marginBottom:10,color:T.textSub,opacity:0.6}}>{p.icon}</div>
               <div style={{fontSize:14,fontWeight:700,color:T.text}}>{p.label}</div>
               <div style={{fontSize:11,color:T.textDim,marginTop:3}}>{p.sub}</div>
@@ -589,11 +674,11 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
 
       <div style={{padding:"14px 14px 0"}}>
         {day?(
-          <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
+          <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(91,65,43,0.07)",border:"1px solid rgba(91,65,43,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
             Günü Kapat
           </button>
         ):(
-          <button onClick={openDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
+          <button onClick={openDay} style={{width:"100%",padding:"14px 16px",background:"rgba(91,65,43,0.07)",border:"1px solid rgba(91,65,43,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
             Günü Başlat
           </button>
         )}
@@ -641,10 +726,10 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
 
   return(
     <div className="lurk-screen lurk-tables-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Masalar</div>
-        <button onClick={()=>setShowAll(p=>!p)} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:T.textSub,fontWeight:600}}>{showAll?"Açıklar":"Tümü"}</button>
-        <button onClick={()=>setShowNew(true)} style={{background:"#34C759",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Masa</button>
+        <button onClick={()=>setShowAll(p=>!p)} style={{background:"rgba(91,65,43,0.06)",border:"0.5px solid rgba(91,65,43,0.12)",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:T.textSub,fontWeight:600}}>{showAll?"Açıklar":"Tümü"}</button>
+        <button onClick={()=>setShowNew(true)} style={{background:"#F36B3F",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Masa</button>
       </div>
 
       <div style={{padding:"14px"}}>
@@ -658,7 +743,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
             const total=t.order.reduce((s,o)=>s+o.price*o.qty,0);
             const isOpen=t.s==="o";
             return(
-              <div key={t.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
+              <div key={t.id} style={{background:T.bg2,border:"0.5px solid rgba(91,65,43,0.07)",borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
                 
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
                   <div style={{fontSize:14,fontWeight:700,color:T.text}}>{t.g||t.lbl}</div>
@@ -668,7 +753,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
                 <div style={{fontSize:12,color:isOpen?T.textSub:T.textDim,marginBottom:12}}>
                   {isOpen?fm(total):"Boş"}
                 </div>
-                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:10,color:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:"rgba(91,65,43,0.06)",border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:10,color:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
                   {isOpen?"Siparişe Gir →":"Aç →"}
                 </button>
               </div>
@@ -683,10 +768,10 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
           <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Kayıtlı müşterini seç veya yeni bir isim gir.</div>
           {(customers.length>0||lurkPlusMembers.length>0)&&<>
             <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Kayıtlı müşteri veya LURK+ üyesi ara</label>
-            <input value={customerQuery} onChange={e=>{setCustomerQuery(e.target.value);setSelectedCustomerId("");if(nameRef.current)nameRef.current.value="";}} placeholder="Müşteri ismi yaz..." style={{width:"100%",padding:"11px 12px",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,fontSize:14,boxSizing:"border-box",marginBottom:8,background:"rgba(255,255,255,.06)",color:T.text}}/>
+            <input value={customerQuery} onChange={e=>{setCustomerQuery(e.target.value);setSelectedCustomerId("");if(nameRef.current)nameRef.current.value="";}} placeholder="Müşteri ismi yaz..." style={{width:"100%",padding:"11px 12px",border:"1px solid rgba(91,65,43,.12)",borderRadius:10,fontSize:14,boxSizing:"border-box",marginBottom:8,background:"rgba(91,65,43,.06)",color:T.text}}/>
             <div style={{maxHeight:135,overflowY:"auto",marginBottom:12}}>
-              {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(c=><button key={"customer:"+c.id} onClick={()=>{setSelectedCustomerId(c.id);setCustomerQuery(c.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId===c.id?"rgba(52,199,89,.15)":T.bg2,color:selectedCustomerId===c.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId===c.id?"rgba(52,199,89,.4)":"rgba(255,255,255,.08)"),borderRadius:9,cursor:"pointer"}}>{c.name} · Müşteri</button>)}
-              {lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(m=><button key={"lurk:"+m.id} onClick={()=>{setSelectedCustomerId("lurk:"+m.id);setCustomerQuery(m.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId==="lurk:"+m.id?"rgba(52,199,89,.15)":T.bg2,color:selectedCustomerId==="lurk:"+m.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId==="lurk:"+m.id?"rgba(52,199,89,.4)":"rgba(255,255,255,.08)"),borderRadius:9,cursor:"pointer"}}>{m.name} · LURK+ · {fm(m.balance)}</button>)}
+              {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(c=><button key={"customer:"+c.id} onClick={()=>{setSelectedCustomerId(c.id);setCustomerQuery(c.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId===c.id?"rgba(243,107,63,.15)":T.bg2,color:selectedCustomerId===c.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId===c.id?"rgba(243,107,63,.4)":"rgba(91,65,43,.08)"),borderRadius:9,cursor:"pointer"}}>{c.name} · Müşteri</button>)}
+              {lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(m=><button key={"lurk:"+m.id} onClick={()=>{setSelectedCustomerId("lurk:"+m.id);setCustomerQuery(m.name);if(nameRef.current)nameRef.current.value="";}} style={{display:"block",width:"100%",padding:"10px 12px",marginBottom:5,textAlign:"left",background:selectedCustomerId==="lurk:"+m.id?"rgba(243,107,63,.15)":T.bg2,color:selectedCustomerId==="lurk:"+m.id?T.accentL:T.text,border:"1px solid "+(selectedCustomerId==="lurk:"+m.id?"rgba(243,107,63,.4)":"rgba(91,65,43,.08)"),borderRadius:9,cursor:"pointer"}}>{m.name} · LURK+ · {fm(m.balance)}</button>)}
               {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&<div style={{fontSize:12,color:T.textSub,padding:8}}>Eşleşen kayıt yok. Yeni isim girebilirsin.</div>}
             </div>
           </>}
@@ -694,9 +779,9 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
           <input ref={nameRef} placeholder="Yeni müşteri adı"
             onChange={()=>{setSelectedCustomerId("");setCustomerQuery("");}}
             onKeyDown={e=>{if(e.key==="Enter")addTable();}}
-            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,0.07)",color:T.text}}/>
           <button onClick={addTable}
-            style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>
+            style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(243,107,63,0.3)"}}>
             Müşteriyi Seç ve Siparişe Geç
           </button>
           <button onClick={()=>{setShowNew(false);setSelectedCustomerId("");setCustomerQuery("");}}
@@ -747,13 +832,13 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   return(
     <div className="lurk-screen lurk-order-screen" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
       {/* Top bar */}
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-        <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+        <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(91,65,43,0.06)",border:"0.5px solid rgba(91,65,43,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
         <div style={{flex:1}}>
           <div style={{fontWeight:700,fontSize:15,color:T.text}}>{table.lbl}</div>
           {table.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{table.g}</div>}
         </div>
-        <button onClick={()=>setShowName(true)} style={{background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer",color:table.g?T.accentL:T.textSub}}>{table.g||"+ İsim"}</button>
+        <button onClick={()=>setShowName(true)} style={{background:"rgba(91,65,43,0.05)",border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:20,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer",color:table.g?T.accentL:T.textSub}}>{table.g||"+ İsim"}</button>
       </div>
 
       {/* SİPARİŞ GÖRÜNÜMÜ */}
@@ -766,7 +851,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
                 </div>
               :grouped.map((item,index)=>(
-                <div key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(255,255,255,0.08)")}}>
+                <div key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(91,65,43,0.08)")}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:5}}>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{fontSize:12,fontWeight:750,color:T.text,lineHeight:1.2,overflowWrap:"anywhere"}}>{item.name}</div>
@@ -780,23 +865,23 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
                     <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:26,borderRadius:7,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
                     <span style={{minWidth:20,textAlign:"center",fontWeight:800,fontSize:13,color:T.text}}>{item.qty}</span>
-                    <button aria-label={item.name+" artır"} onClick={()=>addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on})} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(52,199,89,0.3)",background:"rgba(52,199,89,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
+                    <button aria-label={item.name+" artır"} onClick={()=>addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on})} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(243,107,63,0.3)",background:"rgba(243,107,63,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
                   </div>
                 </div>
               ))
             }
           </div>
           {/* Alt bar */}
-          <div style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
+          <div style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(91,65,43,0.08)",background:"rgba(255,249,239,0.97)",backdropFilter:"blur(20px)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
               <span style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(Math.max(0,sub-previousPaid))}</span>
             </div>
             <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
-              <button onClick={()=>setShowMove(true)} disabled={table.order.length===0||tables.filter(t=>t.id!==table.id).length===0} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:table.order.length===0?T.textDim:T.textSub,fontWeight:600,fontSize:12,cursor:table.order.length===0?"not-allowed":"pointer"}}>⇄ Taşı</button>
-              <button onClick={()=>setShowFis(true)} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>Fiş</button>
-              <button onClick={()=>setShowPay(true)} disabled={table.order.length===0} style={{flex:2,padding:"13px",background:table.order.length===0?T.bg3:"linear-gradient(135deg,#34C759,#248A3D)",color:table.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:table.order.length===0?"not-allowed":"pointer",boxShadow:table.order.length>0?"0 4px 16px rgba(52,199,89,0.35)":"none"}}>Ödeme Al ↑</button>
+              <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
+              <button onClick={()=>setShowMove(true)} disabled={table.order.length===0||tables.filter(t=>t.id!==table.id).length===0} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,color:table.order.length===0?T.textDim:T.textSub,fontWeight:600,fontSize:12,cursor:table.order.length===0?"not-allowed":"pointer"}}>⇄ Taşı</button>
+              <button onClick={()=>setShowFis(true)} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>Fiş</button>
+              <button onClick={()=>setShowPay(true)} disabled={table.order.length===0} style={{flex:2,padding:"13px",background:table.order.length===0?T.bg3:"linear-gradient(135deg,#F36B3F,#D94D2B)",color:table.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:table.order.length===0?"not-allowed":"pointer",boxShadow:table.order.length>0?"0 4px 16px rgba(243,107,63,0.35)":"none"}}>Ödeme Al ↑</button>
             </div>
           </div>
         </div>
@@ -806,23 +891,23 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
       {showMenu&&(
         <div style={{flex:1,display:"flex",overflow:"hidden"}}>
           {/* Sol: dikey kategori */}
-          <div style={{width:72,background:"rgba(255,255,255,0.02)",borderRight:"0.5px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
+          <div style={{width:72,background:"rgba(91,65,43,0.02)",borderRight:"0.5px solid rgba(91,65,43,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
             {cats.map(c=>(
-              <button key={c} onClick={()=>setSelCat(c)} style={{padding:"14px 4px",border:"none",background:selCat===c?"rgba(52,199,89,0.12)":"transparent",borderLeft:"3px solid "+(selCat===c?T.accent:"transparent"),color:selCat===c?T.accent:T.textSub,fontSize:11,fontWeight:selCat===c?700:500,cursor:"pointer",textAlign:"center",lineHeight:1.3,flexShrink:0}}>{c}</button>
+              <button key={c} onClick={()=>setSelCat(c)} style={{padding:"14px 4px",border:"none",background:selCat===c?"rgba(243,107,63,0.12)":"transparent",borderLeft:"3px solid "+(selCat===c?T.accent:"transparent"),color:selCat===c?T.accent:T.textSub,fontSize:11,fontWeight:selCat===c?700:500,cursor:"pointer",textAlign:"center",lineHeight:1.3,flexShrink:0}}>{c}</button>
             ))}
           </div>
           {/* Sağ: ürün grid */}
           <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
             <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
-              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(91,65,43,0.1)",background:"rgba(91,65,43,0.04)",color:T.text,fontSize:13,outline:"none"}} />
               <div className="lurk-product-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
                 {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
                   const inCart=table.order.filter(o=>o.id===item.id).reduce((sum,o)=>sum+o.qty,0);
                   const isFlash=flash===item.id;
                   return(
-                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(52,199,89,0.25)":inCart>0?"rgba(52,199,89,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(52,199,89,0.35)":"rgba(255,255,255,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
+                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(243,107,63,0.25)":inCart>0?"rgba(243,107,63,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(243,107,63,0.35)":"rgba(91,65,43,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
                       {inCart>0&&<span style={{position:"absolute",top:6,right:8,background:T.accent,color:"#fff",borderRadius:20,fontSize:10,fontWeight:800,padding:"1px 6px"}}>×{inCart}</span>}
-                      {isFlash&&<div style={{position:"absolute",inset:0,borderRadius:12,border:"2px solid #34C759",pointerEvents:"none"}}/>}
+                      {isFlash&&<div style={{position:"absolute",inset:0,borderRadius:12,border:"2px solid #F36B3F",pointerEvents:"none"}}/>}
                       <div style={{fontSize:11,fontWeight:700,marginBottom:5,paddingRight:inCart>0?28:0,lineHeight:1.3,color:T.text}}>{item.name}</div>
                       <div style={{fontSize:14,fontWeight:800,color:inCart>0?T.accentL:T.textDim}}>{fm(item.price)}</div>
                     </button>
@@ -831,19 +916,19 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
               </div>
             </div>
             {itemCount>0&&(
-              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
+              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(91,65,43,0.08)",background:"rgba(255,249,239,0.97)",backdropFilter:"blur(20px)"}}>
                 <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                  <button onClick={()=>setShowMenu(false)} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"11px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:8}}>
+                  <button onClick={()=>setShowMenu(false)} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,padding:"11px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:8}}>
                     <span style={{background:T.accent,color:"#fff",borderRadius:20,fontSize:11,fontWeight:800,padding:"2px 8px",flexShrink:0}}>{itemCount}</span>
                     <span style={{fontSize:12,color:T.textSub,flex:1}}>Siparişe dön →</span>
                   </button>
-                  <button onClick={()=>setShowPay(true)} style={{background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,padding:"11px 18px",color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)",whiteSpace:"nowrap",flexShrink:0}}>{fm(sub)}</button>
+                  <button onClick={()=>setShowPay(true)} style={{background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,padding:"11px 18px",color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 16px rgba(243,107,63,0.35)",whiteSpace:"nowrap",flexShrink:0}}>{fm(sub)}</button>
                 </div>
               </div>
             )}
             {itemCount===0&&(
-              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(255,255,255,0.08)"}}>
-                <button onClick={()=>setShowMenu(false)} style={{width:"100%",padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>← Siparişe Dön</button>
+              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(91,65,43,0.08)"}}>
+                <button onClick={()=>setShowMenu(false)} style={{width:"100%",padding:"13px",background:T.bg2,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>← Siparişe Dön</button>
               </div>
             )}
           </div>
@@ -858,11 +943,11 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             {table.order.map(line=>{
               const key=line.oid||String(line.id);
               const qty=Math.max(0,Math.min(line.qty,Number(moveSelections[key]??0)));
-              return <div key={key} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 10px",background:T.bg2,border:"1px solid rgba(255,255,255,.08)",borderRadius:10}}>
+              return <div key={key} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 10px",background:T.bg2,border:"1px solid rgba(91,65,43,.08)",borderRadius:10}}>
                 <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:700,color:T.text}}>{line.name}</div><div style={{fontSize:10,color:T.textSub}}>{fm(line.price)} · mevcut {line.qty}</div></div>
-                <button onClick={()=>setMoveSelections(p=>({...p,[key]:Math.max(0,Number(p[key]??0)-1)}))} style={{width:30,height:30,borderRadius:8,border:"1px solid rgba(255,255,255,.12)",background:"transparent",color:T.text,fontSize:18}}>−</button>
+                <button onClick={()=>setMoveSelections(p=>({...p,[key]:Math.max(0,Number(p[key]??0)-1)}))} style={{width:30,height:30,borderRadius:8,border:"1px solid rgba(91,65,43,.12)",background:"transparent",color:T.text,fontSize:18}}>−</button>
                 <span style={{minWidth:18,textAlign:"center",fontSize:13,fontWeight:800,color:T.accentL}}>{qty}</span>
-                <button onClick={()=>setMoveSelections(p=>({...p,[key]:Math.min(line.qty,Number(p[key]??0)+1)}))} style={{width:30,height:30,borderRadius:8,border:"1px solid rgba(52,199,89,.25)",background:"rgba(52,199,89,.1)",color:T.accentL,fontSize:18}}>+</button>
+                <button onClick={()=>setMoveSelections(p=>({...p,[key]:Math.min(line.qty,Number(p[key]??0)+1)}))} style={{width:30,height:30,borderRadius:8,border:"1px solid rgba(243,107,63,.25)",background:"rgba(243,107,63,.1)",color:T.accentL,fontSize:18}}>+</button>
               </div>;
             })}
           </div>
@@ -871,7 +956,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             {tables.filter(t=>t.id!==table.id).map(target=>{
               const targetTotal=(target.order||[]).reduce((sum,item)=>sum+item.price*item.qty,0);
               const selectedQty=table.order.reduce((sum,line)=>sum+Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0))),0);
-              return <button key={target.id} onClick={()=>{moveTableOrder(table.id,target.id,table.order.map(line=>({key:line.oid||String(line.id),qty:Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0)))})));setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(52,199,89,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(52,199,89,.3)":"rgba(255,255,255,.1)"),borderRadius:11,color:T.text,cursor:"pointer",opacity:selectedQty?1:.55}}>
+              return <button key={target.id} onClick={()=>{moveTableOrder(table.id,target.id,table.order.map(line=>({key:line.oid||String(line.id),qty:Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0)))})));setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(243,107,63,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(243,107,63,.3)":"rgba(91,65,43,.1)"),borderRadius:11,color:T.text,cursor:"pointer",opacity:selectedQty?1:.55}}>
                 <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Açık masa · "+fm(targetTotal):"Boş masa"}</span></span>
                 <span style={{color:T.accentL,fontSize:18}}>→</span>
               </button>;
@@ -888,15 +973,15 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             <div style={{fontSize:22,fontWeight:800,letterSpacing:"-0.5px",color:T.text}}>LURK.</div>
             <div style={{fontSize:11,color:T.textSub,marginTop:2}}>Beşiktaş, İstanbul</div>
           </div>
-          <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginBottom:12}}/>
+          <div style={{borderTop:"1px dashed rgba(91,65,43,0.1)",marginBottom:12}}/>
           <div style={{marginBottom:12}}>
             <div style={{fontSize:11,color:T.textSub}}>{table.lbl}</div>
             {table.g&&<div style={{fontSize:14,fontWeight:600,marginTop:1,color:T.text}}>{table.g}</div>}
             <div style={{fontSize:11,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long"})} · {ft(new Date().toISOString())}</div>
           </div>
-          <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginBottom:8}}/>
+          <div style={{borderTop:"1px dashed rgba(91,65,43,0.1)",marginBottom:8}}/>
           {grouped.map((item,i)=>(
-            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"0.5px solid rgba(255,255,255,0.05)"}}>
+            <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"0.5px solid rgba(91,65,43,0.05)"}}>
               <div>
                 <div style={{fontSize:13,color:T.text}}>{item.name}</div>
                 <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{item.qty} × {fm(item.price)}</div>
@@ -904,12 +989,12 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
               <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(item.price*item.qty)}</div>
             </div>
           ))}
-          <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
+          <div style={{borderTop:"1px dashed rgba(91,65,43,0.1)",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
             <span style={{fontSize:15,fontWeight:700,color:T.text}}>Toplam</span>
             <span style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(sub)}</span>
           </div>
           <div style={{textAlign:"center",marginTop:16,fontSize:11,color:T.textDim}}>Teşekkür ederiz ✦</div>
-          <button onClick={()=>setShowFis(false)} style={{width:"100%",padding:"12px",background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:10,color:T.textSub,fontSize:13,cursor:"pointer",marginTop:16}}>Kapat</button>
+          <button onClick={()=>setShowFis(false)} style={{width:"100%",padding:"12px",background:"rgba(91,65,43,0.06)",border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:10,color:T.textSub,fontSize:13,cursor:"pointer",marginTop:16}}>Kapat</button>
         </Modal>
       )}
 
@@ -920,13 +1005,13 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
           <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Kayıtlı müşteriyi seç veya yeni müşteri adını gir.</div>
           {lurkPlusMembers.length>0&&<div style={{marginBottom:12}}>
             <div style={{fontSize:11,fontWeight:800,color:T.accentL,marginBottom:6}}>LURK+ ÜYELERİ</div>
-            <div style={{maxHeight:125,overflowY:"auto"}}>{lurkPlusMembers.map(m=><button key={m.id} onClick={()=>{setTableCustomer(table.id,{...m,lurkPlus:true});setName(m.name);setShowName(false);}} style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",padding:11,marginBottom:5,textAlign:"left",background:table.lurkPlusId===m.id?"rgba(52,199,89,.13)":T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}><span>{m.name}</span><span style={{fontSize:11,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</span></button>)}</div>
+            <div style={{maxHeight:125,overflowY:"auto"}}>{lurkPlusMembers.map(m=><button key={m.id} onClick={()=>{setTableCustomer(table.id,{...m,lurkPlus:true});setName(m.name);setShowName(false);}} style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",padding:11,marginBottom:5,textAlign:"left",background:table.lurkPlusId===m.id?"rgba(243,107,63,.13)":T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.08)",borderRadius:9,cursor:"pointer"}}><span>{m.name}</span><span style={{fontSize:11,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</span></button>)}</div>
           </div>}
-          {customers?.length>0&&<div style={{maxHeight:150,overflowY:"auto",marginBottom:12}}>{customers.map(c=><button key={c.id} onClick={()=>{setTableCustomer(table.id,c);setName(c.name);setShowName(false);}} style={{display:"block",width:"100%",padding:11,marginBottom:5,textAlign:"left",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}>{c.name}<span style={{display:"block",fontSize:11,color:T.textSub,marginTop:3}}>{c.phone||"Telefon yok"}</span></button>)}</div>}
+          {customers?.length>0&&<div style={{maxHeight:150,overflowY:"auto",marginBottom:12}}>{customers.map(c=><button key={c.id} onClick={()=>{setTableCustomer(table.id,c);setName(c.name);setShowName(false);}} style={{display:"block",width:"100%",padding:11,marginBottom:5,textAlign:"left",background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.08)",borderRadius:9,cursor:"pointer"}}>{c.name}<span style={{display:"block",fontSize:11,color:T.textSub,marginTop:3}}>{c.phone||"Telefon yok"}</span></button>)}</div>}
           <input autoFocus placeholder="Yeni müşteri adı (zorunlu)" value={name} onChange={e=>setName(e.target.value)}
             onKeyDown={e=>{if(e.key==="Enter"&&name.trim()){setTableCustomer(table.id,name.trim());setShowName(false);}}}
-            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <button disabled={!name.trim()} onClick={()=>{if(!name.trim())return;setTableCustomer(table.id,name.trim());setShowName(false);}} style={{width:"100%",padding:"14px",background:name.trim()?"linear-gradient(135deg,#34C759,#248A3D)":T.bg3,border:"none",borderRadius:12,color:name.trim()?"#fff":T.textDim,fontSize:15,fontWeight:700,cursor:name.trim()?"pointer":"not-allowed"}}>Müşteriyi Onayla</button>
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,0.07)",color:T.text}}/>
+          <button disabled={!name.trim()} onClick={()=>{if(!name.trim())return;setTableCustomer(table.id,name.trim());setShowName(false);}} style={{width:"100%",padding:"14px",background:name.trim()?"linear-gradient(135deg,#F36B3F,#D94D2B)":T.bg3,border:"none",borderRadius:12,color:name.trim()?"#fff":T.textDim,fontSize:15,fontWeight:700,cursor:name.trim()?"pointer":"not-allowed"}}>Müşteriyi Onayla</button>
         </Modal>
       )}
 
@@ -936,30 +1021,30 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
           <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
           {previousPaid>0&&<div style={{fontSize:11,color:T.accentL,marginBottom:8}}>Önceden tahsil edilen: {fm(previousPaid)}</div>}
           <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
-          <div style={{background:T.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.08)"}}>
+          <div style={{background:T.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14,border:"0.5px solid rgba(91,65,43,0.08)"}}>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>Ara toplam</span><span>{fm(sub)}</span></div>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>İndirim</span><span style={{color:discVal>0?T.accentL:T.textSub}}>−{fm(discVal)}</span></div>
-            <div style={{height:1,background:"rgba(255,255,255,0.09)",marginBottom:8}}/>
+            <div style={{height:1,background:"rgba(91,65,43,0.09)",marginBottom:8}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:13,fontWeight:700,color:T.text}}>Ödenecek</span><span style={{fontSize:25,fontWeight:800,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</span></div>
           </div>
           <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} disabled={partialMode||previousPaid>0} onChange={e=>setDisc(e.target.value)}
-            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:8,background:"rgba(255,255,255,0.07)",color:T.text,opacity:partialMode||previousPaid>0?0.5:1}}/>
-          {!table.lurkPlusId&&pt!=="credit"&&<button onClick={()=>{setPartialMode(v=>!v);setPartialAmount("");setSplitMode(false);setDisc("");}} style={{width:"100%",padding:10,marginBottom:10,background:partialMode?"rgba(52,199,89,.15)":T.bg2,border:"1px solid "+(partialMode?"rgba(52,199,89,.4)":"rgba(255,255,255,.1)"),borderRadius:10,color:partialMode?T.accentL:T.textSub,fontWeight:700,fontSize:12}}>{partialMode?"✓ Kısmi ödeme açık":"＋ Kısmi ödeme yap"}</button>}
-          {partialMode&&<input type="number" min="0.01" max={total} value={partialAmount} onChange={e=>{setPartialAmount(e.target.value);setCashPart(e.target.value);setCardPart("");}} placeholder={"Şimdi alınacak tutar · kalan "+fm(total)} style={{width:"100%",padding:"12px 14px",border:"1px solid rgba(52,199,89,.35)",borderRadius:10,fontSize:16,boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,.06)",color:T.text}}/>}
+            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:8,background:"rgba(91,65,43,0.07)",color:T.text,opacity:partialMode||previousPaid>0?0.5:1}}/>
+          {!table.lurkPlusId&&pt!=="credit"&&<button onClick={()=>{setPartialMode(v=>!v);setPartialAmount("");setSplitMode(false);setDisc("");}} style={{width:"100%",padding:10,marginBottom:10,background:partialMode?"rgba(243,107,63,.15)":T.bg2,border:"1px solid "+(partialMode?"rgba(243,107,63,.4)":"rgba(91,65,43,.1)"),borderRadius:10,color:partialMode?T.accentL:T.textSub,fontWeight:700,fontSize:12}}>{partialMode?"✓ Kısmi ödeme açık":"＋ Kısmi ödeme yap"}</button>}
+          {partialMode&&<input type="number" min="0.01" max={total} value={partialAmount} onChange={e=>{setPartialAmount(e.target.value);setCashPart(e.target.value);setCardPart("");}} placeholder={"Şimdi alınacak tutar · kalan "+fm(total)} style={{width:"100%",padding:"12px 14px",border:"1px solid rgba(243,107,63,.35)",borderRadius:10,fontSize:16,boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,.06)",color:T.text}}/>}
           <div style={{display:"flex",gap:8,marginBottom:10}}>
             {["cash","card","credit"].map(p=>(
-              <button key={p} onClick={()=>{setPt(p);setSplitMode(false);if(p==="credit")setPartialMode(false);}} style={{flex:1,padding:"12px",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:!splitMode&&pt===p?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.05)",color:!splitMode&&pt===p?T.accentL:T.textSub,borderColor:!splitMode&&pt===p?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"}}>
+              <button key={p} onClick={()=>{setPt(p);setSplitMode(false);if(p==="credit")setPartialMode(false);}} style={{flex:1,padding:"12px",border:"0.5px solid rgba(91,65,43,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:!splitMode&&pt===p?"rgba(243,107,63,0.15)":"rgba(91,65,43,0.05)",color:!splitMode&&pt===p?T.accentL:T.textSub,borderColor:!splitMode&&pt===p?"rgba(243,107,63,0.4)":"rgba(91,65,43,0.12)"}}>
                 {p==="cash"?"Nakit":p==="card"?"Kart":"Veresiye"}
               </button>
             ))}
           </div>
-          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
+          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(243,107,63,0.14)":"rgba(91,65,43,0.05)",border:"0.5px solid "+(splitMode?"rgba(243,107,63,0.4)":"rgba(91,65,43,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
           {splitMode&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-            <label style={{fontSize:11,color:T.textSub}}>Nakit (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round(((partialMode?paymentTarget:total)-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
-            <label style={{fontSize:11,color:T.textSub}}>Kart (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
+            <label style={{fontSize:11,color:T.textSub}}>Nakit (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round(((partialMode?paymentTarget:total)-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(91,65,43,0.12)",borderRadius:9}}/></label>
+            <label style={{fontSize:11,color:T.textSub}}>Kart (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(91,65,43,0.12)",borderRadius:9}}/></label>
           </div>}
           {splitMode&&<div style={{fontSize:11,color:Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)<0.009?T.accentL:"#FF6B6B",marginBottom:12}}>Ödeme toplamı: {fm((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0))} / {fm(total)}</div>}
-          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Kısmi ödeme tutarı kalan borçtan büyük olamaz.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("Nakit ve kart toplamı tahsil edilecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>{partialMode?"Kısmi Tahsil Et · "+fm(paymentTarget):"Tahsil Et · "+fm(total)}</button>
+          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Kısmi ödeme tutarı kalan borçtan büyük olamaz.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("Nakit ve kart toplamı tahsil edilecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(243,107,63,0.35)"}}>{partialMode?"Kısmi Tahsil Et · "+fm(paymentTarget):"Tahsil Et · "+fm(total)}</button>
           <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Vazgeç</button>
         </Modal>
       )}
@@ -991,24 +1076,24 @@ function MonthReviewScreen({orders,tables,setV}){
   const yearOptions=[...new Set([String(now.getFullYear()),...orders.map(o=>(o.date||"").slice(0,4)).filter(y=>/^\d{4}$/.test(y))])].sort((a,b)=>b.localeCompare(a));
   return(
     <div className="lurk-screen lurk-reports-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:19,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Bu ay nasıl geçti?</div>
       </div>
       <div style={{padding:14}}>
         <label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:6}}>Ay seç</label>
-        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,textTransform:"capitalize"}}>
+        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10,textTransform:"capitalize"}}>
           {months.map(m=><option key={m} value={m}>{monthLabel(m)}</option>)}
         </select>
-        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:16,marginBottom:16}}>
+        <div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.08)",borderRadius:16,padding:16,marginBottom:16}}>
           <div style={{fontSize:12,color:T.textSub,textTransform:"capitalize"}}>{monthLabel(selectedMonth)} cirosu</div>
           <div style={{fontSize:28,fontWeight:850,color:T.accentL,marginTop:6}}>{fm(revenue)}</div>
           <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}</div>
         </div>
-        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:16,marginBottom:16}}>
+        <div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.08)",borderRadius:16,padding:16,marginBottom:16}}>
           <div style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:4}}>Yıllık ciro</div>
           <label style={{display:"block",fontSize:11,color:T.textSub,margin:"10px 0 6px"}}>Yıl seç</label>
-          <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}>
+          <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10}}>
             {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
           </select>
           <div style={{fontSize:24,fontWeight:800,color:T.accentL,marginTop:12}}>{fm(yearRevenue)}</div>
@@ -1016,8 +1101,8 @@ function MonthReviewScreen({orders,tables,setV}){
         </div>
         <div style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:4}}>En çok kazandıran 5 ürün</div>
         <div style={{fontSize:11,color:T.textSub,marginBottom:10}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
-        {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:13,marginBottom:8}}>
-          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(52,199,89,.12)",color:T.accentL,fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
+        {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:T.bg2,border:"1px solid rgba(91,65,43,.07)",borderRadius:12,padding:13,marginBottom:8}}>
+          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(243,107,63,.12)",color:T.accentL,fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
           <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:T.text}}>{p.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{p.qty} adet satıldı</div></div>
           <div style={{fontSize:13,fontWeight:800,color:T.accentL,textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
         </div>):<div style={{padding:20,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub,fontSize:12}}>Bu ay için ürün satışı kaydı bulunamadı.</div>}
@@ -1058,15 +1143,15 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
 
   return(
     <div className="lurk-screen lurk-reports-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Raporlar</div><button onClick={exportMonthCsv} style={{background:T.bg2,color:T.accentL,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,padding:"9px 11px",fontSize:12,fontWeight:700,cursor:"pointer"}}>↓ CSV</button>
+        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Raporlar</div><button onClick={exportMonthCsv} style={{background:T.bg2,color:T.accentL,border:"1px solid rgba(91,65,43,.12)",borderRadius:10,padding:"9px 11px",fontSize:12,fontWeight:700,cursor:"pointer"}}>↓ CSV</button>
       </div>
 
       {/* Ay seçici */}
-      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
+      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(91,65,43,0.06)"}}>
         {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#34C759":"rgba(255,255,255,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#34C759":"rgba(255,255,255,0.1)"}}>
+          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#F36B3F":"rgba(91,65,43,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#F36B3F":"rgba(91,65,43,0.1)"}}>
             {ml(m)}
           </button>
         ))}
@@ -1080,7 +1165,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
           {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
           {label:"Açık veresiye",val:fm(Math.max(0,outstanding)),color:outstanding>0?T.warn:T.text},
         ].map((s,i)=>(
-          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(255,255,255,0.07)"}}>
+          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(91,65,43,0.07)"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
             <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:"-0.3px"}}>{s.val.replace(" TL","")}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL</div>
@@ -1096,7 +1181,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
           const isExp=exp===day.date;
           const log=day.log;
           return(
-            <div key={day.date} style={{background:T.bg2,borderRadius:14,marginBottom:8,border:"0.5px solid rgba(255,255,255,0.07)",overflow:"hidden"}}>
+            <div key={day.date} style={{background:T.bg2,borderRadius:14,marginBottom:8,border:"0.5px solid rgba(91,65,43,0.07)",overflow:"hidden"}}>
               <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px",cursor:"pointer"}}>
                 <div>
                   <div style={{fontSize:14,fontWeight:600,color:T.text}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
@@ -1108,7 +1193,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
                 </div>
               </div>
               {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
-                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(255,255,255,0.05)",background:"rgba(255,255,255,0.02)"}}>
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(91,65,43,0.05)",background:"rgba(91,65,43,0.02)"}}>
                   <div>
                     <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
                     <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":o.pt==="credit"?"Veresiye":o.pt==="split"?"Nakit + Kart":"Kart"}</div>
@@ -1142,21 +1227,21 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
   }
   return(
     <div className="lurk-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"18px 16px",display:"flex",alignItems:"center",gap:12}}>
+      <div style={{background:"rgba(255,249,239,0.97)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"18px 16px",display:"flex",alignItems:"center",gap:12}}>
         <button onClick={()=>setV("home")} style={{background:"transparent",border:0,color:T.textSub,fontSize:24,cursor:"pointer"}}>←</button>
         <div style={{flex:1}}><div style={{fontSize:24,fontWeight:850,letterSpacing:"-0.8px",color:T.text}}>LURK<span style={{color:T.accentL}}>+</span></div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>Ön ödemeli üye bakiyeleri</div></div>
         <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Üye Ekle</button>
       </div>
       <div style={{padding:14}}>
-        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>setSelectedMemberId(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Hareketleri gör ›</div></div></button>)}
-        {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
+        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>setSelectedMemberId(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(243,107,63,.35)":"rgba(91,65,43,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(243,107,63,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Hareketleri gör ›</div></div></button>)}
+        {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(91,65,43,.035)",border:"1px solid rgba(91,65,43,.09)",borderRadius:14,padding:13}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Güncel bakiye</div></div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(m.balance)}</div></div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BAKİYE HAREKETLERİ</div>
-          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>Henüz hareket kaydı yok.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>İşlem sonrası bakiye: {fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{h.type==="purchase"?"−":"+"}{fm(h.amount)}</div></div>)}
-          <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Detayı Kapat</button>
+          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>Henüz hareket kaydı yok.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(91,65,43,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(243,107,63,.12)":h.type==="refund"?"rgba(243,107,63,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>İşlem sonrası bakiye: {fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{h.type==="purchase"?"−":"+"}{fm(h.amount)}</div></div>)}
+          <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(91,65,43,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Detayı Kapat</button>
         </div>)}
       </div>
-      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>Yeni LURK+ Üyesi</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Üyenin adını ve mevcut ön ödemeli bakiyesini gir.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Üye adı *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Başlangıç bakiyesi (TL) *</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode="decimal" placeholder="Örn. 500" onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Üyeyi Kaydet</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button></Modal>}
+      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>Yeni LURK+ Üyesi</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Üyenin adını ve mevcut ön ödemeli bakiyesini gir.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Üye adı *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Başlangıç bakiyesi (TL) *</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode="decimal" placeholder="Örn. 500" onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Üyeyi Kaydet</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button></Modal>}
     </div>
   );
 }
@@ -1214,57 +1299,57 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   }
   return(
     <div className="lurk-screen lurk-customers-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"rgba(13,13,13,0.98)"}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"rgba(255,249,239,0.97)"}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
-        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:12,color:"#fff",fontWeight:750,cursor:"pointer",boxShadow:"0 5px 18px rgba(52,199,89,.18)"}}>＋ Yeni</button>
+        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:12,color:"#fff",fontWeight:750,cursor:"pointer",boxShadow:"0 5px 18px rgba(243,107,63,.18)"}}>＋ Yeni</button>
       </div>
       <div style={{padding:14}}>
-        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
+        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10}}/>
         <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:14}}>
-          <div style={{flex:1,minWidth:0,background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:16,padding:"15px 14px"}}>
+          <div style={{flex:1,minWidth:0,background:"rgba(243,107,63,.09)",border:"1px solid rgba(243,107,63,.18)",borderRadius:16,padding:"15px 14px"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
             <div style={{fontSize:26,fontWeight:850,color:T.text,marginTop:5}}>{customers.length}</div>
           </div>
-          <div style={{flex:1,minWidth:0,background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.09)",borderRadius:15,padding:"14px 15px"}}>
+          <div style={{flex:1,minWidth:0,background:"rgba(91,65,43,.045)",border:"1px solid rgba(91,65,43,.09)",borderRadius:15,padding:"14px 15px"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Toplam harcama</div>
             <div style={{fontSize:16,fontWeight:850,color:T.accentL,marginTop:5}}>{fm(customers.reduce((sum,c)=>sum+totalFor(c),0))}</div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
           <div style={{fontSize:12,color:T.textSub,flex:1}}>{filtered.length} müşteri · {monthLabel(selectedMonth)} harcamasına göre sıralı</div>
-          <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç" style={{maxWidth:155,padding:"8px 10px",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,textTransform:"capitalize",fontSize:11}}>
+          <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç" style={{maxWidth:155,padding:"8px 10px",background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:9,textTransform:"capitalize",fontSize:11}}>
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
         <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,minmax(0,1fr))",gap:8}}>
-        {filtered.map(c=><div key={c.id} style={{background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.085)",borderRadius:11,padding:"9px 8px",minWidth:0,minHeight:112,display:"flex",flexDirection:"column",alignItems:"stretch",gap:5,boxShadow:"0 4px 14px rgba(0,0,0,.12)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{filtered.indexOf(c)+1}</button>
+        {filtered.map(c=><div key={c.id} style={{background:"rgba(91,65,43,.045)",border:"1px solid rgba(91,65,43,.085)",borderRadius:11,padding:"9px 8px",minWidth:0,minHeight:112,display:"flex",flexDirection:"column",alignItems:"stretch",gap:5,boxShadow:"0 4px 14px rgba(0,0,0,.12)"}}>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(243,107,63,.23),rgba(243,107,63,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(243,107,63,.22)"}}>{filtered.indexOf(c)+1}</button>
           <button onClick={()=>setDetail(c)} style={{minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
             <div style={{fontWeight:800,fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
             <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş</div>
             <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(monthlyTotalFor(c))} · bu ay</div>
           </button>
-          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:6,padding:"3px 4px",fontSize:9,cursor:"pointer"}}>Düzenle</button>
+          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(91,65,43,.1)",borderRadius:6,padding:"3px 4px",fontSize:9,cursor:"pointer"}}>Düzenle</button>
         </div>)}
         </div>
-        {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(255,255,255,.035)",border:"1px dashed rgba(255,255,255,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
+        {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(91,65,43,.035)",border:"1px dashed rgba(91,65,43,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
       </div>
       {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,marginBottom:16,color:T.text}}>{editing?"Müşteriyi Düzenle":"Yeni Müşteri"}</div>
-        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.12)",borderRadius:10}}/>
         <button onClick={saveCustomer} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Kaydet</button>
         <button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
       </Modal>}
       {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:12,color:T.textSub,margin:"5px 0 16px"}}>Müşteri özeti</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}><div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.16)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>{monthLabel(selectedMonth)} harcaması</div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(monthlyTotalFor(detail))}</div></div><div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>Toplam harcama</div><div style={{fontSize:18,fontWeight:850,color:T.text}}>{fm(totalFor(detail))}</div></div></div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}><div style={{background:"rgba(243,107,63,.09)",border:"1px solid rgba(243,107,63,.16)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>{monthLabel(selectedMonth)} harcaması</div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(monthlyTotalFor(detail))}</div></div><div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.07)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>Toplam harcama</div><div style={{fontSize:18,fontWeight:850,color:T.text}}>{fm(totalFor(detail))}</div></div></div>
         <div style={{fontWeight:750,fontSize:13,color:T.text,marginBottom:8}}>Son adisyonlar</div>
-        {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,6).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
-        <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
+        {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,6).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(91,65,43,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
+        <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.bg3,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
       </Modal>}
       {ledgerAction&&detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>{ledgerAction==="debt"?"Borç Ekle":"Tahsilat Al"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{detail.name} · Mevcut bakiye {fm(balanceFor(detail))}</div>
-        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tutar (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="0,00" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
-        {ledgerAction==="payment"&&<><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tahsilat yöntemi</label><div style={{display:"flex",gap:8,marginBottom:12}}>{["cash","card"].map(m=><button key={m} onClick={()=>setMethod(m)} style={{flex:1,padding:10,background:method===m?"rgba(52,199,89,.15)":T.bg2,color:method===m?T.accentL:T.textSub,border:"1px solid "+(method===m?T.accent:"rgba(255,255,255,.1)"),borderRadius:9,cursor:"pointer"}}>{m==="cash"?"Nakit":"Kart"}</button>)}</div></>}
-        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Örn. önceki sipariş" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tutar (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="0,00" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.12)",borderRadius:10}}/>
+        {ledgerAction==="payment"&&<><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tahsilat yöntemi</label><div style={{display:"flex",gap:8,marginBottom:12}}>{["cash","card"].map(m=><button key={m} onClick={()=>setMethod(m)} style={{flex:1,padding:10,background:method===m?"rgba(243,107,63,.15)":T.bg2,color:method===m?T.accentL:T.textSub,border:"1px solid "+(method===m?T.accent:"rgba(91,65,43,.1)"),borderRadius:9,cursor:"pointer"}}>{m==="cash"?"Nakit":"Kart"}</button>)}</div></>}
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Örn. önceki sipariş" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.12)",borderRadius:10}}/>
         <button onClick={saveLedger} disabled={ledgerSubmitting} style={{width:"100%",padding:13,background:ledgerSubmitting?T.bg3:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:ledgerSubmitting?"not-allowed":"pointer",opacity:ledgerSubmitting ? 0.65 : 1}}>{ledgerSubmitting?"Kaydediliyor…":ledgerAction==="debt"?"Borcu Kaydet":"Tahsilatı Kaydet"}</button><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction(null);}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
       </Modal>}
     </div>
@@ -1290,10 +1375,10 @@ function MenuScreen({menu,setMenu,setV}){
 
   return(
     <div className="lurk-screen lurk-menu-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("settings")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Menü</div>
-        <button onClick={()=>setShowAdd(true)} style={{background:"#34C759",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Ürün</button>
+        <button onClick={()=>setShowAdd(true)} style={{background:"#F36B3F",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Ürün</button>
       </div>
       <div style={{padding:"14px"}}>
         {cats.map(cat=>(
@@ -1301,16 +1386,16 @@ function MenuScreen({menu,setMenu,setV}){
             <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>{cat}</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
               {menu.filter(m=>m.cat===cat).map(item=>(
-                <div key={item.id} style={{background:item.on?T.bg2:"rgba(255,255,255,0.02)",border:"0.5px solid "+(item.on?"rgba(255,255,255,0.09)":"rgba(255,255,255,0.04)"),borderRadius:12,padding:"12px",position:"relative"}}>
+                <div key={item.id} style={{background:item.on?T.bg2:"rgba(91,65,43,0.02)",border:"0.5px solid "+(item.on?"rgba(91,65,43,0.09)":"rgba(91,65,43,0.04)"),borderRadius:12,padding:"12px",position:"relative"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
                     <div style={{fontSize:11,fontWeight:700,color:item.on?T.text:T.textDim,lineHeight:1.3,flex:1,paddingRight:6,textDecoration:item.on?"none":"line-through"}}>{item.name}</div>
-                    <div onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{width:28,height:16,borderRadius:8,background:item.on?"#34C759":"#333",position:"relative",cursor:"pointer",flexShrink:0}}>
+                    <div onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{width:28,height:16,borderRadius:8,background:item.on?"#F36B3F":"#333",position:"relative",cursor:"pointer",flexShrink:0}}>
                       <div style={{width:12,height:12,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:item.on?14:2,transition:"left 0.15s"}}/>
                     </div>
                   </div>
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
                     <div style={{fontSize:13,fontWeight:800,color:item.on?T.accentL:T.textDim}}>{fm(item.price)}</div>
-                    <button onClick={()=>openEdit(item)} style={{padding:"6px 9px",background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Düzenle</button>
+                    <button onClick={()=>openEdit(item)} style={{padding:"6px 9px",background:T.bg3,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Düzenle</button>
                   </div>
                 </div>
               ))}
@@ -1322,24 +1407,24 @@ function MenuScreen({menu,setMenu,setV}){
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Ürünü Düzenle</div>
           <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ürün adı</label>
-          <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Ürün adı" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Ürün adı" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,0.07)",color:T.text}}/>
           <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Fiyat (TL)</label>
-          <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="Fiyat (TL)" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
+          <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="Fiyat (TL)" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,0.07)",color:T.text}}/>
           {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={saveEdit} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
+          <button onClick={saveEdit} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
           <button onClick={()=>{setEditingItem(null);setAddError("");}} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
         </Modal>
       )}
       {showAdd&&(
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Ürün</div>
-          <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <input type="number" min="0.01" step="0.01" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:16,background:"#1A1A1A",color:T.text}}>
+          <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(91,65,43,0.07)",color:T.text}}/>
+          <input type="number" min="0.01" step="0.01" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(91,65,43,0.07)",color:T.text}}/>
+          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:16,background:"#FFF9EF",color:T.text}}>
             {cats.map(c=><option key={c} value={c}>{c}</option>)}
           </select>
           {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={()=>{const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
+          <button onClick={()=>{const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(243,107,63,0.3)"}}>Ekle</button>
           <button onClick={()=>setShowAdd(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
         </Modal>
       )}
@@ -1385,27 +1470,27 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
   }
   return(
     <div className="lurk-screen lurk-settings-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px"}}>Ayarlar</div>
       </div>
       <div style={{padding:"14px"}}>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Yönetim</div>
-        <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14,marginBottom:10}}>
-          <div style={{width:40,height:40,borderRadius:10,background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>☰</div>
+        <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(91,65,43,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14,marginBottom:10}}>
+          <div style={{width:40,height:40,borderRadius:10,background:"rgba(243,107,63,0.12)",border:"0.5px solid rgba(243,107,63,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>☰</div>
           <div><div style={{fontSize:14,fontWeight:700}}>Menü</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div></div>
           <div style={{marginLeft:"auto",fontSize:18,color:T.textDim}}>›</div>
         </button>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Veri güvenliği</div>
-        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:15}}>
+        <div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.07)",borderRadius:14,padding:15}}>
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Veri yedeği</div>
           <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:13}}>Masa durumları, adisyonlar, raporlar, müşteriler, veresiye defteri ve menüyü tek bir JSON dosyasına indirir. Bu işlem mevcut kayıtları değiştirmez.</div>
           <button onClick={exportBackup} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>↓ Yedek İndir</button>
           {backupMsg&&<div role="status" style={{fontSize:12,color:T.accentL,marginTop:10}}>{backupMsg}</div>}
-          <div style={{height:1,background:"rgba(255,255,255,.08)",margin:"16px 0"}}/>
+          <div style={{height:1,background:"rgba(91,65,43,.08)",margin:"16px 0"}}/>
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Yedekten geri yükle</div>
           <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:12}}>LURK POS tarafından oluşturulmuş, biçimi doğrulanmış JSON yedeği seç. Geri yükleme mevcut kayıtların yerine geçer.</div>
-          <label style={{display:"block",boxSizing:"border-box",padding:13,textAlign:"center",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,color:T.text,fontWeight:750,cursor:"pointer"}}>
+          <label style={{display:"block",boxSizing:"border-box",padding:13,textAlign:"center",background:"rgba(91,65,43,.07)",border:"1px solid rgba(91,65,43,.12)",borderRadius:10,color:T.text,fontWeight:750,cursor:"pointer"}}>
             {importBusy?"Yedek okunuyor…":"↑ Yedek Dosyası Seç"}
             <input type="file" accept=".json,application/json" disabled={importBusy} onChange={e=>inspectBackup(e.target.files?.[0])} style={{display:"none"}}/>
           </label>
@@ -1425,7 +1510,7 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
 function Modal({children}){
   return(
     <div className="lurk-modal-backdrop" style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"flex-end"}}>
-      <div className="lurk-modal-panel" style={{background:"#171B18",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"88vh",overflowY:"auto",border:"1px solid rgba(255,255,255,0.1)"}}>
+      <div className="lurk-modal-panel" style={{background:"#FFF9EF",borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,margin:"0 auto",padding:"20px 16px 36px",maxHeight:"88vh",overflowY:"auto",border:"1px solid rgba(91,65,43,0.1)"}}>
         {children}
       </div>
     </div>
@@ -1435,13 +1520,13 @@ function Modal({children}){
 function Confirm({title,msg,onOk,onCancel}){
   return(
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
-      <div style={{background:"#1C1C1E",borderRadius:16,width:280,overflow:"hidden",border:"0.5px solid rgba(255,255,255,0.12)"}}>
+      <div style={{background:"#FFF9EF",borderRadius:16,width:280,overflow:"hidden",border:"0.5px solid rgba(91,65,43,0.12)"}}>
         <div style={{padding:"22px 18px 16px",textAlign:"center"}}>
           <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>{title}</div>
           {msg&&<div style={{fontSize:13,color:T.textSub}}>{msg}</div>}
         </div>
-        <div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex"}}>
-          <button onClick={onCancel} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.08)",color:T.text,fontSize:16,cursor:"pointer"}}>İptal</button>
+        <div style={{borderTop:"0.5px solid rgba(91,65,43,0.08)",display:"flex"}}>
+          <button onClick={onCancel} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(91,65,43,0.08)",color:T.text,fontSize:16,cursor:"pointer"}}>İptal</button>
           <button onClick={onOk} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:16,cursor:"pointer"}}>Onayla</button>
         </div>
       </div>
