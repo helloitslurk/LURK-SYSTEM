@@ -1187,7 +1187,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const pointsFor=(c)=>Math.floor((orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+paymentAmount(o,"cash")+paymentAmount(o,"card"),0)+ledgerFor(c).filter(e=>e.type==="payment").reduce((sum,e)=>sum+(Number(e.amount)||0),0))/100);
   const ledgerFor=(c)=>creditEntries.filter(e=>e.customerId===c.id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   const balanceFor=(c)=>ledgerFor(c).reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
-  const filtered=customers.filter(c=>(c.name+" "+(c.phone||"")).toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR"))).sort((a,b)=>a.name.localeCompare(b.name,"tr"));
+  const filtered=customers.filter(c=>(c.name+" "+(c.phone||"")).toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR"))).sort((a,b)=>monthlyTotalFor(b)-monthlyTotalFor(a)||a.name.localeCompare(b.name,"tr"));
   function openNew(){setEditing(null);setName("");setPhone("");setShowForm(true);}
   function openEdit(c){setEditing(c);setName(c.name);setPhone(c.phone||"");setShowForm(true);}
   function saveCustomer(){
@@ -1232,18 +1232,18 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-          <div style={{fontSize:12,color:T.textSub,flex:1}}>{filtered.length} müşteri</div>
+          <div style={{fontSize:12,color:T.textSub,flex:1}}>{filtered.length} müşteri · {monthLabel(selectedMonth)} harcamasına göre sıralı</div>
           <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç" style={{maxWidth:155,padding:"8px 10px",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,textTransform:"capitalize",fontSize:11}}>
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
         <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,minmax(0,1fr))",gap:8}}>
         {filtered.map(c=><div key={c.id} style={{background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.085)",borderRadius:11,padding:"9px 8px",minWidth:0,minHeight:112,display:"flex",flexDirection:"column",alignItems:"stretch",gap:5,boxShadow:"0 4px 14px rgba(0,0,0,.12)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{c.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</button>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{filtered.indexOf(c)+1}</button>
           <button onClick={()=>setDetail(c)} style={{minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
             <div style={{fontWeight:800,fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
             <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş</div>
-            <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(totalFor(c))}</div>
+            <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(monthlyTotalFor(c))} · bu ay</div>
           </button>
           <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:6,padding:"3px 4px",fontSize:9,cursor:"pointer"}}>Düzenle</button>
         </div>)}
