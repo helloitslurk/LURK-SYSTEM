@@ -483,6 +483,33 @@ export default function App(){
           .lurk-modal-panel { max-width: 520px !important; border-radius: 20px !important; padding: 28px !important; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
         }
 
+        .lurk-play-hero button:hover { transform:translateY(-2px) !important; box-shadow:0 5px 0 rgba(139,57,31,.22) !important; }
+        .lurk-home-screen > div:nth-child(3) button {
+          min-height:126px !important;
+          padding:17px 15px !important;
+          border-radius:22px !important;
+          border:1px solid #E9D9C5 !important;
+          background:linear-gradient(145deg,#FFFCF7,#F5EBDD) !important;
+          box-shadow:0 5px 0 #E7D5BE,0 10px 22px rgba(91,65,43,.07) !important;
+        }
+        .lurk-home-screen > div:nth-child(3) button > div:first-child {
+          width:48px;height:48px;border-radius:17px;
+          display:flex;align-items:center;justify-content:center;
+          background:var(--tile-tone,#FCE0D2);
+          margin-bottom:11px;
+        }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(1) > div:first-child { background:#FCE0D2; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(2) > div:first-child { background:#DCEBDD; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(3) > div:first-child { background:#E5E0F5; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(4) > div:first-child { background:#F8E8B9; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(5) > div:first-child { background:#DCEAF4; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(6) > div:first-child { background:#F5DFE5; }
+        .lurk-home-screen > div:nth-child(3) button:active { transform:translateY(3px) !important; }
+        @media(max-width:699px) {
+          .lurk-play-hero > div { min-height:154px !important; }
+          .lurk-play-hero button { right:11px !important; bottom:11px !important; }
+        }
+
         /* LURK PLAYFUL / NINTENDO-INSPIRED THEME */
         body { background:#F7F1E7 !important; color:#302820 !important; }
         .lurk-app {
@@ -618,12 +645,12 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   const monthTotal=monthDays.reduce((sum,d)=>sum+d.total,0);
 
   const PAGES=[
-    {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
-    {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
-    {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
-    {k:"lurkPlus",label:"LURK+",icon:"🎟️",sub:"Ön ödemeli üyeler"},
-    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"🏆",sub:"Ciro ve en çok kazandıran 5 ürün"},
-    {k:"menu",label:"Menü",icon:"☕",sub:"Ürün yönetimi"},
+    {k:"tables",label:"Masalar",icon:"🪑",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar",tone:"#FCE0D2"},
+    {k:"reports",label:"Raporlar",icon:"📈",sub:"Satış geçmişi",tone:"#DCEBDD"},
+    {k:"customers",label:"Müşteriler",icon:"🧑‍🤝‍🧑",sub:"Aylık sıralama",tone:"#E5E0F5"},
+    {k:"lurkPlus",label:"LURK+",icon:"🎟️",sub:"Ön ödemeli üyeler",tone:"#F8E8B9"},
+    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"🏆",sub:"Ciro ve en çok kazandıran 5 ürün",tone:"#DCEAF4"},
+    {k:"menu",label:"Menü",icon:"🥤",sub:"Ürün yönetimi",tone:"#F5DFE5"},
   ];
 
   return(
@@ -654,6 +681,20 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
               <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* LURK PLAY HUB */}
+      <div className="lurk-play-hero" style={{padding:"14px 14px 0"}}>
+        <div style={{position:"relative",overflow:"hidden",minHeight:142,borderRadius:25,padding:"19px 20px",background:"linear-gradient(115deg,#F36B3F 0%,#F58C59 58%,#F7B477 100%)",color:"#fff",boxShadow:"0 7px 0 #D95A35,0 14px 26px rgba(217,90,53,.16)"}}>
+          <div style={{position:"absolute",right:12,bottom:-23,fontSize:112,lineHeight:1,transform:"rotate(-12deg)",filter:"drop-shadow(0 7px 4px rgba(93,42,24,.13))"}} aria-hidden="true">🥤</div>
+          <div style={{position:"relative",zIndex:1,maxWidth:"72%"}}>
+            <div style={{fontSize:10,fontWeight:850,letterSpacing:"1.5px",opacity:.88}}>LURK GOOD MOOD CLUB</div>
+            <div style={{fontSize:"clamp(22px, 4vw, 30px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-1px",marginTop:7}}>Bugün güzel<br/>şeyler yapalım.</div>
+            <div style={{fontSize:11,fontWeight:650,opacity:.9,marginTop:7}}>{openT.length} açık masa · {day?"Gün başladı":"Gün henüz başlamadı"}</div>
+          </div>
+          <button onClick={()=>setV("tables")} style={{position:"absolute",right:14,bottom:13,zIndex:2,background:"#FFF9EF",color:"#A94327",border:"1px solid rgba(255,255,255,.65)",borderRadius:14,padding:"9px 13px",fontSize:11,fontWeight:850,cursor:"pointer",boxShadow:"0 3px 0 rgba(139,57,31,.22)"}}>Hadi başlayalım ↗</button>
+          <div style={{position:"absolute",right:89,top:12,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,.18)"}}/>
         </div>
       </div>
 
