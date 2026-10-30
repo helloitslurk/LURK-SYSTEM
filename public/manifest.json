@@ -1,11 +1,11 @@
 {
-  "name": "LURK | Adisyon Sistemi",
+  "name": "LURK POS | Good Mood Operating System",
   "short_name": "LURK",
-  "description": "Lurk adisyon ve satış yönetim sistemi",
+  "description": "LURK POS | Coffee, People, Good Mood",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F0F0F5",
-  "theme_color": "#34C759",
+  "background_color": "#F7F1E7",
+  "theme_color": "#F36B3F",
   "orientation": "portrait-primary",
   "icons": [
     {
