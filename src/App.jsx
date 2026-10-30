@@ -661,7 +661,29 @@ export default function App(){
           .lurk-nav-button { min-height:48px !important; }
           .lurk-screen:not(.lurk-order-screen) { min-height:calc(100dvh - 68px); }
         }
-      `}</style>
+      
+        /* STEP 2 · LURK CONSOLE HOME */
+        .lurk-console-home{min-height:calc(100dvh - 82px)!important;padding:clamp(18px,2.5vw,36px) clamp(18px,4vw,58px) 22px!important;display:flex;flex-direction:column;gap:clamp(16px,2.2vh,26px);background:radial-gradient(ellipse at 78% 24%,rgba(244,174,111,.24),transparent 30%),radial-gradient(ellipse at 12% 88%,rgba(143,177,137,.16),transparent 34%),linear-gradient(135deg,#F7F0E4,#F1E5D4)!important;overflow:hidden}
+        .lurk-console-topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:48px}
+        .lurk-console-brand{display:flex;align-items:center;gap:17px}.lurk-console-brand img{width:clamp(94px,10vw,142px);height:auto;display:block}.lurk-console-brand>span{font-size:10px;font-weight:900;letter-spacing:1.8px;color:#75695E;line-height:1.5;max-width:110px}
+        .lurk-console-meta{display:flex;align-items:center;gap:16px;color:#5E5145;font-size:12px;font-weight:750}.lurk-console-clock{font-variant-numeric:tabular-nums;font-size:14px}
+        .lurk-console-open{display:flex;align-items:center;gap:7px;padding:8px 13px;border:1px solid #E3D5C3;border-radius:99px;background:rgba(255,251,244,.76)}.lurk-console-open i{width:8px;height:8px;border-radius:50%;background:#A89B8D}.lurk-console-open.is-open i{background:#6FA36C;box-shadow:0 0 0 4px #DDEBDD}
+        .lurk-console-stage{position:relative;isolation:isolate;min-height:clamp(190px,27vh,290px);border:1px solid rgba(111,79,51,.13);border-radius:27px;overflow:hidden;display:flex;align-items:center;padding:clamp(22px,4vw,48px);background:linear-gradient(105deg,#E9A36F,#F2C69B 48%,#E5CDA9);box-shadow:0 7px 0 #D8B18D,0 18px 38px rgba(91,65,43,.10)}
+        .lurk-console-stage:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(255,246,230,.94),rgba(255,246,230,.78) 44%,rgba(255,246,230,.04))}
+        .lurk-console-stage:after{content:"";position:absolute;right:19%;top:-48%;width:360px;height:360px;border:1px solid rgba(255,255,255,.34);border-radius:50%;box-shadow:0 0 0 28px rgba(255,255,255,.08),0 0 0 58px rgba(255,255,255,.06);z-index:-1}
+        .lurk-console-copy{position:relative;z-index:2;max-width:54%}.lurk-console-eyebrow{font-size:10px;letter-spacing:2px;font-weight:950;color:#9B4E31}.lurk-console-copy h1{font-size:clamp(28px,4.3vw,54px);line-height:.99;letter-spacing:-2.4px;color:#302820;margin:12px 0 10px;font-weight:950}.lurk-console-copy h1 em{font-style:normal;color:#C95C38}.lurk-console-copy p{font-size:clamp(11px,1.2vw,14px);color:#705B4A;margin:0;max-width:380px;line-height:1.5}
+        .lurk-console-live{display:flex;align-items:center;gap:12px;margin-top:20px;font-size:11px;color:#725A47}.lurk-console-live b{font-size:13px;color:#302820}.lurk-console-live-dot{width:5px;height:5px;border-radius:50%;background:#C96A43}
+        .lurk-console-art{position:absolute;right:4%;top:0;bottom:0;width:43%;display:flex;align-items:center;justify-content:center}.lurk-art-sun{position:absolute;width:clamp(130px,18vw,230px);aspect-ratio:1;border-radius:50%;background:linear-gradient(145deg,#F9E6B7,#E89B63);right:17%;top:5%;box-shadow:0 12px 40px rgba(160,92,48,.12)}.lurk-art-window{position:absolute;right:2%;bottom:0;width:42%;height:78%;border:9px solid rgba(110,75,50,.74);border-bottom:0;border-radius:12px 12px 0 0;background:linear-gradient(140deg,rgba(94,137,105,.75),rgba(209,179,119,.4));display:flex;justify-content:space-evenly;overflow:hidden}.lurk-art-window span{width:2px;height:100%;background:rgba(110,75,50,.6)}.lurk-art-plant{position:absolute;right:44%;bottom:8%;font-size:clamp(54px,8vw,100px);color:#567C51;text-shadow:0 8px 8px rgba(54,75,43,.16)}.lurk-art-cup{position:absolute;right:24%;bottom:4%;font-size:clamp(68px,10vw,122px);filter:drop-shadow(0 12px 7px rgba(70,45,25,.2))}.lurk-art-caption{position:absolute;right:0;top:13%;font-size:clamp(11px,1.4vw,17px);font-weight:950;letter-spacing:1.5px;line-height:1.08;color:#75472E;transform:rotate(5deg)}
+        .lurk-console-launcher{display:flex;flex-direction:column;gap:15px}.lurk-console-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}.lurk-console-section-title>div>span{font-size:9px;letter-spacing:1.8px;font-weight:950;color:#A16B4C}.lurk-console-section-title h2{margin:4px 0 0;font-size:clamp(18px,2vw,24px);letter-spacing:-.7px;color:#302820}.lurk-console-hint{font-size:11px;color:#8C7A69;font-weight:650}.lurk-console-hint b{color:#C95C38;font-size:17px;margin-left:5px}
+        .lurk-console-apps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(9px,1.2vw,16px)}.lurk-console-app{position:relative;min-width:0;min-height:clamp(116px,17vh,164px);padding:15px 14px 13px;border:1px solid rgba(103,77,54,.15);border-radius:21px;background:linear-gradient(145deg,#FFFCF6,#F3E9DB);box-shadow:0 5px 0 #E2D2BE,0 11px 22px rgba(91,65,43,.07);display:flex;flex-direction:column;align-items:flex-start;text-align:left;cursor:pointer;color:#302820;transition:transform .16s ease,box-shadow .16s ease}.lurk-console-app:hover{transform:translateY(-4px);box-shadow:0 8px 0 #E2D2BE,0 15px 25px rgba(91,65,43,.10)}.lurk-console-app:active{transform:translateY(3px);box-shadow:0 2px 0 #E2D2BE}
+        .lurk-console-app-icon{width:clamp(42px,4.2vw,58px);height:clamp(42px,4.2vw,58px);display:grid;place-items:center;border-radius:17px;font-size:clamp(23px,2.8vw,34px);background:#F9DFD0;margin-bottom:12px;box-shadow:inset 0 2px 0 rgba(255,255,255,.75)}.lurk-console-app-name{font-size:clamp(12px,1.2vw,15px);font-weight:900;letter-spacing:-.3px}.lurk-console-app-sub{font-size:clamp(9px,.9vw,11px);color:#89796A;margin-top:4px}.lurk-console-app-arrow{position:absolute;right:13px;top:13px;color:#A89582;font-size:15px}
+        .lurk-console-app.is-primary{background:linear-gradient(145deg,#F47A4B,#E95F35);border:1px solid #D95731;box-shadow:0 5px 0 #C94D2C,0 12px 25px rgba(201,77,44,.18);color:#fff}.lurk-console-app.is-primary .lurk-console-app-icon{background:#FFE5D5}.lurk-console-app.is-primary .lurk-console-app-sub,.lurk-console-app.is-primary .lurk-console-app-arrow{color:rgba(255,255,255,.82)}
+        .lurk-tone-sage .lurk-console-app-icon{background:#DCEBDD}.lurk-tone-butter .lurk-console-app-icon{background:#F7E9BD}.lurk-tone-lilac .lurk-console-app-icon{background:#E7E0F4}.lurk-tone-blue .lurk-console-app-icon{background:#DCEAF4}.lurk-tone-rose .lurk-console-app-icon{background:#F3DFE4}
+        .lurk-console-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:4px}.lurk-console-footer-note{display:flex;align-items:center;gap:9px;font-size:9px;font-weight:950;letter-spacing:1.7px;color:#9A826D}.lurk-footer-star{font-size:22px;color:#E38A52}.lurk-console-day-button{border:1px solid #E0CFBB;border-radius:13px;padding:10px 16px;background:#FFF9EF;color:#594737;font-size:11px;font-weight:850;cursor:pointer;box-shadow:0 3px 0 #E4D5C3}.lurk-console-day-button span{margin-right:8px;color:#C95C38}.lurk-console-day-button.is-closing{background:#F1E5D4}
+        @media(max-width:1000px){.lurk-console-apps{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-console-stage{min-height:210px}.lurk-console-home{overflow:visible}}
+        @media(max-width:760px){.lurk-console-home{padding:15px 14px 18px!important;gap:16px}.lurk-console-brand>span{display:none}.lurk-console-meta{gap:8px}.lurk-console-stage{min-height:190px;padding:20px;border-radius:21px}.lurk-console-copy{max-width:67%}.lurk-console-copy h1{letter-spacing:-1.4px}.lurk-console-art{right:-7%;width:48%;opacity:.86}.lurk-console-apps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lurk-console-app{min-height:118px}.lurk-console-hint{display:none}.lurk-console-footer-note{font-size:8px}}
+        @media(max-height:650px) and (orientation:landscape){.lurk-console-home{gap:10px;padding-top:12px!important;padding-bottom:12px!important}.lurk-console-stage{min-height:150px;padding:18px 28px}.lurk-console-copy h1{font-size:clamp(24px,4vh,36px);margin:6px 0}.lurk-console-live{margin-top:10px}.lurk-console-apps{gap:9px}.lurk-console-app{min-height:98px;padding:10px}.lurk-console-app-icon{width:38px;height:38px;font-size:22px;margin-bottom:6px}}
+`}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
@@ -726,76 +748,29 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
   ];
 
   return(
-    <div className="lurk-screen lurk-home-screen">
-      {/* Header */}
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"20px 16px 16px"}}>
-        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
-          <div>
-            <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:112,maxWidth:"38vw",height:"auto"}} />
-            <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(243,107,63,0.12)":"rgba(91,65,43,0.05)",border:"0.5px solid "+(day?"rgba(243,107,63,0.3)":"rgba(91,65,43,0.1)"),borderRadius:20,padding:"6px 12px"}}>
-            <div style={{width:7,height:7,borderRadius:"50%",background:day?"#F36B3F":T.textDim}}/>
-            <span style={{fontSize:12,fontWeight:600,color:day?"#F36B3F":T.textSub}}>{day?"Açık":"Kapalı"}</span>
-          </div>
-        </div>
-
-        {/* Bugün ciro özeti: mobilde taşmayan kompakt kartlar */}
-        <div className="lurk-home-stats" style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:6,width:"100%",minWidth:0}}>
+    <div className="lurk-screen lurk-home-screen lurk-console-home">
+      <header className="lurk-console-topbar">
+        <div className="lurk-console-brand"><img src="/lurk-logo.svg" alt="LURK POS"/><span>COFFEE · PEOPLE · GOOD MOOD</span></div>
+        <div className="lurk-console-meta"><span className="lurk-console-clock">{new Date().toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</span><span className={"lurk-console-open "+(day?"is-open":"")}><i/>{day?"Gün açık":"Gün kapalı"}</span></div>
+      </header>
+      <section className="lurk-console-stage">
+        <div className="lurk-console-copy"><div className="lurk-console-eyebrow">LURK GOOD MOOD CLUB</div><h1>Bugün güzel<br/><em>şeyler yapalım.</em></h1><p>Kahveni hazırla, masanı aç. Günün ritmi burada başlıyor.</p><div className="lurk-console-live"><span><b>{openT.length}</b> açık masa</span><span className="lurk-console-live-dot"/><span><b>{fm(todInc+openInc)}</b> bugünkü satış</span></div></div>
+        <div className="lurk-console-art" aria-hidden="true"><div className="lurk-art-sun"/><div className="lurk-art-window"><span/><span/><span/></div><div className="lurk-art-plant">✳</div><div className="lurk-art-cup">☕</div><div className="lurk-art-caption">LURK<br/>IS A<br/>GOOD<br/>IDEA.</div></div>
+      </section>
+      <section className="lurk-console-launcher">
+        <div className="lurk-console-section-title"><div><span>CONTROL CENTER</span><h2>Nereye gidiyoruz?</h2></div><span className="lurk-console-hint">Bir alan seç ve başla <b>↘</b></span></div>
+        <div className="lurk-console-apps">
           {[
-            {label:"Toplam",val:fm(todInc+openInc),sub:todO.length+" kapanan"},
-            {label:"Nakit",val:fm(todCash),sub:"bugün"},
-            {label:"Kart",val:fm(todCard),sub:"bugün"},
-          ].map((s,i)=>(
-            <div key={i} style={{background:"rgba(91,65,43,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(91,65,43,0.07)",minWidth:0,overflow:"hidden"}}>
-              <div style={{fontSize:9,color:T.textSub,fontWeight:650,textTransform:"uppercase",letterSpacing:"0.45px",marginBottom:5,whiteSpace:"nowrap"}}>{s.label}</div>
-              <div style={{fontSize:"clamp(11px, 2.8vw, 15px)",fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.45px",whiteSpace:"nowrap",fontVariantNumeric:"tabular-nums"}}>{s.val.replace(" TL","")}</div>
-              <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
-            </div>
-          ))}
+            {k:"tables",label:"Adisyon",sub:"Yeni sipariş oluştur",icon:"☕",tone:"peach",primary:true},
+            {k:"tables",label:"Masa düzeni",sub:"Masalar ve alanlar",icon:"🪑",tone:"sage"},
+            {k:"menu",label:"Ürünler",sub:"Menü ve stok",icon:"🍄",tone:"butter"},
+            {k:"customers",label:"Müşteriler",sub:"Müşteri kartları",icon:"⭐",tone:"lilac"},
+            {k:"reports",label:"Raporlar",sub:"Günlük satışlar",icon:"📊",tone:"blue"},
+            {k:"settings",label:"Ayarlar",sub:"Sistem tercihleri",icon:"⚙️",tone:"rose"},
+          ].map(p=><button key={p.label} className={"lurk-console-app lurk-tone-"+p.tone+(p.primary?" is-primary":"")} onClick={()=>setV(p.k)}><span className="lurk-console-app-icon">{p.icon}</span><span className="lurk-console-app-name">{p.label}</span><span className="lurk-console-app-sub">{p.sub}</span><span className="lurk-console-app-arrow">↗</span></button>)}
         </div>
-      </div>
-
-      {/* LURK PLAY HUB */}
-      <div className="lurk-play-hero" style={{padding:"14px 14px 0"}}>
-        <div style={{position:"relative",overflow:"hidden",minHeight:142,borderRadius:25,padding:"19px 20px",background:"linear-gradient(115deg,#F36B3F 0%,#F58C59 58%,#F7B477 100%)",color:"#fff",boxShadow:"0 7px 0 #D95A35,0 14px 26px rgba(217,90,53,.16)"}}>
-          <div style={{position:"absolute",right:12,bottom:-23,fontSize:112,lineHeight:1,transform:"rotate(-12deg)",filter:"drop-shadow(0 7px 4px rgba(93,42,24,.13))"}} aria-hidden="true">🥤</div>
-          <div style={{position:"relative",zIndex:1,maxWidth:"72%"}}>
-            <div style={{fontSize:10,fontWeight:850,letterSpacing:"1.5px",opacity:.88}}>LURK GOOD MOOD CLUB</div>
-            <div style={{fontSize:"clamp(22px, 4vw, 30px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-1px",marginTop:7}}>Bugün güzel<br/>şeyler yapalım.</div>
-            <div style={{fontSize:11,fontWeight:650,opacity:.9,marginTop:7}}>{openT.length} açık masa · {day?"Gün başladı":"Gün henüz başlamadı"}</div>
-          </div>
-          <button onClick={()=>setV("tables")} style={{position:"absolute",right:14,bottom:13,zIndex:2,background:"#FFF9EF",color:"#A94327",border:"1px solid rgba(255,255,255,.65)",borderRadius:14,padding:"9px 13px",fontSize:11,fontWeight:850,cursor:"pointer",boxShadow:"0 3px 0 rgba(139,57,31,.22)"}}>Hadi başlayalım ↗</button>
-          <div style={{position:"absolute",right:89,top:12,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,.18)"}}/>
-        </div>
-      </div>
-
-      {/* Hızlı erişim grid */}
-      <div style={{padding:"16px 14px 0"}}>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-          {PAGES.map((p,i)=>(
-            <button key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(91,65,43,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(91,65,43,0.03)"}}/>
-              <div style={{fontSize:22,marginBottom:10,color:T.textSub,opacity:0.6}}>{p.icon}</div>
-              <div style={{fontSize:14,fontWeight:700,color:T.text}}>{p.label}</div>
-              <div style={{fontSize:11,color:T.textDim,marginTop:3}}>{p.sub}</div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{padding:"14px 14px 0"}}>
-        {day?(
-          <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(91,65,43,0.07)",border:"1px solid rgba(91,65,43,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
-            Günü Kapat
-          </button>
-        ):(
-          <button onClick={openDay} style={{width:"100%",padding:"14px 16px",background:"rgba(91,65,43,0.07)",border:"1px solid rgba(91,65,43,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
-            Günü Başlat
-          </button>
-        )}
-      </div>
+      </section>
+      <footer className="lurk-console-footer"><div className="lurk-console-footer-note"><span className="lurk-footer-star">✳</span><span>GOOD MOOD IS ON THE MENU.</span></div><button onClick={day?closeDay:openDay} className={"lurk-console-day-button "+(day?"is-closing":"")}><span>{day?"◼":"▶"}</span>{day?"Günü kapat":"Günü başlat"}</button></footer>
     </div>
   );
 }
