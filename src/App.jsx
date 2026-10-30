@@ -803,6 +803,23 @@ export default function App(){
 @media(max-width:1000px){.lurk-analytics-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-analytics-panels{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.lurk-analytics-header{padding:15px;gap:10px}.lurk-analytics-header h1{font-size:21px}.lurk-analytics-header p{font-size:10px}.lurk-analytics-export{padding:10px;font-size:9px}.lurk-analytics-content{padding:16px 13px 30px}.lurk-analytics-period{align-items:flex-start;flex-direction:column}.lurk-analytics-months{max-width:100%}.lurk-analytics-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.lurk-analytics-panels{grid-template-columns:1fr}.lurk-analytics-payment{justify-content:center}}
 @media(orientation:landscape) and (max-height:650px){.lurk-analytics-header{padding:11px 20px}.lurk-analytics-content{padding-top:14px}.lurk-analytics-kpis article{padding:12px}.lurk-analytics-panels{grid-template-columns:1.2fr 1fr}.lurk-analytics-bars{height:145px}}
+
+.lurk-settings-v2{min-height:100%;background:#F7F1E7;color:#302820}
+.lurk-settings-header{display:flex;align-items:center;gap:18px;padding:22px 4.2%;background:#FFF9EF;border-bottom:1px solid rgba(91,65,43,.1)}
+.lurk-settings-header>button{width:42px;height:42px;border:1px solid #E9DDCE;border-radius:13px;background:#F7F1E7;color:#655343;font-size:24px;cursor:pointer}
+.lurk-settings-header>div:nth-child(2){flex:1}.lurk-settings-header span,.lurk-settings-eyebrow{font-size:9px;font-weight:850;letter-spacing:1.6px;color:#A18A73}
+.lurk-settings-header h1{font-size:25px;letter-spacing:-.8px;margin:4px 0 2px}.lurk-settings-header p{font-size:11px;color:#897968;margin:0}
+.lurk-settings-mark{width:46px;height:46px;border-radius:15px;background:#F36B3F;color:white;display:grid;place-items:center;font-family:Georgia,serif;font-size:27px;font-weight:bold}
+.lurk-settings-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;padding:28px 4.2%;max-width:1500px;margin:auto}
+.lurk-settings-rail{display:flex;flex-direction:column;gap:12px}.lurk-settings-railitem{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #E9DDCE;border-radius:13px;background:#FFF9EF;color:#554638;text-align:left;cursor:pointer}
+.lurk-settings-railitem.active{background:#FBE5D8;border-color:#F1C6B2}.lurk-settings-railitem>b{font-size:10px;color:#D66A43}.lurk-settings-railitem span{font-size:12px;font-weight:800;flex:1}.lurk-settings-railitem small{display:block;font-size:10px;color:#9A8875;font-weight:500;margin-top:3px}.lurk-settings-railitem i{font-style:normal;color:#D66A43}
+.lurk-settings-note{margin-top:auto;padding:18px;border-radius:14px;background:#EEE3D4;display:grid;gap:8px}.lurk-settings-note>span{font-size:22px;color:#D66A43}.lurk-settings-note b{font-size:12px}.lurk-settings-note small{font-size:10px;line-height:1.6;color:#847361}
+.lurk-settings-main{min-width:0}.lurk-settings-overview{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}.lurk-settings-overview h2,.lurk-settings-sectionhead h2{font-size:21px;letter-spacing:-.6px;margin:6px 0}.lurk-settings-overview p{font-size:11px;color:#897968;margin:0}.lurk-settings-live{padding:9px 12px;border-radius:30px;background:#E6F0E3;color:#52744B;font-size:9px;font-weight:850;letter-spacing:.6px;white-space:nowrap}.lurk-settings-live i{display:inline-block;width:6px;height:6px;background:#6E9C62;border-radius:50%;margin-right:6px}
+.lurk-settings-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:28px}.lurk-settings-stats article{padding:16px;border:1px solid #E9DDCE;border-radius:13px;background:#FFF9EF}.lurk-settings-stats article span{display:block;font-size:8px;letter-spacing:1px;font-weight:850;color:#A18A73}.lurk-settings-stats article b{display:block;font-size:26px;margin:8px 0 2px}.lurk-settings-stats article small{font-size:10px;color:#998876}
+.lurk-settings-sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.lurk-settings-sectionhead h2{font-size:17px}.lurk-settings-shield{font-size:22px;color:#D66A43}.lurk-settings-backupgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lurk-settings-backupcard{padding:20px;border:1px solid #E9DDCE;border-radius:16px;background:#FFF9EF;min-width:0}.lurk-settings-cardicon{width:38px;height:38px;border-radius:12px;background:#EEE5D9;display:grid;place-items:center;font-size:20px;color:#735D48;margin-bottom:15px}.lurk-settings-cardicon.orange{background:#FBE5D8;color:#D85D36}.lurk-settings-backupcard h3{font-size:16px;margin:6px 0}.lurk-settings-backupcard p{font-size:11px;line-height:1.7;color:#897968;min-height:58px;margin:0 0 16px}.lurk-settings-primary,.lurk-settings-upload{display:flex;justify-content:space-between;align-items:center;width:100%;box-sizing:border-box;padding:12px 14px;border:0;border-radius:10px;background:#F36B3F;color:white;font-size:11px;font-weight:850;cursor:pointer}.lurk-settings-upload{background:#EEE5D9;color:#554638;border:1px solid #E2D5C5}.lurk-settings-upload input{display:none}.lurk-settings-message{font-size:10px;line-height:1.5;color:#B35D39;margin-top:10px}.lurk-settings-confirm{margin-top:12px;padding:11px;border-radius:10px;background:#F8EBDD;display:grid;gap:8px}.lurk-settings-confirm small{font-size:10px;color:#796957;overflow-wrap:anywhere}.lurk-settings-confirm>button{padding:10px;border:0;border-radius:8px;background:#D94B43;color:white;font-size:10px;font-weight:800;cursor:pointer}.lurk-settings-confirm>.lurk-settings-cancel{background:transparent;color:#796957}.lurk-settings-footnote{font-size:10px;color:#A18F7D;margin-top:14px}
+@media(max-width:850px){.lurk-settings-layout{grid-template-columns:1fr;padding:18px}.lurk-settings-rail{display:grid;grid-template-columns:1fr 1fr}.lurk-settings-note{display:none}}
+@media(max-width:560px){.lurk-settings-header{padding:15px}.lurk-settings-header h1{font-size:21px}.lurk-settings-layout{padding:14px}.lurk-settings-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.lurk-settings-backupgrid{grid-template-columns:1fr}.lurk-settings-overview{align-items:flex-start;flex-direction:column}.lurk-settings-backupcard p{min-height:0}}
+@media(orientation:landscape) and (max-height:650px){.lurk-settings-header{padding:12px 3%}.lurk-settings-layout{grid-template-columns:190px minmax(0,1fr);padding:15px 3%;gap:18px}.lurk-settings-stats{margin-bottom:15px}.lurk-settings-stats article{padding:10px}.lurk-settings-stats article b{font-size:21px}.lurk-settings-backupcard{padding:14px}.lurk-settings-backupcard p{min-height:48px}}
 </style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -1669,40 +1686,49 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
     setBackupMsg("Yedek dosyası indirildi. Güvenli bir yerde sakla.");
   }
   return(
-    <div className="lurk-screen lurk-settings-screen">
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px"}}>Ayarlar</div>
-      </div>
-      <div style={{padding:"14px"}}>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Yönetim</div>
-        <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(91,65,43,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14,marginBottom:10}}>
-          <div style={{width:40,height:40,borderRadius:10,background:"rgba(243,107,63,0.12)",border:"0.5px solid rgba(243,107,63,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>☰</div>
-          <div><div style={{fontSize:14,fontWeight:700}}>Menü</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div></div>
-          <div style={{marginLeft:"auto",fontSize:18,color:T.textDim}}>›</div>
-        </button>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Veri güvenliği</div>
-        <div style={{background:T.bg2,border:"1px solid rgba(91,65,43,.07)",borderRadius:14,padding:15}}>
-          <div style={{fontSize:14,fontWeight:750,color:T.text}}>Veri yedeği</div>
-          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:13}}>Masa durumları, adisyonlar, raporlar, müşteriler, veresiye defteri ve menüyü tek bir JSON dosyasına indirir. Bu işlem mevcut kayıtları değiştirmez.</div>
-          <button onClick={exportBackup} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>↓ Yedek İndir</button>
-          {backupMsg&&<div role="status" style={{fontSize:12,color:T.accentL,marginTop:10}}>{backupMsg}</div>}
-          <div style={{height:1,background:"rgba(91,65,43,.08)",margin:"16px 0"}}/>
-          <div style={{fontSize:14,fontWeight:750,color:T.text}}>Yedekten geri yükle</div>
-          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:12}}>LURK POS tarafından oluşturulmuş, biçimi doğrulanmış JSON yedeği seç. Geri yükleme mevcut kayıtların yerine geçer.</div>
-          <label style={{display:"block",boxSizing:"border-box",padding:13,textAlign:"center",background:"rgba(91,65,43,.07)",border:"1px solid rgba(91,65,43,.12)",borderRadius:10,color:T.text,fontWeight:750,cursor:"pointer"}}>
-            {importBusy?"Yedek okunuyor…":"↑ Yedek Dosyası Seç"}
-            <input type="file" accept=".json,application/json" disabled={importBusy} onChange={e=>inspectBackup(e.target.files?.[0])} style={{display:"none"}}/>
-          </label>
-          {importMsg&&<div role="status" style={{fontSize:12,lineHeight:1.5,color:pendingImport?T.warn:T.textSub,marginTop:10}}>{importMsg}</div>}
-          {pendingImport&&<div style={{marginTop:10}}>
-            <div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Seçilen dosya: <b style={{color:T.text}}>{pendingImport.filename}</b></div>
-            <button onClick={applyBackup} style={{width:"100%",padding:13,background:T.danger,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Mevcut Verileri Değiştir ve Geri Yükle</button>
-            <button onClick={()=>{setPendingImport(null);setImportMsg("Geri yükleme iptal edildi.");}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer",marginTop:4}}>İptal</button>
-          </div>}
-          <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Önce mevcut verilerin yedeğini indir. Yedek hassas müşteri ve satış bilgileri içerebilir.</div>
-        </div>
-      </div>
+    <div className="lurk-screen lurk-settings-screen lurk-settings-v2">
+      <header className="lurk-settings-header">
+        <button onClick={()=>setV("home")} aria-label="Ana ekrana dön">←</button>
+        <div><span>GOOD MOOD OPERATING SYSTEM</span><h1>Sistem ayarları</h1><p>LURK POS'un yönetim ve veri güvenliği merkezi</p></div>
+        <div className="lurk-settings-mark">L.</div>
+      </header>
+      <main className="lurk-settings-layout">
+        <aside className="lurk-settings-rail">
+          <span className="lurk-settings-eyebrow">YÖNETİM MERKEZİ</span>
+          <div className="lurk-settings-railitem active"><b>01</b><span>Genel bakış<small>Sistem ve kayıtlar</small></span><i>✳</i></div>
+          <button className="lurk-settings-railitem" onClick={()=>setV("menu")}><b>02</b><span>Menü yönetimi<small>Ürünler ve fiyatlar</small></span><i>↗</i></button>
+          <div className="lurk-settings-note"><span>✦</span><b>LURK'te her şey yolunda.</b><small>Önemli verilerini düzenli aralıklarla yedeklemeyi unutma.</small></div>
+        </aside>
+        <section className="lurk-settings-main">
+          <div className="lurk-settings-overview">
+            <div><span className="lurk-settings-eyebrow">SİSTEM ÖZETİ</span><h2>Her şey kontrol altında.</h2><p>İşletme kayıtların tek yerde, düzenli ve güvende.</p></div>
+            <div className="lurk-settings-live"><i/> ÇALIŞMAYA HAZIR</div>
+          </div>
+          <div className="lurk-settings-stats">
+            <article><span>MASALAR</span><b>{tables.length}</b><small>Tanımlı masa</small></article>
+            <article><span>MENÜ ÜRÜNLERİ</span><b>{menu.length}</b><small>Katalog kaydı</small></article>
+            <article><span>MÜŞTERİLER</span><b>{customers.length}</b><small>Müşteri kaydı</small></article>
+            <article><span>ADİSYONLAR</span><b>{orders.length}</b><small>İşlem kaydı</small></article>
+          </div>
+          <div className="lurk-settings-sectionhead"><div><span className="lurk-settings-eyebrow">VERİ GÜVENLİĞİ</span><h2>Yedekleme ve geri yükleme</h2></div><span className="lurk-settings-shield">⌑</span></div>
+          <div className="lurk-settings-backupgrid">
+            <article className="lurk-settings-backupcard">
+              <div className="lurk-settings-cardicon orange">↓</div><span className="lurk-settings-eyebrow">DIŞA AKTAR</span><h3>Verilerini yedekle</h3>
+              <p>Masa durumları, adisyonlar, raporlar, müşteriler, veresiye defteri ve menüyü tek bir JSON dosyasına indir. Mevcut kayıtların değişmez.</p>
+              <button className="lurk-settings-primary" onClick={exportBackup}>Yedek dosyasını indir <span>↗</span></button>
+              {backupMsg&&<div role="status" className="lurk-settings-message">{backupMsg}</div>}
+            </article>
+            <article className="lurk-settings-backupcard">
+              <div className="lurk-settings-cardicon">↑</div><span className="lurk-settings-eyebrow">İÇE AKTAR</span><h3>Yedekten geri yükle</h3>
+              <p>LURK POS tarafından oluşturulmuş, biçimi doğrulanmış JSON yedeği seç. Geri yükleme mevcut kayıtların yerine geçer.</p>
+              <label className="lurk-settings-upload">{importBusy?"Yedek okunuyor…":"Yedek dosyası seç"} <span>＋</span><input type="file" accept=".json,application/json" disabled={importBusy} onChange={e=>inspectBackup(e.target.files?.[0])}/></label>
+              {importMsg&&<div role="status" className="lurk-settings-message">{importMsg}</div>}
+              {pendingImport&&<div className="lurk-settings-confirm"><small>Seçilen dosya: <b>{pendingImport.filename}</b></small><button onClick={applyBackup}>Mevcut verileri değiştir ve geri yükle</button><button className="lurk-settings-cancel" onClick={()=>{setPendingImport(null);setImportMsg("Geri yükleme iptal edildi.");}}>İptal</button></div>}
+            </article>
+          </div>
+          <p className="lurk-settings-footnote">Güvenlik notu · Yedek dosyası hassas müşteri ve satış bilgileri içerebilir. Dosyayı güvenli bir yerde sakla.</p>
+        </section>
+      </main>
     </div>
   );
 }
