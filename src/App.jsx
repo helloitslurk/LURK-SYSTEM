@@ -609,6 +609,58 @@ export default function App(){
           }
         }
 
+
+        /* STEP 1 · HORIZONTAL CONSOLE SHELL */
+        html, body, #root { min-height:100%; }
+        body { overflow-x:hidden; }
+        .lurk-app {
+          width:100% !important; min-height:100dvh !important;
+          padding:0 0 82px !important; margin:0 !important;
+          overflow-x:hidden !important; background:#E9E0D2 !important;
+        }
+        .lurk-screen:not(.lurk-order-screen) {
+          width:100% !important; max-width:none !important;
+          min-height:calc(100dvh - 82px); margin:0 !important;
+        }
+        .lurk-bottom-nav {
+          position:fixed !important; left:0 !important; right:0 !important;
+          top:auto !important; bottom:0 !important; transform:none !important;
+          width:100% !important; max-width:none !important; height:76px !important;
+          padding:7px max(12px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)) !important;
+          display:flex !important; flex-direction:row !important; justify-content:center !important;
+          gap:8px !important; border-radius:18px 18px 0 0 !important; z-index:80 !important;
+        }
+        .lurk-nav-button {
+          flex:1 1 0 !important; width:auto !important; min-height:56px !important;
+          max-width:190px !important; padding:7px 8px !important;
+          display:flex !important; flex-direction:row !important;
+          justify-content:center !important; align-items:center !important; gap:8px !important;
+        }
+        .lurk-nav-button span:first-child { font-size:21px !important; }
+        .lurk-nav-button span:last-child { font-size:12px !important; white-space:nowrap; }
+        .lurk-order-screen { width:100% !important; height:100dvh !important; min-height:100dvh !important; overflow:hidden !important; }
+        .lurk-landscape-gate { display:none; }
+        @media (max-width:760px) and (orientation:portrait) {
+          .lurk-landscape-gate {
+            position:fixed; inset:0; z-index:10000; display:flex;
+            flex-direction:column; align-items:center; justify-content:center;
+            gap:16px; padding:32px; text-align:center; color:#302820;
+            background:linear-gradient(145deg,#FFF9EF,#F2E3D1);
+          }
+          .lurk-landscape-gate .gate-icon { font-size:54px; }
+          .lurk-landscape-gate strong { font-size:23px; letter-spacing:-.6px; }
+          .lurk-landscape-gate span { max-width:280px; font-size:14px; line-height:1.55; color:#75695E; }
+        }
+        @media (min-width:761px) {
+          .lurk-app { padding-bottom:82px !important; padding-left:0 !important; }
+          .lurk-bottom-nav { background:#FFF9EF !important; }
+        }
+        @media (orientation:landscape) and (max-height:520px) {
+          .lurk-app { padding-bottom:68px !important; }
+          .lurk-bottom-nav { height:64px !important; }
+          .lurk-nav-button { min-height:48px !important; }
+          .lurk-screen:not(.lurk-order-screen) { min-height:calc(100dvh - 68px); }
+        }
       `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -622,6 +674,11 @@ export default function App(){
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
+      <div className="lurk-landscape-gate" role="status" aria-live="polite">
+        <div className="gate-icon">↻</div>
+        <strong>LURK POS yatay kullanılır</strong>
+        <span>Daha geniş çalışma alanı için cihazını yatay konuma çevir. Bu arayüzü yatay ekran deneyimi için tasarlıyoruz.</span>
+      </div>
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(91,65,43,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
