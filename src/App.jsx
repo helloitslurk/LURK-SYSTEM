@@ -790,6 +790,19 @@ export default function App(){
 @media(max-width:850px){.lurk-crm-header{padding:16px}.lurk-crm-content{padding:17px 14px}.lurk-crm-overview{gap:8px}.lurk-crm-stat{padding:13px;min-height:98px}.lurk-crm-stat>b{font-size:21px}.lurk-crm-directory-head{align-items:stretch;flex-direction:column;padding:16px}.lurk-crm-tools{width:100%}.lurk-crm-search{flex:1;width:auto}.lurk-crm-table-wrap{overflow-x:auto}.lurk-crm-table-head,.lurk-crm-row{min-width:760px;padding-left:16px;padding-right:16px}}
 @media(max-width:480px){.lurk-crm-title h1{font-size:20px}.lurk-crm-title p{font-size:10px}.lurk-crm-add{padding:10px 11px;font-size:10px}.lurk-crm-overview{grid-template-columns:1fr 1fr}.lurk-crm-stat:last-child{grid-column:1/-1}.lurk-crm-stat:last-child>b{font-size:20px}}
 @media(orientation:landscape) and (max-height:650px){.lurk-crm-header{padding:12px 22px}.lurk-crm-content{padding-top:15px}.lurk-crm-overview{margin-bottom:16px}.lurk-crm-stat{min-height:86px;padding:12px 16px}.lurk-crm-stat>b{font-size:22px}.lurk-crm-row{min-height:64px}}
+
+.lurk-analytics-screen{min-height:100%;background:#F4EBDD!important;color:#34291F}
+.lurk-analytics-header{display:flex;align-items:center;gap:18px;padding:22px 28px;background:#FFF9EF;border-bottom:1px solid #E9DDCE;position:sticky;top:0;z-index:5}.lurk-analytics-header>button:first-child{width:38px;height:38px;border:1px solid #E8DCCD;border-radius:11px;background:#F5EBDD;color:#725D4A;font-size:21px;cursor:pointer}.lurk-analytics-header>div{flex:1}.lurk-analytics-header span,.lurk-analytics-period>div:first-child>span,.lurk-analytics-panel-head span{font-size:9px;letter-spacing:1.6px;font-weight:900;color:#C66A45}.lurk-analytics-header h1{font-size:25px;letter-spacing:-1px;margin:4px 0;color:#302820}.lurk-analytics-header p{font-size:12px;color:#8A7A68;margin:0}.lurk-analytics-export{border:0;border-radius:10px;background:#F36B3F;color:#fff;padding:12px 16px;font-size:11px;font-weight:900;cursor:pointer}
+.lurk-analytics-content{max-width:1500px;margin:auto;padding:22px 28px 40px}.lurk-analytics-period{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.lurk-analytics-period>div:first-child>b{display:block;margin-top:5px;font-size:16px;text-transform:capitalize;color:#3B2E23}.lurk-analytics-months{display:flex;gap:6px;overflow-x:auto}.lurk-analytics-months button{white-space:nowrap;padding:8px 12px;border:1px solid #E5D7C7;border-radius:8px;background:#FFF9EF;color:#806E5C;font-size:10px;font-weight:800;cursor:pointer}.lurk-analytics-months button.active{background:#FBE0D2;border-color:#F1C9B3;color:#B95735}
+.lurk-analytics-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;margin-bottom:17px}.lurk-analytics-kpis article{position:relative;padding:16px;border:1px solid #E6D8C7;border-radius:13px;background:#FFF9EF;min-width:0}.lurk-analytics-kpis article.primary{background:#FBE2D3;border-color:#F1C9B3}.lurk-analytics-kpis article>span{display:block;font-size:8px;letter-spacing:1.2px;font-weight:900;color:#9B8068}.lurk-analytics-kpis article>b{display:block;font-size:clamp(15px,1.5vw,23px);letter-spacing:-.7px;color:#3B2E23;margin:10px 0 5px;white-space:nowrap}.lurk-analytics-kpis article.primary>b{color:#C85B36}.lurk-analytics-kpis article>small{font-size:9px;color:#958371}.lurk-analytics-kpis article>i{position:absolute;right:14px;top:11px;font-style:normal;color:#D87954}
+.lurk-analytics-panels{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;align-items:stretch}.lurk-analytics-panel{padding:18px 19px;border:1px solid #E7D9C8;border-radius:14px;background:#FFF9EF;box-shadow:0 4px 14px rgba(86,62,40,.035);min-width:0}.lurk-analytics-panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}.lurk-analytics-panel-head h2{font-size:17px;letter-spacing:-.4px;color:#392D22;margin:4px 0 0}.lurk-analytics-panel-head>small{font-size:9px;color:#9B8A77}
+.lurk-analytics-bars{height:190px;display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:5px 2px 0}.lurk-analytics-bar-col{flex:1;min-width:32px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px}.lurk-analytics-bar-value{font-size:8px;color:#9B8A77;white-space:nowrap}.lurk-analytics-bar-track{height:125px;width:min(27px,75%);display:flex;align-items:flex-end;background:#F3E9DD;border-radius:6px 6px 3px 3px;overflow:hidden}.lurk-analytics-bar-track i{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#F58A62,#E85E36);border-radius:6px 6px 2px 2px}.lurk-analytics-bar-col>small{font-size:8px;color:#9B8A77;white-space:nowrap}
+.lurk-analytics-payment{display:flex;align-items:center;justify-content:space-around;gap:15px;min-height:170px}.lurk-analytics-donut{width:138px;height:138px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}.lurk-analytics-donut>div{width:94px;height:94px;border-radius:50%;background:#FFF9EF;display:flex;flex-direction:column;align-items:center;justify-content:center}.lurk-analytics-donut b{font-size:20px;color:#3B2E23}.lurk-analytics-donut small{font-size:9px;color:#9B8A77}.lurk-analytics-legend{display:grid;gap:13px;min-width:0}.lurk-analytics-legend>div{display:grid;grid-template-columns:9px auto;gap:5px 8px;align-items:center;font-size:10px;color:#806E5C}.lurk-analytics-legend i{width:8px;height:8px;border-radius:3px}.lurk-analytics-legend i.cash{background:#F36B3F}.lurk-analytics-legend i.card{background:#D9C9B6}.lurk-analytics-legend b{grid-column:2;font-size:11px;color:#3B2E23}
+.lurk-analytics-item{display:grid;grid-template-columns:27px minmax(0,1fr) auto;align-items:center;gap:9px;margin:14px 0}.lurk-analytics-item .rank{font-size:10px;color:#C66A45;font-weight:900}.lurk-analytics-item>div>b{font-size:11px;color:#4B3B2D}.lurk-analytics-item>div{min-width:0}.lurk-analytics-item-track{height:5px;background:#F0E6DA;border-radius:9px;margin-top:7px;overflow:hidden}.lurk-analytics-item-track i{height:100%;display:block;background:#E77A50;border-radius:9px}.lurk-analytics-item>strong{font-size:10px;color:#8A7967;white-space:nowrap}
+.lurk-analytics-day{border-top:1px solid #F0E7DC}.lurk-analytics-day>button{display:flex;align-items:center;gap:12px;width:100%;padding:12px 0;border:0;background:transparent;text-align:left;cursor:pointer}.lurk-analytics-day>button>span{flex:1}.lurk-analytics-day>button b,.lurk-analytics-day>button small{display:block}.lurk-analytics-day>button b{font-size:11px;color:#4A3A2C}.lurk-analytics-day>button small{font-size:9px;color:#9B8A77;margin-top:4px}.lurk-analytics-day>button strong{font-size:11px;color:#C15D38}.lurk-analytics-day>button i{font-style:normal;color:#A18E79}.lurk-analytics-order{display:flex;justify-content:space-between;padding:8px 12px;border-top:1px solid #F2EADF;background:#FBF5EC;font-size:10px;color:#776451}.lurk-analytics-order b{color:#4A3A2C}.lurk-analytics-empty{padding:35px 15px;text-align:center;font-size:11px;color:#9B8A77;background:#FBF5EC;border-radius:9px}
+@media(max-width:1000px){.lurk-analytics-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-analytics-panels{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.lurk-analytics-header{padding:15px;gap:10px}.lurk-analytics-header h1{font-size:21px}.lurk-analytics-header p{font-size:10px}.lurk-analytics-export{padding:10px;font-size:9px}.lurk-analytics-content{padding:16px 13px 30px}.lurk-analytics-period{align-items:flex-start;flex-direction:column}.lurk-analytics-months{max-width:100%}.lurk-analytics-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.lurk-analytics-panels{grid-template-columns:1fr}.lurk-analytics-payment{justify-content:center}}
+@media(orientation:landscape) and (max-height:650px){.lurk-analytics-header{padding:11px 20px}.lurk-analytics-content{padding-top:14px}.lurk-analytics-kpis article{padding:12px}.lurk-analytics-panels{grid-template-columns:1.2fr 1fr}.lurk-analytics-bars{height:145px}}
 </style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -1350,70 +1363,64 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
+  function exportMonthCsv(){
+    const headers=["Tarih","Masa","Müşteri","Ara toplam","İndirim","Toplam","Nakit","Kart","Veresiye","Ödeme türü","Ürünler"];
+    const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Nakit + Kart":o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":o.pt==="credit"?"Veresiye":"Diğer",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
+    const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),"Veresiye defteri",e.customerName||"",0,0,0,e.type==="payment"&&e.method==="cash"?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Borç kaydı":"Tahsilat · "+(e.method==="cash"?"Nakit":e.method==="card"?"Kart":"Diğer"),e.note||""]);
+    const csv=[headers,...rows,...ledgerRows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
+    const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
+    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lurk-satis-"+sel+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  const ms=sel+"-01";
+  const me=sel+"-"+String(new Date(parseInt(sel.slice(0,4)),parseInt(sel.slice(5,7)),0).getDate()).padStart(2,"0");
+  const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
+  const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
+  const totalInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
+  const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
+  const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="cash").reduce((s,e)=>s+(Number(e.amount)||0),0);
+  const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="card").reduce((s,e)=>s+(Number(e.amount)||0),0);
+  const outstanding=creditEntries.reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
+  const creditSales=mo.filter(o=>o.pt==="credit").reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const dayMap={};
+  mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
+  ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
+  const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
+
+  const avgTicket=mo.length?totalInc/mo.length:0;
+  const orderCount=mo.filter(o=>!o.partialPayment).length;
+  const topItems=(()=>{const map={};mo.forEach(o=>(o.items||[]).forEach(it=>{const key=it.name||"Ürün";map[key]=(map[key]||0)+(Number(it.qty)||0);}));return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);})();
+  const maxDay=Math.max(1,...days.map(d=>Number(d.inc)||0));
+  const maxItem=Math.max(1,...topItems.map(x=>x[1]));
+  const cashShare=totalCash+totalCard?Math.round(totalCash/(totalCash+totalCard)*100):0;
+  const cardShare=totalCash+totalCard?100-cashShare:0;
   return(
-    <div className="lurk-screen lurk-reports-screen">
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Raporlar</div><button onClick={exportMonthCsv} style={{background:T.bg2,color:T.accentL,border:"1px solid rgba(91,65,43,.12)",borderRadius:10,padding:"9px 11px",fontSize:12,fontWeight:700,cursor:"pointer"}}>↓ CSV</button>
-      </div>
-
-      {/* Ay seçici */}
-      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(91,65,43,0.06)"}}>
-        {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#F36B3F":"rgba(91,65,43,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#F36B3F":"rgba(91,65,43,0.1)"}}>
-            {ml(m)}
-          </button>
-        ))}
-      </div>
-
-      {/* Stat kartlar */}
-      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8}}>
-        {[
-          {label:"Satış",val:fm(totalInc),color:T.accentL},
-          {label:"Nakit tahsilat",val:fm(totalCash),color:T.text},
-          {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
-          {label:"Açık veresiye",val:fm(Math.max(0,outstanding)),color:outstanding>0?T.warn:T.text},
-        ].map((s,i)=>(
-          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(91,65,43,0.07)"}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
-            <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:"-0.3px"}}>{s.val.replace(" TL","")}</div>
-            <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Günler */}
-      <div style={{padding:"0 14px 14px"}}>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Günler</div>
-        {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>Bu ay kayıt yok</div>}
-        {days.map(day=>{
-          const isExp=exp===day.date;
-          const log=day.log;
-          return(
-            <div key={day.date} style={{background:T.bg2,borderRadius:14,marginBottom:8,border:"0.5px solid rgba(91,65,43,0.07)",overflow:"hidden"}}>
-              <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px",cursor:"pointer"}}>
-                <div>
-                  <div style={{fontSize:14,fontWeight:600,color:T.text}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-                  <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
-                </div>
-                <div style={{textAlign:"right"}}>
-                  <div style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(day.inc)}</div>
-                  <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
-                </div>
-              </div>
-              {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
-                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(91,65,43,0.05)",background:"rgba(91,65,43,0.02)"}}>
-                  <div>
-                    <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
-                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":o.pt==="credit"?"Veresiye":o.pt==="split"?"Nakit + Kart":"Kart"}</div>
-                  </div>
-                  <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(o.total)}</div>
-                </div>
-              ))}
-            </div>
-          );
-        })}
-      </div>
+    <div className="lurk-screen lurk-reports-screen lurk-analytics-screen">
+      <header className="lurk-analytics-header"><button onClick={()=>setV("home")}>←</button><div><span>BUSINESS INTELLIGENCE / LURK</span><h1>İşletme analizi</h1><p>Satış performansını tek ekranda takip et.</p></div><button className="lurk-analytics-export" onClick={exportMonthCsv}>↓ CSV dışa aktar</button></header>
+      <main className="lurk-analytics-content">
+        <div className="lurk-analytics-period"><div><span>RAPOR DÖNEMİ</span><b>{ml(sel)}</b></div><div className="lurk-analytics-months">{(months.length?months:[now]).map(m=><button key={m} className={sel===m?"active":""} onClick={()=>setSel(m)}>{ml(m)}</button>)}</div></div>
+        <section className="lurk-analytics-kpis">
+          <article className="primary"><span>TOPLAM SATIŞ</span><b>{fm(totalInc)}</b><small>{orderCount} tamamlanan adisyon</small><i>↗</i></article>
+          <article><span>ORTALAMA FİŞ</span><b>{fm(avgTicket)}</b><small>Adisyon başına satış</small></article>
+          <article><span>NAKİT TAHSİLAT</span><b>{fm(totalCash)}</b><small>Toplam tahsilatın %{cashShare}’i</small></article>
+          <article><span>KART TAHSİLAT</span><b>{fm(totalCard)}</b><small>Toplam tahsilatın %{cardShare}’i</small></article>
+          <article><span>AÇIK VERESİYE</span><b>{fm(Math.max(0,outstanding))}</b><small>{creditSales?fm(creditSales)+" veresiye satış": "Açık satış kaydı yok"}</small></article>
+        </section>
+        <section className="lurk-analytics-panels">
+          <article className="lurk-analytics-panel lurk-analytics-chart"><div className="lurk-analytics-panel-head"><div><span>GÜNLÜK PERFORMANS</span><h2>Satış hareketi</h2></div><small>{days.length} kayıtlı gün</small></div>
+            {days.length?<div className="lurk-analytics-bars">{days.slice().reverse().map(d=><div className="lurk-analytics-bar-col" key={d.date}><div className="lurk-analytics-bar-value">{fm(d.inc)}</div><div className="lurk-analytics-bar-track"><i style={{height:Math.max(3,(Number(d.inc)||0)/maxDay*100)+"%"}}/></div><small>{new Date(d.date+"T12:00:00").toLocaleDateString("tr-TR",{day:"2-digit",month:"short"})}</small></div>)}</div>:<div className="lurk-analytics-empty">Bu dönem için satış kaydı yok.</div>}
+          </article>
+          <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>ÖDEME DAĞILIMI</span><h2>Tahsilat kanalları</h2></div></div>
+            <div className="lurk-analytics-payment"><div className="lurk-analytics-donut" style={{background:"conic-gradient(#F36B3F 0 "+cashShare+"%,#D9C9B6 "+cashShare+"% 100%)"}}><div><b>{cashShare+cardShare?cashShare+"%": "0%"}</b><small>nakit payı</small></div></div><div className="lurk-analytics-legend"><div><i className="cash"/> <span>Nakit</span><b>{fm(totalCash)}</b></div><div><i className="card"/> <span>Kart</span><b>{fm(totalCard)}</b></div></div></div>
+          </article>
+          <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>ÜRÜN PERFORMANSI</span><h2>En çok satılanlar</h2></div></div>
+            {topItems.length?topItems.map(([name,qty],i)=><div className="lurk-analytics-item" key={name}><span className="rank">{String(i+1).padStart(2,"0")}</span><div><b>{name}</b><div className="lurk-analytics-item-track"><i style={{width:qty/maxItem*100+"%"}}/></div></div><strong>{qty} adet</strong></div>):<div className="lurk-analytics-empty">Ürün bazlı satış verisi bulunamadı.</div>}
+          </article>
+          <article className="lurk-analytics-panel lurk-analytics-days"><div className="lurk-analytics-panel-head"><div><span>GÜN GÜN KAYIT</span><h2>İşlem geçmişi</h2></div></div>
+            {days.map(day=>{const isExp=exp===day.date;const log=day.log;return <div className="lurk-analytics-day" key={day.date}><button onClick={()=>setExp(isExp?null:day.date)}><span><b>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</b><small>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</small></span><strong>{fm(day.inc)}</strong><i>{isExp?"−":"＋"}</i></button>{isExp&&day.orders.filter(o=>!o.partialPayment).map((o,i)=><div className="lurk-analytics-order" key={i}><span>{o.g||"Misafir"} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}</div>})}
+            {!days.length&&<div className="lurk-analytics-empty">Bu ay kayıt yok.</div>}
+          </article>
+        </section>
+      </main>
     </div>
   );
 }
