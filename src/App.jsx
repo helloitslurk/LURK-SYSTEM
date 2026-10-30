@@ -194,10 +194,12 @@ export default function App(){
       const d=await sbGet("lurk_d",null);
       const c=await sbGet("lurk_customers",[]);
       const ce=await sbGet("lurk_credit",[]);
+      const lp=await sbGet("lurk_plus_members",[]);
       setTbl(Array.isArray(t)?t:[]);
       setOrd(Array.isArray(o)?o:[]);
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
+      setLurkPlusMembers(Array.isArray(lp)?lp:[]);
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -840,7 +842,7 @@ export default function App(){
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
-      {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
+      {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} lurkPlusMembers={lurkPlusMembers} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setLurkPlusMembers={setLurkPlusMembers} setMenu={setMenu} setDay={setDay}/>}
       <div className="lurk-landscape-gate" role="status" aria-live="polite">
         <div className="gate-icon">↻</div>
         <strong>LURK POS yatay kullanılır</strong>
@@ -1620,7 +1622,18 @@ function MenuScreen({menu,setMenu,setV}){
 }
 
 /* ─── SETTINGS ─── */
-function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,day,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay}){
+function validateBackup(backup){
+  if(!backup||typeof backup!=="object"||Array.isArray(backup))return "Yedek dosyasının biçimi geçersiz.";
+  if(backup.app!=="LURK POS"||backup.formatVersion!==1)return "Bu dosya desteklenen bir LURK POS yedeği değil.";
+  const d=backup.data;
+  if(!d||typeof d!=="object"||Array.isArray(d))return "Yedek verileri bulunamadı.";
+  for(const key of ["lurk_t","lurk_o","lurk_l","lurk_customers","lurk_credit","lurk_m"]){if(!Array.isArray(d[key]))return "Yedek içindeki "+key+" verisi geçersiz."}
+  if(d.lurk_plus_members!==undefined&&!Array.isArray(d.lurk_plus_members))return "LURK+ üye verileri geçersiz.";
+  if(d.lurk_d!==null&&d.lurk_d!==undefined&&(typeof d.lurk_d!=="object"||Array.isArray(d.lurk_d)))return "Gün durumu verisi geçersiz.";
+  return "";
+}
+
+function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,lurkPlusMembers,menu,day,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setLurkPlusMembers,setMenu,setDay}){
   const [backupMsg,setBackupMsg]=useState("");
   const [importMsg,setImportMsg]=useState("");
   const [pendingImport,setPendingImport]=useState(null);
@@ -1641,12 +1654,12 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
   function applyBackup(){
     if(!pendingImport)return;
     const d=pendingImport.data;
-    setTables(d.lurk_t);setOrders(d.lurk_o);setLogs(d.lurk_l);setCustomers(d.lurk_customers);setCreditEntries(d.lurk_credit);setMenu(d.lurk_m);setDay(d.lurk_d);
+    setTables(d.lurk_t);setOrders(d.lurk_o);setLogs(d.lurk_l);setCustomers(d.lurk_customers);setCreditEntries(d.lurk_credit);setLurkPlusMembers(d.lurk_plus_members||[]);setMenu(d.lurk_m);setDay(d.lurk_d??null);
     setImportMsg("Yedek içeri aktarıldı. Kayıt göstergesi tamamlanana kadar uygulamayı kapatma.");
     setPendingImport(null);
   }
   function exportBackup(){
-    const backup={app:"LURK POS",formatVersion:1,exportedAt:new Date().toISOString(),data:{lurk_t:tables,lurk_o:orders,lurk_l:logs,lurk_customers:customers,lurk_credit:creditEntries,lurk_m:menu,lurk_d:day}};
+    const backup={app:"LURK POS",formatVersion:1,exportedAt:new Date().toISOString(),data:{lurk_t:tables,lurk_o:orders,lurk_l:logs,lurk_customers:customers,lurk_credit:creditEntries,lurk_plus_members:lurkPlusMembers,lurk_m:menu,lurk_d:day}};
     const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const a=document.createElement("a");
