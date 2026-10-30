@@ -777,6 +777,19 @@ export default function App(){
 @media(max-width:800px){.lurk-catalog-topbar{padding:16px;gap:11px;flex-wrap:wrap}.lurk-catalog-heading h1{font-size:21px}.lurk-catalog-top-actions{width:100%;justify-content:space-between;padding-left:49px}.lurk-catalog-workspace{grid-template-columns:1fr}.lurk-catalog-sidebar{display:flex;gap:6px;overflow-x:auto;padding:10px 13px;border-right:0;border-bottom:1px solid #E8DCCD}.lurk-catalog-side-label,.lurk-catalog-side-note{display:none}.lurk-catalog-category{width:auto;flex:0 0 auto;margin:0;padding:9px 12px}.lurk-catalog-category b{white-space:nowrap}.lurk-catalog-main{padding:19px 15px 30px}.lurk-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lurk-catalog-product-art{height:100px}.lurk-catalog-product-body{padding:10px}.lurk-catalog-product-title h3{font-size:12px}}
 @media(max-width:430px){.lurk-catalog-toolbar{align-items:stretch;flex-direction:column}.lurk-catalog-search{width:100%}.lurk-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lurk-catalog-product-art{height:88px}}
 @media(orientation:landscape) and (max-height:650px){.lurk-catalog-topbar{padding:12px 22px}.lurk-catalog-heading h1{font-size:21px}.lurk-catalog-workspace{min-height:calc(100vh - 68px)}.lurk-catalog-main{padding-top:17px}.lurk-catalog-product-art{height:92px}.lurk-catalog-grid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}}
+
+.lurk-crm-screen{min-height:100%;background:#F4EBDD!important;color:#34291F}
+.lurk-crm-header{display:flex;align-items:center;gap:18px;padding:22px 28px;background:#FFF9EF;border-bottom:1px solid #E9DDCE;position:sticky;top:0;z-index:5}
+.lurk-crm-back{width:38px;height:38px;border:1px solid #E8DCCD;border-radius:11px;background:#F5EBDD;color:#725D4A;font-size:21px;cursor:pointer}
+.lurk-crm-title{flex:1}.lurk-crm-title>span,.lurk-crm-directory-head>div:first-child>span{font-size:9px;letter-spacing:1.8px;font-weight:900;color:#C66A45}.lurk-crm-title h1{font-size:25px;letter-spacing:-1px;margin:4px 0;color:#302820}.lurk-crm-title p{font-size:12px;color:#8A7A68;margin:0}
+.lurk-crm-add{border:0;border-radius:10px;background:#F36B3F;color:#fff;padding:12px 17px;font-size:12px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 #D65331}
+.lurk-crm-content{padding:25px 28px 40px;max-width:1500px;margin:auto}.lurk-crm-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:27px}.lurk-crm-stat{padding:18px 20px;border:1px solid #E6D8C7;border-radius:14px;background:#FFF9EF;min-height:115px;box-shadow:0 4px 12px rgba(86,62,40,.035)}.lurk-crm-stat.featured{background:#FBE2D3;border-color:#F1C9B3}.lurk-crm-stat>span{display:block;font-size:9px;letter-spacing:1.4px;font-weight:900;color:#9B8068}.lurk-crm-stat>b{display:block;font-size:27px;letter-spacing:-.8px;color:#3B2E23;margin:8px 0 3px}.lurk-crm-stat.featured>b{color:#C85B36}.lurk-crm-stat>small{font-size:10px;color:#958371}
+.lurk-crm-directory{border:1px solid #E7D9C8;border-radius:15px;background:#FFF9EF;overflow:hidden;box-shadow:0 5px 18px rgba(86,62,40,.04)}.lurk-crm-directory-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 22px;border-bottom:1px solid #EDE2D5}.lurk-crm-directory-head h2{font-size:21px;letter-spacing:-.6px;margin:4px 0;color:#392D22}.lurk-crm-directory-head p{font-size:10px;color:#958573;margin:0}.lurk-crm-tools{display:flex;gap:9px;align-items:center}.lurk-crm-search{width:250px;height:40px;display:flex;align-items:center;gap:8px;padding:0 11px;border:1px solid #E5D7C7;border-radius:9px;background:#FBF5EC;color:#A18E79}.lurk-crm-search>span{font-size:22px}.lurk-crm-search input{width:100%;border:0!important;outline:0;background:transparent;color:#3D3025;font-size:11px;box-shadow:none!important}.lurk-crm-tools select{max-width:160px;height:40px;padding:0 10px;border:1px solid #E5D7C7;border-radius:9px;background:#FBF5EC;color:#665342;font-size:10px}
+.lurk-crm-table-head,.lurk-crm-row{display:grid;grid-template-columns:minmax(220px,2fr) .7fr 1fr 1fr 1.15fr;align-items:center;gap:14px;padding:12px 22px}.lurk-crm-table-head{background:#F8F0E6;color:#9B8A77;font-size:8px;font-weight:900;letter-spacing:1.1px}.lurk-crm-row{min-height:76px;border-top:1px solid #F0E7DC}.lurk-crm-guest{display:flex;align-items:center;gap:11px;text-align:left;border:0;background:transparent;padding:0;cursor:pointer;color:#3D3025;min-width:0}.lurk-crm-avatar{width:38px;height:38px;display:grid;place-items:center;flex:0 0 38px;border-radius:12px;background:#FBE0D2;border:1px solid #F1C9B3;color:#B95735;font-size:11px;font-weight:900}.lurk-crm-guest b,.lurk-crm-guest small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lurk-crm-guest b{font-size:12px}.lurk-crm-guest small{font-size:9px;color:#9B8A77;margin-top:4px}.lurk-crm-orders b,.lurk-crm-orders small{display:block}.lurk-crm-orders b{font-size:14px;color:#4A3A2C}.lurk-crm-orders small{font-size:9px;color:#9B8A77;margin-top:2px}.lurk-crm-total,.lurk-crm-month{font-size:12px;color:#574535}.lurk-crm-month{color:#C15D38}.lurk-crm-actions{display:flex;gap:6px}.lurk-crm-actions button{padding:7px 9px;border:1px solid #E8D9C8;border-radius:7px;background:#F8F0E6;color:#725B45;font-size:9px;font-weight:800;cursor:pointer}.lurk-crm-actions button:first-child{background:#FBE4D7;border-color:#F0CCB8;color:#B95735}
+.lurk-crm-empty{padding:60px 20px;text-align:center;color:#958573}.lurk-crm-empty>span{font-size:35px}.lurk-crm-empty b{display:block;margin:9px 0 5px;color:#514131}.lurk-crm-empty p{font-size:11px}.lurk-crm-empty button{padding:10px 14px;border:0;border-radius:9px;background:#F36B3F;color:white;font-weight:800}
+@media(max-width:850px){.lurk-crm-header{padding:16px}.lurk-crm-content{padding:17px 14px}.lurk-crm-overview{gap:8px}.lurk-crm-stat{padding:13px;min-height:98px}.lurk-crm-stat>b{font-size:21px}.lurk-crm-directory-head{align-items:stretch;flex-direction:column;padding:16px}.lurk-crm-tools{width:100%}.lurk-crm-search{flex:1;width:auto}.lurk-crm-table-wrap{overflow-x:auto}.lurk-crm-table-head,.lurk-crm-row{min-width:760px;padding-left:16px;padding-right:16px}}
+@media(max-width:480px){.lurk-crm-title h1{font-size:20px}.lurk-crm-title p{font-size:10px}.lurk-crm-add{padding:10px 11px;font-size:10px}.lurk-crm-overview{grid-template-columns:1fr 1fr}.lurk-crm-stat:last-child{grid-column:1/-1}.lurk-crm-stat:last-child>b{font-size:20px}}
+@media(orientation:landscape) and (max-height:650px){.lurk-crm-header{padding:12px 22px}.lurk-crm-content{padding-top:15px}.lurk-crm-overview{margin-bottom:16px}.lurk-crm-stat{min-height:86px;padding:12px 16px}.lurk-crm-stat>b{font-size:22px}.lurk-crm-row{min-height:64px}}
 </style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -1494,43 +1507,35 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
     msg(ledgerAction==="debt"?"Borç kaydedildi.":"Tahsilat kaydedildi.");
   }
   return(
-    <div className="lurk-screen lurk-customers-screen">
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"rgba(255,249,239,0.97)"}}>
-        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
-        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:12,color:"#fff",fontWeight:750,cursor:"pointer",boxShadow:"0 5px 18px rgba(243,107,63,.18)"}}>＋ Yeni</button>
-      </div>
-      <div style={{padding:14}}>
-        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:10}}/>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:14}}>
-          <div style={{flex:1,minWidth:0,background:"rgba(243,107,63,.09)",border:"1px solid rgba(243,107,63,.18)",borderRadius:16,padding:"15px 14px"}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
-            <div style={{fontSize:26,fontWeight:850,color:T.text,marginTop:5}}>{customers.length}</div>
+    <div className="lurk-screen lurk-customers-screen lurk-crm-screen">
+      <header className="lurk-crm-header">
+        <button className="lurk-crm-back" onClick={()=>setV("home")}>←</button>
+        <div className="lurk-crm-title"><span>GUEST RELATIONSHIP / LURK</span><h1>Müşteri defteri</h1><p>Misafirlerini tanı, ziyaretlerini takip et.</p></div>
+        <button className="lurk-crm-add" onClick={openNew}>＋ Yeni müşteri</button>
+      </header>
+      <main className="lurk-crm-content">
+        <section className="lurk-crm-overview">
+          <div className="lurk-crm-stat"><span>KAYITLI MİSAFİR</span><b>{customers.length}</b><small>Toplam müşteri profili</small></div>
+          <div className="lurk-crm-stat featured"><span>TOPLAM HARCAMA</span><b>{fm(customers.reduce((sum,c)=>sum+totalFor(c),0))}</b><small>Kayıtlı müşterilerin adisyonları</small></div>
+          <div className="lurk-crm-stat"><span>BU AY AKTİF</span><b>{customers.filter(c=>monthlyTotalFor(c)>0).length}</b><small>En az bir alışveriş yapan</small></div>
+        </section>
+        <section className="lurk-crm-directory">
+          <div className="lurk-crm-directory-head"><div><span>MÜŞTERİ PORTFÖYÜ</span><h2>Misafirler</h2><p>{filtered.length} kayıt · {monthLabel(selectedMonth)} harcamasına göre sıralı</p></div>
+            <div className="lurk-crm-tools"><label className="lurk-crm-search"><span>⌕</span><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="İsim veya telefon ara..."/></label>
+            <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç">{availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}</select></div>
           </div>
-          <div style={{flex:1,minWidth:0,background:"rgba(91,65,43,.045)",border:"1px solid rgba(91,65,43,.09)",borderRadius:15,padding:"14px 15px"}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Toplam harcama</div>
-            <div style={{fontSize:16,fontWeight:850,color:T.accentL,marginTop:5}}>{fm(customers.reduce((sum,c)=>sum+totalFor(c),0))}</div>
+          <div className="lurk-crm-table-wrap"><div className="lurk-crm-table-head"><span>MİSAFİR</span><span>ZİYARET</span><span>TOPLAM HARCAMA</span><span>SEÇİLİ AY</span><span>İŞLEM</span></div>
+            {filtered.map((c,index)=><article className="lurk-crm-row" key={c.id}>
+              <button className="lurk-crm-guest" onClick={()=>setDetail(c)}><span className="lurk-crm-avatar">{c.name.trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join("").toLocaleUpperCase("tr-TR")}</span><span><b>{c.name}</b><small>{c.phone||"Telefon eklenmemiş"}</small></span></button>
+              <div className="lurk-crm-orders"><b>{orderCountFor(c)}</b><small>sipariş</small></div>
+              <strong className="lurk-crm-total">{fm(totalFor(c))}</strong>
+              <strong className="lurk-crm-month">{fm(monthlyTotalFor(c))}</strong>
+              <div className="lurk-crm-actions"><button onClick={()=>setDetail(c)}>Detay</button><button onClick={()=>openEdit(c)}>Düzenle</button></div>
+            </article>)}
+            {!filtered.length&&<div className="lurk-crm-empty"><span>♙</span><b>{query?"Müşteri bulunamadı":"Henüz müşteri yok"}</b><p>{query?"Arama kelimesini değiştirip tekrar dene.":"İlk müşteri profilini oluşturarak başlayabilirsin."}</p>{!query&&<button onClick={openNew}>＋ İlk müşteriyi ekle</button>}</div>}
           </div>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-          <div style={{fontSize:12,color:T.textSub,flex:1}}>{filtered.length} müşteri · {monthLabel(selectedMonth)} harcamasına göre sıralı</div>
-          <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç" style={{maxWidth:155,padding:"8px 10px",background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:9,textTransform:"capitalize",fontSize:11}}>
-            {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
-          </select>
-        </div>
-        <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(112px,1fr))",gap:10}}>
-        {filtered.map(c=><div key={c.id} style={{background:"#FFF9EF",border:"1px solid rgba(91,65,43,.09)",borderRadius:17,padding:"12px 11px",minWidth:0,minHeight:124,display:"flex",flexDirection:"column",alignItems:"stretch",gap:7,boxShadow:"0 4px 0 rgba(91,65,43,.045)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:12,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,#FFE0CE,#FFF0E5)",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(243,107,63,.22)"}}>{filtered.indexOf(c)+1}</button>
-          <button onClick={()=>setDetail(c)} style={{minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
-            <div style={{fontWeight:800,fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
-            <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş</div>
-            <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(monthlyTotalFor(c))} · bu ay</div>
-          </button>
-          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(91,65,43,.1)",borderRadius:9,padding:"6px 8px",fontSize:10,fontWeight:750,cursor:"pointer"}}>Düzenle</button>
-        </div>)}
-        </div>
-        {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(91,65,43,.035)",border:"1px dashed rgba(91,65,43,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
-      </div>
+        </section>
+      </main>
       {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,marginBottom:16,color:T.text}}>{editing?"Müşteriyi Düzenle":"Yeni Müşteri"}</div>
         <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(91,65,43,.12)",borderRadius:10}}/>
         <button onClick={saveCustomer} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Kaydet</button>
