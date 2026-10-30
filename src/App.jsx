@@ -864,62 +864,32 @@ export default function App(){
 
 /* ─── HOME ─── */
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
-  const[confirm,setConfirm]=useState(false);
-  const today=tod();
-  const todO=orders.filter(o=>o.date===today&&!o.partialPayment);
-  const todInc=todO.reduce((s,o)=>s+o.total,0);
-  const todCash=todO.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
-  const todCard=todO.reduce((s,o)=>s+paymentAmount(o,"card"),0);
   const openT=tables.filter(t=>t.s==="o");
-  const openInc=openT.reduce((s,t)=>s+t.order.reduce((ss,o)=>ss+o.price*o.qty,0),0);
-  const monthStart=new Date(new Date().getFullYear(),new Date().getMonth(),1);
-  const daysInMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
-  const monthDays=Array.from({length:daysInMonth},(_,i)=>{
-    const d=new Date(monthStart.getFullYear(),monthStart.getMonth(),i+1);
-    const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    const closed=orders.filter(o=>o.date===key).reduce((sum,o)=>sum+(Number(o.total)||0),0);
-    const open=key===today?openInc:0;
-    return {key,day:String(d.getDate()),total:closed+open};
-  });
-  const chartMax=Math.max(1,...monthDays.map(d=>d.total));
-  const chartTicks=[0,0.5,1].map(f=>Math.round(chartMax*f));
-  const monthTotal=monthDays.reduce((sum,d)=>sum+d.total,0);
-
-  const PAGES=[
-    {k:"tables",label:"Masalar",icon:"🪑",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar",tone:"#FCE0D2"},
-    {k:"reports",label:"Raporlar",icon:"📈",sub:"Satış geçmişi",tone:"#DCEBDD"},
-    {k:"customers",label:"Müşteriler",icon:"🧑‍🤝‍🧑",sub:"Aylık sıralama",tone:"#E5E0F5"},
-    {k:"lurkPlus",label:"LURK+",icon:"🎟️",sub:"Ön ödemeli üyeler",tone:"#F8E8B9"},
-    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"🏆",sub:"Ciro ve en çok kazandıran 5 ürün",tone:"#DCEAF4"},
-    {k:"menu",label:"Menü",icon:"🥤",sub:"Ürün yönetimi",tone:"#F5DFE5"},
+  const apps=[
+    {k:"tables",label:"Adisyon",sub:"Yeni sipariş oluştur",icon:"☕",primary:true},
+    {k:"menu",label:"Ürünler",sub:"Menü ve stok",icon:"🍄"},
+    {k:"customers",label:"Müşteriler",sub:"Müşteri kartları",icon:"⭐"},
+    {k:"reports",label:"Raporlar",sub:"Günlük satışlar",icon:"🟩"},
+    {k:"settings",label:"Ayarlar",sub:"Sistem ayarları",icon:"⚙️"}
   ];
-
-  return(
-    <div className="lurk-screen lurk-home-screen lurk-console-home">
-      <header className="lurk-console-topbar">
-        <div className="lurk-console-brand"><img src="/lurk-logo.svg" alt="LURK POS"/><span>COFFEE · PEOPLE · GOOD MOOD</span></div>
-        <div className="lurk-console-meta"><span className="lurk-console-clock">{new Date().toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</span><span className={"lurk-console-open "+(day?"is-open":"")}><i/>{day?"Gün açık":"Gün kapalı"}</span></div>
-      </header>
-      <section className="lurk-console-stage">
-        <div className="lurk-console-copy"><div className="lurk-console-eyebrow">LURK GOOD MOOD CLUB</div><h1>Bugün güzel<br/><em>şeyler yapalım.</em></h1><p>Kahveni hazırla, masanı aç. Günün ritmi burada başlıyor.</p><div className="lurk-console-live"><span><b>{openT.length}</b> açık masa</span><span className="lurk-console-live-dot"/><span><b>{fm(todInc+openInc)}</b> bugünkü satış</span></div></div>
-        <div className="lurk-console-art" aria-hidden="true"><div className="lurk-art-sun"/><div className="lurk-art-window"><span/><span/><span/></div><div className="lurk-art-plant">✳</div><div className="lurk-art-cup">☕</div><div className="lurk-art-caption">LURK<br/>IS A<br/>GOOD<br/>IDEA.</div></div>
-      </section>
-      <section className="lurk-console-launcher">
-        <div className="lurk-console-section-title"><div><span>CONTROL CENTER</span><h2>Nereye gidiyoruz?</h2></div><span className="lurk-console-hint">Bir alan seç ve başla <b>↘</b></span></div>
-        <div className="lurk-console-apps">
-          {[
-            {k:"tables",label:"Adisyon",sub:"Yeni sipariş oluştur",icon:"☕",tone:"peach",primary:true},
-            {k:"tables",label:"Masa düzeni",sub:"Masalar ve alanlar",icon:"🪑",tone:"sage"},
-            {k:"menu",label:"Ürünler",sub:"Menü ve stok",icon:"🍄",tone:"butter"},
-            {k:"customers",label:"Müşteriler",sub:"Müşteri kartları",icon:"⭐",tone:"lilac"},
-            {k:"reports",label:"Raporlar",sub:"Günlük satışlar",icon:"📊",tone:"blue"},
-            {k:"settings",label:"Ayarlar",sub:"Sistem tercihleri",icon:"⚙️",tone:"rose"},
-          ].map(p=><button key={p.label} className={"lurk-console-app lurk-tone-"+p.tone+(p.primary?" is-primary":"")} onClick={()=>setV(p.k)}><span className="lurk-console-app-icon">{p.icon}</span><span className="lurk-console-app-name">{p.label}</span><span className="lurk-console-app-sub">{p.sub}</span><span className="lurk-console-app-arrow">↗</span></button>)}
-        </div>
-      </section>
-      <footer className="lurk-console-footer"><div className="lurk-console-footer-note"><span className="lurk-footer-star">✳</span><span>GOOD MOOD IS ON THE MENU.</span></div><button onClick={day?closeDay:openDay} className={"lurk-console-day-button "+(day?"is-closing":"")}><span>{day?"◼":"▶"}</span>{day?"Günü kapat":"Günü başlat"}</button></footer>
-    </div>
-  );
+  return <main className="lurk-screen lurk-home-screen lurk-reference-home">
+    <div className="lurk-reference-backdrop" aria-hidden="true"><span className="lurk-reference-plant">✳</span><span className="lurk-reference-slogan">COFFEE<br/>PEOPLE<br/>GOOD MOOD<br/>LURK</span></div>
+    <header className="lurk-reference-top">
+      <div className="lurk-reference-brand"><img src="/lurk-logo.svg" alt="LURK"/><b>POS</b></div>
+      <div className="lurk-reference-user"><span className="lurk-reference-wifi">◉</span><span className="lurk-reference-avatar">👨🏻‍🍳</span><b>Kasiyer</b><span>⌄</span></div>
+    </header>
+    <section className="lurk-reference-launcher" aria-label="Ana menü">
+      {apps.map(p=><button key={p.k} className={"lurk-reference-app"+(p.primary?" is-active":"")} onClick={()=>setV(p.k)}>
+        <span className="lurk-reference-icon">{p.icon}</span><b>{p.label}</b><small>{p.sub}</small>
+      </button>)}
+    </section>
+    <footer className="lurk-reference-controls">
+      <span><i className="lurk-key key-a">A</i> Seç</span><span><i className="lurk-key key-b">B</i> Geri</span><span><i className="lurk-key key-x">X</i> Arama</span>
+      <button onClick={()=>setV("tables")}><i className="lurk-key key-y">Y</i> Hızlı Adisyon</button>
+    </footer>
+    <div className="lurk-reference-status"><span className={day?"is-open":""}/>{day?"Gün açık":"Gün kapalı"} · {openT.length} açık masa</div>
+    <button className="lurk-reference-day" onClick={day?closeDay:openDay}>{day?"Günü kapat":"Günü başlat"}</button>
+  </main>;
 }
 
 /* ─── TABLES ─── */
