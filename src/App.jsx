@@ -835,26 +835,26 @@ export default function App(){
         .lurk-reference-backdrop:before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(43,28,18,.56),transparent 56%),repeating-linear-gradient(90deg,transparent 0 24%,rgba(105,58,28,.08) 24.2% 24.6%)}
         .lurk-reference-backdrop:after{content:"";position:absolute;left:-4%;right:-4%;bottom:-22%;height:53%;background:radial-gradient(ellipse at 28% 22%,#c58a4b 0 10%,transparent 10.5%),linear-gradient(180deg,#8a542c,#42291d);border-radius:50% 50% 0 0;box-shadow:0 -18px 35px rgba(67,37,20,.2)}
         .lurk-reference-plant{position:absolute;top:-9%;left:36%;font-size:clamp(150px,28vw,370px);line-height:1;color:#39713b;text-shadow:0 8px 12px #4b321d55;opacity:.9;transform:rotate(-18deg)}
-        .lurk-reference-slogan{position:absolute;top:9%;left:54%;font-size:clamp(15px,2vw,27px);font-weight:950;line-height:1.35;color:#6c351a}
         .lurk-reference-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:2}
         .lurk-reference-brand{display:flex;flex-direction:column;align-items:center;filter:drop-shadow(3px 4px 0 #21150e)}
         .lurk-reference-brand img{width:clamp(110px,16vw,195px);height:auto;object-fit:contain}
         .lurk-reference-brand b{font-size:clamp(21px,2.6vw,34px);font-weight:1000;line-height:.8;color:#fff;-webkit-text-stroke:2px #17120f;margin-left:55px}
         .lurk-reference-user{display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:14px;background:#fff8ed;border:1px solid #72503333;box-shadow:0 5px 15px #55351d30;font-size:14px}
         .lurk-reference-wifi{font-size:19px;margin-right:8px}.lurk-reference-avatar{font-size:23px}
-        .lurk-reference-launcher{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;width:100%;max-width:1120px;margin:auto;align-items:stretch}
-        .lurk-reference-app{min-width:0;min-height:clamp(160px,27vh,270px);padding:17px 8px 15px;border-radius:19px;border:1px solid rgba(83,56,35,.2);background:linear-gradient(145deg,#fffaf2,#eee4d6);box-shadow:0 9px 22px rgba(48,28,14,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#171411;cursor:pointer}
-        .lurk-reference-app.is-active{background:linear-gradient(145deg,#ff9b25,#f15c19);border:4px solid #f5db37;outline:5px solid #3da94b;color:white;box-shadow:0 10px 25px #39201266}
-        .lurk-reference-icon{font-size:clamp(42px,6.2vw,74px);line-height:1.2;margin-bottom:9px;filter:drop-shadow(1px 2px 1px #0003)}
-        .lurk-reference-app b{font-size:clamp(14px,1.55vw,21px);font-weight:900}
-        .lurk-reference-app small{font-size:clamp(10px,1.08vw,15px);text-align:center;line-height:1.3}
+        .lurk-reference-launcher{position:relative;z-index:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(14px,1.8vw,26px);width:100%;max-width:1500px;margin:auto;align-items:stretch}
+        .lurk-reference-app{min-width:0;min-height:clamp(230px,39vh,390px);padding:clamp(20px,2.2vw,34px) 12px;border-radius:clamp(22px,2vw,32px);border:1px solid rgba(83,56,35,.2);background:linear-gradient(145deg,#fffaf2,#eee4d6);box-shadow:0 12px 30px rgba(48,28,14,.28),inset 0 1px 0 #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,1.4vh,18px);color:#171411;cursor:pointer;transition:transform .16s,box-shadow .16s}
+        .lurk-reference-app:active{transform:scale(.97)}
+        .lurk-reference-app.is-active{background:linear-gradient(145deg,#ff9b25,#f15c19);border:4px solid #f5db37;outline:5px solid #3da94b;color:white;box-shadow:0 14px 34px #39201277,inset 0 1px 0 #ffffff66}
+        .lurk-reference-icon{font-size:clamp(58px,7.5vw,104px);line-height:1.2;margin-bottom:clamp(8px,1vh,14px);filter:drop-shadow(1px 3px 2px #0003)}
+        .lurk-reference-app b{font-size:clamp(18px,2vw,28px);font-weight:950;letter-spacing:-.5px}
+        .lurk-reference-app small{font-size:clamp(12px,1.2vw,17px);text-align:center;line-height:1.35}
         .lurk-reference-controls{position:relative;z-index:2;display:flex;align-items:center;gap:clamp(12px,3vw,40px);width:max-content;max-width:100%;padding:11px 17px;border-radius:15px;background:#fff8ed;border:1px solid #d7c7b3;box-shadow:0 5px 18px #42261544;font-size:clamp(12px,1.35vw,18px);font-weight:850}
         .lurk-reference-controls span,.lurk-reference-controls button{display:flex;align-items:center;gap:8px;white-space:nowrap}.lurk-reference-controls button{border:0;background:none;font-weight:850;cursor:pointer;color:inherit}
         .lurk-key{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;font-style:normal;color:#111;font-weight:1000}.key-a{background:#13bd43}.key-b{background:#f13c27}.key-x{background:#168fda}.key-y{background:#f5c313}
         .lurk-reference-status{position:absolute;right:24px;bottom:20px;z-index:2;color:white;font-size:12px;text-shadow:0 1px 4px #28170e}.lurk-reference-status>span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#e9b34a;margin-right:7px}.lurk-reference-status>span.is-open{background:#4bd26a}
         .lurk-reference-day{position:absolute;right:24px;top:82px;z-index:3;border:0;border-radius:12px;padding:8px 12px;background:#f36b3f;color:white;font-weight:800;cursor:pointer}
-        @media(max-width:700px){.lurk-reference-home{padding:18px 3%}.lurk-reference-launcher{gap:6px}.lurk-reference-app{min-height:145px;padding:10px 4px;border-radius:12px}.lurk-reference-controls{gap:8px;padding:8px}.lurk-key{width:23px;height:23px}.lurk-reference-day{top:auto;bottom:18px;right:10px}.lurk-reference-status{display:none}}
-        @media(max-height:520px){.lurk-reference-home{padding-top:10px;padding-bottom:10px}.lurk-reference-app{min-height:130px}.lurk-reference-icon{font-size:40px;margin-bottom:1px}.lurk-reference-brand img{width:95px}.lurk-reference-controls{padding:5px 9px}}
+        @media(max-width:700px){.lurk-reference-home{padding:18px 3%}.lurk-reference-launcher{gap:8px}.lurk-reference-app{min-height:clamp(175px,34vh,250px);padding:14px 5px;border-radius:17px}.lurk-reference-icon{font-size:clamp(38px,8vw,58px)}.lurk-reference-app b{font-size:clamp(12px,2.5vw,17px)}.lurk-reference-app small{font-size:clamp(9px,1.8vw,12px)}.lurk-reference-controls{gap:8px;padding:8px}.lurk-key{width:23px;height:23px}.lurk-reference-day{top:auto;bottom:18px;right:10px}.lurk-reference-status{display:none}}
+        @media(max-height:520px){.lurk-reference-home{padding-top:10px;padding-bottom:10px}.lurk-reference-app{min-height:clamp(155px,38vh,230px)}.lurk-reference-icon{font-size:clamp(42px,6vw,66px);margin-bottom:1px}.lurk-reference-brand img{width:95px}.lurk-reference-controls{padding:5px 9px}}
 `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -898,7 +898,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
     {k:"settings",label:"Ayarlar",sub:"Sistem ayarları",icon:"⚙️"}
   ];
   return <main className="lurk-screen lurk-home-screen lurk-reference-home">
-    <div className="lurk-reference-backdrop" aria-hidden="true"><span className="lurk-reference-plant">✳</span><span className="lurk-reference-slogan">COFFEE<br/>PEOPLE<br/>GOOD MOOD<br/>LURK</span></div>
+    <div className="lurk-reference-backdrop" aria-hidden="true"><span className="lurk-reference-plant">✳</span></div>
     <header className="lurk-reference-top">
       <div className="lurk-reference-brand"><img src="/lurk-logo.svg" alt="LURK"/><b>POS</b></div>
       <div className="lurk-reference-user"><span className="lurk-reference-wifi">◉</span><span className="lurk-reference-avatar">👨🏻‍🍳</span><b>Kasiyer</b><span>⌄</span></div>
