@@ -492,18 +492,22 @@ export default function App(){
           background:linear-gradient(145deg,#FFFCF7,#F5EBDD) !important;
           box-shadow:0 5px 0 #E7D5BE,0 10px 22px rgba(91,65,43,.07) !important;
         }
-        .lurk-home-screen > div:nth-child(3) button > div:first-child {
+        .lurk-home-screen > div:nth-child(3) button > div:nth-child(2) {
           width:48px;height:48px;border-radius:17px;
           display:flex;align-items:center;justify-content:center;
-          background:var(--tile-tone,#FCE0D2);
+          background:#FCE0D2;
           margin-bottom:11px;
+          font-size:25px !important;
+          opacity:1 !important;
+          filter:saturate(1.12);
         }
-        .lurk-home-screen > div:nth-child(3) button:nth-child(1) > div:first-child { background:#FCE0D2; }
-        .lurk-home-screen > div:nth-child(3) button:nth-child(2) > div:first-child { background:#DCEBDD; }
-        .lurk-home-screen > div:nth-child(3) button:nth-child(3) > div:first-child { background:#E5E0F5; }
-        .lurk-home-screen > div:nth-child(3) button:nth-child(4) > div:first-child { background:#F8E8B9; }
-        .lurk-home-screen > div:nth-child(3) button:nth-child(5) > div:first-child { background:#DCEAF4; }
-        .lurk-home-screen > div:nth-child(3) button:nth-child(6) > div:first-child { background:#F5DFE5; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(1) > div:nth-child(2) { background:#FCE0D2; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(2) > div:nth-child(2) { background:#DCEBDD; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(3) > div:nth-child(2) { background:#E5E0F5; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(4) > div:nth-child(2) { background:#F8E8B9; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(5) > div:nth-child(2) { background:#DCEAF4; }
+        .lurk-home-screen > div:nth-child(3) button:nth-child(6) > div:nth-child(2) { background:#F5DFE5; }
+        .lurk-home-screen > div:nth-child(3) button:hover { transform:translateY(-2px); }
         .lurk-home-screen > div:nth-child(3) button:active { transform:translateY(3px) !important; }
         @media(max-width:699px) {
           .lurk-play-hero > div { min-height:154px !important; }
@@ -575,6 +579,17 @@ export default function App(){
           box-shadow:0 -5px 24px rgba(91,65,43,.09) !important;
           backdrop-filter:blur(22px) saturate(140%) !important;
         }
+        .lurk-nav-button.is-active {
+          background:#F7E8DA !important;
+          box-shadow:inset 0 -3px 0 #F36B3F !important;
+        }
+        .lurk-nav-button.is-active span:first-child {
+          width:36px;height:30px;border-radius:12px;
+          display:flex;align-items:center;justify-content:center;
+          background:#FCE0D2;
+          color:#D94D2B !important;
+        }
+        .lurk-nav-button.is-active span:last-child { color:#A94327 !important;font-weight:850 !important; }
         .lurk-nav-button:hover { background:#F4E8D9 !important; }
         .lurk-modal-backdrop { background:rgba(49,38,28,.35) !important; }
         .lurk-modal-panel {
@@ -610,7 +625,7 @@ export default function App(){
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(91,65,43,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
-            <button className="lurk-nav-button" key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+            <button className={"lurk-nav-button"+(view===n.k?" is-active":"")} aria-current={view===n.k?"page":undefined} key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
               <span style={{fontSize:10,fontWeight:view===n.k?700:400,color:view===n.k?T.accent:T.textDim}}>{n.label}</span>
             </button>
