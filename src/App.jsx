@@ -683,6 +683,50 @@ export default function App(){
         @media(max-width:1000px){.lurk-console-apps{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-console-stage{min-height:210px}.lurk-console-home{overflow:visible}}
         @media(max-width:760px){.lurk-console-home{padding:15px 14px 18px!important;gap:16px}.lurk-console-brand>span{display:none}.lurk-console-meta{gap:8px}.lurk-console-stage{min-height:190px;padding:20px;border-radius:21px}.lurk-console-copy{max-width:67%}.lurk-console-copy h1{letter-spacing:-1.4px}.lurk-console-art{right:-7%;width:48%;opacity:.86}.lurk-console-apps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lurk-console-app{min-height:118px}.lurk-console-hint{display:none}.lurk-console-footer-note{font-size:8px}}
         @media(max-height:650px) and (orientation:landscape){.lurk-console-home{gap:10px;padding-top:12px!important;padding-bottom:12px!important}.lurk-console-stage{min-height:150px;padding:18px 28px}.lurk-console-copy h1{font-size:clamp(24px,4vh,36px);margin:6px 0}.lurk-console-live{margin-top:10px}.lurk-console-apps{gap:9px}.lurk-console-app{min-height:98px;padding:10px}.lurk-console-app-icon{width:38px;height:38px;font-size:22px;margin-bottom:6px}}
+
+        /* STEP 3 · THREE-PANEL ORDER TERMINAL */
+        .lurk-pos-workspace{flex:1;min-height:0;display:grid;grid-template-columns:clamp(118px,13vw,178px) minmax(0,1fr) clamp(280px,29vw,390px);overflow:hidden;background:#F1E8DA}
+        .lurk-pos-categories{min-width:0;overflow-y:auto;padding:18px 10px;background:#F8F1E6;border-right:1px solid #E4D8C8;display:flex;flex-direction:column;gap:7px}
+        .lurk-pos-side-label,.lurk-pos-eyebrow{font-size:9px;font-weight:950;letter-spacing:1.6px;color:#A17A5B}
+        .lurk-pos-side-label{padding:2px 10px 8px}
+        .lurk-pos-category{width:100%;min-height:48px;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid transparent;border-radius:13px;background:transparent;color:#62564A;font-size:11px;font-weight:750;text-align:left;cursor:pointer;transition:.15s}
+        .lurk-pos-category-icon{width:29px;height:29px;flex:0 0 29px;border-radius:9px;background:#EEE2D2;display:grid;place-items:center;font-size:17px}
+        .lurk-pos-category.is-selected{background:#F36B3F;color:#fff;border-color:#DF603B;box-shadow:0 3px 0 #D34F2D}
+        .lurk-pos-category.is-selected .lurk-pos-category-icon{background:#FFE0CE}
+        .lurk-pos-catalog{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:20px clamp(14px,2vw,26px)}
+        .lurk-pos-catalog-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-shrink:0}
+        .lurk-pos-catalog-head h2,.lurk-pos-ticket-head h2{margin:4px 0 0;color:#302820;font-size:clamp(18px,1.8vw,25px);letter-spacing:-.8px}
+        .lurk-pos-search{display:flex;align-items:center;gap:8px;width:min(260px,45%);padding:9px 12px;border:1px solid #E1D4C4;border-radius:12px;background:#FFFBF5;color:#A18D79}
+        .lurk-pos-search>span{font-size:20px}.lurk-pos-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#302820;font-size:12px}
+        .lurk-pos-product-grid{min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));align-content:start;gap:12px;padding:2px 5px 12px 2px}
+        .lurk-pos-product{position:relative;min-width:0;min-height:158px;padding:12px 11px 11px;border:1px solid #E2D5C4;border-radius:17px;background:linear-gradient(145deg,#FFFCF6,#F4EBDD);box-shadow:0 4px 0 #E1D3C1,0 8px 16px rgba(82,60,39,.06);display:flex;flex-direction:column;align-items:center;text-align:center;color:#302820;cursor:pointer;transition:transform .14s,box-shadow .14s}
+        .lurk-pos-product:hover{transform:translateY(-3px);box-shadow:0 7px 0 #E1D3C1,0 12px 20px rgba(82,60,39,.09)}
+        .lurk-pos-product:active,.lurk-pos-product.is-flash{transform:translateY(2px);background:#FCE2D4;box-shadow:0 1px 0 #E1D3C1}
+        .lurk-pos-product-art{width:100%;height:76px;display:grid;place-items:center;margin-bottom:8px;border-radius:11px;background:radial-gradient(circle at 50% 38%,#FFF8EA,#EEDFCB);font-size:47px;filter:drop-shadow(0 5px 3px rgba(74,49,28,.13))}
+        .lurk-pos-product-name{font-size:11px;line-height:1.25;font-weight:850;min-height:28px;display:flex;align-items:center;justify-content:center}
+        .lurk-pos-product-price{font-size:12px;font-weight:900;color:#C95C38;margin-top:5px}
+        .lurk-pos-product-count{position:absolute;right:8px;top:8px;z-index:1;border-radius:30px;background:#F36B3F;color:white;padding:4px 7px;font-size:10px;font-weight:900}
+        .lurk-pos-product-add{position:absolute;right:9px;bottom:9px;width:22px;height:22px;display:grid;place-items:center;border-radius:8px;background:#F5E0D1;color:#C95C38;font-size:17px;font-weight:900}
+        .lurk-pos-empty{grid-column:1/-1;padding:40px;text-align:center;color:#958675;font-size:13px}
+        .lurk-pos-ticket{min-width:0;min-height:0;display:flex;flex-direction:column;background:#FFFBF4;border-left:1px solid #E2D5C4;box-shadow:-8px 0 22px rgba(74,54,35,.035);overflow:hidden}
+        .lurk-pos-ticket-head{padding:20px 18px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #EEE4D7}
+        .lurk-pos-ticket-head h2 small{font-size:12px;color:#A08F7C}
+        .lurk-pos-guest{max-width:46%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid #E4D5C3;border-radius:10px;padding:8px 10px;background:#F7EFE4;color:#725F4D;font-size:10px;font-weight:800;cursor:pointer}
+        .lurk-pos-ticket-table{display:grid;grid-template-columns:minmax(0,1fr) 38px 76px;gap:8px;padding:10px 17px;background:#F8F1E7;color:#958573;font-size:9px;font-weight:850;letter-spacing:.3px}
+        .lurk-pos-ticket-table span:last-child{text-align:right}
+        .lurk-pos-ticket-lines{flex:1;min-height:0;overflow-y:auto;padding:7px 15px}
+        .lurk-pos-ticket-line{display:grid;grid-template-columns:minmax(0,1fr) 30px 76px;align-items:start;gap:8px;padding:12px 2px;border-bottom:1px solid #F0E7DC}
+        .lurk-pos-line-info{min-width:0}.lurk-pos-line-info>b{display:block;font-size:11px;line-height:1.3;color:#3A3027;overflow-wrap:anywhere}.lurk-pos-line-info small{display:block;font-size:9px;color:#9A8977;margin-top:3px}
+        .lurk-pos-qty{display:flex;align-items:center;gap:8px;margin-top:8px}.lurk-pos-qty button{width:23px;height:23px;border:1px solid #E8D8C7;border-radius:7px;background:#F7EEE3;color:#8C6149;font-size:15px;cursor:pointer}.lurk-pos-qty b{font-size:10px;min-width:10px;text-align:center}
+        .lurk-pos-line-qty{padding-top:2px;text-align:center;font-size:11px;font-weight:850;color:#655648}.lurk-pos-line-total{text-align:right;padding-top:2px;font-size:10px;color:#493B2E;white-space:nowrap}
+        .lurk-pos-ticket-empty{height:100%;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:#8D7B69}.lurk-pos-ticket-empty span{font-size:42px}.lurk-pos-ticket-empty b{font-size:12px;color:#5D4D3E}.lurk-pos-ticket-empty small{font-size:10px}
+        .lurk-pos-ticket-bottom{padding:12px 16px 14px;border-top:1px solid #EDE2D5;background:#FFF9F0}
+        .lurk-pos-ticket-count{display:flex;align-items:center;gap:7px;margin-bottom:12px;color:#8B7B69;font-size:10px}.lurk-pos-ticket-count span{margin-right:auto}.lurk-pos-ticket-count button{border:1px solid #E6D8C7;border-radius:8px;background:#F8F0E5;padding:6px 8px;color:#75624F;font-size:9px;font-weight:750;cursor:pointer}.lurk-pos-ticket-count button:disabled{opacity:.4;cursor:not-allowed}
+        .lurk-pos-grand-total{display:flex;align-items:center;justify-content:space-between;margin:5px 0 12px;color:#4C3D30;font-size:13px;font-weight:800}.lurk-pos-grand-total b{font-size:clamp(19px,2vw,26px);letter-spacing:-.7px;color:#302820}
+        .lurk-pos-checkout{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:0;border-radius:13px;background:linear-gradient(135deg,#F5794A,#E85D35);box-shadow:0 4px 0 #CA4F2D,0 9px 18px rgba(201,77,44,.16);color:white;font-size:14px;font-weight:900;cursor:pointer}.lurk-pos-checkout b{font-size:20px}.lurk-pos-checkout:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}
+        .lurk-pos-back-tables{width:100%;padding:10px 4px 0;border:0;background:transparent;color:#9B8977;font-size:10px;font-weight:750;cursor:pointer}
+        @media(max-width:900px){.lurk-pos-workspace{grid-template-columns:96px minmax(0,1fr) 270px}.lurk-pos-categories{padding:12px 7px}.lurk-pos-category{padding:7px 6px;gap:6px;font-size:10px}.lurk-pos-product-grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}.lurk-pos-product{min-height:140px}.lurk-pos-product-art{height:62px;font-size:40px}}
+        @media(max-width:650px) and (orientation:landscape){.lurk-pos-workspace{grid-template-columns:82px minmax(0,1fr) 245px}.lurk-pos-catalog{padding:12px 10px}.lurk-pos-ticket-head{padding:12px}.lurk-pos-ticket-bottom{padding:9px 11px}.lurk-pos-product-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}}
 `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -886,7 +930,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
 
 /* ─── ORDER ─── */
 function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTableCustomer,addItem,chQ,pay,moveTableOrder,setTbl,setV,setSel}){
-  const[showMenu,setShowMenu]=useState(table.order.length===0);
+  const[showMenu,setShowMenu]=useState(true);
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
   const[showName,setShowName]=useState(table.order.length===0&&!table.g);
@@ -976,51 +1020,62 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
         </div>
       )}
 
-      {/* MENÜ GÖRÜNÜMÜ */}
+      {/* NINTENDO-INSPIRED THREE-PANEL POS */}
       {showMenu&&(
-        <div style={{flex:1,display:"flex",overflow:"hidden"}}>
-          {/* Sol: dikey kategori */}
-          <div style={{width:72,background:"rgba(91,65,43,0.02)",borderRight:"0.5px solid rgba(91,65,43,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
-            {cats.map(c=>(
-              <button key={c} onClick={()=>setSelCat(c)} style={{padding:"14px 4px",border:"none",background:selCat===c?"rgba(243,107,63,0.12)":"transparent",borderLeft:"3px solid "+(selCat===c?T.accent:"transparent"),color:selCat===c?T.accent:T.textSub,fontSize:11,fontWeight:selCat===c?700:500,cursor:"pointer",textAlign:"center",lineHeight:1.3,flexShrink:0}}>{c}</button>
+        <div className="lurk-pos-workspace">
+          <aside className="lurk-pos-categories">
+            <div className="lurk-pos-side-label">MENÜ</div>
+            {cats.map((c,i)=>(
+              <button key={c} className={"lurk-pos-category"+(selCat===c?" is-selected":"")} onClick={()=>setSelCat(c)}>
+                <span className="lurk-pos-category-icon">{(/kahve/i.test(c)?"☕":/matcha/i.test(c)?"🍃":/tatli|tatlı/i.test(c)?"🍰":/sandvic|sandviç/i.test(c)?"🥪":/cay|çay/i.test(c)?"🫖":/signature/i.test(c)?"🥤":"✳")}</span>
+                <span>{c}</span>
+              </button>
             ))}
-          </div>
-          {/* Sağ: ürün grid */}
-          <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-            <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
-              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(91,65,43,0.1)",background:"rgba(91,65,43,0.04)",color:T.text,fontSize:13,outline:"none"}} />
-              <div className="lurk-product-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
-                {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
-                  const inCart=table.order.filter(o=>o.id===item.id).reduce((sum,o)=>sum+o.qty,0);
-                  const isFlash=flash===item.id;
-                  return(
-                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(243,107,63,0.25)":inCart>0?"rgba(243,107,63,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(243,107,63,0.35)":"rgba(91,65,43,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
-                      {inCart>0&&<span style={{position:"absolute",top:6,right:8,background:T.accent,color:"#fff",borderRadius:20,fontSize:10,fontWeight:800,padding:"1px 6px"}}>×{inCart}</span>}
-                      {isFlash&&<div style={{position:"absolute",inset:0,borderRadius:12,border:"2px solid #F36B3F",pointerEvents:"none"}}/>}
-                      <div style={{fontSize:11,fontWeight:700,marginBottom:5,paddingRight:inCart>0?28:0,lineHeight:1.3,color:T.text}}>{item.name}</div>
-                      <div style={{fontSize:14,fontWeight:800,color:inCart>0?T.accentL:T.textDim}}>{fm(item.price)}</div>
-                    </button>
-                  );
-                })}
-              </div>
+          </aside>
+
+          <main className="lurk-pos-catalog">
+            <div className="lurk-pos-catalog-head">
+              <div><span className="lurk-pos-eyebrow">LURK MENU</span><h2>{selCat||"Tüm ürünler"}</h2></div>
+              <label className="lurk-pos-search"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara..." aria-label="Menüde ürün ara"/></label>
             </div>
-            {itemCount>0&&(
-              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(91,65,43,0.08)",background:"rgba(255,249,239,0.97)",backdropFilter:"blur(20px)"}}>
-                <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                  <button onClick={()=>setShowMenu(false)} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,padding:"11px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:8}}>
-                    <span style={{background:T.accent,color:"#fff",borderRadius:20,fontSize:11,fontWeight:800,padding:"2px 8px",flexShrink:0}}>{itemCount}</span>
-                    <span style={{fontSize:12,color:T.textSub,flex:1}}>Siparişe dön →</span>
-                  </button>
-                  <button onClick={()=>setShowPay(true)} style={{background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,padding:"11px 18px",color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 16px rgba(243,107,63,0.35)",whiteSpace:"nowrap",flexShrink:0}}>{fm(sub)}</button>
+            <div className="lurk-pos-product-grid">
+              {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
+                const inCart=table.order.filter(o=>o.id===item.id).reduce((sum,o)=>sum+o.qty,0);
+                const isFlash=flash===item.id;
+                const art=/matcha/i.test(item.name)?"🍵":/latte|cappuccino|flat white|mocha|americano|espresso|filter|cortado/i.test(item.name)?"☕":/çay|cay|tea/i.test(item.name)?"🫖":/sandviç|sandvic/i.test(item.name)?"🥪":/tiramisu|cookie/i.test(item.name)?"🍰":/limon|soda|smoothie|ayran|ice/i.test(item.name)?"🥤":"✳";
+                return <button key={item.id} className={"lurk-pos-product"+(inCart?" is-in-cart":"")+(isFlash?" is-flash":"")} onClick={()=>handleAdd(item)}>
+                  <span className="lurk-pos-product-art">{art}</span>
+                  {inCart>0&&<span className="lurk-pos-product-count">×{inCart}</span>}
+                  <span className="lurk-pos-product-name">{item.name}</span>
+                  <span className="lurk-pos-product-price">{fm(item.price)}</span>
+                  <span className="lurk-pos-product-add">+</span>
+                </button>;
+              })}
+              {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).length===0&&<div className="lurk-pos-empty">Bu kategoride ürün bulunamadı.</div>}
+            </div>
+          </main>
+
+          <aside className="lurk-pos-ticket">
+            <div className="lurk-pos-ticket-head">
+              <div><span className="lurk-pos-eyebrow">CURRENT ORDER</span><h2>Adisyon <small>#{String(table.id).slice(-4)}</small></h2></div>
+              <button className="lurk-pos-guest" onClick={()=>setShowName(true)}>{table.g||"+ Müşteri"}</button>
+            </div>
+            <div className="lurk-pos-ticket-table"><span>Ürün</span><span>Adet</span><span>Tutar</span></div>
+            <div className="lurk-pos-ticket-lines">
+              {table.order.length===0?<div className="lurk-pos-ticket-empty"><span>☕</span><b>Henüz sipariş yok</b><small>Soldan bir ürün seçerek başlayın.</small></div>:table.order.map((item,index)=>(
+                <div className="lurk-pos-ticket-line" key={item.oid||item.id}>
+                  <div className="lurk-pos-line-info"><b>{item.name}</b><small>{fm(item.price)} / adet</small><div className="lurk-pos-qty"><button aria-label="Adet azalt" onClick={()=>chQ(table.id,item.oid||String(item.id),-1)}>−</button><b>{item.qty}</b><button aria-label="Adet artır" onClick={()=>addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on})}>+</button></div></div>
+                  <span className="lurk-pos-line-qty">{item.qty}</span><b className="lurk-pos-line-total">{fm(item.price*item.qty)}</b>
                 </div>
-              </div>
-            )}
-            {itemCount===0&&(
-              <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(91,65,43,0.08)"}}>
-                <button onClick={()=>setShowMenu(false)} style={{width:"100%",padding:"13px",background:T.bg2,border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>← Siparişe Dön</button>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+            <div className="lurk-pos-ticket-bottom">
+              <div className="lurk-pos-ticket-count"><span>{itemCount} ürün</span><button onClick={()=>setShowMove(true)} disabled={table.order.length===0}>⇄ Masa taşı</button><button onClick={()=>setShowFis(true)} disabled={table.order.length===0}>Fiş</button></div>
+              <div className="lurk-pos-grand-total"><span>Toplam</span><b>{fm(Math.max(0,sub-previousPaid))}</b></div>
+              <button className="lurk-pos-checkout" onClick={()=>setShowPay(true)} disabled={table.order.length===0}><span>Tahsilat</span><b>→</b></button>
+              <button className="lurk-pos-back-tables" onClick={()=>{setSel(null);setV("tables");}}>← Masa düzenine dön</button>
+            </div>
+          </aside>
         </div>
       )}
 
