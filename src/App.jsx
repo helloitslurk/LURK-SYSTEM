@@ -799,17 +799,18 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
             const total=t.order.reduce((s,o)=>s+o.price*o.qty,0);
             const isOpen=t.s==="o";
             return(
-              <div key={t.id} style={{background:T.bg2,border:"0.5px solid rgba(91,65,43,0.07)",borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
+              <div key={t.id} style={{background:isOpen?"#FFF3E9":"#FFF9EF",border:"1px solid "+(isOpen?"rgba(243,107,63,0.24)":"rgba(91,65,43,0.09)"),borderRadius:21,padding:"17px 15px",position:"relative",overflow:"hidden",boxShadow:isOpen?"0 4px 0 rgba(217,90,53,0.10)":"0 3px 0 rgba(91,65,43,0.045)"}}>
                 
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                  <div style={{fontSize:14,fontWeight:700,color:T.text}}>{t.g||t.lbl}</div>
+                  <div style={{fontSize:14,fontWeight:850,color:T.text,letterSpacing:"-.2px"}}>{t.g||t.lbl}</div>
                   <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
                 </div>
                 
-                <div style={{fontSize:12,color:isOpen?T.textSub:T.textDim,marginBottom:12}}>
-                  {isOpen?fm(total):"Boş"}
+                <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:isOpen?T.accentD:T.textDim,fontWeight:750,marginBottom:13}}>
+                  <span style={{width:8,height:8,borderRadius:"50%",background:isOpen?"#F36B3F":"#C9BFB2",boxShadow:isOpen?"0 0 0 3px rgba(243,107,63,.12)":"none"}}/>
+                  {isOpen?fm(total):"Şimdilik boş"}
                 </div>
-                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:"rgba(91,65,43,0.06)",border:"0.5px solid rgba(91,65,43,0.1)",borderRadius:10,color:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:isOpen?"#F36B3F":"#F1E5D4",border:"1px solid "+(isOpen?"#F36B3F":"rgba(91,65,43,0.1)"),borderRadius:12,color:isOpen?"#fff":T.text,fontSize:12,fontWeight:800,cursor:"pointer"}}>
                   {isOpen?"Siparişe Gir →":"Aç →"}
                 </button>
               </div>
