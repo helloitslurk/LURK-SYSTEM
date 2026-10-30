@@ -727,6 +727,40 @@ export default function App(){
         .lurk-pos-back-tables{width:100%;padding:10px 4px 0;border:0;background:transparent;color:#9B8977;font-size:10px;font-weight:750;cursor:pointer}
         @media(max-width:900px){.lurk-pos-workspace{grid-template-columns:96px minmax(0,1fr) 270px}.lurk-pos-categories{padding:12px 7px}.lurk-pos-category{padding:7px 6px;gap:6px;font-size:10px}.lurk-pos-product-grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}.lurk-pos-product{min-height:140px}.lurk-pos-product-art{height:62px;font-size:40px}}
         @media(max-width:650px) and (orientation:landscape){.lurk-pos-workspace{grid-template-columns:82px minmax(0,1fr) 245px}.lurk-pos-catalog{padding:12px 10px}.lurk-pos-ticket-head{padding:12px}.lurk-pos-ticket-bottom{padding:9px 11px}.lurk-pos-product-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}}
+
+/* STEP 4 · ILLUSTRATED FLOOR PLAN */
+.lurk-tables-screen{min-height:calc(100dvh - 82px)!important;background:radial-gradient(ellipse at 88% 12%,rgba(237,190,144,.18),transparent 30%),#F5EEE3!important}
+.lurk-floor-topbar{padding:22px clamp(18px,3vw,42px) 18px;display:flex;align-items:center;gap:12px;background:rgba(255,250,242,.94);border-bottom:1px solid #E8DCCB}
+.lurk-floor-heading{flex:1}.lurk-floor-heading>div{margin-top:5px}.lurk-floor-heading small{display:block;margin-top:4px;color:#8D7B69;font-size:11px}
+.lurk-floor-topbar>button{border-radius:12px!important;padding:10px 15px!important;font-weight:850!important;box-shadow:0 3px 0 rgba(91,65,43,.08)}
+.lurk-floor-content{padding:clamp(16px,2.4vw,32px) clamp(18px,3vw,42px) 30px}
+.lurk-floor-overview{display:grid;grid-template-columns:repeat(3,minmax(110px,1fr)) minmax(180px,1.5fr);gap:12px;margin-bottom:28px}
+.lurk-floor-stat,.lurk-floor-total{min-height:78px;border:1px solid #E6D9C8;border-radius:17px;background:#FFFAF3;display:flex;align-items:center;gap:12px;padding:13px 16px;box-shadow:0 4px 0 #E8DCCB}
+.lurk-floor-stat .stat-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#F2E5D6;color:#C76B45;font-size:20px}
+.lurk-floor-stat.is-active .stat-icon{background:#FCE2D4;color:#E36B43;font-size:15px}
+.lurk-floor-stat b,.lurk-floor-total b{display:block;font-size:23px;line-height:1;font-weight:950;color:#302820;font-variant-numeric:tabular-nums}
+.lurk-floor-stat small,.lurk-floor-total small{display:block;margin-top:5px;font-size:10px;color:#8D7B69;font-weight:700}
+.lurk-floor-total{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;background:linear-gradient(110deg,#F9E5D4,#FFF8EC)}
+.lurk-floor-total b{font-size:clamp(19px,2vw,25px);color:#C95C38}
+.lurk-floor-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:15px}
+.lurk-floor-section-head>div span{display:block;font-size:9px;letter-spacing:1.8px;color:#A17A5B;font-weight:950}
+.lurk-floor-section-head>div b{display:block;margin-top:4px;font-size:20px;letter-spacing:-.5px;color:#302820}
+.lurk-floor-section-head>small{font-size:10px;color:#968572}
+.lurk-floor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
+.lurk-floor-table{position:relative;min-height:174px;padding:17px;border:1px solid #E5D8C7;border-radius:21px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 5px 0 #E4D7C6,0 12px 24px rgba(83,60,38,.055);transition:transform .16s,box-shadow .16s}
+.lurk-floor-table:before{content:"";position:absolute;right:-27px;top:-40px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.36)}
+.lurk-floor-table.is-occupied{background:linear-gradient(145deg,#FFF0E5,#FCE4D5);border-color:#EFCAB6}.lurk-floor-table.is-free{background:linear-gradient(145deg,#FFFDF8,#F2EBDD)}
+.lurk-floor-table-head{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.lurk-floor-table-name{display:flex;align-items:center;gap:11px;min-width:0}.lurk-floor-chair{width:43px;height:43px;flex:0 0 43px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.7);color:#A66A4B;font-size:24px}
+.lurk-floor-table-name b{display:block;font-size:15px;font-weight:950;color:#302820}.lurk-floor-table-name small{display:block;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px;font-size:10px;color:#897765}
+.lurk-floor-table-head>button{position:relative;z-index:2;background:rgba(255,255,255,.52)!important;border-radius:8px!important;padding:3px 7px!important}
+.lurk-floor-table-status{position:relative;z-index:1;display:flex;align-items:center;gap:7px;min-height:29px;margin-bottom:13px;font-size:13px;font-weight:900;color:#B65A39}.lurk-floor-table.is-free .lurk-floor-table-status{color:#948675}
+.lurk-floor-table-action{position:relative;z-index:1;width:100%;padding:11px 12px;border:1px solid #E5D7C6;border-radius:12px;background:#F1E7D9;color:#5F4D3D;font-size:11px;font-weight:900;cursor:pointer;box-shadow:0 3px 0 rgba(104,77,53,.08);transition:.14s}
+.lurk-floor-table.is-occupied .lurk-floor-table-action{border-color:#E96740;background:linear-gradient(120deg,#F47A4B,#E85D35);color:#fff;box-shadow:0 3px 0 #CF5532}
+.lurk-floor-table-action:active{transform:translateY(2px);box-shadow:none}
+@media(max-width:850px){.lurk-floor-overview{grid-template-columns:repeat(2,minmax(0,1fr))}.lurk-floor-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
+@media(max-width:560px){.lurk-floor-topbar{padding:15px 13px;flex-wrap:wrap}.lurk-floor-heading{min-width:100%;margin-bottom:4px}.lurk-floor-content{padding:13px}.lurk-floor-overview{gap:8px;margin-bottom:20px}.lurk-floor-stat,.lurk-floor-total{padding:10px;min-height:68px}.lurk-floor-stat .stat-icon{width:30px;height:30px}.lurk-floor-stat b{font-size:19px}.lurk-floor-total b{font-size:18px}.lurk-floor-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.lurk-floor-table{padding:12px;min-height:155px}.lurk-floor-chair{width:34px;height:34px;flex-basis:34px;font-size:19px}.lurk-floor-table-name b{font-size:13px}}
+@media(max-height:600px) and (orientation:landscape){.lurk-floor-content{padding-top:12px}.lurk-floor-overview{margin-bottom:14px}.lurk-floor-stat,.lurk-floor-total{min-height:60px}.lurk-floor-table{min-height:145px}}
 `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -858,35 +892,37 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
 
   return(
     <div className="lurk-screen lurk-tables-screen">
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Masalar</div>
+      <div className="lurk-floor-topbar">
+        <div className="lurk-floor-heading"><span className="lurk-pos-eyebrow">LURK FLOOR PLAN</span><div style={{fontSize:26,fontWeight:950,letterSpacing:"-.9px",color:"#302820"}}>Masa düzeni</div><small>Alanını seç, masanı aç, servise devam et.</small></div>
         <button onClick={()=>setShowAll(p=>!p)} style={{background:"rgba(91,65,43,0.06)",border:"0.5px solid rgba(91,65,43,0.12)",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:T.textSub,fontWeight:600}}>{showAll?"Açıklar":"Tümü"}</button>
         <button onClick={()=>setShowNew(true)} style={{background:"#F36B3F",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Masa</button>
       </div>
 
-      <div style={{padding:"14px"}}>
+      <div className="lurk-floor-content">
+        <div className="lurk-floor-overview"><div className="lurk-floor-stat"><span className="stat-icon">🪑</span><div><b>{tables.length}</b><small>Toplam masa</small></div></div><div className="lurk-floor-stat is-active"><span className="stat-icon">●</span><div><b>{openT.length}</b><small>Serviste</small></div></div><div className="lurk-floor-stat"><span className="stat-icon">○</span><div><b>{tables.length-openT.length}</b><small>Boş masa</small></div></div><div className="lurk-floor-total"><small>Açık adisyon toplamı</small><b>{fm(openT.reduce((sum,t)=>sum+t.order.reduce((v,o)=>v+o.price*o.qty,0),0))}</b></div></div>
+        <div className="lurk-floor-section-head"><div><span>YOUR SPACE</span><b>Masa haritası</b></div><small>{showAll?"Tüm masalar":"Yalnızca açık masalar"}</small></div>
         {displayed.length===0&&(
           <div style={{textAlign:"center",padding:"40px 20px",fontSize:13,color:T.textSub}}>
             {showAll?"Henüz masa yok":"Açık masa yok"}
           </div>
         )}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div className="lurk-floor-grid">
           {displayed.map(t=>{
             const total=t.order.reduce((s,o)=>s+o.price*o.qty,0);
             const isOpen=t.s==="o";
             return(
-              <div key={t.id} style={{background:isOpen?"#FFF3E9":"#FFF9EF",border:"1px solid "+(isOpen?"rgba(243,107,63,0.24)":"rgba(91,65,43,0.09)"),borderRadius:21,padding:"17px 15px",position:"relative",overflow:"hidden",boxShadow:isOpen?"0 4px 0 rgba(217,90,53,0.10)":"0 3px 0 rgba(91,65,43,0.045)"}}>
+              <div key={t.id} className={"lurk-floor-table"+(isOpen?" is-occupied":" is-free")}>
                 
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                  <div style={{fontSize:14,fontWeight:850,color:T.text,letterSpacing:"-.2px"}}>{t.g||t.lbl}</div>
+                <div className="lurk-floor-table-head">
+                  <div className="lurk-floor-table-name"><span className="lurk-floor-chair">▧</span><div><b>{t.lbl}</b><small>{t.g||"Misafir bekliyor"}</small></div></div>
                   <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
                 </div>
                 
-                <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:isOpen?T.accentD:T.textDim,fontWeight:750,marginBottom:13}}>
+                <div className="lurk-floor-table-status">
                   <span style={{width:8,height:8,borderRadius:"50%",background:isOpen?"#F36B3F":"#C9BFB2",boxShadow:isOpen?"0 0 0 3px rgba(243,107,63,.12)":"none"}}/>
                   {isOpen?fm(total):"Şimdilik boş"}
                 </div>
-                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:isOpen?"#F36B3F":"#F1E5D4",border:"1px solid "+(isOpen?"#F36B3F":"rgba(91,65,43,0.1)"),borderRadius:12,color:isOpen?"#fff":T.text,fontSize:12,fontWeight:800,cursor:"pointer"}}>
+                <button className="lurk-floor-table-action" onClick={()=>{setSel(t.id);setV("order");}}>
                   {isOpen?"Siparişe Gir →":"Aç →"}
                 </button>
               </div>
