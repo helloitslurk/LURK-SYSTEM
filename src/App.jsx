@@ -1379,15 +1379,15 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
-        <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,minmax(0,1fr))",gap:8}}>
-        {filtered.map(c=><div key={c.id} style={{background:"rgba(91,65,43,.045)",border:"1px solid rgba(91,65,43,.085)",borderRadius:11,padding:"9px 8px",minWidth:0,minHeight:112,display:"flex",flexDirection:"column",alignItems:"stretch",gap:5,boxShadow:"0 4px 14px rgba(0,0,0,.12)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(243,107,63,.23),rgba(243,107,63,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(243,107,63,.22)"}}>{filtered.indexOf(c)+1}</button>
+        <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(112px,1fr))",gap:10}}>
+        {filtered.map(c=><div key={c.id} style={{background:"#FFF9EF",border:"1px solid rgba(91,65,43,.09)",borderRadius:17,padding:"12px 11px",minWidth:0,minHeight:124,display:"flex",flexDirection:"column",alignItems:"stretch",gap:7,boxShadow:"0 4px 0 rgba(91,65,43,.045)"}}>
+          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:12,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,#FFE0CE,#FFF0E5)",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(243,107,63,.22)"}}>{filtered.indexOf(c)+1}</button>
           <button onClick={()=>setDetail(c)} style={{minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
             <div style={{fontWeight:800,fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
             <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş</div>
             <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(monthlyTotalFor(c))} · bu ay</div>
           </button>
-          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(91,65,43,.1)",borderRadius:6,padding:"3px 4px",fontSize:9,cursor:"pointer"}}>Düzenle</button>
+          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(91,65,43,.1)",borderRadius:9,padding:"6px 8px",fontSize:10,fontWeight:750,cursor:"pointer"}}>Düzenle</button>
         </div>)}
         </div>
         {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(91,65,43,.035)",border:"1px dashed rgba(91,65,43,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
