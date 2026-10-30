@@ -548,18 +548,18 @@ export default function App(){
           background:linear-gradient(135deg,#FFF9EF 0%,#F6EBDD 100%) !important;
           border-bottom:1px solid #E9DCCB !important;
         }
-        .lurk-home-screen > div:nth-child(2) button {
+        .lurk-home-screen > div:nth-child(3) button {
           border:1px solid #E9D9C5 !important;
           border-radius:21px !important;
           background:linear-gradient(145deg,#FFFCF6,#F5EBDD) !important;
           box-shadow:0 5px 0 #E7D5BE,0 10px 22px rgba(91,65,43,.08) !important;
           transition:transform .16s ease,box-shadow .16s ease !important;
         }
-        .lurk-home-screen > div:nth-child(2) button:active {
+        .lurk-home-screen > div:nth-child(3) button:active {
           transform:translateY(3px) !important;
           box-shadow:0 2px 0 #E7D5BE,0 5px 12px rgba(91,65,43,.07) !important;
         }
-        .lurk-home-screen > div:nth-child(2) button > div:nth-child(2) {
+        .lurk-home-screen > div:nth-child(3) button > div:nth-child(2) {
           font-size:30px !important;
           opacity:1 !important;
           filter:saturate(1.15);
