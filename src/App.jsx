@@ -761,7 +761,23 @@ export default function App(){
 @media(max-width:850px){.lurk-floor-overview{grid-template-columns:repeat(2,minmax(0,1fr))}.lurk-floor-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
 @media(max-width:560px){.lurk-floor-topbar{padding:15px 13px;flex-wrap:wrap}.lurk-floor-heading{min-width:100%;margin-bottom:4px}.lurk-floor-content{padding:13px}.lurk-floor-overview{gap:8px;margin-bottom:20px}.lurk-floor-stat,.lurk-floor-total{padding:10px;min-height:68px}.lurk-floor-stat .stat-icon{width:30px;height:30px}.lurk-floor-stat b{font-size:19px}.lurk-floor-total b{font-size:18px}.lurk-floor-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.lurk-floor-table{padding:12px;min-height:155px}.lurk-floor-chair{width:34px;height:34px;flex-basis:34px;font-size:19px}.lurk-floor-table-name b{font-size:13px}}
 @media(max-height:600px) and (orientation:landscape){.lurk-floor-content{padding-top:12px}.lurk-floor-overview{margin-bottom:14px}.lurk-floor-stat,.lurk-floor-total{min-height:60px}.lurk-floor-table{min-height:145px}}
-`}</style>
+`}
+.lurk-catalog-screen{background:#F4EBDD!important;min-height:100%;color:#302820}
+.lurk-catalog-topbar{display:flex;align-items:center;gap:18px;padding:22px 28px;background:#FFF9EF;border-bottom:1px solid #E9DDCE;position:sticky;top:0;z-index:5}
+.lurk-catalog-back{width:38px;height:38px;border:1px solid #E8DCCD;border-radius:11px;background:#F5EBDD;color:#725D4A;font-size:21px;cursor:pointer}
+.lurk-catalog-heading{flex:1}.lurk-catalog-heading>span,.lurk-catalog-eyebrow{font-size:9px;letter-spacing:1.8px;font-weight:900;color:#C66A45}.lurk-catalog-heading h1{font-size:25px;letter-spacing:-1px;margin:4px 0;color:#302820}.lurk-catalog-heading p{font-size:12px;color:#8A7A68;margin:0}
+.lurk-catalog-top-actions{display:flex;align-items:center;gap:16px}.lurk-catalog-live{font-size:11px;font-weight:800;color:#786B5D;white-space:nowrap}.lurk-catalog-live i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#6E9A68;margin-right:5px}
+.lurk-catalog-add{border:0;border-radius:10px;background:#F36B3F;color:#fff;padding:12px 17px;font-size:12px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 #D65331}
+.lurk-catalog-workspace{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 90px)}
+.lurk-catalog-sidebar{padding:25px 15px;background:#F8F0E5;border-right:1px solid #E8DCCD}.lurk-catalog-side-label{font-size:9px;letter-spacing:1.5px;font-weight:900;color:#A18E79;margin:0 10px 13px}
+.lurk-catalog-category{display:flex;align-items:center;gap:10px;width:100%;padding:12px 11px;border:0;border-radius:10px;background:transparent;color:#6F6255;text-align:left;cursor:pointer;margin-bottom:4px}.lurk-catalog-category>span{font-size:17px;width:22px}.lurk-catalog-category b{font-size:12px;flex:1}.lurk-catalog-category small{font-size:10px;color:#A99A89}.lurk-catalog-category.active{background:#FBE0D2;color:#B84D2D;box-shadow:inset 3px 0 #F36B3F}
+.lurk-catalog-side-note{margin:34px 8px 0;padding:15px 13px;border-radius:13px;background:#EFE2D1;border:1px solid #E6D5C0}.lurk-catalog-side-note>b{display:block;font-size:9px;letter-spacing:1.2px;color:#9A826B}.lurk-catalog-side-note strong{display:block;font-size:27px;color:#4B3B2D;margin:7px 0 2px}.lurk-catalog-side-note strong small{font-size:13px;color:#A18E79}.lurk-catalog-side-note>span{font-size:10px;color:#8A7967}
+.lurk-catalog-main{padding:26px 30px 40px;min-width:0}.lurk-catalog-toolbar{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:22px}.lurk-catalog-toolbar h2{font-size:23px;letter-spacing:-.7px;margin:4px 0;color:#352A20}.lurk-catalog-toolbar p{font-size:11px;color:#958573;margin:0}.lurk-catalog-search{width:min(280px,40%);height:42px;display:flex;align-items:center;gap:9px;padding:0 13px;border:1px solid #E5D7C7;border-radius:10px;background:#FFF9EF;color:#A18E79}.lurk-catalog-search>span{font-size:23px}.lurk-catalog-search input{width:100%;border:0!important;outline:0;background:transparent;color:#3D3025;font-size:12px;box-shadow:none!important}
+.lurk-catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:16px}.lurk-catalog-product{overflow:hidden;border:1px solid #E7D9C8;border-radius:15px;background:#FFF9EF;box-shadow:0 4px 12px rgba(86,62,40,.045);min-width:0}.lurk-catalog-product-art{height:118px;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(145deg,#F5E5D3,#EAD4BB);overflow:hidden}.lurk-catalog-product-art:after{content:"";position:absolute;width:140px;height:140px;border:1px solid rgba(150,104,67,.13);border-radius:50%;box-shadow:0 0 0 18px rgba(255,255,255,.12),0 0 0 38px rgba(255,255,255,.1)}.lurk-catalog-product-art>span{font-size:43px;filter:drop-shadow(0 5px 3px rgba(82,57,36,.13));z-index:1}.lurk-catalog-product-art>small{position:absolute;bottom:9px;left:11px;font-size:8px;font-weight:900;letter-spacing:1px;color:#8A7059;z-index:1;text-transform:uppercase}.lurk-catalog-product-body{padding:13px}.lurk-catalog-product-title{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;min-height:35px}.lurk-catalog-product-title h3{font-size:13px;line-height:1.3;margin:0;color:#392D22}.lurk-catalog-state{font-size:8px;font-weight:900;letter-spacing:.5px;color:#A39788;background:#F0E8DE;padding:5px 6px;border-radius:5px;white-space:nowrap}.lurk-catalog-state.on{color:#5C8757;background:#E8F0E3}.lurk-catalog-product-bottom{display:flex;align-items:center;justify-content:space-between;margin:11px 0 12px}.lurk-catalog-product-bottom strong{font-size:16px;color:#C85B36}.lurk-catalog-product-bottom button{border:1px solid #E8D9C8;border-radius:7px;background:#F8F0E6;padding:7px 9px;color:#715B46;font-size:10px;font-weight:800;cursor:pointer}.lurk-catalog-product-bottom button span{margin-left:4px}.lurk-catalog-toggle{display:flex;align-items:center;gap:7px;border:0;background:transparent;padding:2px 0;color:#A09588;font-size:10px;font-weight:700;cursor:pointer}.lurk-catalog-toggle i{width:22px;height:12px;border-radius:10px;background:#C9BFB2;position:relative}.lurk-catalog-toggle i:after{content:"";position:absolute;width:8px;height:8px;left:2px;top:2px;border-radius:50%;background:white;transition:.15s}.lurk-catalog-toggle.on{color:#68865F}.lurk-catalog-toggle.on i{background:#79A16D}.lurk-catalog-toggle.on i:after{left:12px}.lurk-catalog-product.is-off{opacity:.7}.lurk-catalog-empty{grid-column:1/-1;padding:60px 20px;text-align:center;color:#948573}.lurk-catalog-empty>span{font-size:36px}.lurk-catalog-empty b{display:block;margin:10px 0;color:#514131}.lurk-catalog-empty p{font-size:12px}
+@media(max-width:800px){.lurk-catalog-topbar{padding:16px;gap:11px;flex-wrap:wrap}.lurk-catalog-heading h1{font-size:21px}.lurk-catalog-top-actions{width:100%;justify-content:space-between;padding-left:49px}.lurk-catalog-workspace{grid-template-columns:1fr}.lurk-catalog-sidebar{display:flex;gap:6px;overflow-x:auto;padding:10px 13px;border-right:0;border-bottom:1px solid #E8DCCD}.lurk-catalog-side-label,.lurk-catalog-side-note{display:none}.lurk-catalog-category{width:auto;flex:0 0 auto;margin:0;padding:9px 12px}.lurk-catalog-category b{white-space:nowrap}.lurk-catalog-main{padding:19px 15px 30px}.lurk-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lurk-catalog-product-art{height:100px}.lurk-catalog-product-body{padding:10px}.lurk-catalog-product-title h3{font-size:12px}}
+@media(max-width:430px){.lurk-catalog-toolbar{align-items:stretch;flex-direction:column}.lurk-catalog-search{width:100%}.lurk-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lurk-catalog-product-art{height:88px}}
+@media(orientation:landscape) and (max-height:650px){.lurk-catalog-topbar{padding:12px 22px}.lurk-catalog-heading h1{font-size:21px}.lurk-catalog-workspace{min-height:calc(100vh - 68px)}.lurk-catalog-main{padding-top:17px}.lurk-catalog-product-art{height:92px}.lurk-catalog-grid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}}
+</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
@@ -1544,7 +1560,11 @@ function MenuScreen({menu,setMenu,setV}){
   const[newPrice,setNewPrice]=useState("");
   const[newCat,setNewCat]=useState("Kahve");
   const[addError,setAddError]=useState("");
+  const[activeCat,setActiveCat]=useState("Tümü");
+  const[search,setSearch]=useState("");
   const cats=[...new Set(menu.map(m=>m.cat))];
+  const enabledCount=menu.filter(m=>m.on).length;
+  const visibleItems=menu.filter(m=>(activeCat==="Tümü"||m.cat===activeCat)&&m.name.toLocaleLowerCase("tr").includes(search.toLocaleLowerCase("tr")));
   function openEdit(item){setEditingItem(item);setNewName(item.name);setNewPrice(String(item.price));setNewCat(item.cat);setAddError("");}
   function saveEdit(){
     const validated=validateMenuItemInput(newName,newPrice);
@@ -1552,60 +1572,48 @@ function MenuScreen({menu,setMenu,setV}){
     setMenu(prev=>prev.map(m=>m.id===editingItem.id?{...m,name:validated.name,price:validated.price}:m));
     setEditingItem(null);setNewName("");setNewPrice("");setAddError("");
   }
-
+  function resetForm(){setNewName("");setNewPrice("");setNewCat(cats[0]||"Kahve");setAddError("");}
   return(
-    <div className="lurk-screen lurk-menu-screen">
-      <div style={{background:"rgba(255,249,239,0.97)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(91,65,43,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>setV("settings")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Menü</div>
-        <button onClick={()=>setShowAdd(true)} style={{background:"#F36B3F",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Ürün</button>
+    <div className="lurk-screen lurk-menu-screen lurk-catalog-screen">
+      <div className="lurk-catalog-topbar">
+        <button className="lurk-catalog-back" onClick={()=>setV("settings")}>←</button>
+        <div className="lurk-catalog-heading"><span>ÜRÜN YÖNETİMİ / LURK MENU</span><h1>Menü kataloğu</h1><p>Ürünlerini, fiyatlarını ve satış durumlarını tek yerden yönet.</p></div>
+        <div className="lurk-catalog-top-actions"><span className="lurk-catalog-live"><i/> {enabledCount} ürün satışta</span><button className="lurk-catalog-add" onClick={()=>{resetForm();setShowAdd(true);}}>＋ Yeni ürün</button></div>
       </div>
-      <div style={{padding:"14px"}}>
-        {cats.map(cat=>(
-          <div key={cat} style={{marginBottom:20}}>
-            <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>{cat}</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-              {menu.filter(m=>m.cat===cat).map(item=>(
-                <div key={item.id} style={{background:item.on?T.bg2:"rgba(91,65,43,0.02)",border:"0.5px solid "+(item.on?"rgba(91,65,43,0.09)":"rgba(91,65,43,0.04)"),borderRadius:12,padding:"12px",position:"relative"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
-                    <div style={{fontSize:11,fontWeight:700,color:item.on?T.text:T.textDim,lineHeight:1.3,flex:1,paddingRight:6,textDecoration:item.on?"none":"line-through"}}>{item.name}</div>
-                    <div onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{width:28,height:16,borderRadius:8,background:item.on?"#F36B3F":"#C9BFB2",position:"relative",cursor:"pointer",flexShrink:0}}>
-                      <div style={{width:12,height:12,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:item.on?14:2,transition:"left 0.15s"}}/>
-                    </div>
-                  </div>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
-                    <div style={{fontSize:13,fontWeight:800,color:item.on?T.accentL:T.textDim}}>{fm(item.price)}</div>
-                    <button onClick={()=>openEdit(item)} style={{padding:"6px 9px",background:T.bg3,color:T.text,border:"1px solid rgba(91,65,43,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Düzenle</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <div className="lurk-catalog-workspace">
+        <aside className="lurk-catalog-sidebar">
+          <div className="lurk-catalog-side-label">KATEGORİLER</div>
+          <button className={"lurk-catalog-category"+(activeCat==="Tümü"?" active":"")} onClick={()=>setActiveCat("Tümü")}><span>▦</span><b>Tüm ürünler</b><small>{menu.length}</small></button>
+          {cats.map((cat,i)=><button key={cat} className={"lurk-catalog-category"+(activeCat===cat?" active":"")} onClick={()=>setActiveCat(cat)}><span>{["☕","🍵","🥐","🍰","🧃"][i%5]}</span><b>{cat}</b><small>{menu.filter(m=>m.cat===cat).length}</small></button>)}
+          <div className="lurk-catalog-side-note"><b>MENÜ DURUMU</b><strong>{enabledCount}<small> / {menu.length}</small></strong><span>ürün aktif olarak listeleniyor</span></div>
+        </aside>
+        <main className="lurk-catalog-main">
+          <div className="lurk-catalog-toolbar"><div><span className="lurk-catalog-eyebrow">ÜRÜN ENVANTERİ</span><h2>{activeCat==="Tümü"?"Tüm ürünler":activeCat}</h2><p>{visibleItems.length} ürün görüntüleniyor</p></div><label className="lurk-catalog-search"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara..."/></label></div>
+          <div className="lurk-catalog-grid">
+            {visibleItems.map(item=><article className={"lurk-catalog-product"+(!item.on?" is-off":"")} key={item.id}>
+              <div className={"lurk-catalog-product-art cat-"+(item.cat||"").toLocaleLowerCase("tr").replace(/[^a-z0-9]+/g,"-")}><span>{item.cat?.toLocaleLowerCase("tr").includes("matcha")?"🍵":item.cat?.toLocaleLowerCase("tr").includes("kahve")?"☕":item.cat?.toLocaleLowerCase("tr").includes("tatlı")?"🍰":"✳"}</span><small>{item.cat}</small></div>
+              <div className="lurk-catalog-product-body"><div className="lurk-catalog-product-title"><h3>{item.name}</h3><span className={"lurk-catalog-state"+(item.on?" on":"")}>{item.on?"AKTİF":"PASİF"}</span></div><div className="lurk-catalog-product-bottom"><strong>{fm(item.price)}</strong><button onClick={()=>openEdit(item)}>Düzenle <span>↗</span></button></div>
+              <button className={"lurk-catalog-toggle"+(item.on?" on":"")} onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))}><i/>{item.on?"Satışta":"Satış dışı"}</button></div>
+            </article>)}
+            {!visibleItems.length&&<div className="lurk-catalog-empty"><span>⌕</span><b>Ürün bulunamadı</b><p>Arama kelimesini veya kategori seçimini değiştir.</p></div>}
           </div>
-        ))}
+        </main>
       </div>
-      {editingItem&&(
+      {(editingItem||showAdd)&&(
         <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Ürünü Düzenle</div>
-          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ürün adı</label>
-          <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Ürün adı" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,0.07)",color:T.text}}/>
-          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Fiyat (TL)</label>
-          <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="Fiyat (TL)" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(91,65,43,0.07)",color:T.text}}/>
-          {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={saveEdit} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
-          <button onClick={()=>{setEditingItem(null);setAddError("");}} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
-        </Modal>
-      )}
-      {showAdd&&(
-        <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Ürün</div>
-          <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(91,65,43,0.07)",color:T.text}}/>
-          <input type="number" min="0.01" step="0.01" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(91,65,43,0.07)",color:T.text}}/>
-          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:16,background:"#FFF9EF",color:T.text}}>
+          <div style={{fontWeight:800,fontSize:19,marginBottom:5,color:T.text}}>{editingItem?"Ürünü düzenle":"Yeni ürün oluştur"}</div>
+          <div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Ürün bilgilerini güncelle.</div>
+          <label style={{display:"block",fontSize:12,fontWeight:700,color:T.textSub,marginBottom:6}}>ÜRÜN ADI</label>
+          <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Örn. Iced Matcha Latte" style={{width:"100%",padding:"13px 14px",border:"1px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:14,background:T.bg2,color:T.text}}/>
+          <label style={{display:"block",fontSize:12,fontWeight:700,color:T.textSub,marginBottom:6}}>FİYAT (TL)</label>
+          <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="0,00" style={{width:"100%",padding:"13px 14px",border:"1px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:14,background:T.bg2,color:T.text}}/>
+          <label style={{display:"block",fontSize:12,fontWeight:700,color:T.textSub,marginBottom:6}}>KATEGORİ</label>
+          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"13px 14px",border:"1px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:14,background:T.bg2,color:T.text}}>
             {cats.map(c=><option key={c} value={c}>{c}</option>)}
           </select>
           {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={()=>{const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(243,107,63,0.3)"}}>Ekle</button>
-          <button onClick={()=>setShowAdd(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
+          <button onClick={()=>{if(editingItem){saveEdit();return;}const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setShowAdd(false);resetForm();}} style={{width:"100%",padding:14,background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:0,borderRadius:11,color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer"}}>{editingItem?"Değişiklikleri kaydet":"Ürünü kataloğa ekle"}</button>
+          <button onClick={()=>{setEditingItem(null);setShowAdd(false);setAddError("");}} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub,fontSize:13,cursor:"pointer",marginTop:5}}>Vazgeç</button>
         </Modal>
       )}
     </div>
