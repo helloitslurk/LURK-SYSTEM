@@ -855,6 +855,65 @@ export default function App(){
         .lurk-reference-day{position:absolute;right:24px;top:82px;z-index:3;border:0;border-radius:12px;padding:8px 12px;background:#f36b3f;color:white;font-weight:800;cursor:pointer}
         @media(max-width:700px){.lurk-reference-home{padding:18px 3%}.lurk-reference-launcher{gap:8px}.lurk-reference-app{min-height:clamp(175px,34vh,250px);padding:14px 5px;border-radius:17px}.lurk-reference-icon{font-size:clamp(38px,8vw,58px)}.lurk-reference-app b{font-size:clamp(12px,2.5vw,17px)}.lurk-reference-app small{font-size:clamp(9px,1.8vw,12px)}.lurk-reference-controls{gap:8px;padding:8px}.lurk-key{width:23px;height:23px}.lurk-reference-day{top:auto;bottom:18px;right:10px}.lurk-reference-status{display:none}}
         @media(max-height:520px){.lurk-reference-home{padding-top:10px;padding-bottom:10px}.lurk-reference-app{min-height:clamp(155px,38vh,230px)}.lurk-reference-icon{font-size:clamp(42px,6vw,66px);margin-bottom:1px}.lurk-reference-brand img{width:95px}.lurk-reference-controls{padding:5px 9px}}
+        /* LURK POS reference design foundation */
+        .lurk-app {
+          --lurk-cream: #f5ecdf; --lurk-paper: #fff9ef; --lurk-ink: #241a14;
+          --lurk-muted: #806d5d; --lurk-orange: #f36b2f; --lurk-orange-deep: #d94d1e;
+          --lurk-green: #3b9b53; --lurk-line: rgba(75,48,28,.16); color: var(--lurk-ink);
+        }
+        .lurk-reference-home { min-height: 100svh; min-height: 100dvh; padding: clamp(18px,2.6vw,38px) clamp(18px,4vw,62px) clamp(18px,2.4vw,34px); }
+        .lurk-reference-backdrop {
+          background: linear-gradient(90deg,rgba(255,239,216,.34),rgba(255,229,195,.12) 48%,rgba(57,35,22,.12)),
+            radial-gradient(ellipse at 18% 68%,#b77a43 0 10%,transparent 34%),
+            radial-gradient(ellipse at 78% 75%,#4f6a39 0 8%,transparent 26%),
+            linear-gradient(145deg,#f5d7b3 0%,#d99b62 46%,#71452b 100%);
+        }
+        .lurk-reference-backdrop:before {
+          background: linear-gradient(0deg,rgba(37,24,17,.58),transparent 48%),
+            radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.55),transparent 46%),
+            repeating-linear-gradient(90deg,transparent 0 23%,rgba(85,47,23,.075) 23.2% 23.55%);
+        }
+        .lurk-reference-brand img { filter: drop-shadow(0 3px 0 rgba(42,20,10,.16)); }
+        .lurk-reference-user,.lurk-reference-controls { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+        .lurk-reference-app {
+          position: relative; overflow: hidden; min-height: clamp(218px,34vh,350px);
+          background: linear-gradient(155deg,#fffaf2 0%,#f2e8da 100%);
+          box-shadow: 0 13px 28px rgba(45,26,14,.25), inset 0 2px 0 rgba(255,255,255,.95), inset 0 -2px 0 rgba(107,73,45,.07);
+        }
+        .lurk-reference-app:before {
+          content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+          background: linear-gradient(135deg,rgba(255,255,255,.48),transparent 42%);
+        }
+        .lurk-reference-app.is-active { box-shadow: 0 15px 34px rgba(68,35,13,.34), 0 0 0 2px #53a94b, inset 0 2px 0 rgba(255,255,255,.35); }
+        .lurk-reference-app:focus-visible,.lurk-reference-day:focus-visible,.lurk-reference-controls button:focus-visible { outline: 4px solid #f6d83b; outline-offset: 4px; }
+        @media (min-width:701px) and (max-width:1050px) {
+          .lurk-reference-launcher { gap: 12px; }
+          .lurk-reference-app { min-height: clamp(190px,30vh,270px); }
+          .lurk-reference-icon { font-size: clamp(54px,7vw,78px); }
+        }
+        @media (max-width:700px) {
+          .lurk-reference-home { min-height: 100svh; padding: 16px 14px 18px; gap: 20px; }
+          .lurk-reference-top { align-items: center; }
+          .lurk-reference-brand img { width: clamp(94px,27vw,138px); }
+          .lurk-reference-brand b { font-size: 22px; margin-left: 34px; }
+          .lurk-reference-user { padding: 7px 10px; font-size: 12px; }
+          .lurk-reference-launcher { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; margin: auto 0; }
+          .lurk-reference-app { min-height: clamp(142px,21vh,190px); padding: 14px 7px; border-radius: 19px; gap: 5px; }
+          .lurk-reference-app:first-child { grid-column: 1 / -1; min-height: 128px; flex-direction: row; justify-content: center; gap: 16px; }
+          .lurk-reference-app:first-child .lurk-reference-icon { font-size: 56px; margin: 0; }
+          .lurk-reference-app:first-child b,.lurk-reference-app:first-child small { text-align: left; }
+          .lurk-reference-icon { font-size: clamp(42px,12vw,62px); margin: 0 0 4px; }
+          .lurk-reference-app b { font-size: 15px; }
+          .lurk-reference-app small { font-size: 11px; }
+          .lurk-reference-controls { width: 100%; justify-content: space-around; flex-wrap: wrap; gap: 8px 12px; padding: 10px 8px; }
+          .lurk-reference-status { display: block; position: static; color: #fff; text-align: center; text-shadow: 0 1px 5px #24150d; }
+          .lurk-reference-day { position: static; align-self: center; }
+        }
+        @media (max-width:380px) {
+          .lurk-reference-app:first-child { min-height: 112px; }
+          .lurk-reference-controls { font-size: 11px; }
+        }
+
 `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#F36B3F",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(243,107,63,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(243,107,63,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(243,107,63,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
