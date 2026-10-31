@@ -1042,6 +1042,52 @@ export default function App(){
           .lurk-pos-ticket-head { padding: 14px 15px 11px; }
         }
 
+        /* LURK GAME UI SYSTEM: pixel-console identity across every screen */
+        .lurk-app {
+          --game-ink:#24170f;--game-panel:#fff3df;--game-panel-shadow:#d4b995;
+          --game-orange:#f36b2f;--game-green:#4cae58;--game-blue:#35a9d6;
+          --game-yellow:#f4c842;--game-border:#4a2d1b;
+          background-color:#261b15 !important;
+          background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+          background-size:8px 8px;color:var(--game-ink);
+          font-family:"Courier New",monospace !important;font-weight:600;
+        }
+        .lurk-app button,.lurk-app input,.lurk-app select,.lurk-app textarea {font-family:"Courier New",monospace !important;letter-spacing:-.25px;}
+        .lurk-app button {
+          border-radius:5px !important;border:2px solid var(--game-border) !important;
+          box-shadow:0 4px 0 #8e6748,0 5px 0 var(--game-border) !important;
+          transition:transform .08s steps(2,end),box-shadow .08s steps(2,end),filter .08s steps(2,end) !important;
+        }
+        .lurk-app button:active {transform:translateY(3px) !important;box-shadow:0 1px 0 var(--game-border) !important;}
+        .lurk-app button:focus-visible,.lurk-app input:focus-visible,.lurk-app select:focus-visible {outline:3px dashed var(--game-yellow) !important;outline-offset:3px;}
+        .lurk-app :is(.lurk-floor-stat,.lurk-floor-total,.lurk-floor-table,.lurk-pos-product,.lurk-analytics-panel,.lurk-settings-backupcard,.lurk-settings-overview,.lurk-settings-live,.lurk-settings-stats,.lurk-settings-note,.lurk-modal-panel,.lurk-catalog-grid>*) {
+          border:2px solid var(--game-border) !important;border-radius:6px !important;box-shadow:4px 4px 0 rgba(45,27,15,.24) !important;
+        }
+        .lurk-app :is(.lurk-pos-category.is-selected,.lurk-pos-checkout,.lurk-floor-table-action,.lurk-settings-primary) {
+          background:var(--game-orange) !important;color:#fff8e9 !important;border-color:#4a2d1b !important;
+          box-shadow:0 4px 0 #a63c1c,0 5px 0 #4a2d1b !important;
+        }
+        .lurk-app :is(.lurk-reference-app,.lurk-pos-product,.lurk-floor-table,.lurk-analytics-panel,.lurk-settings-backupcard) {
+          border:3px solid var(--game-border) !important;border-radius:7px !important;box-shadow:5px 5px 0 rgba(44,25,13,.32) !important;
+        }
+        .lurk-app :is(.lurk-reference-app.is-active,.lurk-pos-product:focus-visible,.lurk-pos-product.is-selected) {
+          outline:3px solid var(--game-green) !important;outline-offset:-5px;
+          box-shadow:5px 5px 0 rgba(44,25,13,.32),0 0 0 3px var(--game-yellow) !important;
+        }
+        .lurk-app :is(.lurk-pos-product-art,.lurk-floor-chair,.lurk-reference-icon) {image-rendering:pixelated;text-shadow:2px 2px 0 rgba(48,28,13,.12);}
+        .lurk-app :is(.lurk-pos-ticket-head,.lurk-pos-ticket-bottom,.lurk-floor-topbar,.lurk-analytics-header,.lurk-settings-header) {
+          background-image:repeating-linear-gradient(90deg,rgba(93,56,29,.035) 0 4px,transparent 4px 8px);
+        }
+        .lurk-app :is(.lurk-pos-eyebrow,.lurk-settings-eyebrow,.lurk-pos-product-count) {font-family:"Courier New",monospace !important;letter-spacing:.2px;text-transform:uppercase;}
+        .lurk-app :is(.lurk-reference-controls,.lurk-reference-user) {
+          border:2px solid var(--game-border);border-radius:5px !important;
+          box-shadow:3px 3px 0 rgba(44,25,13,.3);backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+        }
+        .lurk-app .lurk-reference-app {border:3px solid var(--game-border) !important;border-radius:7px !important;box-shadow:5px 5px 0 rgba(44,25,13,.38) !important;}
+        .lurk-app .lurk-reference-app:before {display:none;}
+        .lurk-app .lurk-reference-app.is-active {outline:3px solid var(--game-green);outline-offset:2px;box-shadow:5px 5px 0 rgba(44,25,13,.38) !important;}
+        @media(max-width:700px) {.lurk-app {background-size:6px 6px;}.lurk-app button {box-shadow:0 3px 0 #8e6748,0 4px 0 var(--game-border) !important;}}
+
         /* LURK POS reference design foundation */
         .lurk-app {
           --lurk-cream: #f5ecdf; --lurk-paper: #fff9ef; --lurk-ink: #241a14;
