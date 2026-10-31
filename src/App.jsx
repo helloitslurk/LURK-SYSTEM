@@ -1042,6 +1042,18 @@ export default function App(){
           .lurk-pos-ticket-head { padding: 14px 15px 11px; }
         }
 
+        .lurk-catalog-product-art {position:relative;overflow:hidden;display:grid;place-items:center;}
+        .lurk-catalog-product-art img {width:100%;height:100%;position:absolute;inset:0;object-fit:cover;}
+        .lurk-catalog-product-art small {position:absolute;z-index:1;left:5px;bottom:5px;background:rgba(255,243,223,.9);padding:3px 5px;border:1px solid #4a2d1b;font-size:8px;}
+        .lurk-product-image-upload {display:flex;gap:12px;align-items:center;margin:0 0 16px;padding:10px;background:#eee1cf;border:2px solid #4a2d1b;box-shadow:3px 3px 0 #b69b7a;}
+        .lurk-product-image-preview {width:88px;height:78px;flex:0 0 88px;background:#fff3df;border:2px solid #4a2d1b;display:grid;place-items:center;overflow:hidden;font-size:30px;}
+        .lurk-product-image-preview img {width:100%;height:100%;object-fit:cover;}
+        .lurk-product-image-actions {display:grid;gap:5px;font:900 9px "Courier New",monospace;}
+        .lurk-product-image-actions label {display:inline-block;width:max-content;padding:8px 10px;background:#f36b2f;color:#fff;border:2px solid #4a2d1b;box-shadow:0 3px 0 #9d401f;cursor:pointer;}
+        .lurk-product-image-actions input {display:none;}
+        .lurk-product-image-actions small {font-size:8px;color:#75543b;}
+        @media(max-width:600px){.lurk-product-image-upload{align-items:flex-start;}.lurk-product-image-preview{width:72px;height:68px;flex-basis:72px;}}
+
         /* Home: clean dark pixel stage, no wordmark */
         .lurk-home-screen .lurk-reference-backdrop {
           background-color:#171411 !important;
@@ -1880,6 +1892,9 @@ function MenuScreen({menu,setMenu,setV}){
   const[newPrice,setNewPrice]=useState("");
   const[newCat,setNewCat]=useState("Kahve");
   const[addError,setAddError]=useState("");
+  const[imageUrl,setImageUrl]=useState("");
+  const[imageBusy,setImageBusy]=useState(false);
+  const[imageError,setImageError]=useState("");
   const[activeCat,setActiveCat]=useState("Tümü");
   const[selectedProductId,setSelectedProductId]=useState(menu[0]?.id??null);
   const selectedProduct=menu.find(m=>m.id===selectedProductId)||visibleItems[0]||menu[0]||null;
@@ -1887,14 +1902,28 @@ function MenuScreen({menu,setMenu,setV}){
   const cats=[...new Set(menu.map(m=>m.cat))];
   const enabledCount=menu.filter(m=>m.on).length;
   const visibleItems=menu.filter(m=>(activeCat==="Tümü"||m.cat===activeCat)&&m.name.toLocaleLowerCase("tr").includes(search.toLocaleLowerCase("tr")));
-  function openEdit(item){setEditingItem(item);setNewName(item.name);setNewPrice(String(item.price));setNewCat(item.cat);setAddError("");}
+  function openEdit(item){setEditingItem(item);setNewName(item.name);setNewPrice(String(item.price));setNewCat(item.cat);setImageUrl(item.image||item.imageUrl||item.photo||"");setAddError("");setImageError("");}
+  async function uploadProductImage(file){
+    if(!file)return;
+    if(!file.type.startsWith("image/")){setImageError("Lütfen bir görsel dosyası seç.");return;}
+    if(file.size>5*1024*1024){setImageError("Görsel en fazla 5 MB olabilir.");return;}
+    setImageBusy(true);setImageError("");
+    try{
+      const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+      const path="products/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+"."+ext;
+      const response=await fetch(SB_URL+"/storage/v1/object/product-images/"+path,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":file.type,"x-upsert":"false"},body:file});
+      if(!response.ok){let detail="";try{const data=await response.json();detail=data.message||data.error||"";}catch{}throw new Error(detail||"Yükleme başarısız ("+response.status+"). Supabase içinde product-images bucket ve public erişim ayarı gerekli.");}
+      setImageUrl(SB_URL+"/storage/v1/object/public/product-images/"+path);
+    }catch(error){setImageError(error.message||"Görsel yüklenemedi.");}
+    finally{setImageBusy(false);}
+  }
   function saveEdit(){
     const validated=validateMenuItemInput(newName,newPrice);
     if(validated.error){setAddError(validated.error);return;}
-    setMenu(prev=>prev.map(m=>m.id===editingItem.id?{...m,name:validated.name,price:validated.price}:m));
-    setEditingItem(null);setNewName("");setNewPrice("");setAddError("");
+    setMenu(prev=>prev.map(m=>m.id===editingItem.id?{...m,name:validated.name,price:validated.price,image:imageUrl||undefined}:m));
+    setEditingItem(null);setNewName("");setNewPrice("");setAddError("");setImageUrl("");
   }
-  function resetForm(){setNewName("");setNewPrice("");setNewCat(cats[0]||"Kahve");setAddError("");}
+  function resetForm(){setNewName("");setNewPrice("");setNewCat(cats[0]||"Kahve");setAddError("");setImageUrl("");setImageError("");}
   return(
     <div className="lurk-screen lurk-menu-screen lurk-catalog-screen">
       <div className="lurk-catalog-topbar">
@@ -1913,7 +1942,7 @@ function MenuScreen({menu,setMenu,setV}){
           <div className="lurk-catalog-toolbar"><div><span className="lurk-catalog-eyebrow">ÜRÜN ENVANTERİ</span><h2>{activeCat==="Tümü"?"Tüm ürünler":activeCat}</h2><p>{visibleItems.length} ürün görüntüleniyor</p></div><label className="lurk-catalog-search"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara..."/></label></div>
           <div className="lurk-catalog-grid">
             {visibleItems.map(item=><article className={"lurk-catalog-product"+(!item.on?" is-off":"")+(selectedProduct?.id===item.id?" is-selected":"")} key={item.id} onClick={()=>setSelectedProductId(item.id)}>
-              <div className={"lurk-catalog-product-art cat-"+(item.cat||"").toLocaleLowerCase("tr").replace(/[^a-z0-9]+/g,"-")}><span>{item.cat?.toLocaleLowerCase("tr").includes("matcha")?"🍵":item.cat?.toLocaleLowerCase("tr").includes("kahve")?"☕":item.cat?.toLocaleLowerCase("tr").includes("tatlı")?"🍰":"✳"}</span><small>{item.cat}</small></div>
+              <div className={"lurk-catalog-product-art cat-"+(item.cat||"").toLocaleLowerCase("tr").replace(/[^a-z0-9]+/g,"-")}>{item.image||item.imageUrl||item.photo?<img src={item.image||item.imageUrl||item.photo} alt={item.name} loading="lazy"/>:<span>{item.cat?.toLocaleLowerCase("tr").includes("matcha")?"🍵":item.cat?.toLocaleLowerCase("tr").includes("kahve")?"☕":item.cat?.toLocaleLowerCase("tr").includes("tatlı")?"🍰":"✳"}</span>}<small>{item.cat}</small></div>
               <div className="lurk-catalog-product-body"><div className="lurk-catalog-product-title"><h3>{item.name}</h3><span className={"lurk-catalog-state"+(item.on?" on":"")}>{item.on?"AKTİF":"PASİF"}</span></div><div className="lurk-catalog-product-bottom"><strong>{fm(item.price)}</strong><button onClick={()=>openEdit(item)}>Düzenle <span>↗</span></button></div>
               <button className={"lurk-catalog-toggle"+(item.on?" on":"")} onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))}><i/>{item.on?"Satışta":"Satış dışı"}</button></div>
             </article>)}
@@ -1938,6 +1967,8 @@ function MenuScreen({menu,setMenu,setV}){
           <div style={{fontWeight:800,fontSize:19,marginBottom:5,color:T.text}}>{editingItem?"Ürünü düzenle":"Yeni ürün oluştur"}</div>
           <div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Ürün bilgilerini güncelle.</div>
           <label style={{display:"block",fontSize:12,fontWeight:700,color:T.textSub,marginBottom:6}}>ÜRÜN ADI</label>
+          <div className="lurk-product-image-upload"><div className="lurk-product-image-preview">{imageUrl?<img src={imageUrl} alt="Ürün önizleme"/>:<span>▧</span>}</div><div className="lurk-product-image-actions"><b>ÜRÜN GÖRSELİ</b><label>{imageBusy?"YÜKLENİYOR…":"GÖRSEL SEÇ"}<input type="file" accept="image/*" disabled={imageBusy} onChange={e=>uploadProductImage(e.target.files?.[0])}/></label><small>JPG, PNG, WEBP · Maks. 5 MB</small>{imageError&&<small role="alert">{imageError}</small>}</div></div>
+          <label style={{display:"block",fontSize:12,fontWeight:700,color:T.textSub,marginBottom:6}}>ÜRÜN ADI</label>
           <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Örn. Iced Matcha Latte" style={{width:"100%",padding:"13px 14px",border:"1px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:14,background:T.bg2,color:T.text}}/>
           <label style={{display:"block",fontSize:12,fontWeight:700,color:T.textSub,marginBottom:6}}>FİYAT (TL)</label>
           <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="0,00" style={{width:"100%",padding:"13px 14px",border:"1px solid rgba(91,65,43,0.15)",borderRadius:10,fontSize:15,outline:"none",boxSizing:"border-box",marginBottom:14,background:T.bg2,color:T.text}}/>
@@ -1946,8 +1977,8 @@ function MenuScreen({menu,setMenu,setV}){
             {cats.map(c=><option key={c} value={c}>{c}</option>)}
           </select>
           {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={()=>{if(editingItem){saveEdit();return;}const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setShowAdd(false);resetForm();}} style={{width:"100%",padding:14,background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:0,borderRadius:11,color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer"}}>{editingItem?"Değişiklikleri kaydet":"Ürünü kataloğa ekle"}</button>
-          <button onClick={()=>{setEditingItem(null);setShowAdd(false);setAddError("");}} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub,fontSize:13,cursor:"pointer",marginTop:5}}>Vazgeç</button>
+          <button onClick={()=>{if(imageBusy)return;if(editingItem){saveEdit();return;}const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true,image:imageUrl||undefined}]);setShowAdd(false);resetForm();}} style={{width:"100%",padding:14,background:"linear-gradient(135deg,#F36B3F,#D94D2B)",border:0,borderRadius:11,color:"#fff",fontSize:14,fontWeight:800,cursor:"pointer"}}>{editingItem?"Değişiklikleri kaydet":"Ürünü kataloğa ekle"}</button>
+          <button onClick={()=>{setEditingItem(null);setShowAdd(false);setAddError("");setImageUrl("");setImageError("");}} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub,fontSize:13,cursor:"pointer",marginTop:5}}>Vazgeç</button>
         </Modal>
       )}
     </div>
