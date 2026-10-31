@@ -1054,38 +1054,36 @@ export default function App(){
         .lurk-product-image-actions small {font-size:8px;color:#75543b;}
         @media(max-width:600px){.lurk-product-image-upload{align-items:flex-start;}.lurk-product-image-preview{width:72px;height:68px;flex-basis:72px;}}
 
-        /* Reports: game HUD dashboard */
-        .lurk-analytics-screen {background:#211913 !important;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px) !important;background-size:8px 8px !important;color:#2e2015 !important;}
-        .lurk-analytics-header {background:#302219 !important;border-bottom:3px solid #4a2d1b !important;color:#fff0d9 !important;}
-        .lurk-analytics-header h1,.lurk-analytics-header p {color:#fff0d9 !important;}
-        .lurk-analytics-header>button:first-child {background:#f36b2f !important;color:white !important;border:2px solid #160f0b !important;border-radius:5px !important;box-shadow:0 3px 0 #9d401f !important;}
-        .lurk-analytics-export {border:2px solid #160f0b !important;border-radius:5px !important;box-shadow:0 4px 0 #9d401f !important;}
-        .lurk-analytics-period {background:#d9c6ad;border:3px solid #4a2d1b;padding:13px 15px;margin-bottom:16px;box-shadow:4px 4px 0 rgba(0,0,0,.2);}
-        .lurk-analytics-period>div:first-child>span,.lurk-analytics-panel-head span {font-family:"Courier New",monospace !important;color:#98552f !important;letter-spacing:1px;}
-        .lurk-analytics-period>div:first-child>b {color:#2e2015 !important;}
-        .lurk-analytics-range {display:block;margin-top:4px;color:#7d6148;font-size:9px;}
-        .lurk-analytics-period-controls {display:grid;gap:8px;justify-items:end;min-width:0;}
-        .lurk-analytics-tabs {display:flex;gap:5px;}
-        .lurk-analytics-tabs button {padding:9px 14px;border:2px solid #4a2d1b !important;border-radius:4px !important;background:#fff3df;color:#382517;font-size:10px;font-weight:1000;box-shadow:0 3px 0 #b69b7a !important;}
-        .lurk-analytics-tabs button.active {background:#f36b2f !important;color:#fff !important;box-shadow:0 3px 0 #9d401f !important;}
-        .lurk-analytics-months button {border:2px solid #4a2d1b !important;border-radius:4px !important;background:#fff3df !important;color:#382517 !important;box-shadow:0 2px 0 #b69b7a;}
-        .lurk-analytics-months button.active {background:#4cae58 !important;color:#fff !important;border-color:#284d2c !important;}
-        .lurk-analytics-kpis article {border:3px solid #4a2d1b !important;border-radius:6px !important;background:#fff3df !important;box-shadow:4px 4px 0 #b69b7a !important;}
-        .lurk-analytics-kpis article.primary {background:#f9d5bd !important;}
-        .lurk-analytics-kpis article>span {font-family:"Courier New",monospace;color:#805a3d !important;letter-spacing:.8px;}
-        .lurk-analytics-kpis article>b {color:#2e2015 !important;}
-        .lurk-analytics-kpis article.primary>b {color:#c64e25 !important;}
-        .lurk-analytics-panel {background:#fff3df !important;border:3px solid #4a2d1b !important;border-radius:6px !important;box-shadow:5px 5px 0 rgba(0,0,0,.24) !important;}
-        .lurk-analytics-panel-head h2 {color:#2e2015 !important;}
-        .lurk-analytics-bar-track {background:#dfceb7 !important;border:1px solid #4a2d1b;border-radius:2px !important;}
-        .lurk-analytics-bar-track i {background:repeating-linear-gradient(0deg,#ed6330 0 5px,#f58a55 5px 10px) !important;border-radius:0 !important;}
-        .lurk-analytics-donut {border:3px solid #4a2d1b;}
-        .lurk-analytics-donut>div {background:#fff3df !important;}
-        .lurk-analytics-day>button {border-bottom:1px dashed #bca487;}
-        .lurk-analytics-order {background:#ead9c3 !important;border-top:1px dashed #aa8d6d !important;}
-        .lurk-analytics-empty {background:#ead9c3 !important;border:2px dashed #b69b7a;border-radius:4px !important;}
-        @media(max-width:700px){.lurk-analytics-period-controls{width:100%;justify-items:stretch}.lurk-analytics-tabs{width:100%}.lurk-analytics-tabs button{flex:1;padding:9px 5px}.lurk-analytics-period{align-items:stretch}.lurk-analytics-months{max-width:100%}}
-
+        /* Reports: warm cream panels with clearly mapped payment colors */
+        .lurk-analytics-screen {background:#F4EBDD !important;background-image:none !important;color:#34291F !important;}
+        .lurk-analytics-header {background:#FFF9EF !important;border-bottom:1px solid #E9DDCE !important;color:#302820 !important;}
+        .lurk-analytics-header h1,.lurk-analytics-header p {color:#302820 !important;}
+        .lurk-analytics-header>button:first-child {background:#F5EBDD !important;color:#725D4A !important;border:1px solid #E8DCCD !important;border-radius:9px !important;box-shadow:none !important;}
+        .lurk-analytics-export {border:0 !important;border-radius:9px !important;box-shadow:none !important;}
+        .lurk-analytics-period {background:#FFF9EF;border:1px solid #E6D8C7;border-radius:12px;padding:13px 15px;margin-bottom:16px;box-shadow:0 2px 8px rgba(80,55,30,.06);}
+        .lurk-analytics-period>div:first-child>span,.lurk-analytics-panel-head span {font-family:inherit !important;color:#C66A45 !important;letter-spacing:1.2px;}
+        .lurk-analytics-period>div:first-child>b {color:#3B2E23 !important;}
+        .lurk-analytics-tabs button {border:1px solid #E5D7C7 !important;border-radius:8px !important;background:#FFF9EF;color:#806E5C;box-shadow:none !important;}
+        .lurk-analytics-tabs button.active {background:#F36B3F !important;color:#fff !important;border-color:#F36B3F !important;}
+        .lurk-analytics-months button {border:1px solid #E5D7C7 !important;border-radius:8px !important;background:#FFF9EF !important;color:#806E5C !important;box-shadow:none !important;}
+        .lurk-analytics-months button.active {background:#FBE0D2 !important;color:#B95735 !important;border-color:#F1C9B3 !important;}
+        .lurk-analytics-kpis article {border:1px solid #E6D8C7 !important;border-radius:12px !important;background:#FFF9EF !important;box-shadow:0 2px 8px rgba(80,55,30,.06) !important;}
+        .lurk-analytics-kpis article.primary {background:#FBE2D3 !important;border-color:#F1C9B3 !important;}
+        .lurk-analytics-kpis article>span {font-family:inherit;color:#9B8068 !important;}
+        .lurk-analytics-kpis article>b {color:#3B2E23 !important;}
+        .lurk-analytics-kpis article.primary>b {color:#C85B36 !important;}
+        .lurk-analytics-panel {background:#FFF9EF !important;border:1px solid #E6D8C7 !important;border-radius:13px !important;box-shadow:0 2px 8px rgba(80,55,30,.06) !important;}
+        .lurk-analytics-panel-head h2 {color:#3B2E23 !important;}
+        .lurk-analytics-bar-track {background:#EFE4D5 !important;border:0 !important;border-radius:4px !important;}
+        .lurk-analytics-bar-track i {background:#F36B3F !important;border-radius:4px !important;}
+        .lurk-analytics-donut {border:0 !important;}
+        .lurk-analytics-donut>div {background:#FFF9EF !important;}
+        .lurk-analytics-legend i.cash {background:#36A66A !important;}
+        .lurk-analytics-legend i.card {background:#3D8EDB !important;}
+        .lurk-analytics-legend i.credit {background:#F47732 !important;}
+        .lurk-analytics-day>button {border-bottom:1px solid #E9DDCE;}
+        .lurk-analytics-order {background:#F7EFE4 !important;border-top:1px solid #E9DDCE !important;}
+        .lurk-analytics-empty {background:#F7EFE4 !important;border:1px dashed #DCCBB7;border-radius:8px !important;}
         /* Home: clean dark pixel stage, no wordmark */
         .lurk-home-screen .lurk-reference-backdrop {
           background-color:#171411 !important;
@@ -1139,52 +1137,13 @@ export default function App(){
           .lurk-catalog-inspector-edit {grid-column:2;}
         }
 
-        /* LURK GAME UI SYSTEM: pixel-console identity across every screen */
-        .lurk-app {
-          --game-ink:#24170f;--game-panel:#fff3df;--game-panel-shadow:#d4b995;
-          --game-orange:#f36b2f;--game-green:#4cae58;--game-blue:#35a9d6;
-          --game-yellow:#f4c842;--game-border:#4a2d1b;
-          background-color:#261b15 !important;
-          background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
-          background-size:8px 8px;color:var(--game-ink);
-          font-family:"Courier New",monospace !important;font-weight:600;
-        }
-        .lurk-app button,.lurk-app input,.lurk-app select,.lurk-app textarea {font-family:"Courier New",monospace !important;letter-spacing:-.25px;}
-        .lurk-app button {
-          border-radius:5px !important;border:2px solid var(--game-border) !important;
-          box-shadow:0 4px 0 #8e6748,0 5px 0 var(--game-border) !important;
-          transition:transform .08s steps(2,end),box-shadow .08s steps(2,end),filter .08s steps(2,end) !important;
-        }
-        .lurk-app button:active {transform:translateY(3px) !important;box-shadow:0 1px 0 var(--game-border) !important;}
-        .lurk-app button:focus-visible,.lurk-app input:focus-visible,.lurk-app select:focus-visible {outline:3px dashed var(--game-yellow) !important;outline-offset:3px;}
-        .lurk-app :is(.lurk-floor-stat,.lurk-floor-total,.lurk-floor-table,.lurk-pos-product,.lurk-analytics-panel,.lurk-settings-backupcard,.lurk-settings-overview,.lurk-settings-live,.lurk-settings-stats,.lurk-settings-note,.lurk-modal-panel,.lurk-catalog-grid>*) {
-          border:2px solid var(--game-border) !important;border-radius:6px !important;box-shadow:4px 4px 0 rgba(45,27,15,.24) !important;
-        }
-        .lurk-app :is(.lurk-pos-category.is-selected,.lurk-pos-checkout,.lurk-floor-table-action,.lurk-settings-primary) {
-          background:var(--game-orange) !important;color:#fff8e9 !important;border-color:#4a2d1b !important;
-          box-shadow:0 4px 0 #a63c1c,0 5px 0 #4a2d1b !important;
-        }
-        .lurk-app :is(.lurk-reference-app,.lurk-pos-product,.lurk-floor-table,.lurk-analytics-panel,.lurk-settings-backupcard) {
-          border:3px solid var(--game-border) !important;border-radius:7px !important;box-shadow:5px 5px 0 rgba(44,25,13,.32) !important;
-        }
-        .lurk-app :is(.lurk-reference-app.is-active,.lurk-pos-product:focus-visible,.lurk-pos-product.is-selected) {
-          outline:3px solid var(--game-green) !important;outline-offset:-5px;
-          box-shadow:5px 5px 0 rgba(44,25,13,.32),0 0 0 3px var(--game-yellow) !important;
-        }
-        .lurk-app :is(.lurk-pos-product-art,.lurk-floor-chair,.lurk-reference-icon) {image-rendering:pixelated;text-shadow:2px 2px 0 rgba(48,28,13,.12);}
-        .lurk-app :is(.lurk-pos-ticket-head,.lurk-pos-ticket-bottom,.lurk-floor-topbar,.lurk-analytics-header,.lurk-settings-header) {
-          background-image:repeating-linear-gradient(90deg,rgba(93,56,29,.035) 0 4px,transparent 4px 8px);
-        }
-        .lurk-app :is(.lurk-pos-eyebrow,.lurk-settings-eyebrow,.lurk-pos-product-count) {font-family:"Courier New",monospace !important;letter-spacing:.2px;text-transform:uppercase;}
-        .lurk-app :is(.lurk-reference-controls,.lurk-reference-user) {
-          border:2px solid var(--game-border);border-radius:5px !important;
-          box-shadow:3px 3px 0 rgba(44,25,13,.3);backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
-        }
-        .lurk-app .lurk-reference-app {border:3px solid var(--game-border) !important;border-radius:7px !important;box-shadow:5px 5px 0 rgba(44,25,13,.38) !important;}
-        .lurk-app .lurk-reference-app:before {display:none;}
-        .lurk-app .lurk-reference-app.is-active {outline:3px solid var(--game-green);outline-offset:2px;box-shadow:5px 5px 0 rgba(44,25,13,.38) !important;}
-        @media(max-width:700px) {.lurk-app {background-size:6px 6px;}.lurk-app button {box-shadow:0 3px 0 #8e6748,0 4px 0 var(--game-border) !important;}}
-
+        /* Shared game identity stays restrained, not a global color filter */
+        .lurk-app {--game-orange:#F36B3F;--game-green:#36A66A;--game-blue:#3D8EDB;--game-yellow:#F4C542;--game-border:#DCCDBB;background-color:#F4EBDD !important;background-image:none !important;color:#34291F;}
+        .lurk-app button:focus-visible,.lurk-app input:focus-visible,.lurk-app select:focus-visible {outline:3px solid #F4C542 !important;outline-offset:2px;}
+        .lurk-app button {transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;}
+        .lurk-app button:active {transform:translateY(1px);}
+        .lurk-reference-app {border-radius:14px !important;box-shadow:0 3px 10px rgba(65,45,25,.1) !important;}
+        .lurk-reference-app.is-active {outline:2px solid #36A66A !important;outline-offset:1px;}
         /* LURK POS reference design foundation */
         .lurk-app {
           --lurk-cream: #f5ecdf; --lurk-paper: #fff9ef; --lurk-ink: #241a14;
@@ -1763,8 +1722,10 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   const topItems=(()=>{const map={};mo.forEach(o=>(o.items||[]).forEach(it=>{const key=it.name||"Ürün";map[key]=(map[key]||0)+(Number(it.qty)||0);}));return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);})();
   const maxDay=Math.max(1,...days.map(d=>Number(d.inc)||0));
   const maxItem=Math.max(1,...topItems.map(x=>x[1]));
-  const cashShare=totalCash+totalCard?Math.round(totalCash/(totalCash+totalCard)*100):0;
-  const cardShare=totalCash+totalCard?100-cashShare:0;
+  const paymentTotal=totalCash+totalCard+creditSales;
+  const cashShare=paymentTotal?Math.round(totalCash/paymentTotal*100):0;
+  const cardShare=paymentTotal?Math.round(totalCard/paymentTotal*100):0;
+  const creditShare=paymentTotal?Math.max(0,100-cashShare-cardShare):0;
   return(
     <div className="lurk-screen lurk-reports-screen lurk-analytics-screen">
       <header className="lurk-analytics-header"><button onClick={()=>setV("home")}>←</button><div><span>BUSINESS INTELLIGENCE / LURK</span><h1>İşletme analizi</h1><p>Satış performansını tek ekranda takip et.</p></div><button className="lurk-analytics-export" onClick={exportMonthCsv}>↓ CSV dışa aktar</button></header>
@@ -1782,7 +1743,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
             {days.length?<div className="lurk-analytics-bars">{days.slice().reverse().map(d=><div className="lurk-analytics-bar-col" key={d.date}><div className="lurk-analytics-bar-value">{fm(d.inc)}</div><div className="lurk-analytics-bar-track"><i style={{height:Math.max(3,(Number(d.inc)||0)/maxDay*100)+"%"}}/></div><small>{new Date(d.date+"T12:00:00").toLocaleDateString("tr-TR",{day:"2-digit",month:"short"})}</small></div>)}</div>:<div className="lurk-analytics-empty">Bu dönem için satış kaydı yok.</div>}
           </article>
           <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>PAYMENT STATS / HUD</span><h2>Tahsilat kanalları</h2></div></div>
-            <div className="lurk-analytics-payment"><div className="lurk-analytics-donut" style={{background:"conic-gradient(#F36B3F 0 "+cashShare+"%,#D9C9B6 "+cashShare+"% 100%)"}}><div><b>{cashShare+cardShare?cashShare+"%": "0%"}</b><small>nakit payı</small></div></div><div className="lurk-analytics-legend"><div><i className="cash"/> <span>Nakit</span><b>{fm(totalCash)}</b></div><div><i className="card"/> <span>Kart</span><b>{fm(totalCard)}</b></div></div></div>
+            <div className="lurk-analytics-payment"><div className="lurk-analytics-donut" role="img" aria-label={"Ödeme dağılımı: nakit yüzde "+cashShare+", kart yüzde "+cardShare+", veresiye yüzde "+creditShare} style={{background:"conic-gradient(#36A66A 0 "+cashShare+"%,#3D8EDB "+cashShare+"% "+(cashShare+cardShare)+"%,#F47732 "+(cashShare+cardShare)+"% 100%)"}}><div><b>{paymentTotal?fm(paymentTotal):"₺0"}</b><small>toplam dağılım</small></div></div><div className="lurk-analytics-legend"><div><i className="cash"/> <span>Nakit · {cashShare}%</span><b>{fm(totalCash)}</b></div><div><i className="card"/> <span>Kart · {cardShare}%</span><b>{fm(totalCard)}</b></div><div><i className="credit"/> <span>Veresiye · {creditShare}%</span><b>{fm(creditSales)}</b></div></div></div>
           </article>
           <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>ITEM LEADERBOARD</span><h2>En çok satılanlar</h2></div></div>
             {topItems.length?topItems.map(([name,qty],i)=><div className="lurk-analytics-item" key={name}><span className="rank">{String(i+1).padStart(2,"0")}</span><div><b>{name}</b><div className="lurk-analytics-item-track"><i style={{width:qty/maxItem*100+"%"}}/></div></div><strong>{qty} adet</strong></div>):<div className="lurk-analytics-empty">Ürün bazlı satış verisi bulunamadı.</div>}
