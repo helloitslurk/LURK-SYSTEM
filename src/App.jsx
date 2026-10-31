@@ -855,6 +855,101 @@ export default function App(){
         .lurk-reference-day{position:absolute;right:24px;top:82px;z-index:3;border:0;border-radius:12px;padding:8px 12px;background:#f36b3f;color:white;font-weight:800;cursor:pointer}
         @media(max-width:700px){.lurk-reference-home{padding:18px 3%}.lurk-reference-launcher{gap:8px}.lurk-reference-app{min-height:clamp(175px,34vh,250px);padding:14px 5px;border-radius:17px}.lurk-reference-icon{font-size:clamp(38px,8vw,58px)}.lurk-reference-app b{font-size:clamp(12px,2.5vw,17px)}.lurk-reference-app small{font-size:clamp(9px,1.8vw,12px)}.lurk-reference-controls{gap:8px;padding:8px}.lurk-key{width:23px;height:23px}.lurk-reference-day{top:auto;bottom:18px;right:10px}.lurk-reference-status{display:none}}
         @media(max-height:520px){.lurk-reference-home{padding-top:10px;padding-bottom:10px}.lurk-reference-app{min-height:clamp(155px,38vh,230px)}.lurk-reference-icon{font-size:clamp(42px,6vw,66px);margin-bottom:1px}.lurk-reference-brand img{width:95px}.lurk-reference-controls{padding:5px 9px}}
+        /* Adisyon: reference-matched three-panel workstation */
+        .lurk-pos-workspace {
+          grid-template-columns: clamp(132px,14vw,190px) minmax(0,1fr) clamp(300px,28vw,390px);
+          background: #eee4d6;
+          gap: 0;
+        }
+        .lurk-pos-categories {
+          padding: 20px 11px;
+          background: linear-gradient(180deg,#f8f1e6,#f1e6d7);
+          border-right: 1px solid #e2d3c0;
+        }
+        .lurk-pos-category {
+          min-height: 48px;
+          border-radius: 12px;
+          font-size: 12px;
+        }
+        .lurk-pos-category.is-selected {
+          background: linear-gradient(135deg,#ff7437,#e95420);
+          box-shadow: 0 3px 0 #c9471e,0 7px 15px rgba(201,77,44,.16);
+        }
+        .lurk-pos-catalog {
+          padding: clamp(15px,1.8vw,24px);
+          background: linear-gradient(145deg,#f4ecdf,#eee2d2);
+        }
+        .lurk-pos-catalog-head { margin-bottom: 17px; }
+        .lurk-pos-search { border-radius: 13px; background: #fffaf2; box-shadow: inset 0 1px 2px rgba(70,45,25,.04); }
+        .lurk-pos-product-grid {
+          grid-template-columns: repeat(auto-fill,minmax(142px,1fr));
+          gap: 13px;
+          padding: 2px 5px 16px 2px;
+        }
+        .lurk-pos-product {
+          min-height: 174px;
+          padding: 11px 10px 12px;
+          border-radius: 17px;
+          background: linear-gradient(155deg,#fffaf2,#f1e6d8);
+          box-shadow: 0 3px 0 #dfd0bd,0 8px 18px rgba(69,47,29,.07);
+        }
+        .lurk-pos-product-art {
+          height: 94px;
+          overflow: hidden;
+          border-radius: 12px;
+          background: radial-gradient(circle at 50% 38%,#fffaf0,#ead9c3);
+          font-size: 51px;
+        }
+        .lurk-pos-product-art.has-image { background: #f3e7d7; }
+        .lurk-pos-product-art img { width: 100%; height: 100%; display: block; object-fit: cover; }
+        .lurk-pos-product-name { font-size: 12px; min-height: 30px; }
+        .lurk-pos-product-price { font-size: 13px; color: #c9552d; }
+        .lurk-pos-ticket {
+          background: #fffaf2;
+          border-left: 1px solid #e0d1bf;
+          box-shadow: -8px 0 24px rgba(73,49,28,.055);
+        }
+        .lurk-pos-ticket-head { padding: 20px 18px 15px; }
+        .lurk-pos-ticket-lines { padding: 9px 17px; }
+        .lurk-pos-ticket-line { padding: 13px 2px; }
+        .lurk-pos-ticket-bottom { padding: 15px 17px max(15px,env(safe-area-inset-bottom)); }
+        .lurk-pos-checkout { min-height: 52px; border-radius: 14px; background: linear-gradient(135deg,#ff7135,#e95120); box-shadow: 0 4px 0 #c9471e,0 9px 18px rgba(201,77,44,.17); }
+        @media(max-width:900px) and (min-width:651px) {
+          .lurk-pos-workspace { grid-template-columns: 104px minmax(0,1fr) 276px; }
+          .lurk-pos-product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+        }
+        @media(max-width:650px) and (orientation:portrait) {
+          .lurk-pos-order-screen { height: 100dvh; }
+          .lurk-pos-workspace {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+          }
+          .lurk-pos-categories {
+            flex: 0 0 auto;
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 9px 10px;
+            gap: 7px;
+            border-right: 0;
+            border-bottom: 1px solid #e2d3c0;
+          }
+          .lurk-pos-side-label { display: none; }
+          .lurk-pos-category { flex: 0 0 auto; width: auto; min-height: 42px; padding: 6px 10px; }
+          .lurk-pos-category-icon { width: 27px; height: 27px; flex-basis: 27px; }
+          .lurk-pos-catalog { min-height: 52vh; overflow: visible; padding: 13px 12px; }
+          .lurk-pos-catalog-head { align-items: flex-start; flex-direction: column; gap: 10px; }
+          .lurk-pos-search { width: 100%; }
+          .lurk-pos-product-grid { overflow: visible; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+          .lurk-pos-product { min-height: 150px; }
+          .lurk-pos-product-art { height: 78px; font-size: 43px; }
+          .lurk-pos-ticket { flex: 0 0 auto; min-height: 340px; border-left: 0; border-top: 2px solid #e2d3c0; }
+          .lurk-pos-ticket-lines { max-height: 30vh; }
+          .lurk-pos-ticket-head { padding: 14px 15px 11px; }
+        }
+
         /* LURK POS reference design foundation */
         .lurk-app {
           --lurk-cream: #f5ecdf; --lurk-paper: #fff9ef; --lurk-ink: #241a14;
@@ -1203,7 +1298,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                 const isFlash=flash===item.id;
                 const art=/matcha/i.test(item.name)?"🍵":/latte|cappuccino|flat white|mocha|americano|espresso|filter|cortado/i.test(item.name)?"☕":/çay|cay|tea/i.test(item.name)?"🫖":/sandviç|sandvic/i.test(item.name)?"🥪":/tiramisu|cookie/i.test(item.name)?"🍰":/limon|soda|smoothie|ayran|ice/i.test(item.name)?"🥤":"✳";
                 return <button key={item.id} className={"lurk-pos-product"+(inCart?" is-in-cart":"")+(isFlash?" is-flash":"")} onClick={()=>handleAdd(item)}>
-                  <span className="lurk-pos-product-art">{art}</span>
+                  <span className={"lurk-pos-product-art"+((item.image||item.imageUrl||item.photo)?" has-image":"")}>{(item.image||item.imageUrl||item.photo)?<img src={item.image||item.imageUrl||item.photo} alt={item.name} loading="lazy"/>:art}</span>
                   {inCart>0&&<span className="lurk-pos-product-count">×{inCart}</span>}
                   <span className="lurk-pos-product-name">{item.name}</span>
                   <span className="lurk-pos-product-price">{fm(item.price)}</span>
