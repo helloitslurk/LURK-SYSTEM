@@ -1054,6 +1054,38 @@ export default function App(){
         .lurk-product-image-actions small {font-size:8px;color:#75543b;}
         @media(max-width:600px){.lurk-product-image-upload{align-items:flex-start;}.lurk-product-image-preview{width:72px;height:68px;flex-basis:72px;}}
 
+        /* Reports: game HUD dashboard */
+        .lurk-analytics-screen {background:#211913 !important;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px) !important;background-size:8px 8px !important;color:#2e2015 !important;}
+        .lurk-analytics-header {background:#302219 !important;border-bottom:3px solid #4a2d1b !important;color:#fff0d9 !important;}
+        .lurk-analytics-header h1,.lurk-analytics-header p {color:#fff0d9 !important;}
+        .lurk-analytics-header>button:first-child {background:#f36b2f !important;color:white !important;border:2px solid #160f0b !important;border-radius:5px !important;box-shadow:0 3px 0 #9d401f !important;}
+        .lurk-analytics-export {border:2px solid #160f0b !important;border-radius:5px !important;box-shadow:0 4px 0 #9d401f !important;}
+        .lurk-analytics-period {background:#d9c6ad;border:3px solid #4a2d1b;padding:13px 15px;margin-bottom:16px;box-shadow:4px 4px 0 rgba(0,0,0,.2);}
+        .lurk-analytics-period>div:first-child>span,.lurk-analytics-panel-head span {font-family:"Courier New",monospace !important;color:#98552f !important;letter-spacing:1px;}
+        .lurk-analytics-period>div:first-child>b {color:#2e2015 !important;}
+        .lurk-analytics-range {display:block;margin-top:4px;color:#7d6148;font-size:9px;}
+        .lurk-analytics-period-controls {display:grid;gap:8px;justify-items:end;min-width:0;}
+        .lurk-analytics-tabs {display:flex;gap:5px;}
+        .lurk-analytics-tabs button {padding:9px 14px;border:2px solid #4a2d1b !important;border-radius:4px !important;background:#fff3df;color:#382517;font-size:10px;font-weight:1000;box-shadow:0 3px 0 #b69b7a !important;}
+        .lurk-analytics-tabs button.active {background:#f36b2f !important;color:#fff !important;box-shadow:0 3px 0 #9d401f !important;}
+        .lurk-analytics-months button {border:2px solid #4a2d1b !important;border-radius:4px !important;background:#fff3df !important;color:#382517 !important;box-shadow:0 2px 0 #b69b7a;}
+        .lurk-analytics-months button.active {background:#4cae58 !important;color:#fff !important;border-color:#284d2c !important;}
+        .lurk-analytics-kpis article {border:3px solid #4a2d1b !important;border-radius:6px !important;background:#fff3df !important;box-shadow:4px 4px 0 #b69b7a !important;}
+        .lurk-analytics-kpis article.primary {background:#f9d5bd !important;}
+        .lurk-analytics-kpis article>span {font-family:"Courier New",monospace;color:#805a3d !important;letter-spacing:.8px;}
+        .lurk-analytics-kpis article>b {color:#2e2015 !important;}
+        .lurk-analytics-kpis article.primary>b {color:#c64e25 !important;}
+        .lurk-analytics-panel {background:#fff3df !important;border:3px solid #4a2d1b !important;border-radius:6px !important;box-shadow:5px 5px 0 rgba(0,0,0,.24) !important;}
+        .lurk-analytics-panel-head h2 {color:#2e2015 !important;}
+        .lurk-analytics-bar-track {background:#dfceb7 !important;border:1px solid #4a2d1b;border-radius:2px !important;}
+        .lurk-analytics-bar-track i {background:repeating-linear-gradient(0deg,#ed6330 0 5px,#f58a55 5px 10px) !important;border-radius:0 !important;}
+        .lurk-analytics-donut {border:3px solid #4a2d1b;}
+        .lurk-analytics-donut>div {background:#fff3df !important;}
+        .lurk-analytics-day>button {border-bottom:1px dashed #bca487;}
+        .lurk-analytics-order {background:#ead9c3 !important;border-top:1px dashed #aa8d6d !important;}
+        .lurk-analytics-empty {background:#ead9c3 !important;border:2px dashed #b69b7a;border-radius:4px !important;}
+        @media(max-width:700px){.lurk-analytics-period-controls{width:100%;justify-items:stretch}.lurk-analytics-tabs{width:100%}.lurk-analytics-tabs button{flex:1;padding:9px 5px}.lurk-analytics-period{align-items:stretch}.lurk-analytics-months{max-width:100%}}
+
         /* Home: clean dark pixel stage, no wordmark */
         .lurk-home-screen .lurk-reference-backdrop {
           background-color:#171411 !important;
@@ -1688,6 +1720,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
+  const[period,setPeriod]=useState("month");
   const[exp,setExp]=useState(null);
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
   function exportMonthCsv(){
@@ -1700,10 +1733,20 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   }
   const ms=sel+"-01";
   const me=sel+"-"+String(new Date(parseInt(sel.slice(0,4)),parseInt(sel.slice(5,7)),0).getDate()).padStart(2,"0");
-  const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
-  const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
+  const monthOrders=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
+  const monthLogs=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
+  const today=new Date();today.setHours(0,0,0,0);
+  const rangeStart=new Date(today);
+  if(period==="week")rangeStart.setDate(today.getDate()-6);
+  if(period==="month"){rangeStart.setFullYear(Number(sel.slice(0,4)),Number(sel.slice(5,7))-1,1);}
+  const rangeEnd=period==="month"?new Date(Number(sel.slice(0,4)),Number(sel.slice(5,7)),0):today;
+  const iso=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+  const rangeFrom=iso(rangeStart),rangeTo=iso(rangeEnd);
+  const mo=orders.filter(o=>o.date&&o.date>=rangeFrom&&o.date<=rangeTo);
+  const ml2=logs.filter(l=>l.date&&l.date>=rangeFrom&&l.date<=rangeTo);
+  const periodLedger=creditEntries.filter(e=>(e.date||"").slice(0,10)>=rangeFrom&&(e.date||"").slice(0,10)<=rangeTo);
   const totalInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
-  const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
+  const monthLedger=periodLedger;
   const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="cash").reduce((s,e)=>s+(Number(e.amount)||0),0);
   const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="card").reduce((s,e)=>s+(Number(e.amount)||0),0);
   const outstanding=creditEntries.reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
@@ -1726,7 +1769,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
     <div className="lurk-screen lurk-reports-screen lurk-analytics-screen">
       <header className="lurk-analytics-header"><button onClick={()=>setV("home")}>←</button><div><span>BUSINESS INTELLIGENCE / LURK</span><h1>İşletme analizi</h1><p>Satış performansını tek ekranda takip et.</p></div><button className="lurk-analytics-export" onClick={exportMonthCsv}>↓ CSV dışa aktar</button></header>
       <main className="lurk-analytics-content">
-        <div className="lurk-analytics-period"><div><span>RAPOR DÖNEMİ</span><b>{ml(sel)}</b></div><div className="lurk-analytics-months">{(months.length?months:[now]).map(m=><button key={m} className={sel===m?"active":""} onClick={()=>setSel(m)}>{ml(m)}</button>)}</div></div>
+        <div className="lurk-analytics-period"><div><span>RAPOR DÖNEMİ</span><b>{period==="day"?"Bugün":period==="week"?"Son 7 gün":ml(sel)}</b><small className="lurk-analytics-range">{new Date(rangeFrom+"T12:00:00").toLocaleDateString("tr-TR")} – {new Date(rangeTo+"T12:00:00").toLocaleDateString("tr-TR")}</small></div><div className="lurk-analytics-period-controls"><div className="lurk-analytics-tabs">{[{id:"day",label:"Günlük"},{id:"week",label:"Haftalık"},{id:"month",label:"Aylık"}].map(t=><button key={t.id} className={period===t.id?"active":""} onClick={()=>setPeriod(t.id)}>{t.label}</button>)}</div>{period==="month"&&<div className="lurk-analytics-months">{(months.length?months:[now]).map(m=><button key={m} className={sel===m?"active":""} onClick={()=>setSel(m)}>{ml(m)}</button>)}</div>}</div></div>
         <section className="lurk-analytics-kpis">
           <article className="primary"><span>TOPLAM SATIŞ</span><b>{fm(totalInc)}</b><small>{orderCount} tamamlanan adisyon</small><i>↗</i></article>
           <article><span>ORTALAMA FİŞ</span><b>{fm(avgTicket)}</b><small>Adisyon başına satış</small></article>
@@ -1735,16 +1778,16 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
           <article><span>AÇIK VERESİYE</span><b>{fm(Math.max(0,outstanding))}</b><small>{creditSales?fm(creditSales)+" veresiye satış": "Açık satış kaydı yok"}</small></article>
         </section>
         <section className="lurk-analytics-panels">
-          <article className="lurk-analytics-panel lurk-analytics-chart"><div className="lurk-analytics-panel-head"><div><span>GÜNLÜK PERFORMANS</span><h2>Satış hareketi</h2></div><small>{days.length} kayıtlı gün</small></div>
+          <article className="lurk-analytics-panel lurk-analytics-chart"><div className="lurk-analytics-panel-head"><div><span>PIXEL SALES / PERFORMANCE</span><h2>Satış hareketi</h2></div><small>{days.length} kayıtlı gün</small></div>
             {days.length?<div className="lurk-analytics-bars">{days.slice().reverse().map(d=><div className="lurk-analytics-bar-col" key={d.date}><div className="lurk-analytics-bar-value">{fm(d.inc)}</div><div className="lurk-analytics-bar-track"><i style={{height:Math.max(3,(Number(d.inc)||0)/maxDay*100)+"%"}}/></div><small>{new Date(d.date+"T12:00:00").toLocaleDateString("tr-TR",{day:"2-digit",month:"short"})}</small></div>)}</div>:<div className="lurk-analytics-empty">Bu dönem için satış kaydı yok.</div>}
           </article>
-          <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>ÖDEME DAĞILIMI</span><h2>Tahsilat kanalları</h2></div></div>
+          <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>PAYMENT STATS / HUD</span><h2>Tahsilat kanalları</h2></div></div>
             <div className="lurk-analytics-payment"><div className="lurk-analytics-donut" style={{background:"conic-gradient(#F36B3F 0 "+cashShare+"%,#D9C9B6 "+cashShare+"% 100%)"}}><div><b>{cashShare+cardShare?cashShare+"%": "0%"}</b><small>nakit payı</small></div></div><div className="lurk-analytics-legend"><div><i className="cash"/> <span>Nakit</span><b>{fm(totalCash)}</b></div><div><i className="card"/> <span>Kart</span><b>{fm(totalCard)}</b></div></div></div>
           </article>
-          <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>ÜRÜN PERFORMANSI</span><h2>En çok satılanlar</h2></div></div>
+          <article className="lurk-analytics-panel"><div className="lurk-analytics-panel-head"><div><span>ITEM LEADERBOARD</span><h2>En çok satılanlar</h2></div></div>
             {topItems.length?topItems.map(([name,qty],i)=><div className="lurk-analytics-item" key={name}><span className="rank">{String(i+1).padStart(2,"0")}</span><div><b>{name}</b><div className="lurk-analytics-item-track"><i style={{width:qty/maxItem*100+"%"}}/></div></div><strong>{qty} adet</strong></div>):<div className="lurk-analytics-empty">Ürün bazlı satış verisi bulunamadı.</div>}
           </article>
-          <article className="lurk-analytics-panel lurk-analytics-days"><div className="lurk-analytics-panel-head"><div><span>GÜN GÜN KAYIT</span><h2>İşlem geçmişi</h2></div></div>
+          <article className="lurk-analytics-panel lurk-analytics-days"><div className="lurk-analytics-panel-head"><div><span>QUEST LOG / TRANSACTIONS</span><h2>İşlem geçmişi</h2></div></div>
             {days.map(day=>{const isExp=exp===day.date;const log=day.log;return <div className="lurk-analytics-day" key={day.date}><button onClick={()=>setExp(isExp?null:day.date)}><span><b>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</b><small>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</small></span><strong>{fm(day.inc)}</strong><i>{isExp?"−":"＋"}</i></button>{isExp&&day.orders.filter(o=>!o.partialPayment).map((o,i)=><div className="lurk-analytics-order" key={i}><span>{o.g||"Misafir"} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}</div>})}
             {!days.length&&<div className="lurk-analytics-empty">Bu ay kayıt yok.</div>}
           </article>
