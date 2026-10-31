@@ -855,6 +855,98 @@ export default function App(){
         .lurk-reference-day{position:absolute;right:24px;top:82px;z-index:3;border:0;border-radius:12px;padding:8px 12px;background:#f36b3f;color:white;font-weight:800;cursor:pointer}
         @media(max-width:700px){.lurk-reference-home{padding:18px 3%}.lurk-reference-launcher{gap:8px}.lurk-reference-app{min-height:clamp(175px,34vh,250px);padding:14px 5px;border-radius:17px}.lurk-reference-icon{font-size:clamp(38px,8vw,58px)}.lurk-reference-app b{font-size:clamp(12px,2.5vw,17px)}.lurk-reference-app small{font-size:clamp(9px,1.8vw,12px)}.lurk-reference-controls{gap:8px;padding:8px}.lurk-key{width:23px;height:23px}.lurk-reference-day{top:auto;bottom:18px;right:10px}.lurk-reference-status{display:none}}
         @media(max-height:520px){.lurk-reference-home{padding-top:10px;padding-bottom:10px}.lurk-reference-app{min-height:clamp(155px,38vh,230px)}.lurk-reference-icon{font-size:clamp(42px,6vw,66px);margin-bottom:1px}.lurk-reference-brand img{width:95px}.lurk-reference-controls{padding:5px 9px}}
+        /* Masa Düzeni: illustrated table cards from the LURK reference */
+        .lurk-tables-screen {
+          background: radial-gradient(ellipse at 85% 5%,rgba(239,194,148,.2),transparent 32%),#f2e9dc !important;
+        }
+        .lurk-floor-topbar {
+          padding: 18px clamp(18px,3vw,42px);
+          background: rgba(255,250,242,.96);
+          box-shadow: 0 4px 18px rgba(76,51,29,.045);
+        }
+        .lurk-floor-heading>div { font-size: clamp(23px,2.2vw,30px) !important; }
+        .lurk-floor-topbar>button {
+          min-height: 42px;
+          padding: 10px 17px !important;
+          border-radius: 12px !important;
+          font-size: 12px !important;
+        }
+        .lurk-floor-content { max-width: 1540px; margin: 0 auto; }
+        .lurk-floor-overview { gap: 14px; margin-bottom: 30px; }
+        .lurk-floor-stat,.lurk-floor-total {
+          min-height: 88px;
+          border-radius: 18px;
+          background: linear-gradient(150deg,#fffaf2,#f6ecdf);
+          box-shadow: 0 4px 0 #e6d9c8,0 9px 20px rgba(73,50,29,.045);
+        }
+        .lurk-floor-section-head { margin-bottom: 17px; }
+        .lurk-floor-section-head>div span { letter-spacing: 1.5px; }
+        .lurk-floor-section-head>div b { font-size: 22px; }
+        .lurk-floor-grid { grid-template-columns: repeat(auto-fill,minmax(205px,1fr)); gap: 18px; }
+        .lurk-floor-table {
+          min-height: 198px;
+          padding: 17px;
+          border-radius: 20px;
+          border: 1px solid #e4d5c2;
+          background: linear-gradient(155deg,#fffaf2,#f2e7d8);
+          box-shadow: 0 5px 0 #e2d4c2,0 12px 23px rgba(83,60,38,.07);
+        }
+        .lurk-floor-table.is-occupied {
+          background: linear-gradient(145deg,#fff0e5,#f9dfd0);
+          border-color: #efc4ad;
+        }
+        .lurk-floor-table.is-free {
+          background: linear-gradient(145deg,#f8f1e5,#eee3d2);
+        }
+        .lurk-floor-table-head { align-items: center; }
+        .lurk-floor-chair {
+          width: 58px;
+          height: 58px;
+          flex-basis: 58px;
+          border-radius: 17px;
+          background: linear-gradient(145deg,#fffaf2,#ead9c4);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.9),0 3px 0 rgba(130,91,56,.1);
+          font-size: 31px;
+        }
+        .lurk-floor-table-name b { font-size: 16px; }
+        .lurk-floor-table-name small { font-size: 11px; }
+        .lurk-floor-table-status {
+          min-height: 34px;
+          padding: 0 4px;
+          font-size: 14px;
+        }
+        .lurk-floor-table-action {
+          min-height: 43px;
+          border-radius: 12px;
+          font-size: 12px;
+          transition: transform .14s,box-shadow .14s,filter .14s;
+        }
+        .lurk-floor-table-action:hover { filter: brightness(1.035); transform: translateY(-1px); }
+        .lurk-floor-table-head>button {
+          width: 29px;
+          height: 29px;
+          display: grid;
+          place-items: center;
+          border-radius: 9px !important;
+          font-size: 18px !important;
+        }
+        @media(max-width:850px) {
+          .lurk-floor-grid { grid-template-columns: repeat(auto-fill,minmax(175px,1fr)); gap: 12px; }
+        }
+        @media(max-width:560px) {
+          .lurk-floor-topbar { padding: 14px 13px; gap: 8px; }
+          .lurk-floor-topbar>button { flex: 1; }
+          .lurk-floor-content { padding: 13px; }
+          .lurk-floor-overview { grid-template-columns: repeat(2,minmax(0,1fr)); }
+          .lurk-floor-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+          .lurk-floor-table { min-height: 168px; padding: 11px; border-radius: 16px; }
+          .lurk-floor-chair { width: 39px; height: 39px; flex-basis: 39px; font-size: 22px; border-radius: 12px; }
+          .lurk-floor-table-name { gap: 8px; }
+          .lurk-floor-table-name b { font-size: 13px; }
+          .lurk-floor-table-name small { max-width: 90px; font-size: 9px; }
+          .lurk-floor-table-action { min-height: 38px; padding: 8px 6px; font-size: 10px; }
+        }
+
         /* Adisyon: reference-matched three-panel workstation */
         .lurk-pos-workspace {
           grid-template-columns: clamp(132px,14vw,190px) minmax(0,1fr) clamp(300px,28vw,390px);
@@ -1132,7 +1224,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
               <div key={t.id} className={"lurk-floor-table"+(isOpen?" is-occupied":" is-free")}>
                 
                 <div className="lurk-floor-table-head">
-                  <div className="lurk-floor-table-name"><span className="lurk-floor-chair">▧</span><div><b>{t.lbl}</b><small>{t.g||"Misafir bekliyor"}</small></div></div>
+                  <div className="lurk-floor-table-name"><span className="lurk-floor-chair" aria-hidden="true">🪑</span><div><b>{t.lbl}</b><small>{t.g||"Misafir bekliyor"}</small></div></div>
                   <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
                 </div>
                 
