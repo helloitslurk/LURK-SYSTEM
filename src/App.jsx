@@ -1042,6 +1042,59 @@ export default function App(){
           .lurk-pos-ticket-head { padding: 14px 15px 11px; }
         }
 
+        /* Home: clean dark pixel stage, no wordmark */
+        .lurk-home-screen .lurk-reference-backdrop {
+          background-color:#171411 !important;
+          background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) !important;
+          background-size:8px 8px !important;
+        }
+        .lurk-home-screen .lurk-reference-backdrop:before {display:none !important;}
+        .lurk-home-screen .lurk-reference-top {justify-content:flex-end !important;}
+        .lurk-home-screen .lurk-reference-brand {display:none !important;}
+        .lurk-home-screen .lurk-reference-user {background:#fff3df !important;color:#24170f !important;border:2px solid #4a2d1b;box-shadow:3px 3px 0 #090807;border-radius:5px !important;}
+        /* Product management: category rail, pixel product grid, live detail inspector */
+        .lurk-catalog-screen {background:#211913 !important;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px) !important;background-size:8px 8px !important;}
+        .lurk-catalog-topbar {background:#2c2119 !important;border-bottom:3px solid #4a2d1b !important;color:#fff1dc !important;}
+        .lurk-catalog-heading h1,.lurk-catalog-heading p,.lurk-catalog-heading span {color:#fff1dc !important;}
+        .lurk-catalog-back,.lurk-catalog-add {border:2px solid #160f0b !important;border-radius:5px !important;box-shadow:0 4px 0 #120c08 !important;}
+        .lurk-catalog-workspace {grid-template-columns:190px minmax(0,1fr) 245px !important;background:#e9ddcb;min-height:calc(100vh - 90px);}
+        .lurk-catalog-sidebar {background:#d8c6ae !important;border-right:3px solid #4a2d1b !important;}
+        .lurk-catalog-category {border:2px solid transparent !important;border-radius:5px !important;color:#392719 !important;}
+        .lurk-catalog-category.active {background:#f36b2f !important;color:#fff5e5 !important;border:2px solid #4a2d1b !important;box-shadow:3px 3px 0 #9d401f !important;}
+        .lurk-catalog-main {background:#eee3d2 !important;}
+        .lurk-catalog-toolbar h2,.lurk-catalog-toolbar p,.lurk-catalog-eyebrow {color:#332316 !important;}
+        .lurk-catalog-search {border:2px solid #4a2d1b !important;border-radius:5px !important;background:#fff5e5 !important;}
+        .lurk-catalog-product {border:3px solid #4a2d1b !important;border-radius:6px !important;background:#fff3df !important;box-shadow:4px 4px 0 #b69b7a !important;cursor:pointer;transition:transform .08s steps(2,end),box-shadow .08s steps(2,end);}
+        .lurk-catalog-product:active {transform:translate(2px,2px);box-shadow:2px 2px 0 #b69b7a !important;}
+        .lurk-catalog-product.is-selected {outline:3px solid #4cae58 !important;outline-offset:-6px;box-shadow:4px 4px 0 #9e815e,0 0 0 2px #f4c842 !important;}
+        .lurk-catalog-product-art {background-color:#e3d0b6 !important;border-bottom:2px solid #4a2d1b;}
+        .lurk-catalog-product-art:after {border-radius:0 !important;opacity:.3;}
+        .lurk-catalog-product-title h3,.lurk-catalog-product-bottom strong {color:#2e2015 !important;}
+        .lurk-catalog-product-bottom button,.lurk-catalog-toggle {border-radius:4px !important;border:2px solid #4a2d1b !important;}
+        .lurk-catalog-inspector {padding:20px 15px;background:#d8c6ae;border-left:3px solid #4a2d1b;color:#2e2015;min-width:0;}
+        .lurk-catalog-inspector-kicker {font:900 8px "Courier New",monospace;letter-spacing:1px;color:#8b5a35;}
+        .lurk-catalog-inspector-title {font-size:16px;font-weight:1000;margin:10px 0 16px;}
+        .lurk-catalog-inspector-art {height:145px;border:3px solid #4a2d1b;background:#f2e3ce;display:grid;place-items:center;overflow:hidden;box-shadow:4px 4px 0 #b69b7a;}
+        .lurk-catalog-inspector-art img {width:100%;height:100%;object-fit:cover;}
+        .lurk-catalog-inspector-art span {font-size:58px;filter:drop-shadow(3px 3px 0 rgba(40,22,10,.2));}
+        .lurk-catalog-inspector-name {font-size:18px;font-weight:1000;margin-top:17px;overflow-wrap:anywhere;}
+        .lurk-catalog-inspector-meta {font-size:9px;font-weight:900;letter-spacing:.7px;margin-top:6px;color:#8b5a35;}
+        .lurk-catalog-inspector-price {font-size:28px;font-weight:1000;margin:17px 0;color:#c74e25;}
+        .lurk-catalog-inspector-edit {width:100%;padding:13px 8px;background:#f36b2f;color:#fff5e5;border:2px solid #4a2d1b;border-radius:5px;font-size:10px;font-weight:1000;box-shadow:0 4px 0 #9d401f;}
+        .lurk-catalog-inspector-tip {margin-top:22px;padding:12px;background:#c9b393;border:2px solid #4a2d1b;display:grid;gap:7px;}
+        .lurk-catalog-inspector-tip b {font-size:9px;color:#744528;}
+        .lurk-catalog-inspector-tip span,.lurk-catalog-inspector-empty {font-size:10px;line-height:1.6;}
+        @media(max-width:1000px) {.lurk-catalog-workspace{grid-template-columns:155px minmax(0,1fr) 205px !important;}.lurk-catalog-inspector{padding:14px 10px;}}
+        @media(max-width:800px) {
+          .lurk-catalog-workspace {grid-template-columns:1fr !important;}
+          .lurk-catalog-inspector {border-left:0;border-top:3px solid #4a2d1b;display:grid;grid-template-columns:100px 1fr;column-gap:13px;align-items:start;}
+          .lurk-catalog-inspector-kicker,.lurk-catalog-inspector-title,.lurk-catalog-inspector-tip {grid-column:1/-1;}
+          .lurk-catalog-inspector-art {grid-row:3/7;height:100px;}
+          .lurk-catalog-inspector-name {margin-top:0;}
+          .lurk-catalog-inspector-price {margin:7px 0;}
+          .lurk-catalog-inspector-edit {grid-column:2;}
+        }
+
         /* LURK GAME UI SYSTEM: pixel-console identity across every screen */
         .lurk-app {
           --game-ink:#24170f;--game-panel:#fff3df;--game-panel-shadow:#d4b995;
@@ -1190,9 +1243,9 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
     {k:"settings",label:"Ayarlar",sub:"Sistem ayarları",icon:"⚙️"}
   ];
   return <main className="lurk-screen lurk-home-screen lurk-reference-home">
-    <div className="lurk-reference-backdrop" aria-hidden="true"><span className="lurk-reference-plant">✳</span></div>
+    <div className="lurk-reference-backdrop" aria-hidden="true"/>
     <header className="lurk-reference-top">
-      <div className="lurk-reference-brand"><img src="/lurk-logo.svg" alt="LURK"/><b>POS</b></div>
+      <div className="lurk-reference-brand" aria-hidden="true"/>
       <div className="lurk-reference-user"><span className="lurk-reference-wifi">◉</span><span className="lurk-reference-avatar">👨🏻‍🍳</span><b>Kasiyer</b><span>⌄</span></div>
     </header>
     <section className="lurk-reference-launcher" aria-label="Ana menü">
@@ -1828,6 +1881,8 @@ function MenuScreen({menu,setMenu,setV}){
   const[newCat,setNewCat]=useState("Kahve");
   const[addError,setAddError]=useState("");
   const[activeCat,setActiveCat]=useState("Tümü");
+  const[selectedProductId,setSelectedProductId]=useState(menu[0]?.id??null);
+  const selectedProduct=menu.find(m=>m.id===selectedProductId)||visibleItems[0]||menu[0]||null;
   const[search,setSearch]=useState("");
   const cats=[...new Set(menu.map(m=>m.cat))];
   const enabledCount=menu.filter(m=>m.on).length;
@@ -1857,7 +1912,7 @@ function MenuScreen({menu,setMenu,setV}){
         <main className="lurk-catalog-main">
           <div className="lurk-catalog-toolbar"><div><span className="lurk-catalog-eyebrow">ÜRÜN ENVANTERİ</span><h2>{activeCat==="Tümü"?"Tüm ürünler":activeCat}</h2><p>{visibleItems.length} ürün görüntüleniyor</p></div><label className="lurk-catalog-search"><span>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara..."/></label></div>
           <div className="lurk-catalog-grid">
-            {visibleItems.map(item=><article className={"lurk-catalog-product"+(!item.on?" is-off":"")} key={item.id}>
+            {visibleItems.map(item=><article className={"lurk-catalog-product"+(!item.on?" is-off":"")+(selectedProduct?.id===item.id?" is-selected":"")} key={item.id} onClick={()=>setSelectedProductId(item.id)}>
               <div className={"lurk-catalog-product-art cat-"+(item.cat||"").toLocaleLowerCase("tr").replace(/[^a-z0-9]+/g,"-")}><span>{item.cat?.toLocaleLowerCase("tr").includes("matcha")?"🍵":item.cat?.toLocaleLowerCase("tr").includes("kahve")?"☕":item.cat?.toLocaleLowerCase("tr").includes("tatlı")?"🍰":"✳"}</span><small>{item.cat}</small></div>
               <div className="lurk-catalog-product-body"><div className="lurk-catalog-product-title"><h3>{item.name}</h3><span className={"lurk-catalog-state"+(item.on?" on":"")}>{item.on?"AKTİF":"PASİF"}</span></div><div className="lurk-catalog-product-bottom"><strong>{fm(item.price)}</strong><button onClick={()=>openEdit(item)}>Düzenle <span>↗</span></button></div>
               <button className={"lurk-catalog-toggle"+(item.on?" on":"")} onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))}><i/>{item.on?"Satışta":"Satış dışı"}</button></div>
@@ -1865,6 +1920,18 @@ function MenuScreen({menu,setMenu,setV}){
             {!visibleItems.length&&<div className="lurk-catalog-empty"><span>⌕</span><b>Ürün bulunamadı</b><p>Arama kelimesini veya kategori seçimini değiştir.</p></div>}
           </div>
         </main>
+        <aside className="lurk-catalog-inspector">
+          <div className="lurk-catalog-inspector-kicker">PLAYER INVENTORY / 03</div>
+          <div className="lurk-catalog-inspector-title">ÜRÜN KONTROLÜ</div>
+          {selectedProduct?<>
+            <div className="lurk-catalog-inspector-art">{selectedProduct.image||selectedProduct.imageUrl||selectedProduct.photo?<img src={selectedProduct.image||selectedProduct.imageUrl||selectedProduct.photo} alt={selectedProduct.name}/>:<span>{selectedProduct.cat?.toLocaleLowerCase("tr").includes("matcha")?"🍵":selectedProduct.cat?.toLocaleLowerCase("tr").includes("kahve")?"☕":selectedProduct.cat?.toLocaleLowerCase("tr").includes("tatlı")?"🍰":"✳"}</span>}</div>
+            <div className="lurk-catalog-inspector-name">{selectedProduct.name}</div>
+            <div className="lurk-catalog-inspector-meta">{selectedProduct.cat} · {selectedProduct.on?"SATIŞTA":"PASİF"}</div>
+            <div className="lurk-catalog-inspector-price">{fm(selectedProduct.price)}</div>
+            <button className="lurk-catalog-inspector-edit" onClick={()=>openEdit(selectedProduct)}>✎ ÜRÜNÜ DÜZENLE</button>
+          </>:<div className="lurk-catalog-inspector-empty">Katalogdan bir ürün seç.</div>}
+          <div className="lurk-catalog-inspector-tip"><b>CONTROL TIP</b><span>Bir ürünü seçerek detaylarını görüntüle. Düzenle butonuyla fiyat ve ürün bilgilerini güncelle.</span></div>
+        </aside>
       </div>
       {(editingItem||showAdd)&&(
         <Modal>
