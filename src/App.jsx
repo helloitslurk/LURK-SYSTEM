@@ -1230,14 +1230,10 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
       </div>
       <div style={{padding:14}}>
         <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:14}}>
-          <div style={{flex:1,minWidth:0,background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:16,padding:"15px 14px"}}>
+        <div style={{marginBottom:14}}>
+          <div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:16,padding:"15px 14px"}}>
             <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
             <div style={{fontSize:26,fontWeight:850,color:T.text,marginTop:5}}>{customers.length}</div>
-          </div>
-          <div style={{flex:1,minWidth:0,background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.09)",borderRadius:15,padding:"14px 15px"}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Toplam harcama</div>
-            <div style={{fontSize:16,fontWeight:850,color:T.accentL,marginTop:5}}>{fm(customers.reduce((sum,c)=>sum+totalFor(c),0))}</div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
