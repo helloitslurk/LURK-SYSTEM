@@ -1242,16 +1242,19 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
             {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
           </select>
         </div>
-        <div className="lurk-customer-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,minmax(0,1fr))",gap:8}}>
-        {filtered.map(c=><div key={c.id} style={{background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.085)",borderRadius:11,padding:"9px 8px",minWidth:0,minHeight:112,display:"flex",flexDirection:"column",alignItems:"stretch",gap:5,boxShadow:"0 4px 14px rgba(0,0,0,.12)"}}>
-          <button onClick={()=>setDetail(c)} aria-label={c.name+" detayları"} style={{width:30,height:30,borderRadius:10,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,rgba(52,199,89,.23),rgba(52,199,89,.08))",color:T.accentL,fontSize:12,fontWeight:850,border:"1px solid rgba(52,199,89,.22)"}}>{filtered.indexOf(c)+1}</button>
-          <button onClick={()=>setDetail(c)} style={{minWidth:0,textAlign:"left",background:"transparent",border:0,color:T.text,cursor:"pointer",padding:0}}>
-            <div style={{fontWeight:800,fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
-            <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{orderCountFor(c)} sipariş</div>
-            <div style={{fontSize:9,color:T.accentL,marginTop:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fm(monthlyTotalFor(c))} · bu ay</div>
-          </button>
-          <button onClick={()=>openEdit(c)} style={{marginTop:"auto",background:"transparent",color:T.textSub,border:"1px solid rgba(255,255,255,.1)",borderRadius:6,padding:"3px 4px",fontSize:9,cursor:"pointer"}}>Düzenle</button>
-        </div>)}
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {filtered.map((c,index)=><button key={c.id} onClick={()=>setDetail(c)} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"12px",textAlign:"left",background:"linear-gradient(110deg,rgba(255,255,255,.055),rgba(255,255,255,.025))",border:"1px solid rgba(255,255,255,.08)",borderRadius:14,color:T.text,cursor:"pointer",minWidth:0}}>
+          <div style={{width:42,height:42,flexShrink:0,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(52,199,89,.12)",border:"1px solid rgba(52,199,89,.2)",color:T.accentL,fontSize:16,fontWeight:850}}>{(c.name||"?").trim().charAt(0).toLocaleUpperCase("tr-TR")}</div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:800,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
+            <div style={{fontSize:10,color:T.textSub,marginTop:4}}>{orderCountFor(c)} sipariş <span style={{padding:"0 4px",color:T.textDim}}>·</span> Sıra {index+1}</div>
+          </div>
+          <div style={{textAlign:"right",flexShrink:0}}>
+            <div style={{fontSize:12,fontWeight:800,color:T.accentL}}>{fm(monthlyTotalFor(c))}</div>
+            <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{monthLabel(selectedMonth)}</div>
+          </div>
+          <div style={{fontSize:20,color:T.textDim,marginLeft:2}}>›</div>
+        </button>)}
         </div>
         {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(255,255,255,.035)",border:"1px dashed rgba(255,255,255,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
       </div>
@@ -1358,6 +1361,18 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
   const [importMsg,setImportMsg]=useState("");
   const [pendingImport,setPendingImport]=useState(null);
   const [importBusy,setImportBusy]=useState(false);
+  const [customerEditing,setCustomerEditing]=useState(null);
+  const [customerName,setCustomerName]=useState("");
+  const [customerError,setCustomerError]=useState("");
+  function openCustomerEdit(customer){setCustomerEditing(customer);setCustomerName(customer.name||"");setCustomerError("");}
+  function saveCustomerEdit(){
+    const clean=customerName.trim();
+    if(!clean){setCustomerError("Müşteri adı zorunlu.");return;}
+    const duplicate=customers.find(c=>c.id!==customerEditing?.id&&c.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));
+    if(duplicate){setCustomerError("Bu isimde başka bir müşteri zaten kayıtlı.");return;}
+    setCustomers(prev=>prev.map(c=>c.id===customerEditing.id?{...c,name:clean,updatedAt:new Date().toISOString()}:c));
+    setCustomerEditing(null);setCustomerError("");
+  }
   function inspectBackup(file){
     setImportMsg("");setPendingImport(null);
     if(!file)return;
@@ -1401,6 +1416,15 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
           <div><div style={{fontSize:14,fontWeight:700}}>Menü</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div></div>
           <div style={{marginLeft:"auto",fontSize:18,color:T.textDim}}>›</div>
         </button>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Müşteri yönetimi</div>
+        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:14,marginBottom:18}}>
+          <div style={{fontSize:13,color:T.textSub,marginBottom:10}}>{customers.length} kayıtlı müşteri · Bilgilerini buradan düzenleyebilirsin.</div>
+          {customers.length===0?<div style={{fontSize:12,color:T.textDim,padding:"8px 0"}}>Henüz kayıtlı müşteri yok.</div>:customers.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(customer=><div key={customer.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderTop:"1px solid rgba(255,255,255,.06)"}}>
+            <div style={{width:32,height:32,borderRadius:10,background:"rgba(52,199,89,.12)",color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:13,flexShrink:0}}>{(customer.name||"?").trim().charAt(0).toLocaleUpperCase("tr-TR")}</div>
+            <div style={{flex:1,minWidth:0,fontSize:13,fontWeight:700,color:T.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{customer.name}</div>
+            <button onClick={()=>openCustomerEdit(customer)} style={{padding:"7px 11px",background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Düzenle</button>
+          </div>)}
+        </div>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Veri güvenliği</div>
         <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:15}}>
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Veri yedeği</div>
@@ -1423,6 +1447,14 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
           <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Önce mevcut verilerin yedeğini indir. Yedek hassas müşteri ve satış bilgileri içerebilir.</div>
         </div>
       </div>
+      {customerEditing&&<Modal>
+        <div style={{fontSize:17,fontWeight:800,color:T.text,marginBottom:14}}>Müşteriyi Düzenle</div>
+        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad</label>
+        <input autoFocus value={customerName} onChange={e=>{setCustomerName(e.target.value);setCustomerError("");}} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,boxSizing:"border-box"}}/>
+        {customerError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{customerError}</div>}
+        <button onClick={saveCustomerEdit} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
+        <button onClick={()=>setCustomerEditing(null)} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+      </Modal>}
     </div>
   );
 }
