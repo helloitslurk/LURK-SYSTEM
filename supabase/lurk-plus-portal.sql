@@ -10,7 +10,7 @@ create table if not exists public.lurk_plus_admin_config (
 );
 
 insert into public.lurk_plus_admin_config(singleton, secret_hash)
-values (true, crypt('REPLACE_WITH_A_LONG_RANDOM_ADMIN_SECRET', gen_salt('bf', 12)))
+values (true, crypt('LurkPlus_2026!MaviKedi#92_Bulut', gen_salt('bf', 12)))
 on conflict (singleton) do update set secret_hash = excluded.secret_hash;
 
 create table if not exists public.lurk_plus_links (
