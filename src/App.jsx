@@ -171,8 +171,7 @@ function POSLogin({onLogin}){
     finally{setBusy(false);}
   }
   return <div style={{minHeight:"100vh",background:"#090B0A",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",color:"#F5F5F5",position:"relative"}}>
-    <img src="/lurk-logo.svg" alt="LURK." style={{position:"absolute",top:28,left:28,width:220,maxWidth:"42vw",height:"auto"}} />
-    <form onSubmit={submit} style={{width:"100%",maxWidth:340,background:"#151916",border:"1px solid rgba(255,255,255,.1)",borderRadius:20,padding:26,boxSizing:"border-box",textAlign:"center"}}>
+        <form onSubmit={submit} style={{width:"100%",maxWidth:340,background:"#151916",border:"1px solid rgba(255,255,255,.1)",borderRadius:20,padding:26,boxSizing:"border-box",textAlign:"center"}}>
       <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:230,maxWidth:"72vw",height:"auto",margin:"0 auto 18px"}} />
       <div style={{fontSize:11,letterSpacing:3,color:"#34C759",marginTop:0,marginBottom:28}}>POS SYSTEM</div>
       <div style={{fontSize:14,color:"#A0A0A0",marginBottom:12}}>Devam etmek için PIN kodunu gir.</div>
