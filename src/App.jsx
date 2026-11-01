@@ -1177,7 +1177,16 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const ledgerSubmittingRef=useRef(false);
   const currentMonth=thisMonth();
   const [selectedMonth,setSelectedMonth]=useState(currentMonth);
-  const availableMonths=[...new Set([currentMonth,...orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\\d{4}-\\d{2}$/.test(m))])].sort((a,b)=>b.localeCompare(a));
+  const orderMonths=orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\\d{4}-\\d{2}$/.test(m)&&m<=currentMonth);
+  const firstMonth=orderMonths.length?orderMonths.reduce((earliest,m)=>m<earliest?m:earliest,currentMonth):currentMonth;
+  const availableMonths=[];
+  for(let cursor=firstMonth;cursor<=currentMonth;){
+    availableMonths.push(cursor);
+    const [year,month]=cursor.split("-").map(Number);
+    const next=new Date(year,month,1);
+    cursor=next.getFullYear()+"-"+String(next.getMonth()+1).padStart(2,"0");
+  }
+  availableMonths.reverse();
   const monthLabel=(month)=>{const [year,mm]=month.split("-").map(Number);return new Date(year,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
   const matchesCustomer=(o,c)=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"));
   const customerOrders=(c)=>orders.filter(o=>matchesCustomer(o,c));
