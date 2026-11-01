@@ -11,7 +11,7 @@ create table if not exists public.lurk_plus_admin_config (
 
 insert into public.lurk_plus_admin_config(singleton, secret_hash)
 values (true, crypt('REPLACE_WITH_A_LONG_RANDOM_ADMIN_SECRET', gen_salt('bf', 12)))
-on conflict (singleton) do nothing;
+on conflict (singleton) do update set secret_hash = excluded.secret_hash;
 
 create table if not exists public.lurk_plus_links (
   id bigint generated always as identity primary key,
@@ -141,7 +141,9 @@ begin
 
   return jsonb_build_object(
     'name', member_row->>'name',
+    'membershipType', coalesce(member_row->>'membershipType', 'balance'),
     'balance', coalesce(member_row->'balance', '0'::jsonb),
+    'coffeeCredits', coalesce(member_row->'coffeeCredits', '0'::jsonb),
     'history', coalesce(member_row->'history', '[]'::jsonb),
     'updatedAt', member_row->>'updatedAt'
   );
