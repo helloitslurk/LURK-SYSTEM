@@ -10,7 +10,7 @@ create table if not exists public.lurk_pos_auth_config (
 );
 
 insert into public.lurk_pos_auth_config(singleton, pin_hash)
-values (true, crypt('REPLACE_WITH_YOUR_PRIVATE_PIN', gen_salt('bf', 12)))
+values (true, crypt('94580407', gen_salt('bf', 12)))
 on conflict (singleton) do nothing;
 
 create table if not exists public.lurk_pos_sessions (
