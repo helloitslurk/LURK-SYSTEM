@@ -96,7 +96,7 @@ begin
     raise exception 'Geçersiz veri anahtarı';
   end if;
   insert into public.app_storage(key, value, updated_at)
-  values (p_key, p_value, now())
+  values (p_key, to_jsonb(p_value::text), now())
   on conflict (key) do update set value = excluded.value, updated_at = now();
   return true;
 end;
