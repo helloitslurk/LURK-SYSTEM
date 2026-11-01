@@ -65,7 +65,7 @@ begin
   end if;
 
   select item into member_row
-  from jsonb_array_elements(members) item
+  from jsonb_array_elements(members) as e(item)
   where item->>'id' = p_member_id
   limit 1;
 
@@ -131,7 +131,7 @@ begin
 
   select value::jsonb into members from public.app_storage where key = 'lurk_plus_members';
   select item into member_row
-  from jsonb_array_elements(coalesce(members, '[]'::jsonb)) item
+  from jsonb_array_elements(coalesce(members, '[]'::jsonb)) as e(item)
   where item->>'id' = linked_member_id
   limit 1;
 
