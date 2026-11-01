@@ -59,7 +59,7 @@ begin
     raise exception 'Geçersiz bağlantı anahtarı';
   end if;
 
-  select value::jsonb into members from public.app_storage where key = 'lurk_plus_members';
+  select (value::jsonb #>> '{}')::jsonb into members from public.app_storage where key = 'lurk_plus_members';
   if jsonb_typeof(members) <> 'array' then
     raise exception 'LURK+ üye verisi bulunamadı';
   end if;
@@ -129,7 +129,7 @@ begin
     return null;
   end if;
 
-  select value::jsonb into members from public.app_storage where key = 'lurk_plus_members';
+  select (value::jsonb #>> '{}')::jsonb into members from public.app_storage where key = 'lurk_plus_members';
   select item into member_row
   from jsonb_array_elements(coalesce(members, '[]'::jsonb)) as e(item)
   where item->>'id' = linked_member_id
