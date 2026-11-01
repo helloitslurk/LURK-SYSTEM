@@ -104,7 +104,9 @@ async function sbGet(key,fb){
   const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_storage_get",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token,p_key:key})});
   if(!r.ok)throw new Error("Supabase read failed for "+key+" ("+r.status+")");
   const value=await r.json();
-  return value===null?fb:value;
+  if(value===null)return fb;
+  if(typeof value==="string"){try{return JSON.parse(value);}catch(e){return fb;}}
+  return value;
 }
 async function sbSetNow(key,val){
   const token=posSessionToken();
