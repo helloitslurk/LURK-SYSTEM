@@ -126,6 +126,11 @@ function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36
 function ft(iso){if(!iso)return"—";const d=new Date(iso);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
 
 export default function App(){
+  const customerToken=new URLSearchParams(window.location.search).get("lurkplus");
+  return customerToken?<LurkPlusPortal token={customerToken}/>:<POSApp/>;
+}
+
+function POSApp(){
   const[ok,setOk]=useState(false);
   const[loadError,setLoadError]=useState(false);
   const[saveStatus,setSaveStatus]=useState("saved");
@@ -194,10 +199,12 @@ export default function App(){
       const d=await sbGet("lurk_d",null);
       const c=await sbGet("lurk_customers",[]);
       const ce=await sbGet("lurk_credit",[]);
+      const lp=await sbGet("lurk_plus_members",[]);
       setTbl(Array.isArray(t)?t:[]);
       setOrd(Array.isArray(o)?o:[]);
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
+      setLurkPlusMembers(Array.isArray(lp)?lp:[]);
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -1130,6 +1137,40 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
 
 /* ─── LURK+ ─── */
 function LurkPlusScreen({members,setMembers,msg,setV}){
+  const [linkBusy,setLinkBusy]=useState(false);
+  const [issuedLinks,setIssuedLinks]=useState({});
+  async function manageLink(member,action){
+    if(linkBusy)return;
+    const secret=window.prompt("LURK+ bağlantı yönetim anahtarını gir:");
+    if(!secret)return;
+    if(secret.length<24){msg("Yönetim anahtarı en az 24 karakter olmalı.");return;}
+    setLinkBusy(true);
+    try{
+      let rpc,body;
+      if(action==="create"){
+        const bytes=new Uint8Array(32);window.crypto.getRandomValues(bytes);
+        const token=Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+        rpc="lurk_plus_create_link";
+        body={p_member_id:member.id,p_token:token,p_admin_secret:secret};
+        const response=await fetch(SB_URL+"/rest/v1/rpc/"+rpc,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
+        const result=await response.json().catch(()=>null);
+        if(!response.ok)throw new Error(result?.message||"Bağlantı oluşturulamadı");
+        const url=window.location.origin+window.location.pathname+"?lurkplus="+token;
+        setIssuedLinks(prev=>({...prev,[member.id]:url}));
+        try{await navigator.clipboard.writeText(url);msg("Müşteri bağlantısı oluşturuldu ve kopyalandı.");}
+        catch(e){msg("Bağlantı oluşturuldu. Aşağıdan kopyalayabilirsin.");}
+      }else{
+        rpc="lurk_plus_revoke_links";
+        body={p_member_id:member.id,p_admin_secret:secret};
+        const response=await fetch(SB_URL+"/rest/v1/rpc/"+rpc,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
+        const result=await response.json().catch(()=>null);
+        if(!response.ok)throw new Error(result?.message||"Bağlantı iptal edilemedi");
+        setIssuedLinks(prev=>({...prev,[member.id]:null}));
+        msg("Üyenin tüm müşteri bağlantıları iptal edildi.");
+      }
+    }catch(e){msg(e.message||"İşlem başarısız.");}
+    finally{setLinkBusy(false);}
+  }
   const [showForm,setShowForm]=useState(false);
   const [selectedMemberId,setSelectedMemberId]=useState(null);
   const [name,setName]=useState("");
@@ -1155,6 +1196,13 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>setSelectedMemberId(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Hareketleri gör ›</div></div></button>)}
         {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Güncel bakiye</div></div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(m.balance)}</div></div>
+          <div style={{background:"rgba(52,199,89,.07)",border:"1px solid rgba(52,199,89,.18)",borderRadius:11,padding:11,marginBottom:13}}>
+            <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Müşteri bağlantısı</div>
+            <div style={{fontSize:10,color:T.textSub,lineHeight:1.5,marginBottom:9}}>Bu bağlantıyı müşteriye gönder. Bağlantıyı bilen kişi yalnızca bu üyenin bakiye ve hareketlerini görebilir.</div>
+            <button disabled={linkBusy} onClick={()=>manageLink(m,"create")} style={{width:"100%",padding:10,background:T.accent,color:"#fff",border:0,borderRadius:9,fontWeight:800,fontSize:11,cursor:"pointer",opacity:linkBusy?.6:1}}>{linkBusy?"İşleniyor…":"Yeni bağlantı oluştur / yenile"}</button>
+            {issuedLinks[m.id]&&<><div style={{fontSize:10,color:T.textSub,overflowWrap:"anywhere",padding:"8px 0"}}>{issuedLinks[m.id]}</div><button onClick={()=>navigator.clipboard.writeText(issuedLinks[m.id]).then(()=>msg("Bağlantı kopyalandı."))} style={{width:"100%",padding:9,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Bağlantıyı Kopyala</button></>}
+            <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Tüm bağlantıları iptal et</button>
+          </div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BAKİYE HAREKETLERİ</div>
           {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>Henüz hareket kaydı yok.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>İşlem sonrası bakiye: {fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{h.type==="purchase"?"−":"+"}{fm(h.amount)}</div></div>)}
           <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Detayı Kapat</button>
@@ -1163,6 +1211,51 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
       {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>Yeni LURK+ Üyesi</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Üyenin adını ve mevcut ön ödemeli bakiyesini gir.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Üye adı *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Başlangıç bakiyesi (TL) *</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode="decimal" placeholder="Örn. 500" onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Üyeyi Kaydet</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button></Modal>}
     </div>
   );
+}
+
+function LurkPlusPortal({token}){
+  const [member,setMember]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState(false);
+  const [updated,setUpdated]=useState(null);
+  async function refresh(){
+    setLoading(true);setError(false);
+    try{
+      const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_member_by_token",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_token:token})});
+      if(!r.ok)throw new Error("Veri alınamadı");
+      const data=await r.json();
+      if(!data||!data.name)throw new Error("Bağlantı geçersiz veya iptal edilmiş");
+      setMember(data);setUpdated(new Date());
+    }catch(e){setMember(null);setError(true);}
+    finally{setLoading(false);}
+  }
+  useEffect(()=>{refresh();},[token]);
+  const history=Array.isArray(member?.history)?member.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)):[];
+  return <div style={{minHeight:"100vh",background:"#090B0A",color:"#F5F5F5",fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",padding:"28px 16px 50px"}}>
+    <div style={{maxWidth:520,margin:"0 auto"}}>
+      <div style={{fontSize:26,fontWeight:900,letterSpacing:"-1px",marginBottom:4}}>LURK<span style={{color:"#34C759"}}>+</span></div>
+      <div style={{fontSize:12,color:"#A0A0A0",marginBottom:26}}>Üyelik bakiyen ve hesap hareketlerin</div>
+      {loading?<div style={{padding:28,textAlign:"center",color:"#A0A0A0"}}>Hesabın yükleniyor…</div>:error?<div style={{padding:22,background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:15}}>
+        <div style={{fontSize:17,fontWeight:800,marginBottom:7}}>Bağlantı açılamadı</div><div style={{fontSize:12,color:"#A0A0A0",lineHeight:1.6}}>Bu bağlantı geçersiz, iptal edilmiş veya geçici olarak erişilemiyor. LURK ekibiyle iletişime geçebilirsin.</div><button onClick={refresh} style={{marginTop:16,padding:11,width:"100%",border:0,borderRadius:9,background:"#34C759",color:"#fff",fontWeight:800}}>Yeniden Dene</button>
+      </div>:member&&<>
+        <div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.22)",borderRadius:18,padding:20,marginBottom:18}}>
+          <div style={{fontSize:12,color:"#A0A0A0",marginBottom:7}}>Merhaba, {member.name}</div>
+          <div style={{fontSize:11,color:"#A0A0A0",letterSpacing:".5px",fontWeight:750}}>GÜNCEL BAKİYEN</div>
+          <div style={{fontSize:34,fontWeight:900,color:"#34C759",marginTop:5}}>{fm(Number(member.balance)||0)}</div>
+          <div style={{fontSize:10,color:"#A0A0A0",marginTop:10}}>Son kontrol: {updated?.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}><div style={{fontSize:14,fontWeight:850}}>Hesap hareketleri</div><button onClick={refresh} style={{padding:"7px 10px",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,color:"#F5F5F5",fontSize:10}}>↻ Güncelle</button></div>
+        <div style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:14,padding:"0 13px"}}>
+          {!history.length?<div style={{padding:18,textAlign:"center",fontSize:12,color:"#A0A0A0"}}>Henüz bakiye hareketi yok.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
+            <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF453A":"#34C759",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>İşlem sonrası: {fm(Number(h.balanceAfter)||0)}</div></div>
+            <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF453A":"#34C759",whiteSpace:"nowrap"}}>{h.type==="purchase"?"−":"+"}{fm(Number(h.amount)||0)}</div>
+          </div>)}
+        </div>
+        <div style={{fontSize:10,color:"#777",textAlign:"center",marginTop:15,lineHeight:1.5}}>Bakiye bilgisi LURK sistemindeki güncel kayıttan alınır.</div>
+      </>}
+    </div>
+  </div>;
 }
 
 /* ─── CUSTOMERS ─── */
