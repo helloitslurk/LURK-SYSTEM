@@ -95,19 +95,24 @@ const T={
   danger:"#FF453A",warn:"#FF9F0A",
 };
 
+function posSessionToken(){
+  try{return sessionStorage.getItem("lurk_pos_session")||"";}catch(e){return "";}
+}
 async function sbGet(key,fb){
-  const r=await fetch(SB_URL+"/rest/v1/app_storage?key=eq."+key+"&select=value",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+  const token=posSessionToken();
+  if(!token)throw new Error("POS oturumu bulunamadı.");
+  const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_storage_get",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token,p_key:key})});
   if(!r.ok)throw new Error("Supabase read failed for "+key+" ("+r.status+")");
-  const d=await r.json();
-  if(d&&d[0])return JSON.parse(d[0].value);
-  return fb;
+  const value=await r.json();
+  return value===null?fb:value;
 }
 async function sbSetNow(key,val){
-  const body=JSON.stringify({key,value:JSON.stringify(val)});
+  const token=posSessionToken();
+  if(!token){console.error("POS oturumu bulunamadı.");return false;}
   let lastError;
   for(let attempt=0;attempt<3;attempt++){
     try{
-      const r=await fetch(SB_URL+"/rest/v1/app_storage",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates"},body});
+      const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_storage_set",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token,p_key:key,p_value:val})});
       if(r.ok)return true;
       lastError=new Error("Supabase write failed for "+key+" ("+r.status+")");
     }catch(e){lastError=e;}
@@ -127,7 +132,52 @@ function ft(iso){if(!iso)return"—";const d=new Date(iso);return String(d.getHo
 
 export default function App(){
   const customerToken=new URLSearchParams(window.location.search).get("lurkplus");
-  return customerToken?<LurkPlusPortal token={customerToken}/>:<POSApp/>;
+  const [auth,setAuth]=useState("checking");
+  useEffect(()=>{
+    if(customerToken)return;
+    let active=true;
+    const token=posSessionToken();
+    if(!token){setAuth("locked");return;}
+    fetch(SB_URL+"/rest/v1/rpc/lurk_pos_session_valid",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token})})
+      .then(r=>r.ok?r.json():false)
+      .then(valid=>{if(active)setAuth(valid?"open":"locked");})
+      .catch(()=>{if(active)setAuth("locked");});
+    return()=>{active=false;};
+  },[customerToken]);
+  if(customerToken)return <LurkPlusPortal token={customerToken}/>;
+  if(auth==="checking")return <div style={{minHeight:"100vh",background:"#090B0A",color:"#A0A0A0",display:"grid",placeItems:"center",fontFamily:"sans-serif"}}>LURK POS kontrol ediliyor…</div>;
+  if(auth==="locked")return <POSLogin onLogin={()=>setAuth("open")}/>;
+  return <POSApp/>;
+}
+
+function POSLogin({onLogin}){
+  const [pin,setPin]=useState("");
+  const [busy,setBusy]=useState(false);
+  const [error,setError]=useState("");
+  async function submit(e){
+    e.preventDefault();
+    if(busy)return;
+    setBusy(true);setError("");
+    try{
+      const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_login",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_pin:pin})});
+      if(!r.ok)throw new Error("Giriş doğrulanamadı.");
+      const token=await r.json();
+      if(typeof token!=="string"||token.length<32){setError("PIN hatalı. Tekrar dene.");return;}
+      sessionStorage.setItem("lurk_pos_session",token);
+      onLogin();
+    }catch(e){setError(e.message||"Bağlantı hatası. Tekrar dene.");}
+    finally{setBusy(false);}
+  }
+  return <div style={{minHeight:"100vh",background:"#090B0A",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",color:"#F5F5F5"}}>
+    <form onSubmit={submit} style={{width:"100%",maxWidth:340,background:"#151916",border:"1px solid rgba(255,255,255,.1)",borderRadius:20,padding:26,boxSizing:"border-box",textAlign:"center"}}>
+      <div style={{fontSize:27,fontWeight:900,letterSpacing:2}}>LURK</div>
+      <div style={{fontSize:11,letterSpacing:3,color:"#34C759",marginTop:5,marginBottom:28}}>POS SYSTEM</div>
+      <div style={{fontSize:14,color:"#A0A0A0",marginBottom:12}}>Devam etmek için PIN kodunu gir.</div>
+      <input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",boxSizing:"border-box",padding:15,borderRadius:11,border:"1px solid rgba(255,255,255,.15)",background:"#090B0A",color:"#fff",fontSize:22,letterSpacing:8,textAlign:"center",outline:"none"}}/>
+      {error&&<div role="alert" style={{fontSize:12,color:"#FF453A",marginTop:12}}>{error}</div>}
+      <button type="submit" disabled={busy||pin.length<6} style={{width:"100%",padding:14,marginTop:18,border:0,borderRadius:11,background:"#34C759",color:"#071009",fontWeight:800,fontSize:14,cursor:"pointer",opacity:busy||pin.length<6?.55:1}}>{busy?"Kontrol ediliyor…":"Giriş Yap"}</button>
+    </form>
+  </div>;
 }
 
 function POSApp(){
