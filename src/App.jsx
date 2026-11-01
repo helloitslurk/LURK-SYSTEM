@@ -149,7 +149,7 @@ export default function App(){
   if(customerToken)return <LurkPlusPortal token={customerToken}/>;
   if(auth==="checking")return <div style={{minHeight:"100vh",background:"#090B0A",color:"#A0A0A0",display:"grid",placeItems:"center",fontFamily:"sans-serif"}}>LURK POS kontrol ediliyor…</div>;
   if(auth==="locked")return <POSLogin onLogin={()=>setAuth("open")}/>;
-  return <POSApp/>;
+  return <POSApp onLock={()=>{try{sessionStorage.removeItem("lurk_pos_session");}catch(e){}setAuth("locked");}}/>;
 }
 
 function POSLogin({onLogin}){
@@ -170,10 +170,11 @@ function POSLogin({onLogin}){
     }catch(e){setError(e.message||"Bağlantı hatası. Tekrar dene.");}
     finally{setBusy(false);}
   }
-  return <div style={{minHeight:"100vh",background:"#090B0A",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",color:"#F5F5F5"}}>
+  return <div style={{minHeight:"100vh",background:"#090B0A",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",color:"#F5F5F5",position:"relative"}}>
+    <img src="/lurk-logo.svg" alt="LURK." style={{position:"absolute",top:28,left:28,width:220,maxWidth:"42vw",height:"auto"}} />
     <form onSubmit={submit} style={{width:"100%",maxWidth:340,background:"#151916",border:"1px solid rgba(255,255,255,.1)",borderRadius:20,padding:26,boxSizing:"border-box",textAlign:"center"}}>
-      <div style={{fontSize:27,fontWeight:900,letterSpacing:2}}>LURK</div>
-      <div style={{fontSize:11,letterSpacing:3,color:"#34C759",marginTop:5,marginBottom:28}}>POS SYSTEM</div>
+      <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:230,maxWidth:"72vw",height:"auto",margin:"0 auto 18px"}} />
+      <div style={{fontSize:11,letterSpacing:3,color:"#34C759",marginTop:0,marginBottom:28}}>POS SYSTEM</div>
       <div style={{fontSize:14,color:"#A0A0A0",marginBottom:12}}>Devam etmek için PIN kodunu gir.</div>
       <input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",boxSizing:"border-box",padding:15,borderRadius:11,border:"1px solid rgba(255,255,255,.15)",background:"#090B0A",color:"#fff",fontSize:22,letterSpacing:8,textAlign:"center",outline:"none"}}/>
       {error&&<div role="alert" style={{fontSize:12,color:"#FF453A",marginTop:12}}>{error}</div>}
@@ -182,7 +183,7 @@ function POSLogin({onLogin}){
   </div>;
 }
 
-function POSApp(){
+function POSApp({onLock}){
   const[ok,setOk]=useState(false);
   const[loadError,setLoadError]=useState(false);
   const[saveStatus,setSaveStatus]=useState("saved");
@@ -630,7 +631,8 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV}){
             <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <button type="button" onClick={()=>setBalancesVisible(v=>!v)} aria-label={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} title={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:17,cursor:"pointer"}}>{balancesVisible?"◉":"⊘"}</button>
+            <button type="button" onClick={onLock} aria-label="POS sistemini kilitle" title="Sistemi kilitle" style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:16,cursor:"pointer"}}>⌑</button>
+            <button type="button" onClick={()=>setBalancesVisible(v=>!v) aria-label={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} title={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:17,cursor:"pointer"}}>{balancesVisible?"◉":"⊘"}</button>
             <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(52,199,89,0.12)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(day?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:20,padding:"6px 12px"}}>
               <div style={{width:7,height:7,borderRadius:"50%",background:day?"#34C759":T.textDim}}/>
               <span style={{fontSize:12,fontWeight:600,color:day?"#34C759":T.textSub}}>{day?"Açık":"Kapalı"}</span>
