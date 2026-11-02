@@ -1270,6 +1270,23 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     setMembers(prev=>prev.map(m=>m.id!==member.id?m:{...m,coffeeCredits:(Number(m.coffeeCredits)||0)+amount,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_topup",date,amount,balanceAfter:(Number(m.coffeeCredits)||0)+amount,note:"Kahve hakkı eklendi"}]}));
     msg(member.name+" · "+amount+" kahve hakkı eklendi.");
   }
+  async function deleteMember(member){
+    if(!window.confirm(member.name+" adlı LURK+ üyesini silmek istediğine emin misin? Bakiye/kahve hakkı ve hareket geçmişi üye listesinden kaldırılacak. Müşteri bağlantıları da iptal edilecek."))return;
+    const secret=window.prompt("LURK+ bağlantı yönetim anahtarını gir:");
+    if(!secret)return;
+    if(secret.length<24){msg("Yönetim anahtarı en az 24 karakter olmalı.");return;}
+    setLinkBusy(true);
+    try{
+      const response=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_revoke_links",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_member_id:member.id,p_admin_secret:secret})});
+      const result=await response.json().catch(()=>null);
+      if(!response.ok)throw new Error(result?.message||"Üye bağlantıları iptal edilemedi. Üye silinmedi.");
+      setMembers(prev=>prev.filter(m=>m.id!==member.id));
+      setSelectedMemberId(null);
+      setIssuedLinks(prev=>{const next={...prev};delete next[member.id];return next;});
+      msg(member.name+" LURK+ listesinden silindi.");
+    }catch(e){msg(e.message||"Üye silinemedi.");}
+    finally{setLinkBusy(false);}
+  }
   return(
     <div className="lurk-screen">
       <div style={{background:"rgba(13,13,13,0.98)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"18px 16px",display:"flex",alignItems:"center",gap:12}}>
@@ -1291,6 +1308,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
           </div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BAKİYE HAREKETLERİ</div>
           {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>Henüz hareket kaydı yok.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?"Kahve hakkı kullanıldı":h.type==="credit_refund"?"Kahve hakkı iade edildi":h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>İşlem sonrası: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
+          <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Üyeliği Sil</button>
           <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Detayı Kapat</button>
         </div>)}
       </div>
