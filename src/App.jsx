@@ -1223,9 +1223,9 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
 
 /* ─── PERSONAL FINANCE ─── */
 const PERSONAL_DEBT_SEED=[
-  {id:"beliz",group:"Kişisel",name:"Beliz",total:8000,note:"",payments:[],installments:[]},
+  {id:"beliz",group:"Kişisel",name:"Beliz",total:10000,note:"",payments:[],installments:[]},
   {id:"ryze",group:"Kişisel",name:"Ryze",total:2000,note:"3K deren'den",payments:[],installments:[]},
-  {id:"ahmet-bakkal",group:"Kişisel",name:"Ahmet Abi Bakkal",total:1000,payments:[],installments:[]},
+  {id:"ahmet-bakkal",group:"Kişisel",name:"Ahmet Abi Bakkal",total:1500,payments:[],installments:[]},
   {id:"vodafone",group:"Kişisel",name:"Vodafone",total:23856,note:"30 Ekim",payments:[],installments:[]},
   {id:"hepsiburada-limiti",group:"Kişisel",name:"Hepsiburada Limiti",total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Önceden ödenen tutar (tarih belirtilmedi)",historical:true}],installments:[]},
   {id:"hepsifinans",group:"Kişisel",name:"Hepsifinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
@@ -1276,6 +1276,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
       .filter(d=>!placeholderIds.has(d.id))
+      .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d)
       .map(d=>movedIds.has(d.id)?{
         ...d,
         name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
