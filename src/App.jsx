@@ -467,6 +467,8 @@ function POSApp({onLock}){
     <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        .lurk-app { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+        .lurk-app button, .lurk-app button div, .lurk-app button span { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
         * { box-sizing: border-box; }
         body { margin: 0; background: #0D0F0E; }
         button, input, select { font: inherit; }
@@ -1368,7 +1370,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
           <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:16}}>◈</div>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>LURK</div><div style={{fontSize:10,color:T.textDim}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
+          <div style={{flex:1,minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",letterSpacing:"-.2px",textRendering:"optimizeLegibility"}}><div style={{fontSize:15,fontWeight:800,letterSpacing:"-.35px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",fontWeight:500,letterSpacing:"0"}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
           <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showLurk?"⌃":"⌄"}</div>
         </button>
         {showLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
@@ -1406,7 +1408,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
           <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:17}}>▣</div>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>Taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
+          <div style={{flex:1,minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",letterSpacing:"-.2px",textRendering:"optimizeLegibility"}}><div style={{fontSize:15,fontWeight:800,letterSpacing:"-.35px"}}>Taksitler</div><div style={{fontSize:11,color:"#a9b8ad",fontWeight:500,letterSpacing:"0"}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
           <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showInstallments?"⌃":"⌄"}</div>
         </button>
         {showInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}> 
@@ -1429,7 +1431,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
           <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:16}}>◈</div>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>FIDDLE III</div><div style={{fontSize:10,color:T.textDim}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
+          <div style={{flex:1,minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",letterSpacing:"-.2px",textRendering:"optimizeLegibility"}}><div style={{fontSize:15,fontWeight:800,letterSpacing:"-.35px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",fontWeight:500,letterSpacing:"0"}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
           <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showFiddle?"⌃":"⌄"}</div>
         </button>
         {showFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
