@@ -9,9 +9,9 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/lurk-app-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/lurk-app-icon.png",
+      "sizes": "128x128",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
