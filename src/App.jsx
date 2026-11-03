@@ -198,6 +198,7 @@ function POSApp({onLock}){
   const[customers,setCustomers]=useState([]);
   const[lurkPlusMembers,setLurkPlusMembers]=useState([]);
   const[creditEntries,setCreditEntries]=useState([]);
+  const[personalDebts,setPersonalDebts]=useState([]);
   const[menu,setMenu]=useState(MENU);
   const[day,setDay]=useState(null);
   const[toast,setToast]=useState(null);
@@ -253,11 +254,13 @@ function POSApp({onLock}){
       const c=await sbGet("lurk_customers",[]);
       const ce=await sbGet("lurk_credit",[]);
       const lp=await sbGet("lurk_plus_members",[]);
+      const pd=await sbGet("lurk_personal_debts",null);
       setTbl(Array.isArray(t)?t:[]);
       setOrd(Array.isArray(o)?o:[]);
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
       setLurkPlusMembers(Array.isArray(lp)?lp:[]);
+      setPersonalDebts(Array.isArray(pd)?pd:PERSONAL_DEBT_SEED);
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -290,6 +293,7 @@ function POSApp({onLock}){
   useEffect(()=>{save("lurk_customers",customers);},[customers]);
   useEffect(()=>{save("lurk_plus_members",lurkPlusMembers);},[lurkPlusMembers]);
   useEffect(()=>{save("lurk_credit",creditEntries);},[creditEntries]);
+  useEffect(()=>{save("lurk_personal_debts",personalDebts);},[personalDebts]);
   useEffect(()=>{save("lurk_m",menu);},[menu]);
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
@@ -445,6 +449,7 @@ function POSApp({onLock}){
     {k:"tables",label:"Masalar",icon:"⊞"},
     {k:"customers",label:"Müşteriler",icon:"◎"},
     {k:"lurkPlus",label:"LURK+",icon:"＋"},
+    {k:"personal",label:"Kişisel",icon:"₺"},
     {k:"reports",label:"Raporlar",icon:"≡"},
     {k:"settings",label:"Ayarlar",icon:"⚙"},
   ];
@@ -572,13 +577,14 @@ function POSApp({onLock}){
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setV={setV}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
+      {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
-            <button className="lurk-nav-button" key={n.k} onClick={()=>setV(n.k)} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+            <button className="lurk-nav-button" key={n.k} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
               <span style={{fontSize:10,fontWeight:view===n.k?700:400,color:view===n.k?T.accent:T.textDim}}>{n.label}</span>
             </button>
@@ -1208,6 +1214,79 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   );
 }
 
+
+/* ─── PERSONAL FINANCE ─── */
+const PERSONAL_DEBT_SEED=[
+  {id:"beliz",group:"Kişisel",name:"Beliz",total:8000,note:"",payments:[],installments:[]},
+  {id:"ryze",group:"Kişisel",name:"Ryze",total:2000,note:"3K deren'den",payments:[],installments:[]},
+  {id:"ahmet-bakkal",group:"Kişisel",name:"Ahmet Abi Bakkal",total:1000,payments:[],installments:[]},
+  {id:"vodafone",group:"Kişisel",name:"Vodafone",total:23856,note:"30 Ekim",payments:[],installments:[]},
+  {id:"hepsiburada-limiti",group:"Kişisel",name:"Hepsiburada Limiti",total:6880,payments:[],installments:[]},
+  {id:"hepsifinans",group:"Kişisel",name:"Hepsifinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
+  {id:"holdon",group:"Nicchia",name:"Holdon Coffee",total:7000,payments:[],installments:[]},
+  {id:"mozaik",group:"Nicchia",name:"Mozaik İş Sağlığı",total:7000,payments:[],installments:[]},
+  {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"2 Kasım",payments:[],installments:[]},
+  {id:"kyk",group:"Nicchia",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Taksit",amount:2350,due:"",paid:0})),payments:[]},
+  {id:"ucuncuoglu",group:"Nicchia",name:"Üçüncüoğlu Emlak",total:135000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
+  {id:"heyz",group:"Nicchia",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:"2026-"+String(11+i).padStart(2,"0")+"-10",paid:0})),payments:[]},
+  {id:"fiddle",group:"Kişisel",name:"Taha Fiddle III Taksit",total:35000,note:"20.000 TL ödendi · 27 Ekim 2026",payments:[],installments:[]},
+  {id:"fiddle-tyres",group:"Kişisel",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-stop",group:"Kişisel",name:"Fiddle III · Ön stop lambası",total:200,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-inspection",group:"Kişisel",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-insurance",group:"Kişisel",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
+  {id:"yildiz",group:"Kişisel",name:"Yıldız Sürücü Kursu",total:13000,payments:[],installments:[]},
+  {id:"a2",group:"Kişisel",name:"A2 Sınav Ücreti",total:2000,payments:[],installments:[]},
+  {id:"beliz-plan",group:"Kişisel",name:"Beliz Taksit",total:69000,note:"1. taksit tamamlandı; 2. taksitte 3.000 TL ödendi, 5.000 TL kaldı.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit için önceden ödenen"}],installments:[
+    {id:"beliz-2",label:"2. Taksit",amount:8000,due:"2026-11-05",paid:3000},
+    ...Array.from({length:8},(_,i)=>({id:"beliz-"+(i+3),label:(i+3)+". Taksit",amount:8000,due:["2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:0}))
+  ]},
+  {id:"ruhsat",group:"Kişisel",name:"Annem Ruhsat Taksiti",total:119000,note:"14 taksit × 8.500 TL; ilk 3 taksit tamamlandı.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Taksit",amount:8500,due:"",paid:i<3?8500:0}))}
+];
+function PersonalFinanceScreen({debts,setDebts,setV,msg}){
+  const [unlocked,setUnlocked]=useState(false);
+  const [pin,setPin]=useState("");
+  const [pinError,setPinError]=useState("");
+  const [checking,setChecking]=useState(false);
+  const [paymentFor,setPaymentFor]=useState(null);
+  const [amount,setAmount]=useState("");
+  const [note,setNote]=useState("");
+  const [showHistory,setShowHistory]=useState(false);
+  const [expanded,setExpanded]=useState({});
+  const [filter,setFilter]=useState("Tümü");
+  useEffect(()=>{const lock=()=>{setUnlocked(false);setPin("");};window.addEventListener("lurk-personal-leave",lock);return()=>window.removeEventListener("lurk-personal-leave",lock);},[]);
+  const money=n=>(Number(n)||0).toLocaleString("tr-TR",{maximumFractionDigits:2})+" ₺";
+  const paid=d=>(d.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0)+(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0);
+  const remaining=d=>Math.max(0,(Number(d.total)||0)-paid(d));
+  const pct=d=>Number(d.total)>0?Math.min(100,paid(d)/Number(d.total)*100):100;
+  const allHistory=debts.flatMap(d=>(d.payments||[]).map(p=>({...p,debtName:d.name,debtId:d.id}))).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  const total=debts.reduce((s,d)=>s+remaining(d),0);
+  async function unlock(e){e.preventDefault();if(checking||pin.length<6)return;setChecking(true);setPinError("");try{const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_pin_verify",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_pin:pin})});if(!r.ok||!(await r.json()))throw new Error("PIN hatalı.");setUnlocked(true);setPin("");}catch(err){setPinError(err.message||"Doğrulama yapılamadı.");}finally{setChecking(false);}}
+  function addPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;if(!paymentFor||!Number.isFinite(value)||value<=0||value>remaining(paymentFor)+0.001){msg("Geçerli bir tutar gir. Ödeme kalan borcu aşamaz.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==paymentFor.id?d:{...d,payments:[...(d.payments||[]),{id:"pay-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),amount:value,date,note:note.trim()}]}));msg(money(value)+" ödeme kaydedildi.");setPaymentFor(null);setAmount("");setNote("");}
+  function payInstallment(debt,inst){const due=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));if(!due)return;setPaymentFor({debt,installment:inst,quick:true});setAmount(String(due));}
+  function addInstallmentPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;const debt=paymentFor?.debt,inst=paymentFor?.installment;if(!debt||!inst||value<=0||value>Number(inst.amount)-Number(inst.paid||0)+0.001){msg("Taksit için geçerli tutar gir.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,installments:d.installments.map(i=>i.id!==inst.id?i:{...i,paid:(Number(i.paid)||0)+value}),payments:[...(d.payments||[]),{id:"pay-"+Date.now(),amount:value,date,note:note.trim(),installmentId:inst.id,installmentLabel:inst.label}]}));msg(money(value)+" taksit ödemesi kaydedildi.");setPaymentFor(null);setAmount("");setNote("");}
+  function reversePayment(debt,payment){if(!window.confirm(money(payment.amount)+" ödeme hareketi geri alınsın mı?"))return;setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,payments:(d.payments||[]).filter(p=>p.id!==payment.id),installments:(d.installments||[]).map(i=>i.id===payment.installmentId?{...i,paid:Math.max(0,(Number(i.paid)||0)-Number(payment.amount||0))}:i)}));}
+  if(!unlocked)return <div className="lurk-screen" style={{minHeight:"70vh",padding:"28px 18px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Bu sayfaya erişmek için POS PIN'ini tekrar gir.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Kontrol ediliyor…":"Kilidi Aç"}</button></form></div>;
+  return <div className="lurk-screen" style={{paddingBottom:18}}>
+    <div style={{padding:"18px 16px 14px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:10}}><button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button><div style={{flex:1}}><div style={{fontSize:22,fontWeight:850}}>Kişisel Finans</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>Ödeme takibi · Özel alan</div></div><button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 11px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Kilitle</button></div>
+    <div style={{padding:16}}>
+      <div style={{background:"linear-gradient(135deg,rgba(52,199,89,.17),rgba(52,199,89,.04))",border:"1px solid rgba(52,199,89,.22)",borderRadius:18,padding:18,marginBottom:18}}><div style={{fontSize:11,color:T.textSub}}>TOPLAM KALAN BORÇ</div><div style={{fontSize:30,fontWeight:900,letterSpacing:-1,marginTop:5}}>{money(total)}</div><div style={{fontSize:11,color:T.textSub,marginTop:6}}>{debts.length} kayıt · Ödenen {money(debts.reduce((s,d)=>s+paid(d),0))}</div></div>
+      <div style={{display:"flex",gap:7,marginBottom:14}}>{["Tümü","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{flex:1,padding:10,borderRadius:10,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:12}}>{x}</button>)}</div>
+      {["Kişisel","Nicchia"].filter(g=>filter==="Tümü"||filter===g).map(group=><div key={group} style={{marginBottom:20}}><div style={{fontSize:12,fontWeight:850,color:T.textSub,letterSpacing:1,marginBottom:9}}>{group.toLocaleUpperCase("tr-TR")}</div>{debts.filter(d=>d.group===group).map(d=><div key={d.id} style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:15,padding:14,marginBottom:9}}>
+        <div style={{display:"flex",alignItems:"flex-start",gap:8}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:800}}>{d.name}</div>{d.note&&<div style={{fontSize:10,color:T.textDim,marginTop:3}}>{d.note}</div>}</div><div style={{textAlign:"right"}}><div style={{fontSize:14,fontWeight:850}}>{money(remaining(d))}</div><div style={{fontSize:10,color:T.textDim}}>kalan</div></div></div>
+        <div style={{height:7,background:"rgba(255,255,255,.08)",borderRadius:9,overflow:"hidden",marginTop:12}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:9}}/></div>
+        <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:T.textSub,marginTop:6}}><span>{pct(d).toFixed(1).replace(".",",")}% ödendi · {money(paid(d))}</span><span>{money(d.total)} toplam</span></div>
+        {(d.installments||[]).length>0&&<div style={{marginTop:12,borderTop:"1px solid "+T.border,paddingTop:10}}><button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",background:"transparent",border:0,color:T.textSub,textAlign:"left",fontSize:11,fontWeight:750,padding:"3px 0"}}>{expanded[d.id]?"▾":"▸"} Taksitler · {(d.installments||[]).filter(i=>i.paid>=i.amount).length}/{d.installments.length} tamamlandı</button>{expanded[d.id]&&d.installments.map(inst=><div key={inst.id} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 0",borderTop:"1px solid rgba(255,255,255,.045)"}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:11,fontWeight:700}}>{inst.label}</div><div style={{fontSize:10,color:T.textDim}}>{inst.due||"Tarih belirtilmedi"} · {money(inst.paid)} / {money(inst.amount)}</div></div>{inst.paid<inst.amount&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"7px 9px",borderRadius:8,border:0,background:T.accent,color:"#061008",fontSize:10,fontWeight:800}}>Öde</button>}<div style={{fontSize:10,color:inst.paid>=inst.amount?T.accent:T.warn}}>{inst.paid>=inst.amount?"✓":money(inst.amount-inst.paid)}</div></div>)}</div>}
+        <div style={{display:"flex",gap:8,marginTop:12}}><button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:11,borderRadius:10,border:0,background:T.accent,color:"#061008",fontSize:12,fontWeight:850}}>+ Ödeme Yap</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"11px 13px",borderRadius:10,border:"1px solid "+T.border,background:T.bg3,color:T.textSub,fontSize:11}}>Hareketler</button></div>
+        {showHistory&&<div style={{marginTop:10,borderTop:"1px solid "+T.border,paddingTop:8}}>{(d.payments||[]).slice().reverse().map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 0"}}><div style={{flex:1}}><div style={{fontSize:11,fontWeight:700}}>{money(p.amount)} · {new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:10,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div><button onClick={()=>reversePayment(d,p)} style={{color:T.danger,background:"transparent",border:0,fontSize:10}}>Geri al</button></div>)}</div>}
+      </div>)}</div>)}
+      <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:13,background:T.bg3,border:"1px solid "+T.border,borderRadius:12,color:T.text,fontWeight:750}}>↻ Tüm ödeme hareketleri</button>
+      {showHistory&&<div style={{marginTop:10,background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"9px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:12,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:10,color:T.textDim}}>{new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:12,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:12,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
+      <button onClick={()=>{const name=window.prompt("Borç / ödeme adı:");if(!name?.trim())return;const totalValue=Number(window.prompt("Toplam tutar (TL):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Kişisel veya Nicchia","Kişisel")==="Nicchia"?"Nicchia":"Kişisel";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{width:"100%",padding:13,marginTop:12,background:"transparent",border:"1px dashed "+T.border2,borderRadius:12,color:T.textSub,fontWeight:750}}>+ Yeni borç ekle</button>
+    </div>
+    {paymentFor&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Ödeme kaydet</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{paymentFor.name||paymentFor.debt?.name} · Kalan {money(paymentFor.debt?Math.max(0,paymentFor.installment.amount-paymentFor.installment.paid):remaining(paymentFor))}</div><label style={{fontSize:11,color:T.textSub}}>Ödeme tutarı (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="Örn. 2000" style={{width:"100%",padding:14,marginTop:6,marginBottom:12,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:20,boxSizing:"border-box"}}/><label style={{fontSize:11,color:T.textSub}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Ödeme notu" style={{width:"100%",padding:12,marginTop:6,marginBottom:14,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/><button onClick={paymentFor.debt?addInstallmentPayment:addPayment} style={{width:"100%",padding:14,background:T.accent,color:"#061008",border:0,borderRadius:11,fontWeight:850}}>Ödemeyi Kaydet</button><button onClick={()=>setPaymentFor(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Vazgeç</button></Modal>}
+  </div>;
+}
+
 /* ─── LURK+ ─── */
 function LurkPlusScreen({members,setMembers,msg,setV}){
   const [linkBusy,setLinkBusy]=useState(false);
@@ -1596,12 +1675,12 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
   function applyBackup(){
     if(!pendingImport)return;
     const d=pendingImport.data;
-    setTables(d.lurk_t);setOrders(d.lurk_o);setLogs(d.lurk_l);setCustomers(d.lurk_customers);setCreditEntries(d.lurk_credit);setMenu(d.lurk_m);setDay(d.lurk_d);
+    setTables(d.lurk_t);setOrders(d.lurk_o);setLogs(d.lurk_l);setCustomers(d.lurk_customers);setCreditEntries(d.lurk_credit);setMenu(d.lurk_m);setDay(d.lurk_d);if(Array.isArray(d.lurk_personal_debts))setPersonalDebts(d.lurk_personal_debts);
     setImportMsg("Yedek içeri aktarıldı. Kayıt göstergesi tamamlanana kadar uygulamayı kapatma.");
     setPendingImport(null);
   }
   function exportBackup(){
-    const backup={app:"LURK POS",formatVersion:1,exportedAt:new Date().toISOString(),data:{lurk_t:tables,lurk_o:orders,lurk_l:logs,lurk_customers:customers,lurk_credit:creditEntries,lurk_m:menu,lurk_d:day}};
+    const backup={app:"LURK POS",formatVersion:1,exportedAt:new Date().toISOString(),data:{lurk_t:tables,lurk_o:orders,lurk_l:logs,lurk_customers:customers,lurk_credit:creditEntries,lurk_m:menu,lurk_d:day,lurk_personal_debts:personalDebts}};
     const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
     const url=URL.createObjectURL(blob);
     const a=document.createElement("a");
