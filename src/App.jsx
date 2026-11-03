@@ -6,6 +6,7 @@ import { validatePayment } from "./paymentValidation.js";
 
 const SB_URL="https://dpucptcrxoddfpvaqsdl.supabase.co";
 const SB_KEY="sb_publishable_YiTDrcX7nnotBkoWqEWaHQ_tYHlT3NK";
+let lastStorageWriteError="";
 
 const MENU=[
 {id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},
@@ -118,6 +119,7 @@ async function sbSetNow(key,val){
       const responseText=await r.text();
       if(r.ok){
         if(responseText.trim()==="false")throw new Error("Supabase oturumu geçersiz veya kayıt reddedildi ("+key+").");
+        lastStorageWriteError="";
         return true;
       }
       let detail=responseText;
@@ -126,7 +128,8 @@ async function sbSetNow(key,val){
     }catch(e){lastError=e;}
     if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
   }
-  console.error(lastError||new Error("Supabase write failed for "+key));
+  lastStorageWriteError=(lastError&&lastError.message)||("Supabase write failed for "+key);
+  console.error(lastStorageWriteError);
   return false;
 }
 const sbSet=createKeyedWriteQueue(sbSetNow);
