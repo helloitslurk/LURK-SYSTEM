@@ -1711,33 +1711,51 @@ function LurkPlusPortal({token}){
   }
   useEffect(()=>{refresh();},[token]);
   const history=Array.isArray(member?.history)?member.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)):[];
-  return <div style={{minHeight:"100vh",background:"#090B0A",color:"#F5F5F5",fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",padding:"28px 16px 50px"}}>
+  const cream="#E9E1CF", ink="#171914", green="#24452B";
+  const memberValue=member?.membershipType==="coffee"?(Number(member.coffeeCredits)||0)+" KAHVE HAKKI":member?.unlimited?"SINIRSIZ":fm(Number(member?.balance)||0);
+  const memberLabel=member?.membershipType==="coffee"?"KALAN KAHVE HAKKIN":member?.unlimited?"ÜYELİK HAKKIN":"GÜNCEL BAKİYEN";
+  return <div style={{minHeight:"100vh",background:"#080A08",color:"#F1EEE6",fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",padding:"30px 16px 50px"}}>
     <div style={{maxWidth:520,margin:"0 auto"}}>
-      <div style={{fontSize:26,fontWeight:900,letterSpacing:"-1px",marginBottom:4}}>LURK<span style={{color:"#34C759"}}>+</span></div>
-      <div style={{fontSize:12,color:"#A0A0A0",marginBottom:26}}>Üyelik bilgilerin ve kullanım geçmişin</div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
+        <div style={{fontSize:29,fontWeight:900,letterSpacing:"-1.5px"}}>LURK<span style={{color:"#79A66A"}}>+</span></div>
+        <div style={{fontSize:9,letterSpacing:"3px",lineHeight:1.8,textAlign:"right",color:"#B7B4A9"}}>MEMBER<br/>ACCESS</div>
+      </div>
+      <div style={{fontSize:11,color:"#8E9289",letterSpacing:"1.4px",marginBottom:27}}>ÜYELİK BİLGİLERİN VE KULLANIM GEÇMİŞİN</div>
       {loading?<div style={{padding:28,textAlign:"center",color:"#A0A0A0"}}>Hesabın yükleniyor…</div>:error?<div style={{padding:22,background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:15}}>
-        <div style={{fontSize:17,fontWeight:800,marginBottom:7}}>Bağlantı açılamadı</div><div style={{fontSize:12,color:"#A0A0A0",lineHeight:1.6}}>Bu bağlantı geçersiz, iptal edilmiş veya geçici olarak erişilemiyor. LURK ekibiyle iletişime geçebilirsin.</div><button onClick={refresh} style={{marginTop:16,padding:11,width:"100%",border:0,borderRadius:9,background:"#34C759",color:"#fff",fontWeight:800}}>Yeniden Dene</button>
+        <div style={{fontSize:17,fontWeight:800,marginBottom:7}}>Bağlantı açılamadı</div><div style={{fontSize:12,color:"#A0A0A0",lineHeight:1.6}}>Bu bağlantı geçersiz, iptal edilmiş veya geçici olarak erişilemiyor. LURK ekibiyle iletişime geçebilirsin.</div><button onClick={refresh} style={{marginTop:16,padding:11,width:"100%",border:0,borderRadius:9,background:"#789B68",color:"#101510",fontWeight:800}}>Yeniden Dene</button>
       </div>:member&&<>
-        <div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.22)",borderRadius:18,padding:20,marginBottom:18}}>
-          <div style={{fontSize:12,color:"#A0A0A0",marginBottom:7}}>Merhaba, {member.name}</div>
-          {member.membershipType==="coffee"?<>
-            <div style={{fontSize:11,color:"#A0A0A0",letterSpacing:".5px",fontWeight:750}}>KALAN KAHVE HAKKIN</div>
-            <div style={{fontSize:34,fontWeight:900,color:"#34C759",marginTop:5}}>{Number(member.coffeeCredits)||0} hak</div>
-          </>:<>
-            <div style={{fontSize:11,color:"#A0A0A0",letterSpacing:".5px",fontWeight:750}}>{member.unlimited?"ÜYELİK HAKKIN":"GÜNCEL BAKİYEN"}</div>
-            <div style={{fontSize:34,fontWeight:900,color:"#34C759",marginTop:5}}>{member.unlimited?"SINIRSIZ":fm(Number(member.balance)||0)}</div>
-          </>}
-          <div style={{fontSize:10,color:"#A0A0A0",marginTop:10}}>Son kontrol: {updated?.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+        <div style={{position:"relative",overflow:"hidden",background:"linear-gradient(145deg,#F1EBDD 0%,#E4DAC5 55%,#D8CDB6 100%)",color:ink,borderRadius:22,padding:"22px 20px 17px",marginBottom:21,boxShadow:"0 18px 42px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.55)"}}>
+          <div style={{position:"absolute",inset:0,opacity:.16,pointerEvents:"none",backgroundImage:"repeating-linear-gradient(0deg,rgba(65,52,32,.12) 0px,rgba(65,52,32,.12) 1px,transparent 1px,transparent 4px)"}}/>
+          <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center",paddingBottom:12,borderBottom:"1px solid rgba(35,35,27,.35)"}}>
+            <div style={{fontSize:25,fontWeight:950,letterSpacing:"-1.3px"}}>LURK<span style={{color:"#668B55"}}>+</span></div>
+            <div style={{fontSize:9,fontWeight:800,letterSpacing:"1.8px"}}>ÜYELİK KARTI</div>
+          </div>
+          <div style={{position:"relative",paddingTop:17}}>
+            <div style={{fontSize:19,fontWeight:750,letterSpacing:"-.4px"}}>{member.name}</div>
+            <div style={{fontSize:9,fontWeight:800,letterSpacing:"2px",marginTop:14,color:"#5C6255"}}>{memberLabel}</div>
+            <div style={{fontSize:member.unlimited?42:34,fontWeight:950,letterSpacing:"-1.7px",lineHeight:1.15,color:green,marginTop:3,overflowWrap:"anywhere"}}>{memberValue}</div>
+            <div style={{position:"absolute",right:0,top:24,border:"1px solid rgba(36,69,43,.65)",borderRadius:"50%",padding:"9px 11px",transform:"rotate(-12deg)",fontSize:9,fontWeight:850,letterSpacing:"1px",color:green,textAlign:"center",lineHeight:1.3}}>LURK<br/>MEMBER</div>
+          </div>
+          <div style={{height:1,background:"rgba(35,35,27,.35)",marginTop:13,marginBottom:12}}/>
+          <div style={{display:"flex",alignItems:"end",justifyContent:"space-between",gap:12}}>
+            <div aria-hidden="true" style={{height:27,flex:1,maxWidth:165,background:"repeating-linear-gradient(90deg,#24251F 0px,#24251F 2px,transparent 2px,transparent 4px,#24251F 4px,#24251F 5px,transparent 5px,transparent 8px)",opacity:.82}}/>
+            <div style={{fontSize:9,fontWeight:800,letterSpacing:"1.4px",whiteSpace:"nowrap"}}>MEMBER ACCESS</div>
+          </div>
+          <div style={{position:"absolute",left:-13,top:"48%",width:26,height:26,borderRadius:"50%",background:"#080A08"}}/>
+          <div style={{position:"absolute",right:-13,top:"48%",width:26,height:26,borderRadius:"50%",background:"#080A08"}}/>
         </div>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}><div style={{fontSize:14,fontWeight:850}}>Hesap hareketleri</div><button onClick={refresh} style={{padding:"7px 10px",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,color:"#F5F5F5",fontSize:10}}>↻ Güncelle</button></div>
-        <div style={{background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:14,padding:"0 13px"}}>
-          {!history.length?<div style={{padding:18,textAlign:"center",fontSize:12,color:"#A0A0A0"}}>Henüz bakiye hareketi yok.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
-            <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF453A":"#34C759",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:11,gap:10}}>
+          <div style={{fontSize:15,fontWeight:850,letterSpacing:"-.3px"}}>Hesap hareketleri</div>
+          <button onClick={refresh} style={{padding:"9px 13px",background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.15)",borderRadius:11,color:"#F1EEE6",fontSize:11,cursor:"pointer"}}>↻ Güncelle</button>
+        </div>
+        <div style={{background:"linear-gradient(145deg,#111411,#0D100D)",border:"1px solid rgba(255,255,255,.12)",borderRadius:16,padding:"0 14px"}}>
+          {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>Henüz bakiye hareketi yok.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
+            <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(121,166,106,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#91B783",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
             <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?"Kahve hakkı kullanıldı":h.type==="credit_refund"?"Kahve hakkı iade edildi":h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>İşlem sonrası: {member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(Number(h.balanceAfter)||0)}</div></div>
-            <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF453A":"#34C759",whiteSpace:"nowrap"}}>{member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
+            <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF6B61":"#91B783",whiteSpace:"nowrap"}}>{member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
           </div>)}
         </div>
-        <div style={{fontSize:10,color:"#777",textAlign:"center",marginTop:15,lineHeight:1.5}}>Bakiye bilgisi LURK sistemindeki güncel kayıttan alınır.</div>
+        <div style={{fontSize:10,color:"#777",textAlign:"center",marginTop:16,lineHeight:1.5}}>Bilgiler LURK sistemindeki güncel kayıttan alınır.</div>
       </>}
     </div>
   </div>;
