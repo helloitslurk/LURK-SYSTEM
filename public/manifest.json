@@ -9,8 +9,8 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/lurk-app-icon.png",
-      "sizes": "128x128",
+      "src": "/apple-touch-icon.png",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     }
