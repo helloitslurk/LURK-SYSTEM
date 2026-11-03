@@ -1148,8 +1148,6 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
   const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="cash").reduce((s,e)=>s+(Number(e.amount)||0),0);
   const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="card").reduce((s,e)=>s+(Number(e.amount)||0),0);
-  const outstanding=creditEntries.reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
-  const creditSales=mo.filter(o=>o.pt==="credit").reduce((sum,o)=>sum+(Number(o.total)||0),0);
   const dayMap={};
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
@@ -1172,16 +1170,15 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
       </div>
 
       {/* Stat kartlar */}
-      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8}}>
+      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
         {[
           {label:"Satış",val:fm(totalInc),color:T.accentL},
           {label:"Nakit tahsilat",val:fm(totalCash),color:T.text},
           {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
-          {label:"Açık veresiye",val:fm(Math.max(0,outstanding)),color:outstanding>0?T.warn:T.text},
         ].map((s,i)=>(
-          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(255,255,255,0.07)"}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6}}>{s.label}</div>
-            <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:"-0.3px"}}>{s.val.replace(" TL","")}</div>
+          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(255,255,255,0.07)",minWidth:0}}>
+            <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6,whiteSpace:"nowrap"}}>{s.label}</div>
+            <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:"-0.3px",whiteSpace:"nowrap"}}>{s.val.replace(" TL","")}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL</div>
           </div>
         ))}
