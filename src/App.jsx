@@ -1270,13 +1270,13 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   useEffect(()=>{const lock=()=>{setUnlocked(false);setPin("");};window.addEventListener("lurk-personal-leave",lock);return()=>window.removeEventListener("lurk-personal-leave",lock);},[]);
   useEffect(()=>{
     if(!unlocked)return;
-    const movedIds=new Set(["ruhsat","ucuncuoglu","beliz-plan"]);
+    const movedIds=new Set(["ruhsat","ucuncuoglu","beliz-plan","heyz"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
       .filter(d=>!placeholderIds.has(d.id))
       .map(d=>!movedIds.has(d.id)?d:{
         ...d,
-        name:d.id==="ruhsat"?"Kredi Taksiti Annem":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":"Beliz Taksit",
+        name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
         category:"installment",
         group:"Taksitler"
       }));
@@ -1328,7 +1328,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
-  const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"].indexOf(a.id)-["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"].indexOf(b.id));
+  const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(a.id)-["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(b.id));
   const visibleDebts=debts.filter(d=>d.category!=="installment"&&(filter==="Tümü"||d.group===filter)).sort((a,b)=>remaining(a)-remaining(b));
   return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
