@@ -97,7 +97,13 @@ const T={
 };
 
 function posSessionToken(){
-  try{return sessionStorage.getItem("lurk_pos_session")||"";}catch(e){return "";}
+  try{
+    const persistent=localStorage.getItem("lurk_pos_session");
+    if(persistent)return persistent;
+    const legacy=sessionStorage.getItem("lurk_pos_session")||"";
+    if(legacy)localStorage.setItem("lurk_pos_session",legacy);
+    return legacy;
+  }catch(e){try{return sessionStorage.getItem("lurk_pos_session")||"";}catch(_){return "";}}
 }
 async function sbGet(key,fb){
   const token=posSessionToken();
@@ -158,7 +164,7 @@ export default function App(){
   if(customerToken)return <LurkPlusPortal token={customerToken}/>;
   if(auth==="checking")return <div style={{minHeight:"100vh",background:"#090B0A",color:"#A0A0A0",display:"grid",placeItems:"center",fontFamily:"sans-serif"}}>LURK POS kontrol ediliyor…</div>;
   if(auth==="locked")return <POSLogin onLogin={()=>setAuth("open")}/>;
-  return <POSApp onLock={()=>{try{sessionStorage.removeItem("lurk_pos_session");}catch(e){}setAuth("locked");}}/>;
+  return <POSApp onLock={()=>{try{localStorage.removeItem("lurk_pos_session");sessionStorage.removeItem("lurk_pos_session");}catch(e){}setAuth("locked");}}/>;
 }
 
 function POSLogin({onLogin}){
@@ -174,6 +180,7 @@ function POSLogin({onLogin}){
       if(!r.ok)throw new Error("Giriş doğrulanamadı.");
       const token=await r.json();
       if(typeof token!=="string"||token.length<32){setError("PIN hatalı. Tekrar dene.");return;}
+      localStorage.setItem("lurk_pos_session",token);
       sessionStorage.setItem("lurk_pos_session",token);
       onLogin();
     }catch(e){setError(e.message||"Bağlantı hatası. Tekrar dene.");}
