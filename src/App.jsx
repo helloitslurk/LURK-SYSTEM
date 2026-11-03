@@ -1471,14 +1471,53 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <div style={{display:"flex",gap:5}}>{["Tümü","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
         <button onClick={()=>{const name=window.prompt("Borç / ödeme adı:");if(!name?.trim())return;const totalValue=Number(window.prompt("Toplam tutar (TL):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Kişisel veya Nicchia","Kişisel")==="Nicchia"?"Nicchia":"Kişisel";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Borç Ekle</button>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9}}>
-        {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} style={{background:T.bg2,border:"1px solid "+(draggingDebtId===d.id?T.accent:T.border),borderRadius:12,padding:12,minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s"}}>
-          <div style={{display:"flex",alignItems:"flex-start",gap:10}}><div style={{width:34,height:34,borderRadius:10,background:d.group==="Kişisel"?"rgba(52,199,89,.13)":"rgba(109,158,172,.15)",display:"grid",placeItems:"center",color:d.group==="Kişisel"?"#54d783":"#8db9c5",fontSize:16,flexShrink:0}}>₺</div><div style={{flex:1,minWidth:0}}><div style={{display:"flex",alignItems:"center",gap:5}}><span title="Sürükleyerek sırala" style={{fontSize:12,color:T.textDim,cursor:"grab",flexShrink:0}}>⠿</span><div style={{fontSize:12,fontWeight:850,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{d.name}</div></div><div style={{fontSize:10,color:T.textDim,marginTop:3}}>{d.group} · {money(d.total)} toplam</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:13,fontWeight:900}}>{money(remaining(d))}</div><div style={{fontSize:9,color:T.textDim}}>kalan</div></div></div>
-          <div style={{height:6,background:"rgba(255,255,255,.08)",borderRadius:8,overflow:"hidden",marginTop:11}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:8}}/></div>
-          <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:T.textSub,marginTop:6}}><span>{pct(d).toFixed(0)}% ödendi</span><span>{money(paid(d))} / {money(d.total)}</span></div>
-          {(d.installments||[]).length>0&&<div style={{marginTop:8,borderTop:"1px solid "+T.border,paddingTop:7}}><button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",background:"transparent",border:0,color:T.textSub,textAlign:"left",fontSize:10,fontWeight:750,padding:"2px 0"}}>{expanded[d.id]?"▾":"▸"} Taksitler · {(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{d.installments.length} ödendi</button>{expanded[d.id]&&d.installments.map(inst=><div key={inst.id} style={{display:"flex",alignItems:"center",gap:7,padding:"6px 0",borderTop:"1px solid rgba(255,255,255,.045)"}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim}}>{inst.due||"Tarih yok"} · {money(inst.paid)} / {money(inst.amount)}</div></div>{Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"6px 8px",borderRadius:7,border:0,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Öde</button>}</div>)}</div>}
-          <div style={{display:"flex",gap:7,marginTop:9}}><button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:9,borderRadius:8,border:0,background:T.accent,color:"#061008",fontSize:11,fontWeight:850}}>+ Ödeme Yap</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"9px 10px",borderRadius:8,border:"1px solid "+T.border,background:T.bg3,color:T.textSub,fontSize:10}}>Hareketler</button></div>
-          {showHistory&&<div style={{marginTop:8,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).slice().reverse().map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0"}}><div style={{flex:1}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Tarih belirtilmedi":new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div><button onClick={()=>reversePayment(d,p)} style={{color:T.danger,background:"transparent",border:0,fontSize:9}}>Geri al</button></div>)}</div>}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12}}>
+        {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:15,padding:15,minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
+          <div style={{display:"flex",alignItems:"center",gap:11}}>
+            <div style={{width:42,height:42,borderRadius:12,background:d.group==="Kişisel"?"rgba(52,199,89,.13)":"rgba(109,158,172,.15)",display:"grid",placeItems:"center",color:d.group==="Kişisel"?"#54d783":"#8db9c5",fontSize:18,flexShrink:0}}>₺</div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:7,minWidth:0}}>
+                <span title="Sürükleyerek sırala" style={{fontSize:12,color:T.textDim,cursor:"grab",flexShrink:0}}>⠿</span>
+                <div style={{fontSize:14,fontWeight:850,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{d.name}</div>
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:6,marginTop:5}}>
+                <span style={{fontSize:9,fontWeight:750,color:d.group==="Kişisel"?"#71d993":"#9bbec7",background:d.group==="Kişisel"?"rgba(52,199,89,.10)":"rgba(109,158,172,.12)",padding:"3px 7px",borderRadius:20}}>{d.group}</span>
+                <span style={{fontSize:10,color:T.textDim}}>Toplam {money(d.total)}</span>
+              </div>
+            </div>
+            <div style={{textAlign:"right",flexShrink:0,paddingLeft:8}}>
+              <div style={{fontSize:16,fontWeight:900,letterSpacing:"-.3px"}}>{money(remaining(d))}</div>
+              <div style={{fontSize:9,color:T.textDim,marginTop:2}}>KALAN BORÇ</div>
+            </div>
+          </div>
+          <div style={{marginTop:15,padding:"11px 12px",borderRadius:10,background:"rgba(255,255,255,.035)"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:10,marginBottom:7}}>
+              <span style={{color:T.textSub,fontWeight:750}}>ÖDEME DURUMU</span>
+              <span style={{color:"#70d98b",fontWeight:850}}>%{pct(d).toFixed(0)} tamamlandı</span>
+            </div>
+            <div style={{height:7,background:"rgba(255,255,255,.09)",borderRadius:10,overflow:"hidden"}}>
+              <div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:10}}/>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",gap:8,fontSize:10,color:T.textSub,marginTop:7}}>
+              <span>Ödenen <b style={{color:T.text}}>{money(paid(d))}</b></span>
+              <span>Toplam <b style={{color:T.text}}>{money(d.total)}</b></span>
+            </div>
+          </div>
+          {(d.installments||[]).length>0&&<div style={{marginTop:9,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,padding:"2px 10px"}}>
+            <button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",background:"transparent",border:0,color:T.textSub,textAlign:"left",fontSize:10,fontWeight:750,padding:"8px 0"}}>{expanded[d.id]?"▾":"▸"} Taksit planı <span style={{color:T.textDim}}>· {(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{d.installments.length} ödendi</span></button>
+            {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{display:"flex",alignItems:"center",gap:7,padding:"7px 0",borderTop:"1px solid rgba(255,255,255,.06)"}}>
+              <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due||"Tarih yok"} · {money(inst.paid)} / {money(inst.amount)}</div></div>
+              {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"6px 9px",borderRadius:7,border:0,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Öde</button>}
+            </div>)}
+          </div>}
+          <div style={{display:"flex",gap:8,marginTop:11}}>
+            <button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:11,borderRadius:9,border:0,background:"linear-gradient(100deg,#34C759,#2dbb50)",color:"#061008",fontSize:11,fontWeight:900}}>+ Ödeme Yap</button>
+            <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"10px 13px",borderRadius:9,border:"1px solid "+T.border,background:"rgba(255,255,255,.045)",color:T.textSub,fontSize:10,fontWeight:700}}>Hareketler</button>
+          </div>
+          {showHistory&&<div style={{marginTop:10,borderTop:"1px solid "+T.border,paddingTop:7}}>{(d.payments||[]).slice().reverse().map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0"}}>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Tarih belirtilmedi":new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div>
+            <button onClick={()=>reversePayment(d,p)} style={{color:T.danger,background:"transparent",border:0,fontSize:9}}>Geri al</button>
+          </div>)}</div>}
         </div>)}
       </div>
       <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ Tüm ödeme hareketleri</button>
