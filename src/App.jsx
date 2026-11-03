@@ -1414,11 +1414,20 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         {showInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}> 
           {installmentDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
-            <div style={{fontSize:9,color:T.textDim,marginTop:7}}>TOPLAM</div>
-            <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>KALAN</div>
-            <div style={{fontSize:12,fontWeight:850,color:T.accent}}>{money(remaining(d))}</div>
-            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} taksit ödendi</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
+              <div style={{width:76,height:76,borderRadius:"50%",background:"conic-gradient(#54e875 0deg "+(pct(d)/100*360)+"deg,#304638 "+(pct(d)/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}>
+                <div style={{width:60,height:60,borderRadius:"50%",background:"#14231c",display:"grid",placeItems:"center",textAlign:"center"}}>
+                  <div><div style={{fontSize:8,color:"#a9b8ad",fontWeight:700}}>ÖDENEN</div><div style={{fontSize:10,fontWeight:900,color:"#70f28a",lineHeight:1.25}}>{money(paid(d))}</div></div>
+                </div>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:9,color:T.textDim}}>TOPLAM BORÇ</div>
+                <div style={{fontSize:13,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
+                <div style={{fontSize:9,color:T.textDim,marginTop:5}}>KALAN</div>
+                <div style={{fontSize:12,fontWeight:850,color:"#70f28a"}}>{money(remaining(d))}</div>
+                <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} taksit ödendi</div>
+              </div>
+            </div>
             <button onClick={()=>openInstallmentEditor(d)} style={{width:"100%",padding:8,marginTop:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Planı Düzenle</button>
             {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Taksitleri Gör"}</button>}
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
