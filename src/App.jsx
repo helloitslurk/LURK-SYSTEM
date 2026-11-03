@@ -1345,6 +1345,16 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const originalTotal=debts.reduce((sum,d)=>sum+Number(d.total||0),0);
   const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
+  const folderStats=list=>{
+    const total=list.reduce((sum,d)=>sum+(Number(d.total)||0),0);
+    const paidAmount=list.reduce((sum,d)=>sum+paid(d),0);
+    const left=list.reduce((sum,d)=>sum+remaining(d),0);
+    return {total,paid:paidAmount,left,pct:total>0?Math.min(100,paidAmount/total*100):0};
+  };
+  const lurkStats=folderStats(lurkDebts);
+  const installmentStats=folderStats(installmentDebts);
+  const fiddleStats=folderStats(fiddleDebts);
+
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
   const lurkOrder=["holdon","yemeksepeti","mozaik"];
   const lurkDebts=debts.filter(d=>d.category==="lurk").sort((a,b)=>lurkOrder.indexOf(a.id)-lurkOrder.indexOf(b.id));
@@ -1375,13 +1385,24 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     </div>
     <div style={{padding:16,maxWidth:1280,margin:"0 auto"}}>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
-          <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:16}}>◈</div>
-          <div style={{flex:1,minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",letterSpacing:"-.2px",textRendering:"optimizeLegibility"}}><div style={{fontSize:15,fontWeight:800,letterSpacing:"-.35px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",fontWeight:500,letterSpacing:"0"}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
-          <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showLurk?"⌃":"⌄"}</div>
+        <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"flex",alignItems:"center",gap:16,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
+            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(lurkStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.left)}</div></div>
+            <div style={{display:"flex",alignItems:"center",gap:9}}>
+              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(lurkStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(lurkStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{lurkStats.pct.toFixed(0)}%</div></div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+            </div>
+          </div>
+          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
         </button>
         {showLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {lurkDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
+          {lurkDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
@@ -1397,13 +1418,24 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         </div>}
       </div>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
-          <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:17}}>▣</div>
-          <div style={{flex:1,minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",letterSpacing:"-.2px",textRendering:"optimizeLegibility"}}><div style={{fontSize:15,fontWeight:800,letterSpacing:"-.35px"}}>Taksitler</div><div style={{fontSize:11,color:"#a9b8ad",fontWeight:500,letterSpacing:"0"}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
-          <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showInstallments?"⌃":"⌄"}</div>
+        <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"flex",alignItems:"center",gap:16,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
+            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>▣</div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>Taksitler</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(installmentStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.left)}</div></div>
+            <div style={{display:"flex",alignItems:"center",gap:9}}>
+              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(installmentStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(installmentStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{installmentStats.pct.toFixed(0)}%</div></div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+            </div>
+          </div>
+          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showInstallments?"⌃":"⌄"}</div>
         </button>
         {showInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}> 
-          {installmentDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
+          {installmentDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
               <div style={{width:76,height:76,borderRadius:"50%",background:"conic-gradient(#54e875 0deg "+(pct(d)/100*360)+"deg,#304638 "+(pct(d)/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}>
@@ -1429,13 +1461,24 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         </div>}
       </div>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
-          <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:16}}>◈</div>
-          <div style={{flex:1,minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",letterSpacing:"-.2px",textRendering:"optimizeLegibility"}}><div style={{fontSize:15,fontWeight:800,letterSpacing:"-.35px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",fontWeight:500,letterSpacing:"0"}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
-          <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showFiddle?"⌃":"⌄"}</div>
+        <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"flex",alignItems:"center",gap:16,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
+          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
+            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(fiddleStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.left)}</div></div>
+            <div style={{display:"flex",alignItems:"center",gap:9}}>
+              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(fiddleStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(fiddleStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{fiddleStats.pct.toFixed(0)}%</div></div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+            </div>
+          </div>
+          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFiddle?"⌃":"⌄"}</div>
         </button>
         {showFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {fiddleDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
+          {fiddleDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
