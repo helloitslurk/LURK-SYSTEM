@@ -144,6 +144,7 @@ begin
     'membershipType', coalesce(member_row->>'membershipType', 'balance'),
     'balance', coalesce(member_row->'balance', '0'::jsonb),
     'coffeeCredits', coalesce(member_row->'coffeeCredits', '0'::jsonb),
+    'unlimited', coalesce((member_row->>'unlimited')::boolean, false),
     'history', coalesce(member_row->'history', '[]'::jsonb),
     'updatedAt', member_row->>'updatedAt'
   );
