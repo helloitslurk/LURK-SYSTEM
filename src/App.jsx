@@ -1262,7 +1262,25 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [showHistory,setShowHistory]=useState(false);
   const [expanded,setExpanded]=useState({});
   const [filter,setFilter]=useState("Tümü");
+  const [editingInstallment,setEditingInstallment]=useState(null);
+  const [installmentTotal,setInstallmentTotal]=useState("");
+  const [installmentAmount,setInstallmentAmount]=useState("");
+  const [installmentCount,setInstallmentCount]=useState("");
+  const [installmentStartDate,setInstallmentStartDate]=useState("");
   useEffect(()=>{const lock=()=>{setUnlocked(false);setPin("");};window.addEventListener("lurk-personal-leave",lock);return()=>window.removeEventListener("lurk-personal-leave",lock);},[]);
+  useEffect(()=>{
+    if(!unlocked)return;
+    const defaults=[
+      {name:"Kredi taksiti annem",id:"lurk-installment-annem"},
+      {name:"Üçüncüoğlu Emlak",id:"lurk-installment-ucuncuoglu"},
+      {name:"Beliz taksit",id:"lurk-installment-beliz"}
+    ];
+    setDebts(prev=>{
+      const existing=new Set(prev.filter(d=>d.category==="installment").map(d=>d.id));
+      const missing=defaults.filter(d=>!existing.has(d.id)).map(d=>({...d,category:"installment",group:"Taksitler",total:0,payments:[],installments:[]}));
+      return missing.length?[...prev,...missing]:prev;
+    });
+  },[unlocked]);
   const money=n=>(Number(n)||0).toLocaleString("tr-TR",{maximumFractionDigits:2})+" ₺";
   const paid=d=>(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);
   const remaining=d=>Math.max(0,(Number(d.total)||0)-paid(d));
@@ -1274,13 +1292,44 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   function payInstallment(debt,inst){const due=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));if(!due)return;setPaymentFor({debt,installment:inst,quick:true});setAmount(String(due));}
   function addInstallmentPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;const debt=paymentFor?.debt,inst=paymentFor?.installment;if(!debt||!inst||value<=0||value>Number(inst.amount)-Number(inst.paid||0)+0.001){msg("Taksit için geçerli tutar gir.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,installments:d.installments.map(i=>i.id!==inst.id?i:{...i,paid:(Number(i.paid)||0)+value}),payments:[...(d.payments||[]),{id:"pay-"+Date.now(),amount:value,date,note:note.trim(),installmentId:inst.id,installmentLabel:inst.label}]}));msg(money(value)+" taksit ödemesi kaydedildi.");setPaymentFor(null);setAmount("");setNote("");}
   function reversePayment(debt,payment){if(!window.confirm(money(payment.amount)+" ödeme hareketi geri alınsın mı?"))return;setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,payments:(d.payments||[]).filter(p=>p.id!==payment.id),installments:(d.installments||[]).map(i=>i.id===payment.installmentId?{...i,paid:Math.max(0,(Number(i.paid)||0)-Number(payment.amount||0))}:i)}));}
+  function openInstallmentEditor(debt){
+    setEditingInstallment(debt);
+    setInstallmentTotal(debt.total?String(debt.total):"");
+    setInstallmentAmount(debt.installments?.[0]?.amount?String(debt.installments[0].amount):"");
+    setInstallmentCount(debt.installments?.length?String(debt.installments.length):"");
+    setInstallmentStartDate(debt.installments?.[0]?.due||new Date().toISOString().slice(0,10));
+  }
+  function saveInstallmentPlan(){
+    const debt=editingInstallment;
+    const totalValue=Math.round(Number(String(installmentTotal).replace(",","."))*100)/100;
+    const eachValue=Math.round(Number(String(installmentAmount).replace(",","."))*100)/100;
+    const count=Number(installmentCount);
+    if(!debt||!Number.isFinite(totalValue)||totalValue<=0||!Number.isFinite(eachValue)||eachValue<=0||!Number.isInteger(count)||count<1||count>120||!/^\d{4}-\d{2}-\d{2}$/.test(installmentStartDate)){
+      msg("Toplam tutar, taksit tutarı, taksit sayısı ve ilk ödeme tarihi bilgilerini kontrol et.");return;
+    }
+    const existing=debt.installments||[];
+    let allocated=0;
+    const schedule=Array.from({length:count},(_,index)=>{
+      const amount=index===count-1?Math.round((totalValue-allocated)*100)/100:Math.min(eachValue,Math.round((totalValue-allocated)*100)/100);
+      allocated=Math.round((allocated+amount)*100)/100;
+      const date=new Date(installmentStartDate+"T12:00:00");
+      date.setMonth(date.getMonth()+index);
+      const due=date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+      const old=existing[index];
+      return {id:old?.id||"inst-"+Date.now()+"-"+index,label:(index+1)+". taksit",amount,paid:Math.min(Number(old?.paid)||0,amount),due};
+    });
+    setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,total:totalValue,installments:schedule}));
+    setEditingInstallment(null);
+    msg("Taksit planı kaydedildi.");
+  }
   if(!unlocked)return <div className="lurk-screen personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Bu sayfaya erişmek için POS PIN'ini tekrar gir.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Kontrol ediliyor…":"Kilidi Aç"}</button></form></div>;
   const paidTotal=debts.reduce((sum,d)=>sum+paid(d),0);
   const originalTotal=debts.reduce((sum,d)=>sum+Number(d.total||0),0);
   const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
-  const visibleDebts=debts.filter(d=>filter==="Tümü"||d.group===filter).sort((a,b)=>remaining(a)-remaining(b));
+  const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"].indexOf(a.id)-["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"].indexOf(b.id));
+  const visibleDebts=debts.filter(d=>d.category!=="installment"&&(filter==="Tümü"||d.group===filter)).sort((a,b)=>remaining(a)-remaining(b));
   return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
@@ -1304,6 +1353,28 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           {upcoming.length?upcoming.map(({debt,inst,amount})=><div key={debt.id+"-"+inst.id} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 0",borderTop:"1px solid "+T.border}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:T.accent,fontSize:13}}>₺</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:11,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{debt.name}</div><div style={{fontSize:10,color:T.textDim}}>{inst.label} · {inst.due}</div></div><div style={{fontSize:11,fontWeight:850,whiteSpace:"nowrap"}}>{money(amount)}</div><button onClick={()=>payInstallment(debt,inst)} style={{padding:"6px 8px",borderRadius:7,border:0,background:T.accent,color:"#061008",fontSize:10,fontWeight:850}}>Öde</button></div>):<div style={{fontSize:11,color:T.textDim,padding:"18px 0"}}>Tarihli, bekleyen taksit bulunmuyor.</div>}
         </div>
       </div>
+      <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,marginBottom:16}}>
+        <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:12}}>
+          <div style={{width:34,height:34,borderRadius:10,background:"rgba(214,168,92,.14)",display:"grid",placeItems:"center",color:"#D6A85C",fontSize:17}}>▣</div>
+          <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>Taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:9}}>
+          {installmentDebts.map(d=><div key={d.id} style={{background:T.bg3,border:"1px solid "+T.border,borderRadius:11,padding:11,minWidth:0}}>
+            <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:7}}>TOPLAM</div>
+            <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>KALAN</div>
+            <div style={{fontSize:12,fontWeight:850,color:T.accent}}>{money(remaining(d))}</div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} taksit ödendi</div>
+            <button onClick={()=>openInstallmentEditor(d)} style={{width:"100%",padding:8,marginTop:9,borderRadius:8,border:"1px solid "+T.border,background:T.bg2,color:T.text,fontSize:10,fontWeight:800}}>Planı Düzenle</button>
+            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Taksitleri Gör"}</button>}
+            {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
+              <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} kaldı</div>
+              {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Ödeme Kaydet</button>}
+            </div>)}
+          </div>)}
+        </div>
+      </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>Borçlarım <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span></div>
         <div style={{display:"flex",gap:5}}>{["Tümü","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
@@ -1322,6 +1393,14 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ Tüm ödeme hareketleri</button>
       {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:T.textDim}}>{new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
     </div>
+{editingInstallment&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Taksit planı</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{editingInstallment.name}</div>
+  <label style={{fontSize:11,color:T.textSub}}>Toplam borç (TL)</label><input type="number" min="0.01" step="0.01" value={installmentTotal} onChange={e=>setInstallmentTotal(e.target.value)} placeholder="Örn. 24000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <label style={{fontSize:11,color:T.textSub}}>Her taksit tutarı (TL)</label><input type="number" min="0.01" step="0.01" value={installmentAmount} onChange={e=>setInstallmentAmount(e.target.value)} placeholder="Örn. 4000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <label style={{fontSize:11,color:T.textSub}}>Taksit sayısı</label><input type="number" min="1" max="120" step="1" value={installmentCount} onChange={e=>setInstallmentCount(e.target.value)} placeholder="Örn. 6" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <label style={{fontSize:11,color:T.textSub}}>İlk ödeme tarihi</label><input type="date" value={installmentStartDate} onChange={e=>setInstallmentStartDate(e.target.value)} style={{width:"100%",padding:12,marginTop:5,marginBottom:14,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <div style={{fontSize:10,color:T.textDim,lineHeight:1.5,marginBottom:12}}>Taksitler aylık olarak oluşturulur. Son taksit, toplam tutarı tamamlayacak şekilde otomatik ayarlanır. Mevcut taksitlerdeki ödenmiş tutarlar mümkün olduğunca korunur.</div>
+  <button onClick={saveInstallmentPlan} style={{width:"100%",padding:13,background:T.accent,color:"#061008",border:0,borderRadius:10,fontWeight:850}}>Planı Kaydet</button><button onClick={()=>setEditingInstallment(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Vazgeç</button>
+</Modal>}
 {paymentFor&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Ödeme kaydet</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{paymentFor.name||paymentFor.debt?.name} · Kalan {money(paymentFor.debt?Math.max(0,paymentFor.installment.amount-paymentFor.installment.paid):remaining(paymentFor))}</div><label style={{fontSize:11,color:T.textSub}}>Ödeme tutarı (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="Örn. 2000" style={{width:"100%",padding:14,marginTop:6,marginBottom:12,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:20,boxSizing:"border-box"}}/><label style={{fontSize:11,color:T.textSub}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Ödeme notu" style={{width:"100%",padding:12,marginTop:6,marginBottom:14,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/><button onClick={paymentFor.debt?addInstallmentPayment:addPayment} style={{width:"100%",padding:14,background:T.accent,color:"#061008",border:0,borderRadius:11,fontWeight:850}}>Ödemeyi Kaydet</button><button onClick={()=>setPaymentFor(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Vazgeç</button></Modal>}
   </div>;
 }
