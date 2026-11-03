@@ -1228,8 +1228,8 @@ const PERSONAL_DEBT_SEED=[
   {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"2 Kasım",payments:[],installments:[]},
   {id:"kyk",group:"Nicchia",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Taksit",amount:2350,due:"",paid:0})),payments:[]},
   {id:"ucuncuoglu",group:"Nicchia",name:"Üçüncüoğlu Emlak",total:135000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
-  {id:"heyz",group:"Nicchia",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:"2026-"+String(11+i).padStart(2,"0")+"-10",paid:0})),payments:[]},
-  {id:"fiddle",group:"Kişisel",name:"Taha Fiddle III Taksit",total:35000,note:"20.000 TL ödendi · 27 Ekim 2026",payments:[],installments:[]},
+  {id:"heyz",group:"Nicchia",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
+  {id:"fiddle",group:"Kişisel",name:"Taha Fiddle III Taksit",total:55000,note:"20.000 TL ödendi · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Önceden ödenen"}],installments:[]},
   {id:"fiddle-tyres",group:"Kişisel",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-stop",group:"Kişisel",name:"Fiddle III · Ön stop lambası",total:200,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-inspection",group:"Kişisel",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
@@ -1255,7 +1255,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [filter,setFilter]=useState("Tümü");
   useEffect(()=>{const lock=()=>{setUnlocked(false);setPin("");};window.addEventListener("lurk-personal-leave",lock);return()=>window.removeEventListener("lurk-personal-leave",lock);},[]);
   const money=n=>(Number(n)||0).toLocaleString("tr-TR",{maximumFractionDigits:2})+" ₺";
-  const paid=d=>(d.payments||[]).reduce((s,p)=>s+(Number(p.amount)||0),0)+(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0);
+  const paid=d=>(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);
   const remaining=d=>Math.max(0,(Number(d.total)||0)-paid(d));
   const pct=d=>Number(d.total)>0?Math.min(100,paid(d)/Number(d.total)*100):100;
   const allHistory=debts.flatMap(d=>(d.payments||[]).map(p=>({...p,debtName:d.name,debtId:d.id}))).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
