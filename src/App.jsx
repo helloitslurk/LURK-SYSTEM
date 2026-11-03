@@ -1236,7 +1236,7 @@ const PERSONAL_DEBT_SEED=[
   {id:"fiddle-insurance",group:"Kişisel",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
   {id:"yildiz",group:"Kişisel",name:"Yıldız Sürücü Kursu",total:13000,payments:[],installments:[]},
   {id:"a2",group:"Kişisel",name:"A2 Sınav Ücreti",total:2000,payments:[],installments:[]},
-  {id:"beliz-plan",group:"Kişisel",name:"Beliz Taksit",total:69000,note:"1. taksit tamamlandı; 2. taksitte 3.000 TL ödendi, 5.000 TL kaldı.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit için önceden ödenen",installmentId:"beliz-2"}],installments:[
+  {id:"beliz-plan",group:"Kişisel",name:"Beliz Taksit",total:72000,note:"1. taksit tamamlandı; 2. taksitte 3.000 TL ödendi, 5.000 TL kaldı.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit için önceden ödenen",installmentId:"beliz-2"}],installments:[
     {id:"beliz-2",label:"2. Taksit",amount:8000,due:"2026-11-05",paid:3000},
     ...Array.from({length:8},(_,i)=>({id:"beliz-"+(i+3),label:(i+3)+". Taksit",amount:8000,due:["2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:0}))
   ]},
