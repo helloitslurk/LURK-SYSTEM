@@ -254,7 +254,7 @@ function POSApp({onLock}){
       const c=await sbGet("lurk_customers",[]);
       const ce=await sbGet("lurk_credit",[]);
       const lp=await sbGet("lurk_plus_members",[]);
-      const pd=await sbGet("lurk_personal_debts",null);
+      const pd=await sbGet("lurk_personal_debts",null).catch(()=>null);
       setTbl(Array.isArray(t)?t:[]);
       setOrd(Array.isArray(o)?o:[]);
       setCustomers(Array.isArray(c)?c:[]);
