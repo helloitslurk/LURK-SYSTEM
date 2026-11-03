@@ -748,35 +748,35 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
   }
 
   return(
-    <div className="lurk-screen lurk-tables-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Masalar</div>
-        <button onClick={()=>setShowAll(p=>!p)} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:T.textSub,fontWeight:600}}>{showAll?"Açıklar":"Tümü"}</button>
-        <button onClick={()=>setShowNew(true)} style={{background:"#34C759",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Masa</button>
+    <div className="lurk-screen lurk-tables-screen" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
+      <div style={{background:"#0B0D0A",borderBottom:"1px solid rgba(233,225,207,.13)",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:10}}>
+        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>Masalar<div style={{fontSize:9,fontWeight:750,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / FLOOR PLAN</div></div>
+        <button onClick={()=>setShowAll(p=>!p)} style={{background:"#11140F",border:"1px solid rgba(233,225,207,.2)",borderRadius:9,padding:"9px 13px",fontSize:11,cursor:"pointer",color:"#D8D2C3",fontWeight:800}}>{showAll?"Açıklar":"Tümü"}</button>
+        <button onClick={()=>setShowNew(true)} style={{background:"#E9E1CF",border:"1px solid #F6EFDF",borderRadius:9,padding:"9px 13px",fontSize:11,cursor:"pointer",color:"#171914",fontWeight:900}}>+ Masa</button>
       </div>
 
-      <div style={{padding:"14px"}}>
+      <div style={{padding:"16px 14px"}}>
         {displayed.length===0&&(
           <div style={{textAlign:"center",padding:"40px 20px",fontSize:13,color:T.textSub}}>
             {showAll?"Henüz masa yok":"Açık masa yok"}
           </div>
         )}
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11}}>
           {displayed.map(t=>{
             const total=t.order.reduce((s,o)=>s+o.price*o.qty,0);
             const isOpen=t.s==="o";
             return(
-              <div key={t.id} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
+              <div key={t.id} style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:12,padding:"15px 13px",position:"relative",overflow:"hidden",boxShadow:"0 8px 20px rgba(0,0,0,.24)"}}>
                 
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-                  <div style={{fontSize:14,fontWeight:700,color:T.text}}>{t.g||t.lbl}</div>
-                  <button onClick={()=>setDelId(t.id)} style={{background:"none",border:"none",cursor:"pointer",color:T.textDim,fontSize:16,padding:"0 0 0 8px",lineHeight:1}}>×</button>
+                  <div style={{fontSize:14,fontWeight:850,color:"#171914",letterSpacing:"-.3px"}}>{t.g||t.lbl}</div>
+                  <button onClick={()=>setDelId(t.id)} style={{background:"rgba(23,25,20,.07)",border:"1px solid rgba(23,25,20,.12)",borderRadius:7,cursor:"pointer",color:"#55594E",fontSize:16,padding:"2px 7px",lineHeight:1}}>×</button>
                 </div>
                 
-                <div style={{fontSize:12,color:isOpen?T.textSub:T.textDim,marginBottom:12}}>
+                <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.2px",color:"#686B60",marginBottom:5}}>{isOpen?"AÇIK ADİSYON":"BOŞ MASA"}</div><div style={{fontSize:19,fontWeight:950,letterSpacing:"-.5px",color:isOpen?"#24452B":"#77796E",marginBottom:12}}>
                   {isOpen?fm(total):"Boş"}
                 </div>
-                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"9px",background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:10,color:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"10px",background:isOpen?"#24452B":"#171914",border:"1px solid "+(isOpen?"#365C3B":"#35382F"),borderRadius:8,color:"#F0EBDD",fontSize:11,fontWeight:850,letterSpacing:".2px",cursor:"pointer"}}>
                   {isOpen?"Siparişe Gir →":"Aç →"}
                 </button>
               </div>
