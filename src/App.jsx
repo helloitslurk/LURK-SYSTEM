@@ -587,7 +587,7 @@ function POSApp({onLock}){
         }
       `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
-      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(52,199,89,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
+      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV} onLock={onLock} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible}/>}
       {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
@@ -773,10 +773,10 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
                   <button onClick={()=>setDelId(t.id)} style={{background:"rgba(23,25,20,.07)",border:"1px solid rgba(23,25,20,.12)",borderRadius:7,cursor:"pointer",color:"#55594E",fontSize:16,padding:"2px 7px",lineHeight:1}}>×</button>
                 </div>
                 
-                <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.2px",color:"#686B60",marginBottom:5}}>{isOpen?"AÇIK ADİSYON":"BOŞ MASA"}</div><div style={{fontSize:19,fontWeight:950,letterSpacing:"-.5px",color:isOpen?"#34C759":"#77796E",marginBottom:12}}>
+                <div style={{fontSize:10,fontWeight:800,letterSpacing:"1.2px",color:"#686B60",marginBottom:5}}>{isOpen?"AÇIK ADİSYON":"BOŞ MASA"}</div><div style={{fontSize:19,fontWeight:950,letterSpacing:"-.5px",color:isOpen?"#24452B":"#77796E",marginBottom:12}}>
                   {isOpen?fm(total):"Boş"}
                 </div>
-                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"10px",background:isOpen?"#34C759":"#171914",border:"1px solid "+(isOpen?"#248A3D":"#35382F"),borderRadius:8,color:"#F0EBDD",fontSize:11,fontWeight:850,letterSpacing:".2px",cursor:"pointer"}}>
+                <button onClick={()=>{setSel(t.id);setV("order");}} style={{width:"100%",padding:"10px",background:isOpen?"#24452B":"#171914",border:"1px solid "+(isOpen?"#365C3B":"#35382F"),borderRadius:8,color:"#F0EBDD",fontSize:11,fontWeight:850,letterSpacing:".2px",cursor:"pointer"}}>
                   {isOpen?"Siparişe Gir →":"Aç →"}
                 </button>
               </div>
@@ -1110,7 +1110,7 @@ function MonthReviewScreen({orders,tables,setV}){
         </select>
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
           <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} CİROSU</div>
-          <div style={{fontSize:31,fontWeight:950,color:"#34C759",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
+          <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
           <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}</div>
         </div>
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
@@ -1119,15 +1119,15 @@ function MonthReviewScreen({orders,tables,setV}){
           <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,fontWeight:800}}>
             {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
           </select>
-          <div style={{fontSize:25,fontWeight:950,color:"#34C759",letterSpacing:"-.8px",marginTop:12}}>{fm(yearRevenue)}</div>
+          <div style={{fontSize:25,fontWeight:950,color:"#A8C17D",letterSpacing:"-.8px",marginTop:12}}>{fm(yearRevenue)}</div>
           <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Seçilen yılın kapanmış adisyon cirosu</div>
         </div>
         <div style={{fontSize:15,fontWeight:900,color:"#F0EBDD",letterSpacing:"-.3px",marginBottom:5}}>En çok kazandıran 5 ürün</div>
         <div style={{fontSize:10,color:"#92958A",marginBottom:11}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
         {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:"linear-gradient(145deg,#EDE5D4,#E3DAC6)",border:"1px solid rgba(255,255,255,.5)",borderRadius:10,padding:13,marginBottom:8}}>
-          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(52,199,89,.12)",color:"#34C759",fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
+          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(36,69,43,.12)",color:"#24452B",fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
           <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:850,color:"#171914"}}>{p.name}</div><div style={{fontSize:10,color:"#686B60",marginTop:3}}>{p.qty} adet satıldı</div></div>
-          <div style={{fontSize:13,fontWeight:950,color:"#34C759",textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
+          <div style={{fontSize:13,fontWeight:950,color:"#24452B",textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
         </div>):<div style={{padding:20,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub,fontSize:12}}>Bu ay için ürün satışı kaydı bulunamadı.</div>}
       </div>
     </div>
@@ -1187,7 +1187,7 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
         ].map((s,i)=>(
           <div key={i} style={{background:"#E9E1CF",color:"#171914",borderRadius:11,padding:"13px 10px",border:"1px solid #F6EFDF",minWidth:0,boxShadow:"0 7px 18px rgba(0,0,0,.2)"}}>
             <div style={{fontSize:9,color:"#62665A",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
-            <div style={{fontSize:13,fontWeight:950,color:i===0?"#34C759":"#171914",letterSpacing:"-.4px",whiteSpace:"nowrap"}}>{s.val.replace(" TL","")}</div>
+            <div style={{fontSize:13,fontWeight:950,color:i===0?"#24452B":"#171914",letterSpacing:"-.4px",whiteSpace:"nowrap"}}>{s.val.replace(" TL","")}</div>
             <div style={{fontSize:9,color:"#77796E",marginTop:3,fontWeight:750,letterSpacing:"1px"}}>TL</div>
           </div>
         ))}
@@ -1749,8 +1749,8 @@ function LurkPlusPortal({token}){
           <button onClick={refresh} style={{padding:"9px 13px",background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.15)",borderRadius:11,color:"#F1EEE6",fontSize:11,cursor:"pointer"}}>↻ Güncelle</button>
         </div>
         <div style={{background:"linear-gradient(145deg,#111411,#0D100D)",border:"1px solid rgba(255,255,255,.12)",borderRadius:16,padding:"0 14px"}}>
-          {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#34C759"}}>♧</div>Henüz bakiye hareketi yok.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
-            <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#34C759",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
+          {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>Henüz bakiye hareketi yok.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
+            <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#91B783",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
             <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?"Kahve hakkı kullanıldı":h.type==="credit_refund"?"Kahve hakkı iade edildi":h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>İşlem sonrası: {member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(Number(h.balanceAfter)||0)}</div></div>
             <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF6B61":"#34C759",whiteSpace:"nowrap"}}>{member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
           </div>)}
