@@ -1261,6 +1261,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [note,setNote]=useState("");
   const [showHistory,setShowHistory]=useState(false);
   const [expanded,setExpanded]=useState({});
+  const [showInstallments,setShowInstallments]=useState(false);
   const [filter,setFilter]=useState("Tümü");
   const [editingInstallment,setEditingInstallment]=useState(null);
   const [installmentTotal,setInstallmentTotal]=useState("");
@@ -1354,11 +1355,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         </div>
       </div>
       <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,marginBottom:16}}>
-        <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:12}}>
+        <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
           <div style={{width:34,height:34,borderRadius:10,background:"rgba(214,168,92,.14)",display:"grid",placeItems:"center",color:"#D6A85C",fontSize:17}}>▣</div>
           <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>Taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:9}}>
+          <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showInstallments?"⌃":"⌄"}</div>
+        </button>
+        {showInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}> 
           {installmentDebts.map(d=><div key={d.id} style={{background:T.bg3,border:"1px solid "+T.border,borderRadius:11,padding:11,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:7}}>TOPLAM</div>
@@ -1373,7 +1375,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Ödeme Kaydet</button>}
             </div>)}
           </div>)}
-        </div>
+        </div>}
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>Borçlarım <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span></div>
