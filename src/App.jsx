@@ -1270,16 +1270,16 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   useEffect(()=>{const lock=()=>{setUnlocked(false);setPin("");};window.addEventListener("lurk-personal-leave",lock);return()=>window.removeEventListener("lurk-personal-leave",lock);},[]);
   useEffect(()=>{
     if(!unlocked)return;
-    const defaults=[
-      {name:"Kredi taksiti annem",id:"lurk-installment-annem"},
-      {name:"Üçüncüoğlu Emlak",id:"lurk-installment-ucuncuoglu"},
-      {name:"Beliz taksit",id:"lurk-installment-beliz"}
-    ];
-    setDebts(prev=>{
-      const existing=new Set(prev.filter(d=>d.category==="installment").map(d=>d.id));
-      const missing=defaults.filter(d=>!existing.has(d.id)).map(d=>({...d,category:"installment",group:"Taksitler",total:0,payments:[],installments:[]}));
-      return missing.length?[...prev,...missing]:prev;
-    });
+    const movedIds=new Set(["ruhsat","ucuncuoglu","beliz-plan"]);
+    const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
+    setDebts(prev=>prev
+      .filter(d=>!placeholderIds.has(d.id))
+      .map(d=>!movedIds.has(d.id)?d:{
+        ...d,
+        name:d.id==="ruhsat"?"Kredi Taksiti Annem":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":"Beliz Taksit",
+        category:"installment",
+        group:"Taksitler"
+      }));
   },[unlocked]);
   const money=n=>(Number(n)||0).toLocaleString("tr-TR",{maximumFractionDigits:2})+" ₺";
   const paid=d=>(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);
