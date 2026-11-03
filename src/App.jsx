@@ -260,7 +260,7 @@ function POSApp({onLock}){
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
       setLurkPlusMembers(Array.isArray(lp)?lp:[]);
-      setPersonalDebts(Array.isArray(pd)?pd:PERSONAL_DEBT_SEED);
+      setPersonalDebts((Array.isArray(pd)?pd:PERSONAL_DEBT_SEED).map(x=>x.id==="ucuncuoglu"?{...x,total:130000,installments:(x.installments||[]).map((it,i)=>i===8?{...it,amount:10000}:it)}:x));
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -1227,7 +1227,7 @@ const PERSONAL_DEBT_SEED=[
   {id:"mozaik",group:"Nicchia",name:"Mozaik İş Sağlığı",total:7000,payments:[],installments:[]},
   {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"2 Kasım",payments:[],installments:[]},
   {id:"kyk",group:"Nicchia",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Taksit",amount:2350,due:"",paid:0})),payments:[]},
-  {id:"ucuncuoglu",group:"Nicchia",name:"Üçüncüoğlu Emlak",total:135000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
+  {id:"ucuncuoglu",group:"Nicchia",name:"Üçüncüoğlu Emlak",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
   {id:"heyz",group:"Nicchia",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
   {id:"fiddle",group:"Kişisel",name:"Taha Fiddle III Taksit",total:55000,note:"20.000 TL ödendi · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Önceden ödenen"}],installments:[]},
   {id:"fiddle-tyres",group:"Kişisel",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
