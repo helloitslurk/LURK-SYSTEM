@@ -1286,7 +1286,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
       .filter(d=>!placeholderIds.has(d.id))
-      .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d)
+      .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d.id==="yemeksepeti"&&Number(d.total)===3879&&(d.payments||[]).length===0?{...d,total:12000,payments:[{id:"yemeksepeti-paid-history",amount:8121,date:null,note:"Önceden ödenen tutar (tarih belirtilmedi)",historical:true}]}:d)
       .map(d=>movedIds.has(d.id)?{
         ...d,
         name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
