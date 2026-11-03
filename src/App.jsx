@@ -1280,8 +1280,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   useEffect(()=>{const lock=()=>{setUnlocked(false);setPin("");};window.addEventListener("lurk-personal-leave",lock);return()=>window.removeEventListener("lurk-personal-leave",lock);},[]);
   useEffect(()=>{
     if(!unlocked)return;
-    const movedIds=new Set(["ruhsat","ucuncuoglu","beliz-plan","heyz"]);
-    const lurkIds=new Set(["holdon","yemeksepeti","mozaik"]);
+    const movedIds=new Set(["ucuncuoglu","beliz-plan"]);
+    const lurkIds=new Set(["holdon","yemeksepeti","mozaik","ruhsat","heyz"]);
     const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
