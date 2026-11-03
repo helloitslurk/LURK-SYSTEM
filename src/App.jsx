@@ -1261,6 +1261,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [note,setNote]=useState("");
   const [showHistory,setShowHistory]=useState(false);
   const [expanded,setExpanded]=useState({});
+  const [showLurk,setShowLurk]=useState(false);
   const [showInstallments,setShowInstallments]=useState(false);
   const [showFiddle,setShowFiddle]=useState(false);
   const [filter,setFilter]=useState("Tümü");
@@ -1273,6 +1274,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   useEffect(()=>{
     if(!unlocked)return;
     const movedIds=new Set(["ruhsat","ucuncuoglu","beliz-plan","heyz"]);
+    const lurkIds=new Set(["holdon","yemeksepeti","mozaik"]);
     const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
@@ -1282,7 +1284,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
         category:"installment",
         group:"Taksitler"
-      }:fiddleIds.has(d.id)?{
+      } :lurkIds.has(d.id)?{...d,category:"lurk",folder:"LURK"}:fiddleIds.has(d.id)?{
         ...d,
         name:d.id==="fiddle"?"Fiddle III Taksit":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Ön Stop Lambası":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Sınav Ücreti",
         category:"fiddle",
@@ -1336,10 +1338,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
+  const lurkOrder=["holdon","yemeksepeti","mozaik"];
+  const lurkDebts=debts.filter(d=>d.category==="lurk").sort((a,b)=>lurkOrder.indexOf(a.id)-lurkOrder.indexOf(b.id));
   const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(a.id)-["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(b.id));
   const fiddleOrder=["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"];
   const fiddleDebts=debts.filter(d=>d.category==="fiddle").sort((a,b)=>fiddleOrder.indexOf(a.id)-fiddleOrder.indexOf(b.id));
-  const visibleDebts=debts.filter(d=>d.category!=="installment"&&d.category!=="fiddle"&&(filter==="Tümü"||d.group===filter)).sort((a,b)=>remaining(a)-remaining(b));
+  const visibleDebts=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&(filter==="Tümü"||d.group===filter)).sort((a,b)=>remaining(a)-remaining(b));
   return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
@@ -1347,6 +1351,28 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Kilitle</button>
     </div>
     <div style={{padding:16,maxWidth:1280,margin:"0 auto"}}>
+      <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,marginBottom:16}}>
+        <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
+          <div style={{width:34,height:34,borderRadius:10,background:"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:T.accent,fontSize:16}}>◈</div>
+          <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>LURK</div><div style={{fontSize:10,color:T.textDim}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
+          <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showLurk?"⌃":"⌄"}</div>
+        </button>
+        {showLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
+          {lurkDebts.map(d=><div key={d.id} style={{background:T.bg3,border:"1px solid "+T.border,borderRadius:11,padding:11,minWidth:0}}>
+            <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
+            <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
+            <div style={{height:5,background:"rgba(255,255,255,.08)",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:8}}/></div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
+            <div style={{display:"flex",gap:6,marginTop:9}}>
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:T.accent,color:"#061008",fontSize:10,fontWeight:850}}>+ Ödeme</button>}
+              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:T.bg2,color:T.textSub,fontSize:9}}>Hareketler</button>
+            </div>
+            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
+          </div>)}
+        </div>}
+      </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
         {[{label:"TOPLAM BORÇ",value:money(originalTotal)},{label:"ÖDENEN",value:money(paidTotal)},{label:"KALAN",value:money(total)},{label:"ÖDEME ORANI",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
       </div>
