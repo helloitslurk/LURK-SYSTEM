@@ -111,7 +111,7 @@ async function sbGet(key,fb){
 }
 async function sbSetNow(key,val){
   const token=posSessionToken();
-  if(!token){console.error("POS oturumu bulunamadı.");return false;}
+  if(!token){lastStorageWriteError="POS oturumu bulunamadı. PIN ile yeniden giriş yap.";console.error(lastStorageWriteError);return false;}
   let lastError;
   for(let attempt=0;attempt<3;attempt++){
     try{
@@ -226,7 +226,7 @@ function POSApp({onLock}){
       if(!success){
         failedWrites.current[k]=v;
         pendingSaves.failed=true;
-        msg("Kayıt başarısız. Yeniden denemek için üstteki uyarıya dokun.");
+        msg("Kayıt başarısız: "+(lastStorageWriteError||"Bilinmeyen kayıt hatası"));
       }else{
         delete failedWrites.current[k];
       }
