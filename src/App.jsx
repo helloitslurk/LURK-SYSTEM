@@ -1351,23 +1351,23 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Kilitle</button>
     </div>
     <div style={{padding:16,maxWidth:1280,margin:"0 auto"}}>
-      <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,marginBottom:16}}>
+      <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
-          <div style={{width:34,height:34,borderRadius:10,background:"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:T.accent,fontSize:16}}>◈</div>
+          <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:16}}>◈</div>
           <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>LURK</div><div style={{fontSize:10,color:T.textDim}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
           <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showLurk?"⌃":"⌄"}</div>
         </button>
         {showLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {lurkDebts.map(d=><div key={d.id} style={{background:T.bg3,border:"1px solid "+T.border,borderRadius:11,padding:11,minWidth:0}}>
+          {lurkDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
-            <div style={{height:5,background:"rgba(255,255,255,.08)",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:8}}/></div>
+            <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:T.accent,color:"#061008",fontSize:10,fontWeight:850}}>+ Ödeme</button>}
-              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:T.bg2,color:T.textSub,fontSize:9}}>Hareketler</button>
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Ödeme</button>}
+              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
@@ -1386,24 +1386,24 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         </div>
         <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,minWidth:0}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}><div style={{fontSize:13,fontWeight:850}}>Yaklaşan taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ödenmemiş</div></div>
-          {upcoming.length?upcoming.map(({debt,inst,amount})=><div key={debt.id+"-"+inst.id} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 0",borderTop:"1px solid "+T.border}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:T.accent,fontSize:13}}>₺</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:11,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{debt.name}</div><div style={{fontSize:10,color:T.textDim}}>{inst.label} · {inst.due}</div></div><div style={{fontSize:11,fontWeight:850,whiteSpace:"nowrap"}}>{money(amount)}</div><button onClick={()=>payInstallment(debt,inst)} style={{padding:"6px 8px",borderRadius:7,border:0,background:T.accent,color:"#061008",fontSize:10,fontWeight:850}}>Öde</button></div>):<div style={{fontSize:11,color:T.textDim,padding:"18px 0"}}>Tarihli, bekleyen taksit bulunmuyor.</div>}
+          {upcoming.length?upcoming.map(({debt,inst,amount})=><div key={debt.id+"-"+inst.id} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 0",borderTop:"1px solid "+T.border}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:T.accent,fontSize:13}}>₺</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:11,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{debt.name}</div><div style={{fontSize:10,color:T.textDim}}>{inst.label} · {inst.due}</div></div><div style={{fontSize:11,fontWeight:850,whiteSpace:"nowrap"}}>{money(amount)}</div><button onClick={()=>payInstallment(debt,inst)} style={{padding:"6px 8px",borderRadius:7,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>Öde</button></div>):<div style={{fontSize:11,color:T.textDim,padding:"18px 0"}}>Tarihli, bekleyen taksit bulunmuyor.</div>}
         </div>
       </div>
-      <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,marginBottom:16}}>
+      <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
-          <div style={{width:34,height:34,borderRadius:10,background:"rgba(214,168,92,.14)",display:"grid",placeItems:"center",color:"#D6A85C",fontSize:17}}>▣</div>
+          <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:17}}>▣</div>
           <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>Taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
           <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showInstallments?"⌃":"⌄"}</div>
         </button>
         {showInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}> 
-          {installmentDebts.map(d=><div key={d.id} style={{background:T.bg3,border:"1px solid "+T.border,borderRadius:11,padding:11,minWidth:0}}>
+          {installmentDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:7}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>KALAN</div>
             <div style={{fontSize:12,fontWeight:850,color:T.accent}}>{money(remaining(d))}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} taksit ödendi</div>
-            <button onClick={()=>openInstallmentEditor(d)} style={{width:"100%",padding:8,marginTop:9,borderRadius:8,border:"1px solid "+T.border,background:T.bg2,color:T.text,fontSize:10,fontWeight:800}}>Planı Düzenle</button>
+            <button onClick={()=>openInstallmentEditor(d)} style={{width:"100%",padding:8,marginTop:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Planı Düzenle</button>
             {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Taksitleri Gör"}</button>}
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
               <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} kaldı</div>
@@ -1412,23 +1412,23 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>)}
         </div>}
       </div>
-      <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,marginBottom:16}}>
+      <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
-          <div style={{width:34,height:34,borderRadius:10,background:"rgba(109,158,172,.15)",display:"grid",placeItems:"center",color:"#8db9c5",fontSize:16}}>◈</div>
+          <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:16}}>◈</div>
           <div style={{flex:1,minWidth:0}}><div style={{fontSize:15,fontWeight:850}}>FIDDLE III</div><div style={{fontSize:10,color:T.textDim}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
           <div style={{fontSize:12,color:T.textSub,fontWeight:800}}>{showFiddle?"⌃":"⌄"}</div>
         </button>
         {showFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {fiddleDebts.map(d=><div key={d.id} style={{background:T.bg3,border:"1px solid "+T.border,borderRadius:11,padding:11,minWidth:0}}>
+          {fiddleDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#192c22,#14231c)",border:"1px solid #304b3b",borderRadius:11,padding:11,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
-            <div style={{height:5,background:"rgba(255,255,255,.08)",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:8}}/></div>
+            <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:T.accent,color:"#061008",fontSize:10,fontWeight:850}}>+ Ödeme</button>}
-              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:T.bg2,color:T.textSub,fontSize:9}}>Hareketler</button>
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Ödeme</button>}
+              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
