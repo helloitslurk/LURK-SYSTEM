@@ -1163,52 +1163,52 @@ function ReportsScreen({orders,logs,creditEntries,setV}){
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
   return(
-    <div className="lurk-screen lurk-reports-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
+    <div className="lurk-screen lurk-reports-screen" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
+      <div style={{background:"#0B0D0A",borderBottom:"1px solid rgba(233,225,207,.13)",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:11}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Raporlar</div><button onClick={exportMonthCsv} style={{background:T.bg2,color:T.accentL,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,padding:"9px 11px",fontSize:12,fontWeight:700,cursor:"pointer"}}>↓ CSV</button>
+        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>Raporlar<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / SALES LEDGER</div></div><button onClick={exportMonthCsv} style={{background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
       </div>
 
       {/* Ay seçici */}
-      <div style={{display:"flex",gap:6,padding:"12px 14px",overflowX:"auto",borderBottom:"0.5px solid rgba(255,255,255,0.06)"}}>
+      <div style={{display:"flex",gap:7,padding:"14px 14px",overflowX:"auto",borderBottom:"1px solid rgba(233,225,207,.1)"}}>
         {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"6px 14px",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#34C759":"rgba(255,255,255,0.05)",color:sel===m?"#fff":T.textSub,borderColor:sel===m?"#34C759":"rgba(255,255,255,0.1)"}}>
+          <button key={m} onClick={()=>setSel(m)} style={{padding:"8px 15px",border:"1px solid "+(sel===m?"#E9E1CF":"rgba(233,225,207,.18)"),borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:800,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#E9E1CF":"#11140F",color:sel===m?"#171914":"#B8B8AC",boxShadow:sel===m?"0 3px 12px rgba(0,0,0,.22)":"none"}}>
             {ml(m)}
           </button>
         ))}
       </div>
 
       {/* Stat kartlar */}
-      <div style={{padding:"14px",display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
+      <div style={{padding:"15px 14px",display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
         {[
           {label:"Satış",val:fm(totalInc),color:T.accentL},
           {label:"Nakit tahsilat",val:fm(totalCash),color:T.text},
           {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
         ].map((s,i)=>(
-          <div key={i} style={{background:T.bg2,borderRadius:14,padding:"12px",border:"0.5px solid rgba(255,255,255,0.07)",minWidth:0}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.8px",marginBottom:6,whiteSpace:"nowrap"}}>{s.label}</div>
-            <div style={{fontSize:13,fontWeight:800,color:s.color,letterSpacing:"-0.3px",whiteSpace:"nowrap"}}>{s.val.replace(" TL","")}</div>
-            <div style={{fontSize:9,color:T.textDim,marginTop:2}}>TL</div>
+          <div key={i} style={{background:"#E9E1CF",color:"#171914",borderRadius:11,padding:"13px 10px",border:"1px solid #F6EFDF",minWidth:0,boxShadow:"0 7px 18px rgba(0,0,0,.2)"}}>
+            <div style={{fontSize:9,color:"#62665A",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
+            <div style={{fontSize:13,fontWeight:950,color:i===0?"#24452B":"#171914",letterSpacing:"-.4px",whiteSpace:"nowrap"}}>{s.val.replace(" TL","")}</div>
+            <div style={{fontSize:9,color:"#77796E",marginTop:3,fontWeight:750,letterSpacing:"1px"}}>TL</div>
           </div>
         ))}
       </div>
 
       {/* Günler */}
       <div style={{padding:"0 14px 14px"}}>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Günler</div>
+        <div style={{fontSize:10,fontWeight:850,color:"#B9B7A9",textTransform:"uppercase",letterSpacing:"2px",marginBottom:12}}>GÜNLÜK KAYITLAR</div>
         {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>Bu ay kayıt yok</div>}
         {days.map(day=>{
           const isExp=exp===day.date;
           const log=day.log;
           return(
-            <div key={day.date} style={{background:T.bg2,borderRadius:14,marginBottom:8,border:"0.5px solid rgba(255,255,255,0.07)",overflow:"hidden"}}>
-              <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px",cursor:"pointer"}}>
+            <div key={day.date} style={{background:"linear-gradient(145deg,#11140F,#0D100D)",borderRadius:12,marginBottom:9,border:"1px solid rgba(233,225,207,.15)",overflow:"hidden",boxShadow:"0 5px 15px rgba(0,0,0,.16)"}}>
+              <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"15px 14px",cursor:"pointer"}}>
                 <div>
-                  <div style={{fontSize:14,fontWeight:600,color:T.text}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-                  <div style={{fontSize:11,color:T.textSub,marginTop:3}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
+                  <div style={{fontSize:14,fontWeight:800,color:"#F0EBDD",letterSpacing:"-.2px"}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
+                  <div style={{fontSize:10,color:"#92958A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
                 </div>
                 <div style={{textAlign:"right"}}>
-                  <div style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(day.inc)}</div>
+                  <div style={{fontSize:15,fontWeight:900,color:"#A8C17D"}}>{fm(day.inc)}</div>
                   <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
                 </div>
               </div>
