@@ -334,7 +334,7 @@ function POSApp({onLock}){
     const isCoffeeMember=member?.membershipType==="coffee";
     const charged=!!member&&(!isCoffeeMember||isCoffeeOrMatcha);
     if(member&&isCoffeeMember&&isCoffeeOrMatcha&&(Number(member.coffeeCredits)||0)<1){msg("Kahve hakkı kalmadı. "+member.name);return false;}
-    if(member&&!isCoffeeMember&&(Number(member.balance)||0)<Number(item.price||0)){msg("LURK+ bakiyesi yetersiz. "+member.name+" · "+fm(member.balance));return false;}
+    if(member&&!isCoffeeMember&&!member.unlimited&&(Number(member.balance)||0)<Number(item.price||0)){msg("LURK+ bakiyesi yetersiz. "+member.name+" · "+fm(member.balance));return false;}
     if(charged)setLurkPlusMembers(prev=>prev.map(m=>{
       if(m.id!==member.id)return m;
       const date=new Date().toISOString();
@@ -342,8 +342,8 @@ function POSApp({onLock}){
         const nextCredits=Math.max(0,(Number(m.coffeeCredits)||0)-1);
         return{...m,coffeeCredits:nextCredits,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_use",date,amount:1,balanceAfter:nextCredits,itemName:item.name,table:table?.lbl||""}]};
       }
-      const nextBalance=Math.max(0,Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100);
-      return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"purchase",date,amount:Number(item.price)||0,balanceAfter:nextBalance,itemName:item.name,table:table?.lbl||""}]};
+      const nextBalance=m.unlimited?(Number(m.balance)||0):Math.max(0,Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100);
+      return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"purchase",date,amount:Number(item.price)||0,balanceAfter:m.unlimited?"Sınırsız":nextBalance,itemName:item.name,table:table?.lbl||""}]};
     }));
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
@@ -1580,6 +1580,11 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
 
 /* ─── LURK+ ─── */
 function LurkPlusScreen({members,setMembers,msg,setV}){
+  useEffect(()=>{
+    if(members.some(m=>m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"))return;
+    const createdAt=new Date().toISOString();
+    setMembers(prev=>prev.some(m=>m.name.trim().toLocaleLowerCase("tr-TR")==="beliz")?prev:[{id:uid(),name:"Beliz",membershipType:"balance",balance:0,unlimited:true,coffeeCredits:0,createdAt,history:[]} ,...prev]);
+  },[members,setMembers]);
   const [linkBusy,setLinkBusy]=useState(false);
   const [issuedLinks,setIssuedLinks]=useState({});
   async function manageLink(member,action){
@@ -1666,9 +1671,9 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Üye Ekle</button>
       </div>
       <div style={{padding:14}}>
-        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>setSelectedMemberId(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kahve hakkı üyeliği":"Bakiye üyeliği"} · Hareketleri gör ›</div></div></button>)}
+        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>setSelectedMemberId(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:T.accentL,whiteSpace:"nowrap"}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Sınırsız":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kahve hakkı üyeliği":"Bakiye üyeliği"} · Hareketleri gör ›</div></div></button>)}
         {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kalan kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":" "+fm(m.balance)}</div></div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kalan kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Sınırsız kullanım":" "+fm(m.balance)}</div></div>
           {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Kahve hakkı ekle</button>}
           <div style={{background:"rgba(52,199,89,.07)",border:"1px solid rgba(52,199,89,.18)",borderRadius:11,padding:11,marginBottom:13}}>
             <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Müşteri bağlantısı</div>
