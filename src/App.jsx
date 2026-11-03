@@ -1463,7 +1463,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"flex",alignItems:"center",gap:16,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
-            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
+            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>🏍️</div>
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
@@ -1517,7 +1517,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12}}>
         {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:15,padding:15,minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
           <div style={{display:"flex",alignItems:"center",gap:11}}>
-            <div style={{width:42,height:42,borderRadius:12,background:d.group==="Kişisel"?"rgba(52,199,89,.13)":"rgba(109,158,172,.15)",display:"grid",placeItems:"center",color:d.group==="Kişisel"?"#54d783":"#8db9c5",fontSize:18,flexShrink:0}}>₺</div>
+            {!["beliz","ryze","hepsiburada-limiti","ahmet-bakkal","vodafone","hepsifinans","kyk"].includes(d.id)&&(<div style={{width:42,height:42,borderRadius:12,background:d.group==="Kişisel"?"rgba(52,199,89,.13)":"rgba(109,158,172,.15)",display:"grid",placeItems:"center",color:d.group==="Kişisel"?"#54d783":"#8db9c5",fontSize:18,flexShrink:0}}>₺</div>)}
             <div style={{flex:1,minWidth:0}}>
               <div style={{display:"flex",alignItems:"center",gap:7,minWidth:0}}>
                 <span title="Sürükleyerek sırala" style={{fontSize:12,color:T.textDim,cursor:"grab",flexShrink:0}}>⠿</span>
