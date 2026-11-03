@@ -1389,22 +1389,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>)}
         </div>}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
-        {[{label:"TOPLAM BORÇ",value:money(originalTotal)},{label:"ÖDENEN",value:money(paidTotal)},{label:"KALAN",value:money(total)},{label:"ÖDEME ORANI",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",gap:12,marginBottom:14}}>
-        <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,minWidth:0}}>
-          <div style={{fontSize:13,fontWeight:850,marginBottom:12}}>Borç dağılımı</div>
-          <div style={{display:"flex",alignItems:"center",gap:18,flexWrap:"wrap"}}>
-            <div style={{width:112,height:112,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(groupTotals[0].value/groupTotal*360)+"deg,#6d9eac "+(groupTotals[0].value/groupTotal*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:76,height:76,borderRadius:"50%",background:T.bg2,display:"grid",placeItems:"center",textAlign:"center"}}><div><div style={{fontSize:9,color:T.textSub}}>KALAN</div><div style={{fontSize:12,fontWeight:850}}>{money(total)}</div></div></div></div>
-            <div style={{display:"grid",gap:10,flex:1,minWidth:120}}>{groupTotals.map((g,i)=><div key={g.group} style={{display:"flex",alignItems:"center",gap:8,fontSize:11}}><span style={{width:9,height:9,borderRadius:3,background:i===0?"#54d783":"#6d9eac"}}/><span style={{flex:1,color:T.textSub}}>{g.group}</span><b>{money(g.value)}</b><span style={{color:T.textDim}}>{Math.round(g.value/groupTotal*100)}%</span></div>)}</div>
-          </div>
-        </div>
-        <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,minWidth:0}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}><div style={{fontSize:13,fontWeight:850}}>Yaklaşan taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ödenmemiş</div></div>
-          {upcoming.length?upcoming.map(({debt,inst,amount})=><div key={debt.id+"-"+inst.id} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 0",borderTop:"1px solid "+T.border}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:T.accent,fontSize:13}}>₺</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:11,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{debt.name}</div><div style={{fontSize:10,color:T.textDim}}>{inst.label} · {inst.due}</div></div><div style={{fontSize:11,fontWeight:850,whiteSpace:"nowrap"}}>{money(amount)}</div><button onClick={()=>payInstallment(debt,inst)} style={{padding:"6px 8px",borderRadius:7,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>Öde</button></div>):<div style={{fontSize:11,color:T.textDim,padding:"18px 0"}}>Tarihli, bekleyen taksit bulunmuyor.</div>}
-        </div>
-      </div>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"flex",alignItems:"center",gap:9,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer"}}>
           <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:17}}>▣</div>
@@ -1458,6 +1442,22 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
         </div>}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
+        {[{label:"TOPLAM BORÇ",value:money(originalTotal)},{label:"ÖDENEN",value:money(paidTotal)},{label:"KALAN",value:money(total)},{label:"ÖDEME ORANI",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",gap:12,marginBottom:14}}>
+        <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,minWidth:0}}>
+          <div style={{fontSize:13,fontWeight:850,marginBottom:12}}>Borç dağılımı</div>
+          <div style={{display:"flex",alignItems:"center",gap:18,flexWrap:"wrap"}}>
+            <div style={{width:112,height:112,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(groupTotals[0].value/groupTotal*360)+"deg,#6d9eac "+(groupTotals[0].value/groupTotal*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:76,height:76,borderRadius:"50%",background:T.bg2,display:"grid",placeItems:"center",textAlign:"center"}}><div><div style={{fontSize:9,color:T.textSub}}>KALAN</div><div style={{fontSize:12,fontWeight:850}}>{money(total)}</div></div></div></div>
+            <div style={{display:"grid",gap:10,flex:1,minWidth:120}}>{groupTotals.map((g,i)=><div key={g.group} style={{display:"flex",alignItems:"center",gap:8,fontSize:11}}><span style={{width:9,height:9,borderRadius:3,background:i===0?"#54d783":"#6d9eac"}}/><span style={{flex:1,color:T.textSub}}>{g.group}</span><b>{money(g.value)}</b><span style={{color:T.textDim}}>{Math.round(g.value/groupTotal*100)}%</span></div>)}</div>
+          </div>
+        </div>
+        <div style={{background:T.bg2,border:"1px solid "+T.border,borderRadius:14,padding:14,minWidth:0}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}><div style={{fontSize:13,fontWeight:850}}>Yaklaşan taksitler</div><div style={{fontSize:10,color:T.textDim}}>Ödenmemiş</div></div>
+          {upcoming.length?upcoming.map(({debt,inst,amount})=><div key={debt.id+"-"+inst.id} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 0",borderTop:"1px solid "+T.border}}><div style={{width:28,height:28,borderRadius:8,background:"rgba(52,199,89,.12)",display:"grid",placeItems:"center",color:T.accent,fontSize:13}}>₺</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:11,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{debt.name}</div><div style={{fontSize:10,color:T.textDim}}>{inst.label} · {inst.due}</div></div><div style={{fontSize:11,fontWeight:850,whiteSpace:"nowrap"}}>{money(amount)}</div><button onClick={()=>payInstallment(debt,inst)} style={{padding:"6px 8px",borderRadius:7,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>Öde</button></div>):<div style={{fontSize:11,color:T.textDim,padding:"18px 0"}}>Tarihli, bekleyen taksit bulunmuyor.</div>}
+        </div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>Borçlarım <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:T.textDim,fontWeight:500,marginTop:2}}>⠿ Kartları sürükleyerek sıralayabilirsin</div></div>
