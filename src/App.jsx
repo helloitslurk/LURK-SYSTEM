@@ -1098,36 +1098,36 @@ function MonthReviewScreen({orders,tables,setV}){
   const yearRevenue=orders.filter(o=>(o.date||"").startsWith(year+"-")).reduce((s,o)=>s+(Number(o.total)||0),0);
   const yearOptions=[...new Set([String(now.getFullYear()),...orders.map(o=>(o.date||"").slice(0,4)).filter(y=>/^\d{4}$/.test(y))])].sort((a,b)=>b.localeCompare(a));
   return(
-    <div className="lurk-screen lurk-reports-screen">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px",display:"flex",alignItems:"center",gap:10}}>
+    <div className="lurk-screen lurk-reports-screen" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
+      <div style={{background:"#0B0D0A",borderBottom:"1px solid rgba(233,225,207,.13)",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:19,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Bu ay nasıl geçti?</div>
+        <div style={{fontSize:23,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>Bu ay nasıl geçti?<div style={{fontSize:9,fontWeight:750,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / MONTHLY REVIEW</div></div>
       </div>
-      <div style={{padding:14}}>
-        <label style={{display:"block",fontSize:11,color:T.textSub,marginBottom:6}}>Ay seç</label>
-        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,textTransform:"capitalize"}}>
+      <div style={{padding:"16px 14px"}}>
+        <label style={{display:"block",fontSize:9,fontWeight:850,letterSpacing:"1.6px",color:"#B9B7A9",marginBottom:7}}>RAPOR DÖNEMİ</label>
+        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:13,marginBottom:15,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,textTransform:"capitalize",fontWeight:800,letterSpacing:".2px"}}>
           {months.map(m=><option key={m} value={m}>{monthLabel(m)}</option>)}
         </select>
-        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:16,marginBottom:16}}>
-          <div style={{fontSize:12,color:T.textSub,textTransform:"capitalize"}}>{monthLabel(selectedMonth)} cirosu</div>
-          <div style={{fontSize:28,fontWeight:850,color:T.accentL,marginTop:6}}>{fm(revenue)}</div>
-          <div style={{fontSize:11,color:T.textDim,marginTop:6}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}</div>
+        <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
+          <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} CİROSU</div>
+          <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
+          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}</div>
         </div>
-        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.08)",borderRadius:16,padding:16,marginBottom:16}}>
-          <div style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:4}}>Yıllık ciro</div>
+        <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
+          <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>YILLIK CİRO</div>
           <label style={{display:"block",fontSize:11,color:T.textSub,margin:"10px 0 6px"}}>Yıl seç</label>
-          <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}>
+          <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,fontWeight:800}}>
             {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
           </select>
-          <div style={{fontSize:24,fontWeight:800,color:T.accentL,marginTop:12}}>{fm(yearRevenue)}</div>
+          <div style={{fontSize:25,fontWeight:950,color:"#A8C17D",letterSpacing:"-.8px",marginTop:12}}>{fm(yearRevenue)}</div>
           <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Seçilen yılın kapanmış adisyon cirosu</div>
         </div>
-        <div style={{fontSize:15,fontWeight:800,color:T.text,marginBottom:4}}>En çok kazandıran 5 ürün</div>
-        <div style={{fontSize:11,color:T.textSub,marginBottom:10}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
-        {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:13,marginBottom:8}}>
-          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(52,199,89,.12)",color:T.accentL,fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:T.text}}>{p.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{p.qty} adet satıldı</div></div>
-          <div style={{fontSize:13,fontWeight:800,color:T.accentL,textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
+        <div style={{fontSize:15,fontWeight:900,color:"#F0EBDD",letterSpacing:"-.3px",marginBottom:5}}>En çok kazandıran 5 ürün</div>
+        <div style={{fontSize:10,color:"#92958A",marginBottom:11}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
+        {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:"linear-gradient(145deg,#EDE5D4,#E3DAC6)",border:"1px solid rgba(255,255,255,.5)",borderRadius:10,padding:13,marginBottom:8}}>
+          <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(36,69,43,.12)",color:"#24452B",fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
+          <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:850,color:"#171914"}}>{p.name}</div><div style={{fontSize:10,color:"#686B60",marginTop:3}}>{p.qty} adet satıldı</div></div>
+          <div style={{fontSize:13,fontWeight:950,color:"#24452B",textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
         </div>):<div style={{padding:20,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub,fontSize:12}}>Bu ay için ürün satışı kaydı bulunamadı.</div>}
       </div>
     </div>
