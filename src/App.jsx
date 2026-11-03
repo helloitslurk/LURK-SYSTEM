@@ -1725,7 +1725,7 @@ function LurkPlusPortal({token}){
             <div style={{fontSize:34,fontWeight:900,color:"#34C759",marginTop:5}}>{Number(member.coffeeCredits)||0} hak</div>
           </>:<>
             <div style={{fontSize:11,color:"#A0A0A0",letterSpacing:".5px",fontWeight:750}}>{member.unlimited?"ÜYELİK HAKKIN":"GÜNCEL BAKİYEN"}</div>
-            <div style={{fontSize:34,fontWeight:900,color:"#34C759",marginTop:5}}>{member.unlimited?"Sınırsız kullanım":fm(Number(member.balance)||0)}</div>
+            <div style={{fontSize:34,fontWeight:900,color:"#34C759",marginTop:5}}>{member.unlimited?"SINIRSIZ":fm(Number(member.balance)||0)}</div>
           </>}
           <div style={{fontSize:10,color:"#A0A0A0",marginTop:10}}>Son kontrol: {updated?.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
         </div>
