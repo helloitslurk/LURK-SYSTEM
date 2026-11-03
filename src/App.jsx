@@ -115,8 +115,14 @@ async function sbSetNow(key,val){
   for(let attempt=0;attempt<3;attempt++){
     try{
       const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_storage_set",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token,p_key:key,p_value:val})});
-      if(r.ok)return true;
-      lastError=new Error("Supabase write failed for "+key+" ("+r.status+")");
+      const responseText=await r.text();
+      if(r.ok){
+        if(responseText.trim()==="false")throw new Error("Supabase oturumu geçersiz veya kayıt reddedildi ("+key+").");
+        return true;
+      }
+      let detail=responseText;
+      try{const parsed=JSON.parse(responseText);detail=parsed.message||parsed.details||parsed.hint||responseText;}catch(e){}
+      lastError=new Error("Kayıt hatası "+key+" (HTTP "+r.status+"): "+String(detail).slice(0,260));
     }catch(e){lastError=e;}
     if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
   }
