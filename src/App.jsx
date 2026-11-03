@@ -1273,7 +1273,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   useEffect(()=>{
     if(!unlocked)return;
     const movedIds=new Set(["ruhsat","ucuncuoglu","beliz-plan","heyz"]);
-    const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-insurance","fiddle-inspection","yildiz","a2"]);
+    const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
       .filter(d=>!placeholderIds.has(d.id))
@@ -1284,7 +1284,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         group:"Taksitler"
       }:fiddleIds.has(d.id)?{
         ...d,
-        name:d.id==="fiddle"?"Fiddle III Taksit":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Sınav Ücreti",
+        name:d.id==="fiddle"?"Fiddle III Taksit":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Ön Stop Lambası":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Sınav Ücreti",
         category:"fiddle",
         folder:"FIDDLE III"
       }:d));
@@ -1337,6 +1337,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
   const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(a.id)-["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(b.id));
+  const fiddleOrder=["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"];
+  const fiddleDebts=debts.filter(d=>d.category==="fiddle").sort((a,b)=>fiddleOrder.indexOf(a.id)-fiddleOrder.indexOf(b.id));
   const visibleDebts=debts.filter(d=>d.category!=="installment"&&d.category!=="fiddle"&&(filter==="Tümü"||d.group===filter)).sort((a,b)=>remaining(a)-remaining(b));
   return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
