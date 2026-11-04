@@ -351,7 +351,7 @@ function POSApp({onLock}){
     }));
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
-      return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString(),lurkPlusCharged:charged,lurkPlusCreditCharged:charged&&isCoffeeMember}]};
+      return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString(),revenueExcluded:member?.name?.trim().toLocaleLowerCase("tr-TR")==="beliz",lurkPlusCharged:charged,lurkPlusCreditCharged:charged&&isCoffeeMember}]};
     }));
     if(charged)msg(member.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Beliz · 1 öpücük borçlandı 💋":isCoffeeMember?member.name+" · 1 kahve hakkı düşüldü.":member.name+" · "+fm(item.price)+" LURK+ bakiyesinden düştü.");
     else if(member&&isCoffeeMember)msg("Bu ürün kahve hakkına dahil değil; normal hesaba eklendi.");
@@ -411,7 +411,7 @@ function POSApp({onLock}){
     if(paymentInProgress.current)return;
     const t=tables.find(x=>x.id===tid);
     if(!t)return;
-    const sub=t.order.reduce((s,o)=>s+o.price*o.qty,0);
+    const sub=t.order.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.price)||0)*(Number(o.qty)||0)),0);
     const previousPayments=Array.isArray(t.partialPayments)?t.partialPayments:[];
     const previousPaid=previousPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
     const isCredit=pt==="credit";
@@ -434,7 +434,7 @@ function POSApp({onLock}){
     const allPayments=normalized;
     const orderId=uid();
     const methodSet=[...new Set(allPayments.map(p=>p.method))];
-    const order={id:orderId,date:tod(),total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null}))};
+    const order={id:orderId,date:tod(),total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
     paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
@@ -1089,7 +1089,7 @@ function MonthReviewScreen({orders,tables,setV}){
   const [year,setYear]=useState(String(now.getFullYear()));
   const monthLabel=(m)=>{const [y,mm]=m.split("-").map(Number);return new Date(y,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
   const monthOrders=orders.filter(o=>(o.date||"").slice(0,7)===selectedMonth);
-  const openOrders=tables.flatMap(t=>(t.order||[]).length?[{date:tod(),total:(t.order||[]).reduce((s,i)=>s+(Number(i.price)||0)*(Number(i.qty)||0),0),items:t.order}]:[]);
+  const openOrders=tables.flatMap(t=>(t.order||[]).length?[{date:tod(),total:(t.order||[]).reduce((s,i)=>s+(i.revenueExcluded?0:(Number(i.price)||0)*(Number(i.qty)||0)),0),items:t.order.filter(i=>!i.revenueExcluded)}]:[]);
   const closedRevenue=monthOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
   const openRevenue=selectedMonth===thisMonth()?openOrders.reduce((s,o)=>s+o.total,0):0;
   const revenue=closedRevenue+openRevenue;
