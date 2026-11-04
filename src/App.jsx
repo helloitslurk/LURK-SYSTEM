@@ -621,49 +621,101 @@ function POSApp({onLock}){
 
 /* ─── HOME ─── */
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balancesVisible,setBalancesVisible}){
- const [notes,setNotes]=useState([false,true,false,false]),[notice,setNotice]=useState(false);
- const today=tod(),todO=orders.filter(o=>o.date===today&&!o.partialPayment),openT=tables.filter(t=>t.s==="o");
- const openInc=openT.reduce((s,t)=>s+(t.order||[]).reduce((v,o)=>v+(o.revenueExcluded?0:(Number(o.price)||0)*(Number(o.qty)||0)),0),0);
- const total=todO.reduce((s,o)=>s+(Number(o.total)||0),0)+openInc;
- const date=new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
- const week=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return {label:["Paz","Pzt","Sal","Çar","Per","Cum","Cts"][d.getDay()],value:orders.filter(o=>o.date===k&&!o.partialPayment).reduce((s,o)=>s+(Number(o.total)||0),0)}});
- const max=Math.max(1,...week.map(x=>x.value)),products={};
- orders.filter(o=>o.date&&o.date.slice(0,7)===today.slice(0,7)).forEach(o=>(o.items||[]).forEach(i=>{products[i.name]=(products[i.name]||0)+(Number(i.qty)||1)}));
- const best=Object.entries(products).sort((a,b)=>b[1]-a[1]).slice(0,3);
- const recent=[...openT.slice(0,2).map(t=>({name:t.g||t.lbl,qty:(t.order||[]).reduce((n,i)=>n+(Number(i.qty)||1),0),sum:(t.order||[]).reduce((n,i)=>n+(i.revenueExcluded?0:(Number(i.price)||0)*(Number(i.qty)||0)),0),time:"Açık"})),...todO.slice(-2).reverse().map(o=>({name:o.tableName||o.table||"Adisyon",qty:(o.items||[]).reduce((n,i)=>n+(Number(i.qty)||1),0),sum:Number(o.total)||0,time:"Bugün"}))].slice(0,4);
- const money=n=>balancesVisible?fm(n):"••••••";
- const nav=[["home","Anasayfa","⌂"],["tables","Adisyon","▤"],["menu","Ürünler","◇"],["customers","Müşteriler","♙"],["reports","Raporlar","▥"],["personal","Finans","₺"],["settings","Ayarlar","⚙"],["lurkPlus","LURK+","＋"]];
- return <div className="lurk-home-v2">
- <style>{`
- .lurk-home-v2{min-height:100vh;background:#171611;color:#f4e8d0;display:grid;grid-template-columns:245px minmax(0,1fr);font-family:Inter,"Helvetica Neue",Arial,sans-serif;position:relative}
- .lurk-home-v2:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:radial-gradient(#b6a17c .55px,transparent .55px);background-size:4px 4px}
- .ld-side{position:relative;z-index:1;border-right:1px solid #514632;padding:28px 18px;display:flex;flex-direction:column;min-height:100vh;background:#11110e}
- .ld-side img{width:150px;filter:brightness(0) invert(1)}.ld-ver{display:inline-block;border:1px solid #8d8067;border-radius:20px;padding:5px 12px;font-size:11px;margin:10px 0 25px;width:max-content}
- .ld-nav{display:grid;gap:7px}.ld-nav button{border:0;background:transparent;color:#eadcc3;border-radius:11px;padding:12px;display:flex;gap:13px;align-items:center;text-align:left;font-size:15px;font-weight:650;cursor:pointer}.ld-nav button span{font-size:22px;width:22px}.ld-nav button.active{background:#71852b;color:white}.ld-sidefoot{margin-top:auto;padding:25px 10px;color:#a9c74b;font-size:12px}
- .ld-main{position:relative;z-index:1;min-width:0;padding:24px 30px 35px;max-width:1800px;width:100%;margin:auto}.ld-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:23px}.ld-title{font-size:clamp(26px,2.7vw,38px);font-weight:850;letter-spacing:-1px}.ld-sub{color:#cbbb9e;margin-top:4px}.ld-headright{display:flex;gap:10px;align-items:center}.ld-date,.ld-bell,.ld-lock{border:1px solid #87795f;background:#211f18;color:#f4e8d0;border-radius:14px;min-height:56px;padding:10px 15px;display:flex;align-items:center;gap:10px}.ld-date b{display:block;font-size:14px}.ld-date small{color:#cbbb9e}.ld-bell,.ld-lock{cursor:pointer;font-size:14px;font-weight:750;position:relative}.ld-count{position:absolute;top:4px;left:25px;background:#e94c3b;color:white;border-radius:20px;font-size:10px;padding:2px 5px}.ld-pop{position:absolute;right:70px;top:70px;width:260px;background:#f0dfc3;color:#211e16;padding:14px;border-radius:14px;z-index:9;box-shadow:0 12px 35px #0008}.ld-pop b{display:block;margin-bottom:7px}
- .ld-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:17px}.ld-stat{background:#f1dfc1;color:#1c1a14;border-radius:16px;padding:16px;min-height:105px;display:flex;align-items:center;gap:12px}.ld-stat .ico{font-size:32px}.ld-stat label{font-size:12px;font-weight:800}.ld-stat strong{display:block;font-size:clamp(19px,2vw,27px);margin-top:5px;white-space:nowrap}.ld-stat small{font-size:10px;color:#716653}.ld-stat.goal{display:block;background:linear-gradient(135deg,#788d2c,#52651d);color:#fff1d3}.ld-goal{display:flex;align-items:center;justify-content:space-between;font-weight:850}.ld-progress{height:10px;background:#28320f;border-radius:12px;margin-top:14px;overflow:hidden}.ld-progress i{display:block;width:78%;height:100%;background:#f2dfbf;border-radius:12px}
- .ld-mid{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:15px;margin-bottom:15px}.ld-hero{height:245px;border:1px solid #ead9b9;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(90deg,#17150f99,#17150f18),radial-gradient(ellipse at 68% 30%,#d78d43,#6a3b20 45%,#20291b 85%)}.ld-hero:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 54px,#e9d6b51a 55px 57px),repeating-linear-gradient(0deg,transparent 0 54px,#e9d6b51a 55px 57px)}.ld-herotxt{position:absolute;left:34px;top:50%;transform:translateY(-50%);max-width:420px}.ld-kicker{font-size:11px;letter-spacing:2px;color:#e9c994;font-weight:800}.ld-herotxt h2{font-size:40px;line-height:1.02;margin:12px 0;color:#fff0d6}.ld-herotxt p{font-size:13px;color:#efddbd}.ld-note{background:#f0dfc3;color:#201d16;border-radius:8px;padding:18px;position:relative;box-shadow:0 6px 0 #0003}.ld-note:before{content:"";position:absolute;top:-8px;left:42%;width:60px;height:20px;background:#c69a6266;transform:rotate(-6deg)}.ld-note h3{font-size:18px;margin:0 0 12px;border-bottom:1px solid #cbbb9e;padding-bottom:9px}.ld-note label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:650;margin:12px 0}.ld-note input{accent-color:#71852b;width:16px;height:16px}
- .ld-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.ld-actions button{border:1px solid #fff0d0;border-radius:11px;background:#efdfc4;color:#211e16;padding:13px 8px;font-weight:850;cursor:pointer}.ld-actions button:first-child{background:#71852b;color:#fff8e8}.ld-actions span{font-size:20px;margin-right:8px}
- .ld-bottom{display:grid;grid-template-columns:1.08fr 1.1fr .82fr;gap:13px}.ld-panel{border:1px solid #b9a987;border-radius:16px;padding:14px;background:#17150fc9;min-width:0}.ld-panel h3{font-size:15px;margin:0 0 12px}.ld-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;background:#e8d9bd18;border-radius:9px;padding:10px;margin:6px 0;font-size:11px}.ld-row small{color:#cbbb9e}.ld-chart{height:145px;display:flex;align-items:end;gap:9px;background:repeating-linear-gradient(to bottom,transparent 0 35px,#e9d6b51c 36px 37px);border-bottom:1px solid #b9a987}.ld-barwrap{flex:1;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:5px}.ld-bar{width:100%;max-width:45px;background:linear-gradient(#a5bd43,#647b25);border:1px solid #b7ca5c;border-radius:5px 5px 0 0}.ld-barwrap small{font-size:10px;color:#e5d5b8}.ld-prod{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #e9d6b522;font-size:12px}.ld-prod b{font-size:15px}
- @media(max-width:1100px){.lurk-home-v2{grid-template-columns:205px 1fr}.ld-main{padding:20px 16px}.ld-mid{grid-template-columns:1fr 240px}.ld-bottom{grid-template-columns:1fr 1fr}.ld-bottom .ld-panel:last-child{grid-column:1/-1}.ld-stat{padding:12px 9px;gap:7px}.ld-stat .ico{font-size:25px}}
- @media(max-width:760px){.lurk-home-v2{display:block;padding-bottom:78px}.ld-side{display:none}.ld-main{padding:18px 13px 25px}.ld-head{display:block}.ld-title{font-size:26px}.ld-sub{font-size:12px}.ld-headright{margin-top:14px}.ld-date{flex:1;padding:8px}.ld-date b{font-size:12px}.ld-bell{font-size:12px;padding:8px}.ld-lock{padding:8px}.ld-pop{right:8px;top:112px}.ld-stats{grid-template-columns:1fr 1fr;gap:9px}.ld-stat{min-height:88px;padding:11px}.ld-stat strong{font-size:19px}.ld-mid{grid-template-columns:1fr}.ld-hero{height:180px}.ld-herotxt{left:22px}.ld-herotxt h2{font-size:30px}.ld-actions{grid-template-columns:1fr 1fr;gap:8px}.ld-actions button{font-size:12px;padding:12px 5px}.ld-bottom{grid-template-columns:1fr}.ld-bottom .ld-panel:last-child{grid-column:auto}}
- @media(min-width:761px){.lurk-app:has(.lurk-home-v2){padding-bottom:0!important}.lurk-app:has(.lurk-home-v2) .lurk-bottom-nav{display:none!important}}
- `}</style>
- <aside className="ld-side"><img src="/lurk-logo.svg" alt="LURK"/><div className="ld-ver">SYSTEM v2.0</div><nav className="ld-nav">{nav.map(n=><button key={n[0]} className={n[0]==="home"?"active":""} onClick={()=>setV(n[0])}><span>{n[2]}</span>{n[1]}</button>)}</nav><div className="ld-sidefoot">▣<br/>LURK SYSTEM<br/>● online</div></aside>
- <main className="ld-main">
- <header className="ld-head"><div><div className="ld-title">Günaydın, LURK ☕</div><div className="ld-sub">Bugün de güzel şeyler yapalım.</div></div><div className="ld-headright"><div className="ld-date"><span style={{fontSize:24}}>▦</span><div><b>{date}</b><small>Bugünün çalışma alanı</small></div></div><button className="ld-bell" onClick={()=>setNotice(v=>!v)}>♧ Bildirimler{(openT.length>0)&&<span className="ld-count">{openT.length}</span>}</button><button className="ld-lock" onClick={onLock}>♙</button></div>{notice&&<div className="ld-pop"><b>Bildirimler</b>{openT.length?openT.length+" açık adisyon bulunuyor.": "Şimdilik yeni bildirim yok ✨"}</div>}</header>
- <section className="ld-stats">
- <div className="ld-stat"><span className="ico">☕</span><div><label>Günün Cirosu</label><strong>{money(total)}</strong><small>{todO.length} kapanan · {openT.length} açık</small></div></div>
- <div className="ld-stat"><span className="ico">▤</span><div><label>Sipariş</label><strong>{todO.length+openT.length}</strong><small>Bugünkü adisyonlar</small></div></div>
- <div className="ld-stat"><span className="ico">♙</span><div><label>Müşteri</label><strong>{new Set([...todO.map(o=>o.customerName||o.customer).filter(Boolean),...openT.map(t=>t.g).filter(Boolean)]).size}</strong><small>Bugün işlem yapan</small></div></div>
- <div className="ld-stat goal"><div className="ld-goal">◎ Günün Hedefi <b>LURK</b></div><div className="ld-progress"><i/></div></div>
- </section>
- <section className="ld-mid"><div className="ld-hero"><div className="ld-herotxt"><div className="ld-kicker">A LITTLE PLACE, A LOT OF GOOD THINGS</div><h2>Stay a little<br/>longer.</h2><p>Kahven hazır. Günün güzel tarafı burada başlıyor.</p></div></div><div className="ld-note"><h3>Bugünün Notu　▦</h3>{["yeni çekirdek geldi!","menü fotoğraflarını güncelle","haftalık stok kontrolü","sosyal içerik hazırla"].map((n,i)=><label key={i}><input type="checkbox" checked={notes[i]} onChange={e=>setNotes(v=>v.map((x,j)=>j===i?e.target.checked:x))}/>{n}</label>)}</div></section>
- <section className="ld-actions"><button onClick={()=>setV("tables")}><span>＋</span>Yeni Adisyon</button><button onClick={()=>setV("menu")}><span>◇</span>Ürün Ekle</button><button onClick={()=>setV("customers")}><span>⌕</span>Müşteri Ara</button><button onClick={()=>setV("reports")}><span>▥</span>Raporları Gör</button></section>
- <section className="ld-bottom"><div className="ld-panel"><h3>ϟ Bugünkü Hareketler</h3>{recent.length?recent.map((x,i)=><div className="ld-row" key={i}><b>{x.name}</b><span>{x.qty} ürün</span><b>{money(x.sum)}</b></div>):<small>Bugün henüz hareket yok.</small>}</div><div className="ld-panel"><h3>▥ Haftalık Ciro　<small>{money(week.reduce((s,x)=>s+x.value,0))}</small></h3><div className="ld-chart">{week.map((x,i)=><div className="ld-barwrap" key={i}><div className="ld-bar" style={{height:Math.max(3,x.value/max*100)+"%"}}/><small>{x.label}</small></div>)}</div></div><div className="ld-panel"><h3>♛ En Çok Satanlar</h3>{best.length?best.map(([name,n])=><div className="ld-prod" key={name}><span>{name}</span><b>{n}</b></div>):<small>Satış verileri oluştukça burada görünecek.</small>}</div></section>
- <div style={{display:"flex",justifyContent:"flex-end",paddingTop:16}}><button className="ld-actions" style={{display:"block",padding:"12px 20px",borderRadius:10,background:"#71852b",color:"#fff"}} onClick={day?closeDay:openDay}>{day?"Günü Kapat":"Günü Başlat"}</button></div>
- </main></div>;
+  const[confirm,setConfirm]=useState(false);
+  const today=tod();
+  const todO=orders.filter(o=>o.date===today&&!o.partialPayment);
+  const todInc=todO.reduce((s,o)=>s+o.total,0);
+  const todCash=todO.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
+  const todCard=todO.reduce((s,o)=>s+paymentAmount(o,"card"),0);
+  const openT=tables.filter(t=>t.s==="o");
+  const openInc=openT.reduce((s,t)=>s+t.order.reduce((ss,o)=>ss+o.price*o.qty,0),0);
+  const monthStart=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  const daysInMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
+  const monthDays=Array.from({length:daysInMonth},(_,i)=>{
+    const d=new Date(monthStart.getFullYear(),monthStart.getMonth(),i+1);
+    const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const closed=orders.filter(o=>o.date===key).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+    const open=key===today?openInc:0;
+    return {key,day:String(d.getDate()),total:closed+open};
+  });
+  const chartMax=Math.max(1,...monthDays.map(d=>d.total));
+  const chartTicks=[0,0.5,1].map(f=>Math.round(chartMax*f));
+  const monthTotal=monthDays.reduce((sum,d)=>sum+d.total,0);
+
+  const PAGES=[
+    {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
+    {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
+    {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
+    {k:"lurkPlus",label:"LURK+",icon:"＋",sub:"Ön ödemeli üyeler"},
+    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"↗",sub:"Ciro ve en çok kazandıran 5 ürün"},
+    {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
+  ];
+
+  return(
+    <div className="lurk-screen lurk-home-screen">
+      {/* Header */}
+      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
+          <div>
+            <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:112,maxWidth:"38vw",height:"auto"}} />
+            <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <button type="button" onClick={onLock} aria-label="POS sistemini kilitle" title="Sistemi kilitle" style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:16,cursor:"pointer"}}>⌑</button>
+            <button type="button" onClick={()=>setBalancesVisible(v=>!v)} aria-label={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} title={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:17,cursor:"pointer"}}>{balancesVisible?"◉":"⊘"}</button>
+            <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(52,199,89,0.12)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(day?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:20,padding:"6px 12px"}}>
+              <div style={{width:7,height:7,borderRadius:"50%",background:day?"#34C759":T.textDim}}/>
+              <span style={{fontSize:12,fontWeight:600,color:day?"#34C759":T.textSub}}>{day?"Açık":"Kapalı"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bugün ciro özeti: mobilde taşmayan kompakt kartlar */}
+        <div className="lurk-home-stats" style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:6,width:"100%",minWidth:0}}>
+          {[
+            {label:"Toplam",val:fm(todInc+openInc),sub:todO.length+" kapanan"},
+            {label:"Nakit",val:fm(todCash),sub:"bugün"},
+            {label:"Kart",val:fm(todCard),sub:"bugün"},
+          ].map((s,i)=>(
+            <div key={i} style={{background:"rgba(255,255,255,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.07)",minWidth:0,overflow:"hidden"}}>
+              <div style={{fontSize:9,color:T.textSub,fontWeight:650,textTransform:"uppercase",letterSpacing:"0.45px",marginBottom:5,whiteSpace:"nowrap"}}>{s.label}</div>
+              <div style={{fontSize:"clamp(11px, 2.8vw, 15px)",fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.45px",whiteSpace:"nowrap",fontVariantNumeric:"tabular-nums",filter:balancesVisible?"none":"blur(7px)",userSelect:balancesVisible?"auto":"none"}}>{balancesVisible?s.val.replace(" TL",""):"••••••"}</div>
+              <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Hızlı erişim grid */}
+      <div style={{padding:"16px 14px 0"}}>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {PAGES.map((p,i)=>(
+            <button key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.03)"}}/>
+              <div style={{fontSize:22,marginBottom:10,color:T.textSub,opacity:0.6}}>{p.icon}</div>
+              <div style={{fontSize:14,fontWeight:700,color:T.text}}>{p.label}</div>
+              <div style={{fontSize:11,color:T.textDim,marginTop:3}}>{p.sub}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{padding:"14px 14px 0"}}>
+        {day?(
+          <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
+            Günü Kapat
+          </button>
+        ):(
+          <button onClick={openDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
+            Günü Başlat
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
+
 /* ─── TABLES ─── */
 function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomers,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
