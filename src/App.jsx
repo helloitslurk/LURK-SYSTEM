@@ -621,6 +621,12 @@ function POSApp({onLock}){
 
 /* ─── HOME ─── */
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balancesVisible,setBalancesVisible}){
+  const [homeClock,setHomeClock]=useState(()=>new Date());
+  useEffect(()=>{
+    const timer=setInterval(()=>setHomeClock(new Date()),1000);
+    return ()=>clearInterval(timer);
+  },[]);
+
   const[confirm,setConfirm]=useState(false);
   const today=tod();
   const todO=orders.filter(o=>o.date===today&&!o.partialPayment);
@@ -658,7 +664,11 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
           <div>
             <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:112,maxWidth:"38vw",height:"auto"}} />
-            <div style={{fontSize:12,color:T.textSub,marginTop:2}}>{new Date().toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
+            <div style={{display:"flex",alignItems:"center",gap:9,flexWrap:"wrap",marginTop:5}}>
+              <span style={{fontSize:12,color:T.textSub}}>{homeClock.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
+              <span style={{width:3,height:3,borderRadius:"50%",background:T.textDim}}/>
+              <span style={{fontSize:12,fontWeight:750,color:T.accentL,fontVariantNumeric:"tabular-nums",letterSpacing:"0.3px"}}>{homeClock.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</span>
+            </div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <button type="button" onClick={onLock} aria-label="POS sistemini kilitle" title="Sistemi kilitle" style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:16,cursor:"pointer"}}>⌑</button>
