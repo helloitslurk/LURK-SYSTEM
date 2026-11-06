@@ -1467,8 +1467,11 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
                 <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} taksit ödendi</div>
               </div>
             </div>
-            <button onClick={()=>openInstallmentEditor(d)} style={{width:"100%",padding:8,marginTop:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Planı Düzenle</button>
-            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Taksitleri Gör"}</button>}
+            <div style={{display:"flex",gap:7,marginTop:9}}>
+              {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Sıradaki Taksiti Öde</button>}
+              <button onClick={()=>openInstallmentEditor(d)} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Planı Düzenle</button>
+            </div>
+            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Diğer Taksitleri Gör"}</button>}
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
               <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} kaldı</div>
               {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Ödeme Kaydet</button>}
