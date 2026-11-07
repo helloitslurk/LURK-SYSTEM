@@ -469,7 +469,6 @@ function POSApp({onLock}){
   const NAV=[
     {k:"home",label:"Ana Sayfa",icon:"⌂"},
     {k:"tables",label:"Masalar",icon:"⊞"},
-    {k:"customers",label:"Müşteriler",icon:"◎"},
     {k:"lurkPlus",label:"LURK+",icon:"＋"},
     {k:"personal",label:"Kişisel",icon:"₺"},
     {k:"reports",label:"Raporlar",icon:"≡"},
