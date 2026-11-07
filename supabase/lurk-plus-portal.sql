@@ -159,3 +159,41 @@ revoke all on function public.lurk_plus_member_by_token(text) from public, anon,
 grant execute on function public.lurk_plus_create_link(text, text, text) to anon, authenticated;
 grant execute on function public.lurk_plus_revoke_links(text, text) to anon, authenticated;
 grant execute on function public.lurk_plus_member_by_token(text) to anon, authenticated;
+
+
+-- LURK+ admin link retrieval: encrypted token storage for future links.
+alter table public.lurk_plus_links add column if not exists token_encrypted bytea;
+
+create or replace function public.lurk_plus_create_link(p_member_id text, p_token text, p_admin_secret text)
+returns jsonb language plpgsql security definer
+set search_path = pg_catalog, public, extensions
+as $$
+declare members jsonb; member_row jsonb;
+begin
+  if p_admin_secret is null or length(p_admin_secret)<24 or not public.lurk_plus_admin_ok(p_admin_secret) then raise exception 'Yetkisiz işlem'; end if;
+  if p_token is null or length(p_token)<32 then raise exception 'Geçersiz bağlantı anahtarı'; end if;
+  select (value::jsonb #>> '{}')::jsonb into members from public.app_storage where key='lurk_plus_members';
+  if jsonb_typeof(members)<>'array' then raise exception 'LURK+ üye verisi bulunamadı'; end if;
+  select item into member_row from jsonb_array_elements(members) as e(item) where item->>'id'=p_member_id limit 1;
+  if member_row is null then raise exception 'Üye bulunamadı'; end if;
+  update public.lurk_plus_links set revoked_at=now() where member_id=p_member_id and revoked_at is null;
+  insert into public.lurk_plus_links(member_id,token_hash,token_encrypted)
+  values(p_member_id,encode(digest(p_token,'sha256'),'hex'),pgp_sym_encrypt(p_token,p_admin_secret));
+  return jsonb_build_object('ok',true);
+end; $$;
+
+create or replace function public.lurk_plus_get_link(p_member_id text,p_admin_secret text)
+returns text language plpgsql security definer
+set search_path = pg_catalog, public, extensions
+as $$
+declare encrypted_token bytea;
+begin
+  if p_admin_secret is null or length(p_admin_secret)<24 or not public.lurk_plus_admin_ok(p_admin_secret) then raise exception 'Yetkisiz işlem'; end if;
+  select token_encrypted into encrypted_token from public.lurk_plus_links
+  where member_id=p_member_id and revoked_at is null order by created_at desc limit 1;
+  if encrypted_token is null then return null; end if;
+  return pgp_sym_decrypt(encrypted_token,p_admin_secret);
+end; $$;
+
+revoke all on function public.lurk_plus_get_link(text,text) from public,anon,authenticated;
+grant execute on function public.lurk_plus_get_link(text,text) to anon,authenticated;
