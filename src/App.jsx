@@ -1615,22 +1615,6 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     setLinkAdminSecret(secret);
     return secret;
   }
-  async function selectMember(memberId){
-    setSelectedMemberId(memberId);
-    const member=members.find(m=>m.id===memberId);
-    if(!member||issuedLinks[memberId]||linkBusy)return;
-    const secret=await getLinkSecret();
-    if(!secret)return;
-    setLinkBusy(true);
-    try{
-      const response=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_get_link",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_member_id:memberId,p_admin_secret:secret})});
-      const result=await response.json().catch(()=>null);
-      if(!response.ok)throw new Error(result?.message||"Bağlantı yüklenemedi");
-      const url=typeof result==="string"?result:result?.url;
-      if(url)setIssuedLinks(prev=>({...prev,[memberId]:url}));
-    }catch(e){msg(e.message||"Bağlantı yüklenemedi.");}
-    finally{setLinkBusy(false);}
-  }
   async function manageLink(member,action){
     if(linkBusy)return;
     const secret=await getLinkSecret();
@@ -1714,7 +1698,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Üye Ekle</button>
       </div>
       <div style={{padding:14}}>
-        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>selectMember(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Sınırsız":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kahve hakkı üyeliği":"Bakiye üyeliği"} · Hareketleri gör ›</div></div></button>)}
+        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>setSelectedMemberId(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Sınırsız":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kahve hakkı üyeliği":"Bakiye üyeliği"} · Hareketleri gör ›</div></div></button>)}
         {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Öpücük bakiyesi":m.membershipType==="coffee"?"Kalan kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Sınırsız kullanım":" "+fm(m.balance)}</div></div>
           {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Kahve hakkı ekle</button>}
