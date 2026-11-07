@@ -1648,6 +1648,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         if(!response.ok)throw new Error(result?.message||"Bağlantı oluşturulamadı");
         const url=window.location.origin+window.location.pathname+"?lurkplus="+token;
         setIssuedLinks(prev=>({...prev,[member.id]:url}));
+           <button onClick={()=>{const next=window.prompt("LURK+ üyesinin yeni adı:",m.name);if(next===null)return;const clean=next.trim();if(!clean){msg("Üye adı boş olamaz.");return;}if(members.some(x=>x.id!==m.id&&x.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde başka bir LURK+ üyesi zaten var.");return;}setMembers(prev=>prev.map(x=>x.id===m.id?{...x,name:clean,updatedAt:new Date().toISOString()}:x));msg("Üye adı güncellendi.");}} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(255,255,255,.045)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:9,fontSize:11,fontWeight:750,cursor:"pointer"}}>Üye Adını Düzenle</button>
         try{await navigator.clipboard.writeText(url);msg("Müşteri bağlantısı oluşturuldu ve kopyalandı.");}
         catch(e){msg("Bağlantı oluşturuldu. Aşağıdan kopyalayabilirsin.");}
       }else{
