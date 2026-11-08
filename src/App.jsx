@@ -334,8 +334,7 @@ function POSApp({onLock}){
     const isCoffeeMember=member?.membershipType==="coffee";
     const charged=!!member&&(!isCoffeeMember||isCoffeeOrMatcha);
     if(member&&isCoffeeMember&&isCoffeeOrMatcha&&(Number(member.coffeeCredits)||0)<1){msg("Kahve hakkı kalmadı. "+member.name);return false;}
-    if(member&&!isCoffeeMember&&!member.unlimited&&(Number(member.balance)||0)<Number(item.price||0)){msg("LURK+ bakiyesi yetersiz. "+member.name+" · "+fm(member.balance));return false;}
-    if(charged)setLurkPlusMembers(prev=>prev.map(m=>{
+        if(charged)setLurkPlusMembers(prev=>prev.map(m=>{
       if(m.id!==member.id)return m;
       const date=new Date().toISOString();
       if(m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"){
@@ -346,7 +345,7 @@ function POSApp({onLock}){
         const nextCredits=Math.max(0,(Number(m.coffeeCredits)||0)-1);
         return{...m,coffeeCredits:nextCredits,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_use",date,amount:1,balanceAfter:nextCredits,itemName:item.name,table:table?.lbl||""}]};
       }
-      const nextBalance=m.unlimited?(Number(m.balance)||0):Math.max(0,Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100);
+      const nextBalance=m.unlimited?(Number(m.balance)||0):Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100;
       return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"purchase",date,amount:Number(item.price)||0,balanceAfter:m.unlimited?"Sınırsız":nextBalance,itemName:item.name,table:table?.lbl||""}]};
     }));
     setTbl(prev=>prev.map(t=>{
@@ -372,8 +371,7 @@ function POSApp({onLock}){
         if(d>0&&(Number(member.coffeeCredits)||0)<d){msg("Kahve hakkı yetersiz.");return;}
         setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const date=new Date().toISOString();const nextCredits=Math.max(0,(Number(m.coffeeCredits)||0)-d);return{...m,coffeeCredits:nextCredits,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:d<0?"credit_refund":"credit_use",date,amount:Math.abs(d),balanceAfter:nextCredits,itemName:line.name,table:table?.lbl||""}]};}));
       }else{
-        if(d>0&&(Number(member.balance)||0)<Number(d*Number(line.price||0))){msg("LURK+ bakiyesi yetersiz.");return;}
-        setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const amount=Math.abs(d*Number(line.price||0));const nextBalance=Math.max(0,Math.round(((Number(m.balance)||0)-(d*Number(line.price||0)))*100)/100);return{...m,balance:nextBalance,updatedAt:new Date().toISOString(),history:[...(m.history||[]),{id:uid(),type:d<0?"refund":"purchase",date:new Date().toISOString(),amount,balanceAfter:nextBalance,itemName:line.name,table:table?.lbl||""}]};}));
+                setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const amount=Math.abs(d*Number(line.price||0));const nextBalance=Math.round(((Number(m.balance)||0)-(d*Number(line.price||0)))*100)/100;return{...m,balance:nextBalance,updatedAt:new Date().toISOString(),history:[...(m.history||[]),{id:uid(),type:d<0?"refund":"purchase",date:new Date().toISOString(),amount,balanceAfter:nextBalance,itemName:line.name,table:table?.lbl||""}]};}));
       }
     }
     setTbl(prev=>prev.map(t=>{
@@ -1681,7 +1679,16 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     setMembers(prev=>[{id:uid(),name:clean,membershipType:memberType,balance:memberType==="balance"?Math.round(Number(balance)*100)/100:0,coffeeCredits:memberType==="coffee"?amount:0,createdAt,history:[entry]},...prev]);
     setName("");setBalance("");setMemberType("balance");setShowForm(false);msg("LURK+ üyesi eklendi.");
   }
-  function addCoffeeCredits(member){
+  function addMemberBalance(member){
+     const raw=window.prompt(member.name+" için yüklenecek bakiye (TL):");
+     if(raw===null)return;
+     const amount=Number(raw.replace(",","."));
+     if(!Number.isFinite(amount)||amount<=0){msg("Geçerli bir bakiye tutarı gir.");return;}
+     const date=new Date().toISOString();
+     setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,balanceAfter:nextBalance,note:"Bakiye yüklendi"}]};}));
+     msg(member.name+" · "+fm(amount)+" bakiye yüklendi.");
+   }
+   function addCoffeeCredits(member){
     const raw=window.prompt(member.name+" için eklenecek kahve hakkı:");
     if(raw===null)return;
     const amount=Number(raw);
@@ -1718,7 +1725,8 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>selectLurkPlusMember(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Sınırsız":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kahve hakkı üyeliği":"Bakiye üyeliği"} · Hareketleri gör ›</div></div></button>)}
         {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><button onClick={()=>{const next=window.prompt("LURK+ üyesinin yeni adı:",m.name);if(next===null)return;const clean=next.trim();if(!clean){msg("Üye adı boş olamaz.");return;}if(members.some(x=>x.id!==m.id&&x.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde başka bir LURK+ üyesi zaten var.");return;}setMembers(prev=>prev.map(x=>x.id===m.id?{...x,name:clean,updatedAt:new Date().toISOString()}:x));msg("Üye adı güncellendi.");}} style={{padding:"4px 8px",background:"rgba(255,255,255,.06)",color:T.textSub,border:"1px solid rgba(255,255,255,.14)",borderRadius:7,fontSize:10,fontWeight:750,cursor:"pointer",whiteSpace:"nowrap"}}>Düzenle</button></div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Öpücük bakiyesi":m.membershipType==="coffee"?"Kalan kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Sınırsız kullanım":" "+fm(m.balance)}</div></div>
-          {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Kahve hakkı ekle</button>}
+          {m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&<button onClick={()=>addMemberBalance(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Bakiye yükle</button>}
+           {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Kahve hakkı ekle</button>}
           <div style={{background:"rgba(52,199,89,.07)",border:"1px solid rgba(52,199,89,.18)",borderRadius:11,padding:11,marginBottom:13}}>
             <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Müşteri bağlantısı</div>
             <div style={{fontSize:10,color:T.textSub,lineHeight:1.5,marginBottom:9}}>Bu bağlantıyı müşteriye gönder. Bağlantıyı bilen kişi yalnızca bu üyenin bakiye ve hareketlerini görebilir.</div>
