@@ -1279,6 +1279,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [showHistory,setShowHistory]=useState(false);
   const [expanded,setExpanded]=useState({});
   const [showLurk,setShowLurk]=useState(false);
+  const [showCompletedLurk,setShowCompletedLurk]=useState(false);
   const [showInstallments,setShowInstallments]=useState(false);
   const [showFiddle,setShowFiddle]=useState(false);
   const [filter,setFilter]=useState("Tümü");
@@ -1370,6 +1371,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     return {total,paid:paidAmount,left,pct:total>0?Math.min(100,paidAmount/total*100):0};
   };
   const lurkStats=folderStats(lurkDebts);
+  const activeLurkDebts=lurkDebts.filter(d=>remaining(d)>0);
+  const completedLurkDebts=lurkDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
   const fiddleStats=folderStats(fiddleDebts);
   function reorderVisibleDebts(sourceId,targetId){
@@ -1413,7 +1416,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
         </button>
         {showLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {lurkDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
+          {activeLurkDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
@@ -1426,6 +1429,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
+          {completedLurkDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedLurk(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedLurkDebts.length}</span><span>{showCompletedLurk?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedLurkDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
         </div>}
       </div>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
