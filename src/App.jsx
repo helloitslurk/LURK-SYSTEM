@@ -1285,6 +1285,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [showInstallments,setShowInstallments]=useState(false);
   const [showFiddle,setShowFiddle]=useState(false);
   const [filter,setFilter]=useState("Tümü");
+  const [showCompletedPersonalDebts,setShowCompletedPersonalDebts]=useState(false);
   const [draggingDebtId,setDraggingDebtId]=useState(null);
   const [editingInstallment,setEditingInstallment]=useState(null);
   const [installmentTotal,setInstallmentTotal]=useState("");
@@ -1390,7 +1391,9 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const positions=new Map(ordered.map((d,i)=>[d.id,i]));
     setDebts(prev=>prev.map(d=>positions.has(d.id)?{...d,sortOrder:positions.get(d.id)}:d));
   }
-  const visibleDebts=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&(filter==="Tümü"||d.group===filter)).sort((a,b)=>{
+  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&(filter==="Tümü"||d.group===filter));
+  const completedPersonalDebts=personalDebtPool.filter(d=>remaining(d)<=0);
+  const visibleDebts=personalDebtPool.filter(d=>remaining(d)>0).sort((a,b)=>{
     const ao=a.sortOrder!==undefined?Number(a.sortOrder):null;
     const bo=b.sortOrder!==undefined?Number(b.sortOrder):null;
     if(ao!==null&&bo!==null)return ao-bo;
@@ -1576,6 +1579,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>)}</div>}
         </div>)}
       </div>
+      {completedPersonalDebts.length>0&&<div style={{marginTop:10}}><button onClick={()=>setShowCompletedPersonalDebts(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:11,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedPersonalDebts.length}</span><span>{showCompletedPersonalDebts?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedPersonalDebts&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:7}}>{completedPersonalDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"10px 11px",borderRadius:10,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.75,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:11,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:3}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
       <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ Tüm ödeme hareketleri</button>
       {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:T.textDim}}>{p.historical?"Tarih belirtilmedi":new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
     </div>
