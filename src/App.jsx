@@ -1166,7 +1166,9 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const me=sel+"-"+String(new Date(parseInt(sel.slice(0,4)),parseInt(sel.slice(5,7)),0).getDate()).padStart(2,"0");
   const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
   const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
-  const totalInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
+  const salesInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
+  const manualCashTotal=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===sel).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
+  const totalInc=salesInc+manualCashTotal;
   const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
   const lurkPlusTopups=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>({...h,method:h.method||"cash",memberName:m.name})));
   const topupTotal=lurkPlusTopups.reduce((sum,e)=>sum+(Number(e.amount)||0),0);
@@ -1177,7 +1179,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const dayMap={};
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
-  monthLedger.filter(e=>e.type==="manual_cash"&&e.date).forEach(e=>{const d=e.date.slice(0,10);if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};if(!dayMap[d].manualCash)dayMap[d].manualCash=[];dayMap[d].manualCash.push(e);});
+  monthLedger.filter(e=>e.type==="manual_cash"&&e.date).forEach(e=>{const d=e.date.slice(0,10);if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};dayMap[d].inc+=(Number(e.amount)||0);if(!dayMap[d].manualCash)dayMap[d].manualCash=[];dayMap[d].manualCash.push(e);});
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
   return(
