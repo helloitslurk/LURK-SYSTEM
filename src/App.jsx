@@ -594,7 +594,7 @@ function POSApp({onLock}){
       {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} setV={setV}/>}
-      {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} setV={setV}/>}
+      {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
@@ -1087,17 +1087,17 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
 }
 
 /* ─── MONTH REVIEW ─── */
-function MonthReviewScreen({orders,tables,setV}){
+function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
   const now=new Date();
   const [selectedMonth,setSelectedMonth]=useState(thisMonth());
-  const months=[...new Set([thisMonth(),...orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m))])].sort((a,b)=>b.localeCompare(a));
+  const months=[...new Set([thisMonth(),...orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)),...creditEntries.filter(e=>e.type==="manual_cash").map(e=>(e.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m))])].sort((a,b)=>b.localeCompare(a));
   const [year,setYear]=useState(String(now.getFullYear()));
   const monthLabel=(m)=>{const [y,mm]=m.split("-").map(Number);return new Date(y,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
   const monthOrders=orders.filter(o=>(o.date||"").slice(0,7)===selectedMonth);
   const openOrders=tables.flatMap(t=>(t.order||[]).length?[{date:tod(),total:(t.order||[]).reduce((s,i)=>s+(i.revenueExcluded?0:(Number(i.price)||0)*(Number(i.qty)||0)),0),items:t.order.filter(i=>!i.revenueExcluded)}]:[]);
   const closedRevenue=monthOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
   const openRevenue=selectedMonth===thisMonth()?openOrders.reduce((s,o)=>s+o.total,0):0;
-  const revenue=closedRevenue+openRevenue;
+  const manualCashRevenue=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===selectedMonth).reduce((sum,e)=>sum+(Number(e.amount)||0),0);\n  const revenue=closedRevenue+openRevenue+manualCashRevenue;
   const productTotals={};
   [...monthOrders,...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{
     const key=(item.name||"Ürün").trim();
@@ -1106,7 +1106,7 @@ function MonthReviewScreen({orders,tables,setV}){
     productTotals[key].qty+=Number(item.qty)||0;
   }));
   const topProducts=Object.values(productTotals).sort((a,b)=>b.revenue-a.revenue).slice(0,5);
-  const yearRevenue=orders.filter(o=>(o.date||"").startsWith(year+"-")).reduce((s,o)=>s+(Number(o.total)||0),0);
+  const yearRevenue=orders.filter(o=>(o.date||"").startsWith(year+"-")).reduce((s,o)=>s+(Number(o.total)||0),0)+creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").startsWith(year+"-")).reduce((s,e)=>s+(Number(e.amount)||0),0);
   const yearOptions=[...new Set([String(now.getFullYear()),...orders.map(o=>(o.date||"").slice(0,4)).filter(y=>/^\d{4}$/.test(y))])].sort((a,b)=>b.localeCompare(a));
   return(
     <div className="lurk-screen lurk-reports-screen" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
@@ -1122,7 +1122,7 @@ function MonthReviewScreen({orders,tables,setV}){
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
           <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} CİROSU</div>
           <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
-          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}</div>
+          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
         </div>
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
           <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>YILLIK CİRO</div>
@@ -1131,7 +1131,7 @@ function MonthReviewScreen({orders,tables,setV}){
             {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
           </select>
           <div style={{fontSize:25,fontWeight:950,color:"#A8C17D",letterSpacing:"-.8px",marginTop:12}}>{fm(yearRevenue)}</div>
-          <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Seçilen yılın kapanmış adisyon cirosu</div>
+          <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Seçilen yılın adisyonları + manuel nakit tahsilatları</div>
         </div>
         <div style={{fontSize:15,fontWeight:900,color:"#F0EBDD",letterSpacing:"-.3px",marginBottom:5}}>En çok kazandıran 5 ürün</div>
         <div style={{fontSize:10,color:"#92958A",marginBottom:11}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
