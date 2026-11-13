@@ -1147,7 +1147,7 @@ function MonthReviewScreen({orders,tables,setV}){
 
 /* ─── REPORTS ─── */
 function ReportsScreen({orders,logs,creditEntries,lurkPlusMembers=[],setV}){
-  const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):"")].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
+  const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):""),...lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date).map(h=>h.date.slice(0,7)))].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
   const[exp,setExp]=useState(null);
@@ -1156,7 +1156,7 @@ function ReportsScreen({orders,logs,creditEntries,lurkPlusMembers=[],setV}){
     const headers=["Tarih","Masa","Müşteri","Ara toplam","İndirim","Toplam","Nakit","Kart","Veresiye","Ödeme türü","Ürünler"];
     const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Nakit + Kart":o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":o.pt==="credit"?"Veresiye":"Diğer",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
     const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),"Veresiye defteri",e.customerName||"",0,0,0,e.type==="payment"&&e.method==="cash"?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Borç kaydı":"Tahsilat · "+(e.method==="cash"?"Nakit":e.method==="card"?"Kart":"Diğer"),e.note||""]);
-    const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.method&&(h.date||"").slice(0,7)===sel).map(h=>[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,Number(h.amount)||0,h.method==="cash"?(Number(h.amount)||0):0,h.method==="card"?(Number(h.amount)||0):0,0,"LURK+ · "+(h.method==="cash"?"Nakit":"Kart"),""]));
+    const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Nakit":"Kart"),""];}));
     const csv=[headers,...rows,...ledgerRows,...topupRows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
     const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lurk-satis-"+sel+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -1167,7 +1167,7 @@ function ReportsScreen({orders,logs,creditEntries,lurkPlusMembers=[],setV}){
   const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
   const totalInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
   const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
-  const lurkPlusTopups=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.method&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>({...h,memberName:m.name})));
+  const lurkPlusTopups=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>({...h,method:h.method||"cash",memberName:m.name})));
   const topupTotal=lurkPlusTopups.reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const topupCash=lurkPlusTopups.filter(e=>e.method==="cash").reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const topupCard=lurkPlusTopups.filter(e=>e.method==="card").reduce((sum,e)=>sum+(Number(e.amount)||0),0);
