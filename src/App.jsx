@@ -534,6 +534,8 @@ function POSApp({onLock}){
         .lurk-nav-button { min-width: 0; border-radius: 14px !important; }
         .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
         .lurk-nav-button:hover { background: rgba(255,255,255,.07) !important; }
+        .lurk-month-review-select { background: #E9E1CF !important; background-color: #E9E1CF !important; color: #171914 !important; border-color: #F6EFDF !important; color-scheme: light; }
+        .lurk-month-review-select option { background: #E9E1CF !important; color: #171914 !important; }
         .lurk-app input, .lurk-app select {
           background-color: rgba(255,255,255,.055) !important;
           border-color: rgba(255,255,255,.14) !important;
@@ -1117,7 +1119,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
       </div>
       <div style={{padding:"16px 14px"}}>
         <label style={{display:"block",fontSize:9,fontWeight:850,letterSpacing:"1.6px",color:"#B9B7A9",marginBottom:7}}>RAPOR DÖNEMİ</label>
-        <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:13,marginBottom:15,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,textTransform:"capitalize",fontWeight:800,letterSpacing:".2px"}}>
+        <select className="lurk-month-review-select" value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:13,marginBottom:15,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,textTransform:"capitalize",fontWeight:800,letterSpacing:".2px"}}>
           {months.map(m=><option key={m} value={m}>{monthLabel(m)}</option>)}
         </select>
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
@@ -1128,7 +1130,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
           <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>YILLIK CİRO</div>
           <label style={{display:"block",fontSize:11,color:T.textSub,margin:"10px 0 6px"}}>Yıl seç</label>
-          <select value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,fontWeight:800}}>
+          <select className="lurk-month-review-select" value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,fontWeight:800}}>
             {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
           </select>
           <div style={{fontSize:25,fontWeight:950,color:"#A8C17D",letterSpacing:"-.8px",marginTop:12}}>{fm(yearRevenue)}</div>
