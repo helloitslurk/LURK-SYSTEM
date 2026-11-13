@@ -1097,7 +1097,8 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
   const openOrders=tables.flatMap(t=>(t.order||[]).length?[{date:tod(),total:(t.order||[]).reduce((s,i)=>s+(i.revenueExcluded?0:(Number(i.price)||0)*(Number(i.qty)||0)),0),items:t.order.filter(i=>!i.revenueExcluded)}]:[]);
   const closedRevenue=monthOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
   const openRevenue=selectedMonth===thisMonth()?openOrders.reduce((s,o)=>s+o.total,0):0;
-  const manualCashRevenue=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===selectedMonth).reduce((sum,e)=>sum+(Number(e.amount)||0),0);\n  const revenue=closedRevenue+openRevenue+manualCashRevenue;
+  const manualCashRevenue=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===selectedMonth).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
+  const revenue=closedRevenue+openRevenue+manualCashRevenue;
   const productTotals={};
   [...monthOrders,...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{
     const key=(item.name||"Ürün").trim();
