@@ -1944,6 +1944,13 @@ function MenuScreen({menu,setMenu,setV}){
   const[addError,setAddError]=useState("");
   const cats=[...new Set(menu.map(m=>m.cat))];
   function openEdit(item){setEditingItem(item);setNewName(item.name);setNewPrice(String(item.price));setNewCat(item.cat);setAddError("");}
+  function deleteItem(){
+    if(!editingItem)return;
+    const confirmed=window.confirm("“"+editingItem.name+"” ürününü menüden kalıcı olarak silmek istiyor musun? Geçmiş satış kayıtları korunur.");
+    if(!confirmed)return;
+    setMenu(prev=>prev.filter(m=>m.id!==editingItem.id));
+    setEditingItem(null);setNewName("");setNewPrice("");setAddError("");
+  }
   function saveEdit(){
     const validated=validateMenuItemInput(newName,newPrice);
     if(validated.error){setAddError(validated.error);return;}
@@ -1990,6 +1997,7 @@ function MenuScreen({menu,setMenu,setV}){
           <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="Fiyat (TL)" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
           {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
           <button onClick={saveEdit} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
+          <button onClick={deleteItem} style={{width:"100%",padding:"12px",background:"rgba(255,69,58,.10)",border:"1px solid rgba(255,69,58,.28)",borderRadius:10,color:"#FF6B63",fontSize:13,fontWeight:700,cursor:"pointer",marginTop:10}}>Ürünü Sil</button>
           <button onClick={()=>{setEditingItem(null);setAddError("");}} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
         </Modal>
       )}
