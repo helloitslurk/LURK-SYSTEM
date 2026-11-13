@@ -1859,9 +1859,10 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const monthLabel=(month)=>{const [year,mm]=month.split("-").map(Number);return new Date(year,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
   const matchesCustomer=(o,c)=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"));
   const customerOrders=(c)=>orders.filter(o=>matchesCustomer(o,c));
-  const totalFor=(c)=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const manualCashFor=(c,month=null)=>creditEntries.filter(e=>e.type==="manual_cash"&&((e.customerId&&e.customerId===c.id)||(!e.customerId&&e.customerName&&e.customerName.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR")))&&(!month||(e.date||"").slice(0,7)===month)).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
+  const totalFor=(c)=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0)+manualCashFor(c);
   const orderCountFor=(c)=>customerOrders(c).filter(o=>!o.partialPayment).length;
-  const monthlyTotalFor=(c,month=selectedMonth)=>orders.filter(o=>matchesCustomer(o,c)&&(o.date||"").slice(0,7)===month).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+  const monthlyTotalFor=(c,month=selectedMonth)=>orders.filter(o=>matchesCustomer(o,c)&&(o.date||"").slice(0,7)===month).reduce((sum,o)=>sum+(Number(o.total)||0),0)+manualCashFor(c,month);
   const pointsFor=(c)=>Math.floor((orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+paymentAmount(o,"cash")+paymentAmount(o,"card"),0)+ledgerFor(c).filter(e=>e.type==="payment").reduce((sum,e)=>sum+(Number(e.amount)||0),0))/100);
   const ledgerFor=(c)=>creditEntries.filter(e=>e.customerId===c.id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   const balanceFor=(c)=>ledgerFor(c).reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
