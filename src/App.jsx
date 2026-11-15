@@ -1469,7 +1469,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+          <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.total)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(lurkStats.paid)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.left)}</div></div>
@@ -1579,7 +1579,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         </div>}
       </div>
             <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>setShowFreedom(v=>!v)} aria-expanded={showFreedom} style={{width:"100%",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",textAlign:"left",background:"transparent",border:0,color:T.text,padding:0,cursor:"pointer"}}>
+        <button onClick={()=>setShowFreedom(v=>!v)} aria-expanded={showFreedom} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(0,1.8fr) repeat(3,minmax(0,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,color:T.text,padding:0,cursor:"pointer"}}>
           <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:18,flexShrink:0}}>✦</div>
           <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>ÖZGÜRLEŞME OPERASYONU</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 kayıt</div></div>
           <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
