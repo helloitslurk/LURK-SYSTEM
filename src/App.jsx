@@ -1503,7 +1503,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>▣</div>
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>Taksitler</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+          <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.total)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(installmentStats.paid)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.left)}</div></div>
@@ -1550,7 +1550,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>🏍️</div>
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+          <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.total)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(fiddleStats.paid)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.left)}</div></div>
@@ -1584,7 +1584,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>✦</div>
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>ÖZGÜRLEŞME OPERASYONU</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 kayıt</div></div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+          <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.total)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(freedomStats.paid)}</div></div>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.left)}</div></div>
