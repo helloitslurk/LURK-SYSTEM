@@ -1456,7 +1456,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{flex:1}}><div style={{fontSize:20,fontWeight:850}}>Kişisel / Ödeme Takibi</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>Finansal durumun · Özel alan</div></div>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Kilitle</button>
     </div>
-    <div style={{padding:16,maxWidth:1280,margin:"0 auto"}}>
+    <div style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"flex",alignItems:"center",gap:16,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
