@@ -707,7 +707,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
           <div>
-            <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:112,maxWidth:"38vw",height:"auto"}} />
+            <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:168,maxWidth:"48vw",height:"auto",margin:"0",objectFit:"contain",objectPosition:"left center"}} />
             <div style={{display:"flex",alignItems:"center",gap:9,flexWrap:"wrap",marginTop:5}}>
               <span style={{fontSize:12,color:T.textSub}}>{homeClock.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
               <span style={{width:3,height:3,borderRadius:"50%",background:T.textDim}}/>
