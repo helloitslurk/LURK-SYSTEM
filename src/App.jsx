@@ -514,6 +514,7 @@ function POSApp({onLock}){
         }
         @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        .lurk-folder-debt-list { grid-template-columns: 1fr !important; }
         .lurk-folder-debt-row { display:grid; grid-template-columns:minmax(170px,1.1fr) minmax(180px,.9fr) minmax(180px,.9fr); align-items:center; column-gap:16px; }
+        .lurk-folder-debt-row > div:first-child { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; font-size:16px !important; font-weight:800 !important; letter-spacing:-.25px; line-height:1.3 !important; }
         .lurk-folder-debt-row > div:first-child { grid-column:1; }
         .lurk-folder-debt-row > div:nth-child(2) { grid-column:2; margin-top:0 !important; }
         .lurk-folder-debt-row > div:nth-child(3) { grid-column:3; margin-top:0 !important; }
