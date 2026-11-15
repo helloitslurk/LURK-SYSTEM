@@ -502,8 +502,18 @@ function POSApp({onLock}){
         .lurk-screen:not(.lurk-order-screen) { width: 100%; max-width: 1440px; margin: 0 auto; }
         .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
         @media (min-width: 1100px) {
-          .lurk-home-screen > div:first-child { padding: 28px 32px 24px !important; }
-          .lurk-home-screen > div:nth-child(2), .lurk-home-screen > div:nth-child(3) { padding-left: 32px !important; padding-right: 32px !important; }
+          .lurk-home-screen { height: calc(100dvh - 76px); min-height: 620px; display: flex; flex-direction: column; overflow: hidden; }
+          .lurk-home-screen > div:first-child { padding: 18px 32px 16px !important; flex: 0 0 auto; }
+          .lurk-home-screen > div:first-child .lurk-home-stats { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 10px !important; }
+          .lurk-home-screen > div:nth-child(2) { padding: 14px 32px 0 !important; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+          .lurk-home-screen > div:nth-child(2) .lurk-home-pages-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 12px !important; flex: 1 1 auto; min-height: 0; }
+          .lurk-home-screen .lurk-home-page-card { min-height: 0 !important; height: 100%; padding: 20px 22px !important; display: flex; flex-direction: column; justify-content: center; }
+          .lurk-home-screen .lurk-home-page-card > div:nth-child(2) { font-size: 30px !important; margin-bottom: 16px !important; }
+          .lurk-home-screen .lurk-home-page-card > div:nth-child(3) { font-size: 19px !important; }
+          .lurk-home-screen .lurk-home-page-card > div:nth-child(4) { font-size: 13px !important; }
+          .lurk-home-screen > div:nth-child(3) { padding: 12px 32px 14px !important; flex: 0 0 auto; }
+          .lurk-home-screen > div:nth-child(3) button { min-height: 50px; }
+          .lurk-tables-screen > div:nth-child(2), .lurk-reports-screen > div:nth-child(n+2), .lurk-customers-screen > div:nth-child(n+2), .lurk-menu-screen > div:nth-child(2), .lurk-settings-screen > div:nth-child(2) { padding-left: 28px !important; padding-right: 28px !important; }
           .lurk-tables-screen > div:nth-child(2), .lurk-reports-screen > div:nth-child(n+2), .lurk-customers-screen > div:nth-child(n+2), .lurk-menu-screen > div:nth-child(2), .lurk-settings-screen > div:nth-child(2) { padding-left: 28px !important; padding-right: 28px !important; }
           .lurk-order-screen { height: 100vh; }
           .lurk-order-screen > div:first-child { padding: 16px 24px !important; }
@@ -733,9 +743,9 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
       {/* Hızlı erişim grid */}
       <div style={{padding:"16px 14px 0"}}>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div className="lurk-home-pages-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {PAGES.map((p,i)=>(
-            <button key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
+            <button className="lurk-home-page-card" key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
               <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.03)"}}/>
               <div style={{fontSize:22,marginBottom:10,color:T.textSub,opacity:0.6}}>{p.icon}</div>
               <div style={{fontSize:14,fontWeight:700,color:T.text}}>{p.label}</div>
