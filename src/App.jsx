@@ -624,7 +624,7 @@ function POSApp({onLock}){
           .lurk-nav-button:hover { background: rgba(255,255,255,.055) !important; }
           .lurk-nav-button span:first-child { font-size: 22px !important; }
           .lurk-nav-button span:last-child { font-size: 11px !important; }
-          .lurk-screen:not(.lurk-order-screen) { max-width: 1600px !important; }
+          .lurk-screen:not(.lurk-order-screen) { width: 100% !important; max-width: none !important; margin-left: 0 !important; margin-right: 0 !important; }
           .lurk-order-screen { width: 100%; }
         }
         @media (prefers-reduced-motion: reduce) {
