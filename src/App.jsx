@@ -512,7 +512,20 @@ function POSApp({onLock}){
         @media (min-width: 700px) and (max-width: 1099px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
         }
-        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        .lurk-personal-debt-list { grid-template-columns: 1fr !important; }
+        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        .lurk-folder-debt-list { grid-template-columns: 1fr !important; }
+        .lurk-folder-debt-row { display:grid; grid-template-columns:minmax(170px,1.1fr) minmax(180px,.9fr) minmax(180px,.9fr); align-items:center; column-gap:16px; }
+        .lurk-folder-debt-row > div:first-child { grid-column:1; }
+        .lurk-folder-debt-row > div:nth-child(2) { grid-column:2; margin-top:0 !important; }
+        .lurk-folder-debt-row > div:nth-child(3) { grid-column:3; margin-top:0 !important; }
+        .lurk-folder-debt-row > div:nth-child(4) { grid-column:1 / -1; }
+        .lurk-folder-debt-row > button, .lurk-folder-debt-row > div:nth-child(n+5) { grid-column:1 / -1; }
+        @media (max-width: 699px) {
+          .lurk-folder-debt-row { grid-template-columns:minmax(0,1fr) minmax(0,1fr); row-gap:9px; }
+          .lurk-folder-debt-row > div:first-child { grid-column:1 / -1; }
+          .lurk-folder-debt-row > div:nth-child(2), .lurk-folder-debt-row > div:nth-child(3) { grid-column:auto; }
+          .lurk-folder-debt-row > div:nth-child(4), .lurk-folder-debt-row > button, .lurk-folder-debt-row > div:nth-child(n+5) { grid-column:1 / -1; }
+        }
+        .lurk-personal-debt-list { grid-template-columns: 1fr !important; }
         .lurk-personal-debt-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(220px,.9fr); align-items: center; column-gap: 18px; }
         .lurk-personal-debt-row > div:nth-child(2) { margin-top: 0 !important; }
         .lurk-personal-debt-row > div:nth-child(n+3) { grid-column: 1 / -1; }
@@ -1460,8 +1473,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
         </button>
-        {showLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {activeLurkDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
+        {showLurk&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
+          {activeLurkDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
@@ -1494,8 +1507,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showInstallments?"⌃":"⌄"}</div>
         </button>
-        {showInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}> 
-          {activeInstallmentDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
+        {showInstallments&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}> 
+          {activeInstallmentDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
             <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
               <div style={{width:76,height:76,borderRadius:"50%",background:"conic-gradient(#54e875 0deg "+(pct(d)/100*360)+"deg,#304638 "+(pct(d)/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}>
@@ -1541,8 +1554,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFiddle?"⌃":"⌄"}</div>
         </button>
-        {showFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:9,marginTop:12}}>
-          {activeFiddleDebts.map(d=><div key={d.id} style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:14,padding:14,minWidth:0}}>
+        {showFiddle&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
+          {activeFiddleDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
