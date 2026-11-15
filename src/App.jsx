@@ -512,7 +512,15 @@ function POSApp({onLock}){
         @media (min-width: 700px) and (max-width: 1099px) {
           .lurk-app [style*="grid-template-columns: 1fr 1fr"], .lurk-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
         }
-        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        .lurk-customer-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+        @media (max-width: 699px) {\n          .lurk-home-stats > div { padding: 9px 6px !important; border-radius: 10px !important; }\n          .lurk-home-stats > div > div:nth-child(2) { font-size: clamp(10px, 2.65vw, 13px) !important; letter-spacing: -0.55px !important; }\n        }\n        .lurk-personal-debt-list { grid-template-columns: 1fr !important; }
+        .lurk-personal-debt-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(220px,.9fr); align-items: center; column-gap: 18px; }
+        .lurk-personal-debt-row > div:nth-child(2) { margin-top: 0 !important; }
+        .lurk-personal-debt-row > div:nth-child(n+3) { grid-column: 1 / -1; }
+        @media (max-width: 699px) {
+          .lurk-personal-debt-row { grid-template-columns: minmax(0,1fr); row-gap: 10px; }
+          .lurk-personal-debt-row > div:nth-child(2) { grid-column: 1; }
+        }
+        .lurk-customer-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
         @media (min-width: 700px) and (max-width: 1099px) {
           .lurk-customer-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
         }
@@ -1558,8 +1566,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <div style={{display:"flex",gap:5}}>{["Tümü","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
         <button onClick={()=>{const name=window.prompt("Borç / ödeme adı:");if(!name?.trim())return;const totalValue=Number(window.prompt("Toplam tutar (TL):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Kişisel veya Nicchia","Kişisel")==="Nicchia"?"Nicchia":"Kişisel";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Borç Ekle</button>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12}}>
-        {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:15,padding:15,minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
+      <div className="lurk-personal-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8}}>
+        {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className="lurk-personal-debt-row" style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:13,padding:"12px 14px",minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
           <div style={{display:"flex",alignItems:"center",gap:11}}>
             {!["beliz","ryze","hepsiburada-limiti","ahmet-bakkal","vodafone","hepsifinans","kyk"].includes(d.id)&&(<div style={{width:42,height:42,borderRadius:12,background:d.group==="Kişisel"?"rgba(52,199,89,.13)":"rgba(109,158,172,.15)",display:"grid",placeItems:"center",color:d.group==="Kişisel"?"#54d783":"#8db9c5",fontSize:18,flexShrink:0}}>₺</div>)}
             <div style={{flex:1,minWidth:0}}>
