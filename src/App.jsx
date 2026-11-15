@@ -1334,6 +1334,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [showCompletedFiddle,setShowCompletedFiddle]=useState(false);
   const [showInstallments,setShowInstallments]=useState(false);
   const [showFiddle,setShowFiddle]=useState(false);
+  const [showFreedom,setShowFreedom]=useState(false);
   const [filter,setFilter]=useState("Tümü");
   const [showCompletedPersonalDebts,setShowCompletedPersonalDebts]=useState(false);
   const [draggingDebtId,setDraggingDebtId]=useState(null);
@@ -1432,6 +1433,11 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const completedFiddleDebts=fiddleDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
   const fiddleStats=folderStats(fiddleDebts);
+  const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti"];
+  const freedomDebts=debts.filter(d=>freedomIds.includes(d.id));
+  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
+  const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
+  const freedomStats=folderStats(freedomDebts);
   function reorderVisibleDebts(sourceId,targetId){
     if(!sourceId||!targetId||sourceId===targetId)return;
     const ordered=visibleDebts.slice();
@@ -1441,7 +1447,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const positions=new Map(ordered.map((d,i)=>[d.id,i]));
     setDebts(prev=>prev.map(d=>positions.has(d.id)?{...d,sortOrder:positions.get(d.id)}:d));
   }
-  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&(filter==="Tümü"||d.group===filter));
+  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&!freedomIds.includes(d.id)&&(filter==="Tümü"||d.group===filter));
   const completedPersonalDebts=personalDebtPool.filter(d=>remaining(d)<=0);
   const visibleDebts=personalDebtPool.filter(d=>remaining(d)>0).sort((a,b)=>{
     const ao=a.sortOrder!==undefined?Number(a.sortOrder):null;
@@ -1572,7 +1578,38 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           {completedFiddleDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedFiddle(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedFiddleDebts.length}</span><span>{showCompletedFiddle?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedFiddleDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
         </div>}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
+            <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
+        <button onClick={()=>setShowFreedom(v=>!v)} aria-expanded={showFreedom} style={{width:"100%",display:"flex",alignItems:"center",gap:12,flexWrap:"wrap",textAlign:"left",background:"transparent",border:0,color:T.text,padding:0,cursor:"pointer"}}>
+          <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:18,flexShrink:0}}>✦</div>
+          <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>ÖZGÜRLEŞME OPERASYONU</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 kayıt</div></div>
+          <div style={{display:"flex",alignItems:"center",gap:18,flex:"2 1 420px",justifyContent:"space-between",flexWrap:"wrap",padding:"4px 0"}}>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(freedomStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.left)}</div></div>
+            <div style={{display:"flex",alignItems:"center",gap:9}}>
+              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(freedomStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(freedomStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{freedomStats.pct.toFixed(0)}%</div></div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+            </div>
+          </div>
+          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFreedom?"⌃":"⌄"}</div>
+        </button>
+        {showFreedom&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
+          {activeFreedomDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
+            <div style={{fontSize:16,fontWeight:900,textTransform:"uppercase",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{d.name}</div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div><div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
+            <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
+            <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
+            <div style={{display:"flex",gap:6,marginTop:9}}>
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Ödeme</button>}
+              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
+            </div>
+            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Tarih belirtilmedi"}</span><b>{money(p.amount)}</b></div>)}</div>}
+          </div>)}
+          {completedFreedomDebts.length>0&&<div style={{fontSize:10,color:"#70c98b",fontWeight:800}}>TAMAMLANANLAR · {completedFreedomDebts.length}</div>}
+        </div>}
+      </div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
         {[{label:"TOPLAM BORÇ",value:money(originalTotal)},{label:"ÖDENEN",value:money(paidTotal)},{label:"KALAN",value:money(total)},{label:"ÖDEME ORANI",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
