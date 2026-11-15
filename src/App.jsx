@@ -140,6 +140,21 @@ async function sbSetNow(key,val){
 }
 const sbSet=createKeyedWriteQueue(sbSetNow);
 
+function lurkPlusSlug(name){
+  const slug=String(name||"uye").trim().toLocaleLowerCase("tr-TR")
+    .replace(/ı/g,"i").replace(/ğ/g,"g").replace(/ü/g,"u")
+    .replace(/ş/g,"s").replace(/ö/g,"o").replace(/ç/g,"c")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+  return slug||"uye";
+}
+const LURK_PLUS_ORIGIN="https://plus.lurk.com.tr";
+function lurkPlusUrl(member,token,members=[]){
+  const base=lurkPlusSlug(member?.name);
+  const duplicate=members.some(m=>m.id!==member?.id&&lurkPlusSlug(m.name)===base);
+  const slug=duplicate?base+"-"+String(member?.id||"").slice(-5):base;
+  return LURK_PLUS_ORIGIN+"/"+slug+"?lurkplus="+encodeURIComponent(token);
+}
 function fm(v){return(v||0).toLocaleString("tr-TR",{minimumFractionDigits:2})+" TL";}
 function paymentAmount(order,method){if(Array.isArray(order.payments))return order.payments.filter(p=>p.method===method).reduce((sum,p)=>sum+(Number(p.amount)||0),0);return order.pt===method?(Number(order.total)||0):0;}
 function tod(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
@@ -1626,7 +1641,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
       const result=await response.json().catch(()=>null);
       if(!response.ok)throw new Error(result?.message||"Bağlantı yüklenemedi");
       const token=typeof result==="string"?result:result?.url;
-      const url=token?(token.startsWith("http")?token:window.location.origin+window.location.pathname+"?lurkplus="+token):null;
+      const url=token?(token.startsWith("http")?token:lurkPlusUrl(members.find(m=>m.id===memberId)||{id:memberId,name:"uye"},token,members)):null;
       setIssuedLinks(prev=>({...prev,[memberId]:url}));
     }catch(e){msg(e.message||"Bağlantı yüklenemedi.");}
     finally{setLinkBusy(false);}
@@ -1658,7 +1673,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         const response=await fetch(SB_URL+"/rest/v1/rpc/"+rpc,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
         const result=await response.json().catch(()=>null);
         if(!response.ok)throw new Error(result?.message||"Bağlantı oluşturulamadı");
-        const url=window.location.origin+window.location.pathname+"?lurkplus="+token;
+        const url=lurkPlusUrl(member,token,members);
         setIssuedLinks(prev=>({...prev,[member.id]:url}));
 
         try{await navigator.clipboard.writeText(url);msg("Müşteri bağlantısı oluşturuldu ve kopyalandı.");}
