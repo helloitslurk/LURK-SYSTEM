@@ -542,3 +542,18 @@
  .lurk-root .lurk-shell-sidebar{display:none!important}
  .lurk-root .lurk-app{padding-left:0!important}
 }
+
+
+/* HOME VISIBILITY FIX: dashboard no longer reserves a phantom internal sidebar. */
+@media(min-width:1000px){
+ .lurk-app:has(.ref-dashboard){height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important;padding-bottom:0!important}
+ .lurk-app:has(.ref-dashboard) .ref-dashboard{display:block!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important;padding:0!important;background:var(--lurk-bg)!important}
+ .lurk-app:has(.ref-dashboard) .ref-main{width:100%!important;height:auto!important;min-height:100dvh!important;max-height:none!important;min-width:0!important;overflow:visible!important;display:flex!important;flex-direction:column!important;margin:0!important;border-radius:0!important;background:var(--lurk-bg)!important}
+ .lurk-app:has(.ref-dashboard) .ref-content{width:100%!important;max-width:1600px!important;height:auto!important;min-height:0!important;flex:1 1 auto!important;overflow:visible!important;margin:0 auto!important;padding:24px clamp(22px,3vw,44px) 40px!important}
+}
+@media(max-width:999px){
+ .lurk-app:has(.ref-dashboard){height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important;padding-bottom:0!important}
+ .lurk-app:has(.ref-dashboard) .ref-dashboard{display:block!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important;padding:0!important}
+ .lurk-app:has(.ref-dashboard) .ref-main{width:100%!important;height:auto!important;min-height:100dvh!important;overflow:visible!important;margin:0!important;border-radius:0!important}
+ .lurk-app:has(.ref-dashboard) .ref-content{height:auto!important;overflow:visible!important;padding:18px 14px 30px!important}
+}
