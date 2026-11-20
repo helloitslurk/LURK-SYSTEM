@@ -1364,3 +1364,18 @@ body{position:static!important}
 .lurk-order-line-popover button:hover{background:#f3f7ef}
 .lurk-order-line-qty{margin-top:5px;font-size:9px;color:#92998f}
 .lurk-order-line-qty b{color:#47543d;font-size:10px}
+
+
+/* Confirmation dialog: match the current LURK light interface */
+.lurk-confirm-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(22,29,23,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.lurk-confirm-card{width:min(100%,390px);box-sizing:border-box;padding:27px 26px 22px;border:1px solid #e3e9df;border-radius:20px;background:#fff;box-shadow:0 24px 70px rgba(20,32,22,.2);text-align:center;color:#202820;animation:lurk-confirm-in .18s ease-out}
+.lurk-confirm-icon{width:42px;height:42px;margin:0 auto 13px;display:grid;place-items:center;border-radius:14px;background:#fff0ed;color:#d94a42;font-size:22px;font-weight:850}
+.lurk-confirm-eyebrow{font-size:9px;font-weight:850;letter-spacing:1.8px;color:#929b90;margin-bottom:7px}
+.lurk-confirm-card h2{margin:0;color:#202820;font-size:20px;font-weight:850;letter-spacing:-.45px}
+.lurk-confirm-card p{margin:9px 0 22px;color:#727d72;font-size:13px;line-height:1.5}
+.lurk-confirm-actions{display:flex;gap:9px;margin-top:22px}
+.lurk-confirm-actions button{flex:1;min-height:43px;border-radius:11px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.lurk-confirm-cancel{border:1px solid #e1e7df;background:#f7f9f6;color:#536052}
+.lurk-confirm-delete{border:1px solid #d94a42;background:#d94a42;color:#fff;box-shadow:0 4px 10px rgba(217,74,66,.16)}
+.lurk-confirm-actions button:focus-visible{outline:3px solid rgba(161,211,54,.5);outline-offset:2px}
+@keyframes lurk-confirm-in{from{opacity:0;transform:translateY(7px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
