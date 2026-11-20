@@ -1384,16 +1384,16 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
   return(
-    <div className="lurk-screen lurk-reports-screen ds-sales-report" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
-      <div style={{background:"#0B0D0A",borderBottom:"1px solid rgba(233,225,207,.13)",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:11}}>
+    <div className="lurk-screen lurk-reports-screen ds-sales-report" style={{background:"#F6F8F5",minHeight:"100vh",color:"#18251D"}}>
+      <div style={{background:"#FFFFFF",borderBottom:"1px solid #DDE5DD",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:11}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>Raporlar<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / SALES LEDGER</div></div><button onClick={addManualCash} style={{background:"#24452B",color:"#E9E1CF",border:"1px solid rgba(233,225,207,.2)",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Nakit ekle</button><button onClick={exportMonthCsv} style={{background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
+        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#18251D"}}>Raporlar<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#66746A",marginTop:4}}>LURK / SALES LEDGER</div></div><button onClick={addManualCash} style={{background:"#176B32",color:"#FFFFFF",border:"1px solid #176B32",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Nakit ekle</button><button onClick={exportMonthCsv} style={{background:"#E8F3E9",color:"#176B32",border:"1px solid #CFE3D1",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
       </div>
 
       {/* Ay seçici */}
-      <div style={{display:"flex",gap:7,padding:"14px 14px",overflowX:"auto",borderBottom:"1px solid rgba(233,225,207,.1)"}}>
+      <div style={{display:"flex",gap:7,padding:"14px 14px",overflowX:"auto",borderBottom:"1px solid #E4EAE4",background:"#FFFFFF"}}>
         {(months.length?months:[now]).map(m=>(
-          <button key={m} onClick={()=>setSel(m)} style={{padding:"8px 15px",border:"1px solid "+(sel===m?"#E9E1CF":"rgba(233,225,207,.18)"),borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:800,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#E9E1CF":"#11140F",color:sel===m?"#171914":"#B8B8AC",boxShadow:sel===m?"0 3px 12px rgba(0,0,0,.22)":"none"}}>
+          <button key={m} onClick={()=>setSel(m)} style={{padding:"8px 15px",border:"1px solid "+(sel===m?"#A9CDAE":"#DDE5DD"),borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:800,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#E8F3E9":"#F7F9F7",color:sel===m?"#176B32":"#536258",boxShadow:sel===m?"0 2px 8px rgba(24,37,29,.08)":"none"}}>
             {ml(m)}
           </button>
         ))}
@@ -1407,9 +1407,9 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
           {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
         ].map((s,i)=>(
           <div key={i} style={{background:"#E9E1CF",color:"#171914",borderRadius:11,padding:"13px 10px",border:"1px solid #F6EFDF",minWidth:0,boxShadow:"0 7px 18px rgba(0,0,0,.2)"}}>
-            <div style={{fontSize:9,color:"#62665A",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
+            <div style={{fontSize:9,color:"#536258",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
             <div style={{fontSize:13,fontWeight:950,color:i===0?"#24452B":"#171914",letterSpacing:"-.4px",whiteSpace:"nowrap"}}>{s.val.replace(" TL","")}</div>
-            <div style={{fontSize:9,color:"#77796E",marginTop:3,fontWeight:750,letterSpacing:"1px"}}>TL</div>
+            <div style={{fontSize:9,color:"#66746A",marginTop:3,fontWeight:750,letterSpacing:"1px"}}>TL</div>
           </div>
         ))}
       </div>
@@ -1422,20 +1422,20 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
           const isExp=exp===day.date;
           const log=day.log;
           return(
-            <div key={day.date} style={{background:"linear-gradient(145deg,#11140F,#0D100D)",borderRadius:12,marginBottom:9,border:"1px solid rgba(233,225,207,.15)",overflow:"hidden",boxShadow:"0 5px 15px rgba(0,0,0,.16)"}}>
+            <div key={day.date} style={{background:"#FFFFFF",borderRadius:12,marginBottom:9,border:"1px solid #DDE5DD",overflow:"hidden",boxShadow:"0 3px 12px rgba(24,37,29,.06)"}}>
               <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"15px 14px",cursor:"pointer"}}>
                 <div>
-                  <div style={{fontSize:14,fontWeight:800,color:"#F0EBDD",letterSpacing:"-.2px"}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-                  <div style={{fontSize:10,color:"#92958A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
+                  <div style={{fontSize:14,fontWeight:800,color:"#18251D",letterSpacing:"-.2px"}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
+                  <div style={{fontSize:10,color:"#66746A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
                 </div>
                 <div style={{textAlign:"right"}}>
-                  <div style={{fontSize:15,fontWeight:900,color:"#34C759"}}>{fm(day.inc)}</div>
+                  <div style={{fontSize:15,fontWeight:900,color:"#176B32"}}>{fm(day.inc)}</div>
                   <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
                 </div>
               </div>
-              {isExp&&(day.manualCash||[]).map((e,i)=><div key={"manual-cash-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(255,255,255,0.05)",background:"rgba(52,199,89,.06)"}}><div><div style={{fontSize:13,color:T.text}}>{e.customerName||"Manuel tahsilat"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>Manuel nakit tahsilat</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
+              {isExp&&(day.manualCash||[]).map((e,i)=><div key={"manual-cash-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F1F7F1"}}><div><div style={{fontSize:13,color:T.text}}>{e.customerName||"Manuel tahsilat"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>Manuel nakit tahsilat</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
                {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
-                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"0.5px solid rgba(255,255,255,0.05)",background:"rgba(255,255,255,0.02)"}}>
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#FAFBFA"}}>
                   <div>
                     <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
                     <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":o.pt==="credit"?"Veresiye":o.pt==="split"?"Nakit + Kart":"Kart"}</div>
