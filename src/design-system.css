@@ -428,3 +428,72 @@
  .ds-menu>div:nth-child(2)>div>div:nth-child(2){grid-template-columns:1fr!important}
  .ds-settings>div:nth-child(2)>div:nth-child(2),.ds-settings>div:nth-child(2)>div:nth-child(4){padding:13px!important}
 }
+
+
+/* Stage 7: responsive and interaction polish */
+.lurk-app :where(button,a,input,select,textarea,[role="button"]){-webkit-tap-highlight-color:transparent}
+.lurk-app :where(button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible){
+ outline:3px solid rgba(37,142,61,.58)!important;outline-offset:3px!important
+}
+.lurk-app button:disabled{cursor:not-allowed!important;filter:saturate(.65)}
+.lurk-app .lurk-modal-backdrop{
+ padding: max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom))!important;
+ overscroll-behavior:contain
+}
+.lurk-app .lurk-modal-panel{
+ max-height:min(88vh,88dvh)!important;overflow-y:auto!important;
+ overscroll-behavior:contain;-webkit-overflow-scrolling:touch
+}
+.ds-order-header{padding-top:max(10px,env(safe-area-inset-top))!important}
+.ds-order-footer{padding-bottom:max(14px,env(safe-area-inset-bottom))!important}
+.ds-order :where(button){touch-action:manipulation}
+.ds-order-search{min-height:46px}
+.ds-product-button{min-width:0;overflow-wrap:anywhere}
+@media(max-width:999px){
+ .lurk-app{padding-bottom:calc(76px + env(safe-area-inset-bottom))!important}
+ .lurk-app .lurk-bottom-nav{
+  left:0!important;right:0!important;bottom:0!important;transform:none!important;
+  width:100%!important;max-width:none!important;min-height:calc(66px + env(safe-area-inset-bottom));
+  padding:7px 5px max(7px,env(safe-area-inset-bottom))!important;
+  display:flex!important;align-items:stretch!important;justify-content:space-around!important;
+  gap:2px!important;background:rgba(255,255,255,.94)!important;
+  border:0!important;border-top:1px solid var(--lurk-border)!important;
+  box-shadow:0 -8px 28px rgba(24,37,29,.08)!important;
+  backdrop-filter:blur(22px) saturate(150%)!important
+ }
+ .lurk-app .lurk-bottom-nav .lurk-nav-button{
+  flex:1 1 0!important;min-width:0!important;min-height:52px!important;
+  padding:7px 2px!important;border:0!important;border-radius:12px!important;
+  align-self:stretch!important;justify-content:center!important;gap:5px!important;
+  background:transparent!important;transition:background .18s var(--lurk-motion),color .18s var(--lurk-motion)
+ }
+ .lurk-app .lurk-bottom-nav .lurk-nav-button.active{background:var(--lurk-green-soft)!important}
+ .lurk-app .lurk-bottom-nav .lurk-nav-button span:first-child{font-size:19px!important;color:var(--lurk-muted)!important}
+ .lurk-app .lurk-bottom-nav .lurk-nav-button.active span:first-child{color:var(--lurk-green-deep)!important}
+ .lurk-app .lurk-bottom-nav .lurk-nav-button span:last-child{
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:9px!important;font-weight:700!important;color:var(--lurk-muted)!important
+ }
+ .lurk-app .lurk-bottom-nav .lurk-nav-button.active span:last-child{color:var(--lurk-green-deep)!important}
+ .lurk-app .ds-order{height:100dvh!important;max-height:100dvh!important;padding-bottom:0!important}
+ .ds-order-footer{gap:8px!important}
+ .ds-order-footer>div:last-child button{min-height:44px!important}
+}
+@media(max-width:420px){
+ .ds-order-header{gap:7px!important;padding-left:9px!important;padding-right:9px!important}
+ .ds-order-header button{padding:8px 9px!important;font-size:11px!important}
+ .ds-order-footer>div:first-child span:last-child{font-size:22px!important}
+ .ds-order-footer>div:last-child{gap:6px!important}
+ .ds-order-footer>div:last-child button{padding-left:8px!important;padding-right:8px!important;font-size:11px!important}
+ .ds-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .ds-product-button{min-height:88px!important;padding:11px!important}
+ .ds-order-categories{width:82px!important}
+ .ds-order-categories button{font-size:9px!important}
+ .lurk-app .lurk-bottom-nav .lurk-nav-button span:last-child{font-size:8px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .lurk-app *, .lurk-app *::before, .lurk-app *::after{
+  scroll-behavior:auto!important;animation-duration:.01ms!important;
+  animation-iteration-count:1!important;transition-duration:.01ms!important
+ }
+}
