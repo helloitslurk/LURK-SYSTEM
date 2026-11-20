@@ -886,7 +886,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
         <div className="lurk-shell-section-label">WORKSPACE</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Ana Sayfa",icon:"⌂"},{k:"tables",label:"Masalar",icon:"▦"},{k:"reports",label:"Raporlar",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"menu",label:"Menü",icon:"☕"},{k:"personal",label:"Personal Finance",icon:"₺"},{k:"settings",label:"Settings",icon:"⚙"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Ana Sayfa",icon:"⌂"},{k:"tables",label:"Tablelar",icon:"▦"},{k:"reports",label:"Raporlar",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"menu",label:"Menü",icon:"☕"},{k:"personal",label:"Personal Finance",icon:"₺"},{k:"settings",label:"Settings",icon:"⚙"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><span className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button type="button" aria-label="Lock screen" onClick={onLock}>⌑</button></div>
       </aside>}
@@ -1298,7 +1298,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
           <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} REVENUE</div>
           <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
-          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + current items on open tables":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
+          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan orderslar{selectedMonth===thisMonth()?" + current items on open tables":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
         </div>
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
           <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>ANNUAL REVENUE</div>
@@ -1393,7 +1393,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
   function addManualCash(){const name=window.prompt("Name of the person making the payment:");if(name===null||!name.trim())return;const raw=window.prompt(name.trim()+"Cash amount received for ");if(raw===null)return;const amount=Math.round(Number(raw.replace(",","."))*100)/100;if(!Number.isFinite(amount)||amount<=0){window.alert("Enter a valid amount.");return;}const date=new Date().toISOString();setCreditEntries(prev=>[{id:"manual-cash-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),type:"manual_cash",method:"cash",customerName:name.trim(),amount,date,note:"Manual cash collection"},...prev]);}
   function exportMonthCsv(){
-    const headers=["Date","Masa","Customer","Subtotal","Discount","Total","Cash","Card","On account","Payment Method","Productler"];
+    const headers=["Date","Table","Customer","Subtotal","Discount","Total","Cash","Card","On account","Payment Method","Productler"];
     const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Cash + Card":o.pt==="cash"?"Cash":o.pt==="card"?"Card":o.pt==="credit"?"On account":"Other",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
     const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),e.type==="manual_cash"?"Manual cash collection":"On account defteri",e.customerName||"",0,0,0,((e.type==="payment"&&e.method==="cash")||e.type==="manual_cash")?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Debt record":e.type==="manual_cash"?"Manual · Cash":"Collection · "+(e.method==="cash"?"Cash":e.method==="card"?"Card":"Other"),e.note||""]);
     const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Cash":"Card"),""];}));
@@ -1425,10 +1425,10 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
     <div className="lurk-screen lurk-reports-screen ds-sales-report" style={{background:"#F6F8F5",minHeight:"100vh",color:"#18251D"}}>
       <div style={{background:"#FFFFFF",borderBottom:"1px solid #DDE5DD",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:11}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#18251D"}}>Revenue<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#66746A",marginTop:4}}>LURK / BUSINESS PERFORMANCE</div></div><button onClick={()=>setV("salesHistory")} style={{background:"#22251F",color:"#FFFFFF",border:0,borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Sales History</button><button onClick={()=>setV("customers")} style={{background:"#EDF4DF",color:"#34451C",border:"1px solid #DCE9C6",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Customers</button><button onClick={addManualCash} style={{background:"#176B32",color:"#FFFFFF",border:"1px solid #176B32",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Cash ekle</button><button onClick={exportMonthCsv} style={{background:"#E8F3E9",color:"#176B32",border:"1px solid #CFE3D1",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
+        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#18251D"}}>Revenue<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#66746A",marginTop:4}}>LURK / BUSINESS PERFORMANCE</div></div><button onClick={()=>setV("salesHistory")} style={{background:"#22251F",color:"#FFFFFF",border:0,borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Sales History</button><button onClick={()=>setV("customers")} style={{background:"#EDF4DF",color:"#34451C",border:"1px solid #DCE9C6",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Customers</button><button onClick={addManualCash} style={{background:"#176B32",color:"#FFFFFF",border:"1px solid #176B32",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Add Cash</button><button onClick={exportMonthCsv} style={{background:"#E8F3E9",color:"#176B32",border:"1px solid #CFE3D1",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
       </div>
 
-      {/* Ay seçici */}
+      {/* Month selector */}
       <div style={{display:"flex",gap:7,padding:"14px 14px",overflowX:"auto",borderBottom:"1px solid #E4EAE4",background:"#FFFFFF"}}>
         {(months.length?months:[now]).map(m=>(
           <button key={m} onClick={()=>setSel(m)} style={{padding:"8px 15px",border:"1px solid "+(sel===m?"#A9CDAE":"#DDE5DD"),borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:800,whiteSpace:"nowrap",flexShrink:0,background:sel===m?"#E8F3E9":"#F7F9F7",color:sel===m?"#176B32":"#536258",boxShadow:sel===m?"0 2px 8px rgba(24,37,29,.08)":"none"}}>
@@ -1441,8 +1441,8 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
       <div style={{padding:"15px 14px",display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
         {[
           {label:"Sales",val:fm(totalInc),color:T.accentL},
-          {label:"Cash tahsilat",val:fm(totalCash),color:T.text},
-          {label:"Card tahsilat",val:fm(totalCard),color:T.text},
+          {label:"Cash collected",val:fm(totalCash),color:T.text},
+          {label:"Card collected",val:fm(totalCard),color:T.text},
         ].map((s,i)=>(
           <div key={i} style={{background:"#E9E1CF",color:"#171914",borderRadius:11,padding:"13px 10px",border:"1px solid #F6EFDF",minWidth:0,boxShadow:"0 7px 18px rgba(0,0,0,.2)"}}>
             <div style={{fontSize:9,color:"#536258",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
@@ -1464,7 +1464,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
               <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"15px 14px",cursor:"pointer"}}>
                 <div>
                   <div style={{fontSize:14,fontWeight:800,color:"#18251D",letterSpacing:"-.2px"}}>{new Date(day.date+"T12:00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</div>
-                  <div style={{fontSize:10,color:"#66746A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} adisyon</div>
+                  <div style={{fontSize:10,color:"#66746A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} orders</div>
                 </div>
                 <div style={{textAlign:"right"}}>
                   <div style={{fontSize:15,fontWeight:900,color:"#176B32"}}>{fm(day.inc)}</div>
@@ -1501,21 +1501,21 @@ const PERSONAL_DEBT_SEED=[
   {id:"holdon",group:"Business",name:"Holdon Coffee",total:7000,payments:[],installments:[]},
   {id:"mozaik",group:"Business",name:"Mozaik Occupational Health",total:7000,payments:[],installments:[]},
   {id:"yemeksepeti",group:"Business",name:"Yemeksepeti",total:3879,note:"November 2",payments:[],installments:[]},
-  {id:"kyk",group:"Business",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Taksit",amount:2350,due:"",paid:0})),payments:[]},
-  {id:"ucuncuoglu",group:"Business",name:"Ucuncuoglu Real Estate",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
-  {id:"heyz",group:"Business",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
-  {id:"fiddle",group:"Personal",name:"Taha Fiddle III Taksit",total:55000,note:"20.000 TL paid · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Previously paid"}],installments:[]},
+  {id:"kyk",group:"Business",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Installment",amount:2350,due:"",paid:0})),payments:[]},
+  {id:"ucuncuoglu",group:"Business",name:"Ucuncuoglu Real Estate",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Installment",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
+  {id:"heyz",group:"Business",name:"Heyz Installment",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Installment",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
+  {id:"fiddle",group:"Personal",name:"Taha Fiddle III Installment",total:55000,note:"20.000 TL paid · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Previously paid"}],installments:[]},
   {id:"fiddle-tyres",group:"Personal",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Front indicator light",total:200,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-inspection",group:"Personal",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-insurance",group:"Personal",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
   {id:"yildiz",group:"Personal",name:"Yildiz Driving School",total:13000,payments:[],installments:[]},
   {id:"a2",group:"Personal",name:"A2 Exam Fee",total:2000,payments:[],installments:[]},
-  {id:"beliz-plan",group:"Personal",name:"Beliz Taksit",total:72000,note:"Installment 1 completed; TRY 3,000 paid toward installment 2, TRY 5,000 remaining.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit previously paid for installment ",installmentId:"beliz-2"}],installments:[
-    {id:"beliz-2",label:"2. Taksit",amount:8000,due:"2026-11-05",paid:3000},
-    ...Array.from({length:8},(_,i)=>({id:"beliz-"+(i+3),label:(i+3)+". Taksit",amount:8000,due:["2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:0}))
+  {id:"beliz-plan",group:"Personal",name:"Beliz Installment",total:72000,note:"Installment 1 completed; TRY 3,000 paid toward installment 2, TRY 5,000 remaining.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. installment previously paid for installment ",installmentId:"beliz-2"}],installments:[
+    {id:"beliz-2",label:"2. Installment",amount:8000,due:"2026-11-05",paid:3000},
+    ...Array.from({length:8},(_,i)=>({id:"beliz-"+(i+3),label:(i+3)+". Installment",amount:8000,due:["2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:0}))
   ]},
-  {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Taksiti",total:119000,note:"14 installments × TRY 8,500; first 3 installments completed.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Taksit",amount:8500,due:"",paid:i<3?8500:0}))}
+  {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Installmenti",total:119000,note:"14 installments × TRY 8,500; first 3 installments completed.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Installment",amount:8500,due:"",paid:i<3?8500:0}))}
 ];
 function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [unlocked,setUnlocked]=useState(false);
@@ -1554,12 +1554,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d.id==="yemeksepeti"&&Number(d.total)===3879&&(d.payments||[]).length===0?{...d,total:12000,payments:[{id:"yemeksepeti-paid-history",amount:8121,date:null,note:"Previously paid amount (date not specified)",historical:true}]}:d)
       .map(d=>movedIds.has(d.id)?{
         ...d,
-        name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Ucuncuoglu Real Estate":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
+        name:d.id==="ruhsat"?"Annem Ruhsat Installmenti":d.id==="ucuncuoglu"?"Ucuncuoglu Real Estate":d.id==="beliz-plan"?"Beliz Installment":"Heyz Installment",
         category:"installment",
         group:"Installments"
       } :lurkIds.has(d.id)?{...d,category:"lurk",folder:"LURK"}:fiddleIds.has(d.id)?{
         ...d,
-        name:d.id==="fiddle"?"Fiddle III Taksit":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Exam Fee",
+        name:d.id==="fiddle"?"Fiddle III Installment":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Exam Fee",
         category:"fiddle",
         folder:"FIDDLE III"
       }:d));
@@ -1599,7 +1599,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       date.setMonth(date.getMonth()+index);
       const due=date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
       const old=existing[index];
-      return {id:old?.id||"inst-"+Date.now()+"-"+index,label:(index+1)+". taksit",amount,paid:Math.min(Number(old?.paid)||0,amount),due};
+      return {id:old?.id||"inst-"+Date.now()+"-"+index,label:(index+1)+". installment",amount,paid:Math.min(Number(old?.paid)||0,amount),due};
     });
     setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,total:totalValue,installments:schedule}));
     setEditingInstallment(null);
@@ -1988,7 +1988,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
      if(!Number.isFinite(amount)||amount<=0){msg("Enter a valid balance amount.");return;}
      const method=window.confirm("Was the payment made by card?\n\nOK: Card\nCancel: Cash")?"card":"cash";
      const date=new Date().toISOString();
-     setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,method,balanceAfter:nextBalance,note:"Bakiye yüklendi"}]};}));
+     setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,method,balanceAfter:nextBalance,note:"Balance yüklendi"}]};}));
      msg(member.name+" · "+fm(amount)+" bakiye "+(method==="card"?"kartla":"nakit")+" yüklendi.");
    }
    function addCoffeeCredits(member){
@@ -2039,7 +2039,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
             <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Revoke All Links</button>
           </div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BALANCE ACTIVITY</div>
-          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("en-US")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("en-US")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
+          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Balance yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("en-US")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("en-US")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
           <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Delete Membership</button>
           <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Close Details</button>
         </div>)}
@@ -2109,7 +2109,7 @@ function LurkPlusPortal({token}){
         <div style={{background:"linear-gradient(145deg,#111411,#0D100D)",border:"1px solid rgba(255,255,255,.12)",borderRadius:16,padding:"0 14px"}}>
           {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>No balance activity yet.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
             <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#91B783",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" kisses":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(Number(h.balanceAfter)||0)}</div></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Balance yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" kisses":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(Number(h.balanceAfter)||0)}</div></div>
             <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF6B61":"#34C759",whiteSpace:"nowrap"}}>{isBeliz?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
           </div>)}
         </div>
