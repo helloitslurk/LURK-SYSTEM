@@ -911,7 +911,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
         setCustomers(prev=>prev.some(c=>c.name.trim().toLocaleLowerCase("tr-TR")===normalized)?prev:[selectedCustomer,...prev]);
       }
     }
-    const usedNumbers=tables.map(t=>/^Masa (\\d+)$/.exec(t.lbl||"")).filter(Boolean).map(m=>Number(m[1]));
+    const usedNumbers=tables.map(t=>/^Masa (\d+)$/.exec(t.lbl||"")).filter(Boolean).map(m=>Number(m[1]));
     let number=1;
     while(usedNumbers.includes(number))number++;
     const id=uid();
