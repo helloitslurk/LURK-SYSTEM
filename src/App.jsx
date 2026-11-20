@@ -489,7 +489,7 @@ function POSApp({onLock}){
         <div style={{fontSize:26,marginBottom:12}}>⚠</div>
         <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Data could not be loaded</div>
         <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>The app was paused to prevent overwriting records because the Supabase connection failed. Check your internet connection and try again.</div>
-        <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Newden Dene</button>
+        <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Try Again</button>
       </div>
     </div>
   );
@@ -498,7 +498,7 @@ function POSApp({onLock}){
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>
       <div style={{textAlign:"center"}}>
         <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:190,maxWidth:"65vw",height:"auto",margin:"0 auto 18px"}} />
-        <div style={{fontSize:13,color:T.textSub}}>Uploadniyor...</div>
+        <div style={{fontSize:13,color:T.textSub}}>Loading...</div>
       </div>
     </div>
   );
@@ -2063,7 +2063,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
             <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Customer Link</div>
             <div style={{fontSize:10,color:T.textSub,lineHeight:1.5,marginBottom:9}}>Send this link to the customer. Anyone with the link can view only this member's balance and activity.</div>
             <button disabled={linkBusy} onClick={()=>manageLink(m,"create")} style={{width:"100%",padding:10,background:T.accent,color:"#fff",border:0,borderRadius:9,fontWeight:800,fontSize:11,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Processing…":"Create / renew link"}</button>
-            <button disabled={linkBusy} onClick={()=>revealMemberLink(m)} style={{width:"100%",padding:9,marginTop:7,background:"rgba(255,255,255,.06)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:8,fontSize:11,fontWeight:750,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Uploadniyor…":"Show existing link"}</button>
+            <button disabled={linkBusy} onClick={()=>revealMemberLink(m)} style={{width:"100%",padding:9,marginTop:7,background:"rgba(255,255,255,.06)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:8,fontSize:11,fontWeight:750,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Loading…":"Show existing link"}</button>
             {issuedLinks[m.id]&&<><div style={{fontSize:10,color:T.textSub,overflowWrap:"anywhere",padding:"8px 0"}}>{issuedLinks[m.id]}</div><button onClick={()=>navigator.clipboard.writeText(issuedLinks[m.id]).then(()=>msg("Link copied."))} style={{width:"100%",padding:9,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Copy Link</button><button onClick={()=>window.open("https://wa.me/?text="+encodeURIComponent(m.name+" your LURK+ balance link: "+issuedLinks[m.id]),"_blank","noopener,noreferrer")} style={{width:"100%",padding:9,background:"rgba(37,211,102,.12)",color:"#55D98B",border:"1px solid rgba(37,211,102,.25)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Send via WhatsApp</button></>}
             <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Revoke All Links</button>
           </div>
