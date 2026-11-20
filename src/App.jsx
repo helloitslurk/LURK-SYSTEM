@@ -1054,9 +1054,9 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const grouped=table.order;
 
   return(
-    <div className="lurk-screen lurk-order-screen" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
+    <div className="lurk-screen lurk-order-screen ds-order" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
       {/* Top bar */}
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+      <div className="ds-order-header" style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
         <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
         <div style={{flex:1}}>
           <div style={{fontWeight:700,fontSize:15,color:T.text}}>{table.lbl}</div>
@@ -1075,7 +1075,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
                 </div>
               :grouped.map((item,index)=>(
-                <div key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(255,255,255,0.08)")}}>
+                <div className="ds-order-line" key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(255,255,255,0.08)")}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:5}}>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{fontSize:12,fontWeight:750,color:T.text,lineHeight:1.2,overflowWrap:"anywhere"}}>{item.name}</div>
@@ -1095,7 +1095,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             }
           </div>
           {/* Alt bar */}
-          <div style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
+          <div className="ds-order-footer" style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
               <span style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(Math.max(0,sub-previousPaid))}</span>
@@ -1112,22 +1112,22 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
 
       {/* MENÜ GÖRÜNÜMÜ */}
       {showMenu&&(
-        <div style={{flex:1,display:"flex",overflow:"hidden"}}>
+        <div className="ds-order-menu" style={{flex:1,display:"flex",overflow:"hidden"}}>
           {/* Sol: dikey kategori */}
-          <div style={{width:72,background:"rgba(255,255,255,0.02)",borderRight:"0.5px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
+          <div className="ds-order-categories" style={{width:72,background:"rgba(255,255,255,0.02)",borderRight:"0.5px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
             {cats.map(c=>(
               <button key={c} onClick={()=>setSelCat(c)} style={{padding:"14px 4px",border:"none",background:selCat===c?"rgba(52,199,89,0.12)":"transparent",borderLeft:"3px solid "+(selCat===c?T.accent:"transparent"),color:selCat===c?T.accent:T.textSub,fontSize:11,fontWeight:selCat===c?700:500,cursor:"pointer",textAlign:"center",lineHeight:1.3,flexShrink:0}}>{c}</button>
             ))}
           </div>
           {/* Sağ: ürün grid */}
-          <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div className="ds-order-catalog" style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
             <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
-              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
-              <div className="lurk-product-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
+              <input className="ds-order-search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
+              <div className="lurk-product-grid ds-product-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
                 {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
                   const inCart=table.order.filter(o=>o.id===item.id).reduce((sum,o)=>sum+o.qty,0);
                   const isFlash=flash===item.id;
-                  return(                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(52,199,89,0.25)":inCart>0?"rgba(52,199,89,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(52,199,89,0.35)":"rgba(255,255,255,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
+                  return(                    <button className="ds-product-button" key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(52,199,89,0.25)":inCart>0?"rgba(52,199,89,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(52,199,89,0.35)":"rgba(255,255,255,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
                       {inCart>0&&<span style={{position:"absolute",top:6,right:8,background:T.accent,color:"#fff",borderRadius:20,fontSize:10,fontWeight:800,padding:"1px 6px"}}>×{inCart}</span>}
                       {isFlash&&<div style={{position:"absolute",inset:0,borderRadius:12,border:"2px solid #34C759",pointerEvents:"none"}}/>}
                       <div style={{fontSize:11,fontWeight:700,marginBottom:5,paddingRight:inCart>0?28:0,lineHeight:1.3,color:T.text}}>{item.name}</div>
