@@ -901,7 +901,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
-      {view==="settings"&&<SettingsScreen setV={setV} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
+      {view==="settings"&&<SettingsScreen setV={setV} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
@@ -2323,7 +2323,7 @@ function MenuScreen({menu,setMenu,setV}){
 }
 
 /* ─── SETTINGS ─── */
-function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,day,personalDebts,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay,setPersonalDebts}){
+function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,logs,customers,creditEntries,menu,day,personalDebts,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay,setPersonalDebts}){
   const [backupMsg,setBackupMsg]=useState("");
   const [importMsg,setImportMsg]=useState("");
   const [pendingImport,setPendingImport]=useState(null);
@@ -2377,7 +2377,11 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px"}}>Ayarlar</div>
       </div>
       <div style={{padding:"14px"}}>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Yönetim</div>
+        <div className="lurk-settings-preference">
+          <div><b>System Preferences</b><small>Show or hide monetary amounts across the POS.</small></div>
+          <button onClick={()=>setBalancesVisible(v=>!v)} aria-pressed={!balancesVisible} className={"lurk-amount-toggle "+(!balancesVisible?"is-hidden":"")}>{balancesVisible?"Amounts Visible":"Amounts Hidden"}</button>
+        </div>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Management</div>
         <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14,marginBottom:10}}>
           <div style={{width:40,height:40,borderRadius:10,background:"rgba(52,199,89,0.12)",border:"0.5px solid rgba(52,199,89,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>☰</div>
           <div><div style={{fontSize:14,fontWeight:700}}>Menü</div><div style={{fontSize:12,color:T.textSub,marginTop:2}}>Ürün ekle, fiyat güncelle</div></div>
