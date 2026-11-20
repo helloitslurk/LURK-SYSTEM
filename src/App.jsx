@@ -108,7 +108,7 @@ function posSessionToken(){
 }
 async function sbGet(key,fb){
   const token=posSessionToken();
-  if(!token)throw new Error("POS oturumu bulunamadı.");
+  if(!token)throw new Error("POS session not found.");
   const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_storage_get",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token,p_key:key})});
   if(!r.ok)throw new Error("Supabase read failed for "+key+" ("+r.status+")");
   const value=await r.json();
@@ -118,20 +118,20 @@ async function sbGet(key,fb){
 }
 async function sbSetNow(key,val){
   const token=posSessionToken();
-  if(!token){lastStorageWriteError="POS oturumu bulunamadı. PIN ile yeniden giriş yap.";console.error(lastStorageWriteError);return false;}
+  if(!token){lastStorageWriteError="POS session not found. PIN ile yeniden giriş yap.";console.error(lastStorageWriteError);return false;}
   let lastError;
   for(let attempt=0;attempt<3;attempt++){
     try{
       const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_storage_set",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_session_token:token,p_key:key,p_value:val})});
       const responseText=await r.text();
       if(r.ok){
-        if(responseText.trim()==="false")throw new Error("Supabase oturumu geçersiz veya kayıt reddedildi ("+key+").");
+        if(responseText.trim()==="false")throw new Error("Supabase session is invalid or the write was rejected ("+key+").");
         lastStorageWriteError="";
         return true;
       }
       let detail=responseText;
       try{const parsed=JSON.parse(responseText);detail=parsed.message||parsed.details||parsed.hint||responseText;}catch(e){}
-      lastError=new Error("Kayıt hatası "+key+" (HTTP "+r.status+"): "+String(detail).slice(0,260));
+      lastError=new Error("Save error "+key+" (HTTP "+r.status+"): "+String(detail).slice(0,260));
     }catch(e){lastError=e;}
     if(attempt<2)await new Promise(resolve=>setTimeout(resolve,350*(attempt+1)));
   }
@@ -193,25 +193,25 @@ function POSLogin({onLogin}){
     setBusy(true);setError("");
     try{
       const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_login",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_pin:pin})});
-      if(!r.ok)throw new Error("Giriş doğrulanamadı.");
+      if(!r.ok)throw new Error("Authentication failed.");
       const token=await r.json();
-      if(typeof token!=="string"||token.length<32){setError("PIN hatalı. Tekrar dene.");return;}
+      if(typeof token!=="string"||token.length<32){setError("Incorrect PIN. Please try again.");return;}
       let stored=false;
       try{localStorage.setItem("lurk_pos_session",token);stored=true;}catch(storageError){}
       try{sessionStorage.setItem("lurk_pos_session",token);stored=true;}catch(storageError){}
-      if(!stored)throw new Error("Oturum bu tarayıcıda saklanamadı. Gizlilik ayarlarını kontrol et.");
+      if(!stored)throw new Error("The session could not be stored in this browser. Check your privacy settings.");
       onLogin();
-    }catch(e){setError(e.message||"Bağlantı hatası. Tekrar dene.");}
+    }catch(e){setError(e.message||"Connection error. Please try again.");}
     finally{setBusy(false);}
   }
   return <div style={{minHeight:"100vh",background:"#090B0A",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",color:"#F5F5F5",position:"relative"}}>
         <form onSubmit={submit} style={{width:"100%",maxWidth:340,background:"#151916",border:"1px solid rgba(255,255,255,.1)",borderRadius:20,padding:26,boxSizing:"border-box",textAlign:"center"}}>
       <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:230,maxWidth:"72vw",height:"auto",margin:"0 auto 18px"}} />
       <div style={{fontSize:11,letterSpacing:3,color:"#34C759",marginTop:0,marginBottom:28}}>POS SYSTEM</div>
-      <div style={{fontSize:14,color:"#A0A0A0",marginBottom:12}}>Devam etmek için PIN kodunu gir.</div>
+      <div style={{fontSize:14,color:"#A0A0A0",marginBottom:12}}>Enter your PIN to continue.</div>
       <input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",boxSizing:"border-box",padding:15,borderRadius:11,border:"1px solid rgba(255,255,255,.15)",background:"#090B0A",color:"#fff",fontSize:22,letterSpacing:8,textAlign:"center",outline:"none"}}/>
       {error&&<div role="alert" style={{fontSize:12,color:"#FF453A",marginTop:12}}>{error}</div>}
-      <button type="submit" disabled={busy||pin.length<6} style={{width:"100%",padding:14,marginTop:18,border:0,borderRadius:11,background:"#34C759",color:"#071009",fontWeight:800,fontSize:14,cursor:"pointer",opacity:busy||pin.length<6?.55:1}}>{busy?"Kontrol ediliyor…":"Giriş Yap"}</button>
+      <button type="submit" disabled={busy||pin.length<6} style={{width:"100%",padding:14,marginTop:18,border:0,borderRadius:11,background:"#34C759",color:"#071009",fontWeight:800,fontSize:14,cursor:"pointer",opacity:busy||pin.length<6?.55:1}}>{busy?"Checking…":"Sign In"}</button>
     </form>
   </div>;
 }
@@ -254,7 +254,7 @@ function POSApp({onLock}){
       if(!success){
         failedWrites.current[k]=v;
         pendingSaves.failed=true;
-        msg("Kayıt başarısız: "+(lastStorageWriteError||"Bilinmeyen kayıt hatası"));
+        msg("Save failed: "+(lastStorageWriteError||"Unknown save error"));
       }else{
         delete failedWrites.current[k];
       }
@@ -272,7 +272,7 @@ function POSApp({onLock}){
     if(!success){
       failedWrites.current[k]=v;
       pendingSaves.failed=true;
-      msg("Kayıt başarısız. Yeniden denemek için üstteki uyarıya dokun.");
+      msg("Save failed. Tap the alert above to try again.");
     }else{
       delete failedWrites.current[k];
     }
@@ -297,7 +297,7 @@ function POSApp({onLock}){
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
       setLurkPlusMembers(Array.isArray(lp)?lp:[]);
-      setPersonalDebts((Array.isArray(pd)?pd:PERSONAL_DEBT_SEED).map(x=>x.id==="hepsiburada-limiti"&&Number(x.total)===6880&&!(x.payments||[]).length?{...x,total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Önceden ödenen tutar (tarih belirtilmedi)",historical:true}]}:x).map(x=>x.id==="ucuncuoglu"?{...x,total:130000,installments:(x.installments||[]).map((it,i)=>i===8?{...it,amount:10000}:it)}:x));
+      setPersonalDebts((Array.isArray(pd)?pd:PERSONAL_DEBT_SEED).map(x=>x.id==="hepsiburada-limiti"&&Number(x.total)===6880&&!(x.payments||[]).length?{...x,total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Previously paid amount (date not specified)",historical:true}]}:x).map(x=>x.id==="ucuncuoglu"?{...x,total:130000,installments:(x.installments||[]).map((it,i)=>i===8?{...it,amount:10000}:it)}:x));
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -355,7 +355,7 @@ function POSApp({onLock}){
     const log={id:uid(),date:tod(),oa:day.oa,ca:new Date().toISOString(),inc,cash,card,count:closed.length};
     setLogs(prev=>[log,...prev]);
     setDay(null);try{localStorage.removeItem("lurk_day_state");}catch(e){}persistDirect("lurk_d",null);
-    msg("Gün kapatıldı · "+fm(inc));
+    msg("Day closed · "+fm(inc));
   }
 
   function addItem(tid,item){
@@ -363,7 +363,7 @@ function POSApp({onLock}){
     const member=table?.lurkPlusId?lurkPlusMembers.find(m=>m.id===table.lurkPlusId):null;
     const isCoffeeMember=member?.membershipType==="coffee";
     const charged=!!member;
-    if(member&&isCoffeeMember&&(Number(member.coffeeCredits)||0)<1){msg("Kahve hakkı kalmadı. "+member.name);return false;}
+    if(member&&isCoffeeMember&&(Number(member.coffeeCredits)||0)<1){msg("No coffee credits remaining. "+member.name);return false;}
         if(charged)setLurkPlusMembers(prev=>prev.map(m=>{
       if(m.id!==member.id)return m;
       const date=new Date().toISOString();
@@ -376,13 +376,13 @@ function POSApp({onLock}){
         return{...m,coffeeCredits:nextCredits,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_use",date,amount:1,balanceAfter:nextCredits,itemName:item.name,table:table?.lbl||""}]};
       }
       const nextBalance=m.unlimited?(Number(m.balance)||0):Math.round(((Number(m.balance)||0)-Number(item.price||0))*100)/100;
-      return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"purchase",date,amount:Number(item.price)||0,balanceAfter:m.unlimited?"Sınırsız":nextBalance,itemName:item.name,table:table?.lbl||""}]};
+      return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"purchase",date,amount:Number(item.price)||0,balanceAfter:m.unlimited?"Unlimited":nextBalance,itemName:item.name,table:table?.lbl||""}]};
     }));
     setTbl(prev=>prev.map(t=>{
       if(t.id!==tid)return t;
       return{...t,s:"o",oa:t.oa||new Date().toISOString(),order:[...t.order,{...item,qty:1,oid:uid(),addedAt:new Date().toISOString(),revenueExcluded:member?.name?.trim().toLocaleLowerCase("tr-TR")==="beliz",lurkPlusCharged:charged,lurkPlusCreditCharged:charged&&isCoffeeMember}]};
     }));
-    if(charged)msg(member.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Beliz · 1 öpücük borçlandı 💋":isCoffeeMember?member.name+" · 1 kahve hakkı düşüldü.":member.name+" · "+fm(item.price)+" LURK+ bakiyesinden düştü.");
+    if(charged)msg(member.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Beliz · owes 1 kiss 💋":isCoffeeMember?member.name+" · 1 coffee credit deducted.":member.name+" · "+fm(item.price)+" deducted from the LURK+ balance.");
     return true;
   }
   function setTableCustomer(tid,customer){
@@ -397,7 +397,7 @@ function POSApp({onLock}){
       if(member.name.trim().toLocaleLowerCase("tr-TR")==="beliz"){
          setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const date=new Date().toISOString();const kisses=(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)-d;return{...m,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:d<0?"kiss_debt":"kiss_refund",date,amount:Math.abs(d),balanceAfter:kisses,itemName:line.name,table:table?.lbl||""}]};}));
        }else if(line.lurkPlusCreditCharged){
-        if(d>0&&(Number(member.coffeeCredits)||0)<d){msg("Kahve hakkı yetersiz.");return;}
+        if(d>0&&(Number(member.coffeeCredits)||0)<d){msg("Note enough coffee credits.");return;}
         setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const date=new Date().toISOString();const nextCredits=Math.max(0,(Number(m.coffeeCredits)||0)-d);return{...m,coffeeCredits:nextCredits,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:d<0?"credit_refund":"credit_use",date,amount:Math.abs(d),balanceAfter:nextCredits,itemName:line.name,table:table?.lbl||""}]};}));
       }else{
                 setLurkPlusMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const amount=Math.abs(d*Number(line.price||0));const nextBalance=Math.round(((Number(m.balance)||0)-(d*Number(line.price||0)))*100)/100;return{...m,balance:nextBalance,updatedAt:new Date().toISOString(),history:[...(m.history||[]),{id:uid(),type:d<0?"refund":"purchase",date:new Date().toISOString(),amount,balanceAfter:nextBalance,itemName:line.name,table:table?.lbl||""}]};}));
@@ -410,10 +410,10 @@ function POSApp({onLock}){
     }));
   }
   function moveTableOrder(sourceId,targetId,selections){
-    if(sourceId===targetId){msg("Ürünleri farklı bir masaya taşımalısın.");return;}
+    if(sourceId===targetId){msg("You need to move items to a different table.");return;}
     const source=tables.find(t=>t.id===sourceId);
     const target=tables.find(t=>t.id===targetId);
-    if(!source||!target||!Array.isArray(source.order)||source.order.length===0){msg("Taşınacak açık sipariş bulunamadı.");return;}
+    if(!source||!target||!Array.isArray(source.order)||source.order.length===0){msg("No open order found to move.");return;}
     const requested=Array.isArray(selections)?selections:[];
     const moving=[],remaining=[];
     source.order.forEach(line=>{
@@ -422,15 +422,15 @@ function POSApp({onLock}){
       if(qty>0)moving.push({...line,qty});
       if((Number(line.qty)||0)-qty>0)remaining.push({...line,qty:(Number(line.qty)||0)-qty});
     });
-    if(!moving.length){msg("Taşımak için en az bir ürün/adet seç.");return;}
-    if(source.partialPayments?.length&&remaining.length){msg("Kısmi ödeme alınmış bir hesabı bölmeden önce kalan ürünlerin tamamını aynı masada tutmalısın.");return;}
-    if((source.lurkPlusId||target.lurkPlusId)&&source.lurkPlusId!==target.lurkPlusId){msg("LURK+ bakiyesiyle ilişkilendirilmiş ürünler farklı üyeye ait masaya taşınamaz.");return;}
+    if(!moving.length){msg("Select at least one item/quantity to move.");return;}
+    if(source.partialPayments?.length&&remaining.length){msg("Before splitting an order with a partial payment, keep all remaining items on the same table.");return;}
+    if((source.lurkPlusId||target.lurkPlusId)&&source.lurkPlusId!==target.lurkPlusId){msg("Items linked to a LURK+ balance cannot be moved to a table assigned to another member.");return;}
     setTbl(prev=>prev.map(t=>{
       if(t.id===sourceId)return {...t,order:remaining,partialPayments:remaining.length?(t.partialPayments||[]):[],s:remaining.length?"o":"free",g:remaining.length?t.g:"",customerId:remaining.length?t.customerId:null,lurkPlusId:remaining.length?t.lurkPlusId:null,oa:remaining.length?t.oa:null};
       if(t.id===targetId)return {...t,order:[...(Array.isArray(t.order)?t.order:[]),...moving],partialPayments:[...(Array.isArray(t.partialPayments)?t.partialPayments:[]),...(remaining.length?[]:(source.partialPayments||[]))],s:"o",oa:t.oa||new Date().toISOString(),g:t.g||"",customerId:t.customerId||null,lurkPlusId:t.lurkPlusId||null};
       return t;
     }));
-    msg(moving.reduce((sum,line)=>sum+line.qty,0)+" adet ürün "+target.lbl+" masasına taşındı.");
+    msg(moving.reduce((sum,line)=>sum+line.qty,0)+" items "+target.lbl+" moved to the table.");
     setSel(null);setV("tables");
   }
 
@@ -445,7 +445,7 @@ function POSApp({onLock}){
     const previousPaid=previousPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
     const isCredit=pt==="credit";
     const isLurkPlus=!!t.lurkPlusId;
-    if(partial&&(isCredit||isLurkPlus)){msg("Kısmi ödeme şu anda yalnızca nakit/kart adisyonlarında kullanılabilir.");return;}
+    if(partial&&(isCredit||isLurkPlus)){msg("Partial payments are currently available only for cash/card orders.");return;}
     const finalTotal=Math.max(0,sub-(partial?0:Math.max(0,Number(disc)||0)));
     const due=Math.max(0,Math.round((finalTotal-previousPaid)*100)/100);
     const validation=isLurkPlus?{error:null,payments:[]}:validatePayment({total:partial?(Array.isArray(payments)?payments.reduce((sum,p)=>sum+(Number(p.amount)||0),0):0):due,isCredit,customerId:t.customerId,payments});
@@ -457,7 +457,7 @@ function POSApp({onLock}){
       const paymentRecord={id:uid(),date:tod(),total:0,subtotal:0,discount:0,pt:normalized.length>1?"split":(normalized[0]?.method||pt),payments:normalized,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:[],partialPayment:true};
       setOrd(prev=>[paymentRecord,...prev]);
       setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,partialPayments:[...previousPayments,...normalized],s:"o"}:tb));
-      msg("Kısmi tahsilat kaydedildi · "+fm(paidNow)+" · Kalan "+fm(due-paidNow));
+      msg("Partial payment recorded · "+fm(paidNow)+" · Remaining "+fm(due-paidNow));
       return;
     }
     const allPayments=normalized;
@@ -471,7 +471,7 @@ function POSApp({onLock}){
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
     setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],partialPayments:[],s:"free",g:"",customerId:null,lurkPlusId:null}:tb));
-    msg(isLurkPlus?"LURK+ siparişi kapatıldı · "+fm(finalTotal):isCredit?"Veresiye kaydedildi · "+fm(finalTotal):"Ödeme alındı · "+fm(finalTotal));
+    msg(isLurkPlus?"LURK+ order closed · "+fm(finalTotal):isCredit?"On account kaydedildi · "+fm(finalTotal):"Payment received · "+fm(finalTotal));
     setSel(null);setV("tables");
   }
 
@@ -482,9 +482,9 @@ function POSApp({onLock}){
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",padding:24,color:T.text}}>
       <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(255,255,255,.1)",borderRadius:18,padding:24}}>
         <div style={{fontSize:26,marginBottom:12}}>⚠</div>
-        <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Veriler yüklenemedi</div>
-        <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>Supabase bağlantısı başarısız olduğu için kayıtların üzerine yazmayı önlemek amacıyla uygulama durduruldu. İnternet bağlantısını kontrol edip yeniden dene.</div>
-        <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Yeniden Dene</button>
+        <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Data yüklenemedi</div>
+        <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>Supabase bağlantısı başarısız olduğu için kayıtların üzerine yazmayı önlemek amacıyla uygulama durduruldu. Internet connectionnı kontrol edip yeniden dene.</div>
+        <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Newden Dene</button>
       </div>
     </div>
   );
@@ -493,7 +493,7 @@ function POSApp({onLock}){
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>
       <div style={{textAlign:"center"}}>
         <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:190,maxWidth:"65vw",height:"auto",margin:"0 auto 18px"}} />
-        <div style={{fontSize:13,color:T.textSub}}>Yükleniyor...</div>
+        <div style={{fontSize:13,color:T.textSub}}>Uploadniyor...</div>
       </div>
     </div>
   );
@@ -511,13 +511,13 @@ function POSApp({onLock}){
         <div className="lurk-shell-brand">
           <img src="/lurk-logo.svg" alt="LURK."/>
           <span>POS</span>
-          <button className="lurk-sidebar-toggle" onClick={()=>setSidebarCollapsed(v=>!v)} aria-label={sidebarCollapsed?"Menüyü genişlet":"Menüyü daralt"} title={sidebarCollapsed?"Menüyü genişlet":"Menüyü daralt"}>{sidebarCollapsed?"»":"«"}</button>
+          <button className="lurk-sidebar-toggle" onClick={()=>setSidebarCollapsed(v=>!v)} aria-label={sidebarCollapsed?"Expand menu":"Collapse menu"} title={sidebarCollapsed?"Expand menu":"Collapse menu"}>{sidebarCollapsed?"»":"«"}</button>
         </div>
-        <div className="lurk-shell-section-label">{sidebarCollapsed?"MENÜ":"ÇALIŞMA ALANI"}</div>
+        <div className="lurk-shell-section-label">{sidebarCollapsed?"MENÜ":"WORKSPACE"}</div>
         <nav className="lurk-shell-nav">
           {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
-        <div className="lurk-shell-sidebar-footer"><i className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"İşletme açık":"İşletme kapalı"}</small></div><button onClick={onLock} aria-label="Ekranı kilitle">⌑</button></div>
+        <div className="lurk-shell-sidebar-footer"><i className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button onClick={onLock} aria-label="Lock screen">⌑</button></div>
       </aside>
       <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>
       <div className="lurk-global-topbar">
@@ -884,14 +884,14 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
 `}</style>
       {view!=="order"&&<aside className="lurk-shell-sidebar" aria-label="Ana navigasyon">
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
-        <div className="lurk-shell-section-label">ÇALIŞMA ALANI</div>
+        <div className="lurk-shell-section-label">WORKSPACE</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Ana Sayfa",icon:"⌂"},{k:"tables",label:"Masalar",icon:"▦"},{k:"reports",label:"Raporlar",icon:"▤"},{k:"customers",label:"Müşteriler",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"menu",label:"Menü",icon:"☕"},{k:"personal",label:"Kişisel Finans",icon:"₺"},{k:"settings",label:"Ayarlar",icon:"⚙"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Ana Sayfa",icon:"⌂"},{k:"tables",label:"Masalar",icon:"▦"},{k:"reports",label:"Raporlar",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"menu",label:"Menü",icon:"☕"},{k:"personal",label:"Personal Finance",icon:"₺"},{k:"settings",label:"Settings",icon:"⚙"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
-        <div className="lurk-shell-sidebar-footer"><span className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"İşletme açık":"İşletme kapalı"}</small></div><button type="button" aria-label="Ekranı kilitle" onClick={onLock}>⌑</button></div>
+        <div className="lurk-shell-sidebar-footer"><span className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button type="button" aria-label="Lock screen" onClick={onLock}>⌑</button></div>
       </aside>}
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
-      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
+      <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Saving…":"Saved"}</button>
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV} onLock={onLock} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible}/>}
       {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
@@ -1046,12 +1046,12 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
     <div className="lurk-screen lurk-order-screen ds-order" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
       {/* Top bar */}
       <div className="ds-order-header" style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-        <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Masalar</button>
+        <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Tables</button>
         <div style={{flex:1}}>
           <div style={{fontWeight:700,fontSize:15,color:T.text}}>{table.lbl}</div>
           {table.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{table.g}</div>}
         </div>
-        <button onClick={()=>setShowName(true)} style={{background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer",color:table.g?T.accentL:T.textSub}}>{table.g||"+ İsim"}</button>
+        <button onClick={()=>setShowName(true)} style={{background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer",color:table.g?T.accentL:T.textSub}}>{table.g||"+ Name"}</button>
       </div>
 
       {/* SİPARİŞ GÖRÜNÜMÜ */}
@@ -1061,14 +1061,14 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             {table.order.length===0
               ?<div style={{textAlign:"center",padding:"60px 20px",color:T.textDim}}>
                   <div style={{fontSize:36,marginBottom:12}}>☕</div>
-                  <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>Henüz sipariş yok</div>
+                  <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>No orders yet</div>
                 </div>
               :grouped.map((item,index)=>(
                 <div className="ds-order-line" key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(255,255,255,0.08)")}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:5}}>
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{fontSize:12,fontWeight:750,color:T.text,lineHeight:1.2,overflowWrap:"anywhere"}}>{item.name}</div>
-                      <div style={{fontSize:9,color:T.textDim,marginTop:2}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Eklenme saati kayıtlı değil"}</div>
+                      <div style={{fontSize:9,color:T.textDim,marginTop:2}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Time added not recorded"}</div>
                     </div>
                     <div style={{textAlign:"right",flexShrink:0}}>
                       <div style={{fontSize:9,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
@@ -1087,14 +1087,14 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
           {/* Alt bar */}
           <div className="ds-order-footer" style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-              <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Toplam</span>
+              <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Total</span>
               <span style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:800,color:T.accentL,letterSpacing:"-0.5px"}}>{fm(Math.max(0,sub-previousPaid))}</span>
             </div>
             <div style={{display:"flex",gap:8}}>
-              <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Sipariş Ekle</button>
-              <button onClick={()=>setShowMove(true)} disabled={table.order.length===0||tables.filter(t=>t.id!==table.id).length===0} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:table.order.length===0?T.textDim:T.textSub,fontWeight:600,fontSize:12,cursor:table.order.length===0?"not-allowed":"pointer"}}>⇄ Taşı</button>
-              <button onClick={()=>setShowFis(true)} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>Fiş</button>
-              <button onClick={()=>setShowPay(true)} disabled={table.order.length===0} style={{flex:2,padding:"13px",background:table.order.length===0?T.bg3:"linear-gradient(135deg,#34C759,#248A3D)",color:table.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:table.order.length===0?"not-allowed":"pointer",boxShadow:table.order.length>0?"0 4px 16px rgba(52,199,89,0.35)":"none"}}>Ödeme Al ↑</button>
+              <button onClick={()=>setShowMenu(true)} style={{flex:1,padding:"13px",background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.text,fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Add Order</button>
+              <button onClick={()=>setShowMove(true)} disabled={table.order.length===0||tables.filter(t=>t.id!==table.id).length===0} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:table.order.length===0?T.textDim:T.textSub,fontWeight:600,fontSize:12,cursor:table.order.length===0?"not-allowed":"pointer"}}>⇄ Move</button>
+              <button onClick={()=>setShowFis(true)} style={{flex:1,padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>Receipt</button>
+              <button onClick={()=>setShowPay(true)} disabled={table.order.length===0} style={{flex:2,padding:"13px",background:table.order.length===0?T.bg3:"linear-gradient(135deg,#34C759,#248A3D)",color:table.order.length===0?T.textDim:"#fff",border:"none",borderRadius:12,fontWeight:800,fontSize:14,cursor:table.order.length===0?"not-allowed":"pointer",boxShadow:table.order.length>0?"0 4px 16px rgba(52,199,89,0.35)":"none"}}>Collect Payment ↑</button>
             </div>
           </div>
         </div>
@@ -1112,7 +1112,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
           {/* Sağ: ürün grid */}
           <div className="ds-order-catalog" style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
             <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
-              <input className="ds-order-search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Ürün ara…" aria-label="Menüde ürün ara" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
+              <input className="ds-order-search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products…" aria-label="Search menu items" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
               <div className="lurk-product-grid ds-product-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
                 {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
                   const inCart=table.order.filter(o=>o.id===item.id).reduce((sum,o)=>sum+o.qty,0);
@@ -1149,8 +1149,8 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
 
       {showMove&&(
         <Modal>
-          <div style={{fontWeight:800,fontSize:18,color:T.text,marginBottom:6}}>Ürünleri Başka Masaya Taşı</div>
-          <div style={{fontSize:12,color:T.textSub,lineHeight:1.5,marginBottom:12}}>Taşınacak ürünleri ve adetlerini seç. Seçilmeyen ürünler bu masada kalır.</div>
+          <div style={{fontWeight:800,fontSize:18,color:T.text,marginBottom:6}}>Productleri Başka Masaya Taşı</div>
+          <div style={{fontSize:12,color:T.textSub,lineHeight:1.5,marginBottom:12}}>Select the items and quantities to move. Unselected items will remain at this table.</div>
           <div style={{display:"flex",flexDirection:"column",gap:7,maxHeight:"32vh",overflowY:"auto",marginBottom:14}}>
             {table.order.map(line=>{
               const key=line.oid||String(line.id);
@@ -1169,16 +1169,16 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
               const targetTotal=(target.order||[]).reduce((sum,item)=>sum+item.price*item.qty,0);
               const selectedQty=table.order.reduce((sum,line)=>sum+Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0))),0);
               return <button key={target.id} onClick={()=>{moveTableOrder(table.id,target.id,table.order.map(line=>({key:line.oid||String(line.id),qty:Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0)))})));setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(52,199,89,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(52,199,89,.3)":"rgba(255,255,255,.1)"),borderRadius:11,color:T.text,cursor:"pointer",opacity:selectedQty?1:.55}}>
-                <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Açık masa · "+fm(targetTotal):"Boş masa"}</span></span>
+                <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Open masa · "+fm(targetTotal):"Boş masa"}</span></span>
                 <span style={{color:T.accentL,fontSize:18}}>→</span>
               </button>;
             })}
           </div>
-          <button onClick={()=>{setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:12,marginTop:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+          <button onClick={()=>{setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:12,marginTop:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button>
         </Modal>
       )}
 
-      {/* Fiş modal */}
+      {/* Receipt modal */}
       {showFis&&(
         <Modal>
           <div style={{textAlign:"center",marginBottom:16}}>
@@ -1202,7 +1202,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             </div>
           ))}
           <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
-            <span style={{fontSize:15,fontWeight:700,color:T.text}}>Toplam</span>
+            <span style={{fontSize:15,fontWeight:700,color:T.text}}>Total</span>
             <span style={{fontSize:15,fontWeight:800,color:T.accentL}}>{fm(sub)}</span>
           </div>
           <div style={{textAlign:"center",marginTop:16,fontSize:11,color:T.textDim}}>Teşekkür ederiz ✦</div>
@@ -1228,33 +1228,33 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
       {showPay&&(
         <Modal>
           <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
-          {previousPaid>0&&<div style={{fontSize:11,color:T.accentL,marginBottom:8}}>Önceden tahsil edilen: {fm(previousPaid)}</div>}
+          {previousPaid>0&&<div style={{fontSize:11,color:T.accentL,marginBottom:8}}>Previously Collected: {fm(previousPaid)}</div>}
           <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
           <div style={{background:T.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.08)"}}>
-            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>Ara toplam</span><span>{fm(sub)}</span></div>
-            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>İndirim</span><span style={{color:discVal>0?T.accentL:T.textSub}}>−{fm(discVal)}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>Subtotal</span><span>{fm(sub)}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:T.textSub,marginBottom:8}}><span>Discount</span><span style={{color:discVal>0?T.accentL:T.textSub}}>−{fm(discVal)}</span></div>
             <div style={{height:1,background:"rgba(255,255,255,0.09)",marginBottom:8}}/>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:13,fontWeight:700,color:T.text}}>Ödenecek</span><span style={{fontSize:25,fontWeight:800,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:13,fontWeight:700,color:T.text}}>Amount Due</span><span style={{fontSize:25,fontWeight:800,color:T.accentL,letterSpacing:"-1px"}}>{fm(total)}</span></div>
           </div>
-          <input type="number" min="0" max={sub} placeholder="İndirim (TL)" value={disc} disabled={partialMode||previousPaid>0} onChange={e=>setDisc(e.target.value)}
+          <input type="number" min="0" max={sub} placeholder="Discount (TRY)" value={disc} disabled={partialMode||previousPaid>0} onChange={e=>setDisc(e.target.value)}
             style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:8,background:"rgba(255,255,255,0.07)",color:T.text,opacity:partialMode||previousPaid>0?0.5:1}}/>
-          {!table.lurkPlusId&&pt!=="credit"&&<button onClick={()=>{setPartialMode(v=>!v);setPartialAmount("");setSplitMode(false);setDisc("");}} style={{width:"100%",padding:10,marginBottom:10,background:partialMode?"rgba(52,199,89,.15)":T.bg2,border:"1px solid "+(partialMode?"rgba(52,199,89,.4)":"rgba(255,255,255,.1)"),borderRadius:10,color:partialMode?T.accentL:T.textSub,fontWeight:700,fontSize:12}}>{partialMode?"✓ Kısmi ödeme açık":"＋ Kısmi ödeme yap"}</button>}
-          {partialMode&&<input type="number" min="0.01" max={total} value={partialAmount} onChange={e=>{setPartialAmount(e.target.value);setCashPart(e.target.value);setCardPart("");}} placeholder={"Şimdi alınacak tutar · kalan "+fm(total)} style={{width:"100%",padding:"12px 14px",border:"1px solid rgba(52,199,89,.35)",borderRadius:10,fontSize:16,boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,.06)",color:T.text}}/>}
+          {!table.lurkPlusId&&pt!=="credit"&&<button onClick={()=>{setPartialMode(v=>!v);setPartialAmount("");setSplitMode(false);setDisc("");}} style={{width:"100%",padding:10,marginBottom:10,background:partialMode?"rgba(52,199,89,.15)":T.bg2,border:"1px solid "+(partialMode?"rgba(52,199,89,.4)":"rgba(255,255,255,.1)"),borderRadius:10,color:partialMode?T.accentL:T.textSub,fontWeight:700,fontSize:12}}>{partialMode?"✓ Partial payment enabled":"＋ Make partial payment"}</button>}
+          {partialMode&&<input type="number" min="0.01" max={total} value={partialAmount} onChange={e=>{setPartialAmount(e.target.value);setCashPart(e.target.value);setCardPart("");}} placeholder={"Amount to collect now · remaining "+fm(total)} style={{width:"100%",padding:"12px 14px",border:"1px solid rgba(52,199,89,.35)",borderRadius:10,fontSize:16,boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,.06)",color:T.text}}/>}
           <div style={{display:"flex",gap:8,marginBottom:10}}>
             {["cash","card","credit"].map(p=>(
               <button key={p} onClick={()=>{setPt(p);setSplitMode(false);if(p==="credit")setPartialMode(false);}} style={{flex:1,padding:"12px",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:10,fontSize:14,fontWeight:600,cursor:"pointer",background:!splitMode&&pt===p?"rgba(52,199,89,0.15)":"rgba(255,255,255,0.05)",color:!splitMode&&pt===p?T.accentL:T.textSub,borderColor:!splitMode&&pt===p?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"}}>
-                {p==="cash"?"Nakit":p==="card"?"Kart":"Veresiye"}
+                {p==="cash"?"Cash":p==="card"?"Card":"On account"}
               </button>
             ))}
           </div>
-          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Çoklu ödemeyi kapat":"Nakit + kart olarak böl"}</button>
+          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Disable split payment":"Cash + kart olarak böl"}</button>
           {splitMode&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-            <label style={{fontSize:11,color:T.textSub}}>Nakit (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round(((partialMode?paymentTarget:total)-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
-            <label style={{fontSize:11,color:T.textSub}}>Kart (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
+            <label style={{fontSize:11,color:T.textSub}}>Cash (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round(((partialMode?paymentTarget:total)-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
+            <label style={{fontSize:11,color:T.textSub}}>Card (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
           </div>}
-          {splitMode&&<div style={{fontSize:11,color:Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)<0.009?T.accentL:"#FF6B6B",marginBottom:12}}>Ödeme toplamı: {fm((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0))} / {fm(total)}</div>}
-          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Kısmi ödeme tutarı kalan borçtan büyük olamaz.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("Nakit ve kart toplamı tahsil edilecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>{partialMode?"Kısmi Tahsil Et · "+fm(paymentTarget):"Tahsil Et · "+fm(total)}</button>
-          <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Vazgeç</button>
+          {splitMode&&<div style={{fontSize:11,color:Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)<0.009?T.accentL:"#FF6B6B",marginBottom:12}}>Payment total: {fm((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0))} / {fm(total)}</div>}
+          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Partial payment cannot exceed the remaining balance.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("Cash ve kart toplamı tahsil edilecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>{partialMode?"Collect Partial Payment · "+fm(paymentTarget):"Collect Payment · "+fm(total)}</button>
+          <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Cancel</button>
         </Modal>
       )}
     </div>
@@ -1276,7 +1276,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
   const revenue=closedRevenue+openRevenue+manualCashRevenue;
   const productTotals={};
   [...monthOrders,...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{
-    const key=(item.name||"Ürün").trim();
+    const key=(item.name||"Product").trim();
     if(!productTotals[key])productTotals[key]={name:key,revenue:0,qty:0};
     productTotals[key].revenue+=(Number(item.price)||0)*(Number(item.qty)||0);
     productTotals[key].qty+=Number(item.qty)||0;
@@ -1288,34 +1288,34 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
     <div className="lurk-screen lurk-reports-screen ds-month-review" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
       <div style={{background:"#0B0D0A",borderBottom:"1px solid rgba(233,225,207,.13)",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>Bu ay nasıl geçti?<div style={{fontSize:9,fontWeight:750,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / MONTHLY REVIEW</div></div>
+        <div style={{fontSize:23,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>How Was This Month?<div style={{fontSize:9,fontWeight:750,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / MONTHLY REVIEW</div></div>
       </div>
       <div style={{padding:"16px 14px"}}>
-        <label style={{display:"block",fontSize:9,fontWeight:850,letterSpacing:"1.6px",color:"#B9B7A9",marginBottom:7}}>RAPOR DÖNEMİ</label>
+        <label style={{display:"block",fontSize:9,fontWeight:850,letterSpacing:"1.6px",color:"#B9B7A9",marginBottom:7}}>REPORTING PERIOD</label>
         <select className="lurk-month-review-select" value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} style={{width:"100%",padding:13,marginBottom:15,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,textTransform:"capitalize",fontWeight:800,letterSpacing:".2px"}}>
           {months.map(m=><option key={m} value={m}>{monthLabel(m)}</option>)}
         </select>
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
-          <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} CİROSU</div>
+          <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} REVENUE</div>
           <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
           <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
         </div>
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
           <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>YILLIK CİRO</div>
-          <label style={{display:"block",fontSize:11,color:T.textSub,margin:"10px 0 6px"}}>Yıl seç</label>
+          <label style={{display:"block",fontSize:11,color:T.textSub,margin:"10px 0 6px"}}>Select Year</label>
           <select className="lurk-month-review-select" value={year} onChange={e=>setYear(e.target.value)} style={{width:"100%",padding:11,background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,fontWeight:800}}>
             {yearOptions.map(y=><option key={y} value={y}>{y}</option>)}
           </select>
           <div style={{fontSize:25,fontWeight:950,color:"#A8C17D",letterSpacing:"-.8px",marginTop:12}}>{fm(yearRevenue)}</div>
-          <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Seçilen yılın adisyonları + manuel nakit tahsilatları</div>
+          <div style={{fontSize:10,color:T.textDim,marginTop:3}}>Orders and manual cash collections for the selected year</div>
         </div>
-        <div style={{fontSize:15,fontWeight:900,color:"#F0EBDD",letterSpacing:"-.3px",marginBottom:5}}>En çok kazandıran 5 ürün</div>
-        <div style={{fontSize:10,color:"#92958A",marginBottom:11}}>Adede göre değil, ürün satış tutarına göre sıralanır.</div>
+        <div style={{fontSize:15,fontWeight:900,color:"#F0EBDD",letterSpacing:"-.3px",marginBottom:5}}>Top 5 Revenue-Generating Products</div>
+        <div style={{fontSize:10,color:"#92958A",marginBottom:11}}>Ranked by sales revenue, not quantity sold.</div>
         {topProducts.length?topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,background:"linear-gradient(145deg,#EDE5D4,#E3DAC6)",border:"1px solid rgba(255,255,255,.5)",borderRadius:10,padding:13,marginBottom:8}}>
           <div style={{width:30,height:30,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:9,background:"rgba(36,69,43,.12)",color:"#24452B",fontSize:13,fontWeight:800,flexShrink:0}}>{i+1}</div>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:850,color:"#171914"}}>{p.name}</div><div style={{fontSize:10,color:"#686B60",marginTop:3}}>{p.qty} adet satıldı</div></div>
+          <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:850,color:"#171914"}}>{p.name}</div><div style={{fontSize:10,color:"#686B60",marginTop:3}}>{p.qty} items sold</div></div>
           <div style={{fontSize:13,fontWeight:950,color:"#24452B",textAlign:"right",whiteSpace:"nowrap"}}>{fm(p.revenue)}</div>
-        </div>):<div style={{padding:20,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub,fontSize:12}}>Bu ay için ürün satışı kaydı bulunamadı.</div>}
+        </div>):<div style={{padding:20,textAlign:"center",background:T.bg2,borderRadius:12,color:T.textSub,fontSize:12}}>No product sales recorded for this month.</div>}
       </div>
     </div>
   );
@@ -1391,12 +1391,12 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const[sel,setSel]=useState(months[0]||now);
   const[exp,setExp]=useState(null);
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});}
-  function addManualCash(){const name=window.prompt("Tahsilat yapan kişinin adı:");if(name===null||!name.trim())return;const raw=window.prompt(name.trim()+" için alınan nakit tutar (TL):");if(raw===null)return;const amount=Math.round(Number(raw.replace(",","."))*100)/100;if(!Number.isFinite(amount)||amount<=0){window.alert("Geçerli bir tutar gir.");return;}const date=new Date().toISOString();setCreditEntries(prev=>[{id:"manual-cash-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),type:"manual_cash",method:"cash",customerName:name.trim(),amount,date,note:"Manuel nakit tahsilat"},...prev]);}
+  function addManualCash(){const name=window.prompt("Name of the person making the payment:");if(name===null||!name.trim())return;const raw=window.prompt(name.trim()+"Cash amount received for ");if(raw===null)return;const amount=Math.round(Number(raw.replace(",","."))*100)/100;if(!Number.isFinite(amount)||amount<=0){window.alert("Enter a valid amount.");return;}const date=new Date().toISOString();setCreditEntries(prev=>[{id:"manual-cash-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),type:"manual_cash",method:"cash",customerName:name.trim(),amount,date,note:"Manual cash collection"},...prev]);}
   function exportMonthCsv(){
-    const headers=["Tarih","Masa","Müşteri","Ara toplam","İndirim","Toplam","Nakit","Kart","Veresiye","Ödeme türü","Ürünler"];
-    const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Nakit + Kart":o.pt==="cash"?"Nakit":o.pt==="card"?"Kart":o.pt==="credit"?"Veresiye":"Diğer",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
-    const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),e.type==="manual_cash"?"Manuel nakit tahsilat":"Veresiye defteri",e.customerName||"",0,0,0,((e.type==="payment"&&e.method==="cash")||e.type==="manual_cash")?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Borç kaydı":e.type==="manual_cash"?"Manuel · Nakit":"Tahsilat · "+(e.method==="cash"?"Nakit":e.method==="card"?"Kart":"Diğer"),e.note||""]);
-    const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Nakit":"Kart"),""];}));
+    const headers=["Date","Masa","Customer","Subtotal","Discount","Total","Cash","Card","On account","Payment Method","Productler"];
+    const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Cash + Card":o.pt==="cash"?"Cash":o.pt==="card"?"Card":o.pt==="credit"?"On account":"Other",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
+    const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),e.type==="manual_cash"?"Manual cash collection":"On account defteri",e.customerName||"",0,0,0,((e.type==="payment"&&e.method==="cash")||e.type==="manual_cash")?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Borç kaydı":e.type==="manual_cash"?"Manual · Cash":"Tahsilat · "+(e.method==="cash"?"Cash":e.method==="card"?"Card":"Other"),e.note||""]);
+    const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Cash":"Card"),""];}));
     const csv=[headers,...rows,...ledgerRows,...topupRows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
     const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lurk-satis-"+sel+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -1425,7 +1425,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
     <div className="lurk-screen lurk-reports-screen ds-sales-report" style={{background:"#F6F8F5",minHeight:"100vh",color:"#18251D"}}>
       <div style={{background:"#FFFFFF",borderBottom:"1px solid #DDE5DD",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:11}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#18251D"}}>Revenue<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#66746A",marginTop:4}}>LURK / BUSINESS PERFORMANCE</div></div><button onClick={()=>setV("salesHistory")} style={{background:"#22251F",color:"#FFFFFF",border:0,borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Sales History</button><button onClick={()=>setV("customers")} style={{background:"#EDF4DF",color:"#34451C",border:"1px solid #DCE9C6",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Customers</button><button onClick={addManualCash} style={{background:"#176B32",color:"#FFFFFF",border:"1px solid #176B32",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Nakit ekle</button><button onClick={exportMonthCsv} style={{background:"#E8F3E9",color:"#176B32",border:"1px solid #CFE3D1",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
+        <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#18251D"}}>Revenue<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#66746A",marginTop:4}}>LURK / BUSINESS PERFORMANCE</div></div><button onClick={()=>setV("salesHistory")} style={{background:"#22251F",color:"#FFFFFF",border:0,borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Sales History</button><button onClick={()=>setV("customers")} style={{background:"#EDF4DF",color:"#34451C",border:"1px solid #DCE9C6",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>Customers</button><button onClick={addManualCash} style={{background:"#176B32",color:"#FFFFFF",border:"1px solid #176B32",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Cash ekle</button><button onClick={exportMonthCsv} style={{background:"#E8F3E9",color:"#176B32",border:"1px solid #CFE3D1",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
       </div>
 
       {/* Ay seçici */}
@@ -1440,9 +1440,9 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
       {/* Stat kartlar */}
       <div style={{padding:"15px 14px",display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
         {[
-          {label:"Satış",val:fm(totalInc),color:T.accentL},
-          {label:"Nakit tahsilat",val:fm(totalCash),color:T.text},
-          {label:"Kart tahsilat",val:fm(totalCard),color:T.text},
+          {label:"Sales",val:fm(totalInc),color:T.accentL},
+          {label:"Cash tahsilat",val:fm(totalCash),color:T.text},
+          {label:"Card tahsilat",val:fm(totalCard),color:T.text},
         ].map((s,i)=>(
           <div key={i} style={{background:"#E9E1CF",color:"#171914",borderRadius:11,padding:"13px 10px",border:"1px solid #F6EFDF",minWidth:0,boxShadow:"0 7px 18px rgba(0,0,0,.2)"}}>
             <div style={{fontSize:9,color:"#536258",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
@@ -1454,8 +1454,8 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
 
       {/* Günler */}
       <div style={{padding:"0 14px 14px"}}>
-        <div style={{fontSize:10,fontWeight:850,color:"#B9B7A9",textTransform:"uppercase",letterSpacing:"2px",marginBottom:12}}>GÜNLÜK KAYITLAR</div>
-        {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>Bu ay kayıt yok</div>}
+        <div style={{fontSize:10,fontWeight:850,color:"#B9B7A9",textTransform:"uppercase",letterSpacing:"2px",marginBottom:12}}>DAILY RECORDS</div>
+        {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>No records for this month</div>}
         {days.map(day=>{
           const isExp=exp===day.date;
           const log=day.log;
@@ -1471,12 +1471,12 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
                   <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
                 </div>
               </div>
-              {isExp&&(day.manualCash||[]).map((e,i)=><div key={"manual-cash-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F1F7F1"}}><div><div style={{fontSize:13,color:T.text}}>{e.customerName||"Manuel tahsilat"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>Manuel nakit tahsilat</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
+              {isExp&&(day.manualCash||[]).map((e,i)=><div key={"manual-cash-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F1F7F1"}}><div><div style={{fontSize:13,color:T.text}}>{e.customerName||"Manual collection"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>Manual cash collection</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
                {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
                 <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#FAFBFA"}}>
                   <div>
                     <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
-                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Nakit":o.pt==="credit"?"Veresiye":o.pt==="split"?"Nakit + Kart":"Kart"}</div>
+                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Cash":o.pt==="credit"?"On account":o.pt==="split"?"Cash + Card":"Card"}</div>
                   </div>
                   <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(o.total)}</div>
                 </div>
@@ -1496,8 +1496,8 @@ const PERSONAL_DEBT_SEED=[
   {id:"ryze",group:"Kişisel",name:"Ryze",total:2000,note:"3K deren'den",payments:[],installments:[]},
   {id:"ahmet-bakkal",group:"Kişisel",name:"Ahmet Abi Bakkal",total:1500,payments:[],installments:[]},
   {id:"vodafone",group:"Kişisel",name:"Vodafone",total:23856,note:"30 Ekim",payments:[],installments:[]},
-  {id:"hepsiburada-limiti",group:"Kişisel",name:"Hepsiburada Limiti",total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Önceden ödenen tutar (tarih belirtilmedi)",historical:true}],installments:[]},
-  {id:"hepsifinans",group:"Kişisel",name:"Hepsifinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
+  {id:"hepsiburada-limiti",group:"Kişisel",name:"Allburada Limiti",total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Previously paid amount (date not specified)",historical:true}],installments:[]},
+  {id:"hepsifinans",group:"Kişisel",name:"Allfinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
   {id:"holdon",group:"Nicchia",name:"Holdon Coffee",total:7000,payments:[],installments:[]},
   {id:"mozaik",group:"Nicchia",name:"Mozaik İş Sağlığı",total:7000,payments:[],installments:[]},
   {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"2 Kasım",payments:[],installments:[]},
@@ -1524,7 +1524,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [checking,setChecking]=useState(false);
   const [paymentFor,setPaymentFor]=useState(null);
   const [amount,setAmount]=useState("");
-  const [note,setNote]=useState("");
+  const [note,setNotee]=useState("");
   const [showHistory,setShowHistory]=useState(false);
   const [expanded,setExpanded]=useState({});
   const [showLurk,setShowLurk]=useState(false);
@@ -1534,7 +1534,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [showInstallments,setShowInstallments]=useState(false);
   const [showFiddle,setShowFiddle]=useState(false);
   const [showFreedom,setShowFreedom]=useState(false);
-  const [filter,setFilter]=useState("Tümü");
+  const [filter,setFilter]=useState("All");
   const [showCompletedPersonalDebts,setShowCompletedPersonalDebts]=useState(false);
   const [draggingDebtId,setDraggingDebtId]=useState(null);
   const [editingInstallment,setEditingInstallment]=useState(null);
@@ -1551,7 +1551,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>prev
       .filter(d=>!placeholderIds.has(d.id))
-      .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d.id==="yemeksepeti"&&Number(d.total)===3879&&(d.payments||[]).length===0?{...d,total:12000,payments:[{id:"yemeksepeti-paid-history",amount:8121,date:null,note:"Önceden ödenen tutar (tarih belirtilmedi)",historical:true}]}:d)
+      .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d.id==="yemeksepeti"&&Number(d.total)===3879&&(d.payments||[]).length===0?{...d,total:12000,payments:[{id:"yemeksepeti-paid-history",amount:8121,date:null,note:"Previously paid amount (date not specified)",historical:true}]}:d)
       .map(d=>movedIds.has(d.id)?{
         ...d,
         name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
@@ -1571,9 +1571,9 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const allHistory=debts.flatMap(d=>(d.payments||[]).map(p=>({...p,debtName:d.name,debtId:d.id}))).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   const total=debts.reduce((s,d)=>s+remaining(d),0);
   async function unlock(e){e.preventDefault();if(checking||pin.length<6)return;setChecking(true);setPinError("");try{const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_login",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_pin:pin})});if(!r.ok)throw new Error("PIN servisi yanıt vermedi (HTTP "+r.status+").");const token=await r.json();if(typeof token!=="string"||token.length<32)throw new Error("PIN hatalı. POS girişinde kullandığın PIN ile aynı olmalı.");setUnlocked(true);setPin("");}catch(err){setPinError(err.message||"Doğrulama yapılamadı.");}finally{setChecking(false);}}
-  function addPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;if(!paymentFor||!Number.isFinite(value)||value<=0||value>remaining(paymentFor)+0.001){msg("Geçerli bir tutar gir. Ödeme kalan borcu aşamaz.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==paymentFor.id?d:{...d,payments:[...(d.payments||[]),{id:"pay-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),amount:value,date,note:note.trim()}]}));msg(money(value)+" ödeme kaydedildi.");setPaymentFor(null);setAmount("");setNote("");}
+  function addPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;if(!paymentFor||!Number.isFinite(value)||value<=0||value>remaining(paymentFor)+0.001){msg("Enter a valid amount. Ödeme kalan borcu aşamaz.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==paymentFor.id?d:{...d,payments:[...(d.payments||[]),{id:"pay-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),amount:value,date,note:note.trim()}]}));msg(money(value)+" ödeme kaydedildi.");setPaymentFor(null);setAmount("");setNotee("");}
   function payInstallment(debt,inst){const due=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));if(!due)return;setPaymentFor({debt,installment:inst,quick:true});setAmount(String(due));}
-  function addInstallmentPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;const debt=paymentFor?.debt,inst=paymentFor?.installment;if(!debt||!inst||value<=0||value>Number(inst.amount)-Number(inst.paid||0)+0.001){msg("Taksit için geçerli tutar gir.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,installments:d.installments.map(i=>i.id!==inst.id?i:{...i,paid:(Number(i.paid)||0)+value}),payments:[...(d.payments||[]),{id:"pay-"+Date.now(),amount:value,date,note:note.trim(),installmentId:inst.id,installmentLabel:inst.label}]}));msg(money(value)+" taksit ödemesi kaydedildi.");setPaymentFor(null);setAmount("");setNote("");}
+  function addInstallmentPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;const debt=paymentFor?.debt,inst=paymentFor?.installment;if(!debt||!inst||value<=0||value>Number(inst.amount)-Number(inst.paid||0)+0.001){msg("Taksit için geçerli tutar gir.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,installments:d.installments.map(i=>i.id!==inst.id?i:{...i,paid:(Number(i.paid)||0)+value}),payments:[...(d.payments||[]),{id:"pay-"+Date.now(),amount:value,date,note:note.trim(),installmentId:inst.id,installmentLabel:inst.label}]}));msg(money(value)+" taksit ödemesi kaydedildi.");setPaymentFor(null);setAmount("");setNotee("");}
   function reversePayment(debt,payment){if(!window.confirm(money(payment.amount)+" ödeme hareketi geri alınsın mı?"))return;setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,payments:(d.payments||[]).filter(p=>p.id!==payment.id),installments:(d.installments||[]).map(i=>i.id===payment.installmentId?{...i,paid:Math.max(0,(Number(i.paid)||0)-Number(payment.amount||0))}:i)}));}
   function openInstallmentEditor(debt){
     setEditingInstallment(debt);
@@ -1588,7 +1588,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const eachValue=Math.round(Number(String(installmentAmount).replace(",","."))*100)/100;
     const count=Number(installmentCount);
     if(!debt||!Number.isFinite(totalValue)||totalValue<=0||!Number.isFinite(eachValue)||eachValue<=0||!Number.isInteger(count)||count<1||count>120||!/^\d{4}-\d{2}-\d{2}$/.test(installmentStartDate)){
-      msg("Toplam tutar, taksit tutarı, taksit sayısı ve ilk ödeme tarihi bilgilerini kontrol et.");return;
+      msg("Total tutar, taksit tutarı, taksit sayısı ve ilk ödeme tarihi bilgilerini kontrol et.");return;
     }
     const existing=debt.installments||[];
     let allocated=0;
@@ -1603,9 +1603,9 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     });
     setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,total:totalValue,installments:schedule}));
     setEditingInstallment(null);
-    msg("Taksit planı kaydedildi.");
+    msg("Installment Plan kaydedildi.");
   }
-  if(!unlocked)return <div className="lurk-screen personal-finance ds-personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Enter your POS PIN to access Personal.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Kontrol ediliyor…":"Unlock"}</button></form></div>;
+  if(!unlocked)return <div className="lurk-screen personal-finance ds-personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Enter your POS PIN to access Personal.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Checking…":"Unlock"}</button></form></div>;
   const paidTotal=debts.reduce((sum,d)=>sum+paid(d),0);
   const originalTotal=debts.reduce((sum,d)=>sum+Number(d.total||0),0);
   const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
@@ -1645,7 +1645,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const positions=new Map(ordered.map((d,i)=>[d.id,i]));
     setDebts(prev=>prev.map(d=>positions.has(d.id)?{...d,sortOrder:positions.get(d.id)}:d));
   }
-  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&!freedomIds.includes(d.id)&&(filter==="Tümü"||d.group===filter));
+  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&!freedomIds.includes(d.id)&&(filter==="All"||d.group===filter));
   const completedPersonalDebts=personalDebtPool.filter(d=>remaining(d)<=0);
   const visibleDebts=personalDebtPool.filter(d=>remaining(d)>0).sort((a,b)=>{
     const ao=a.sortOrder!==undefined?Number(a.sortOrder):null;
@@ -1665,15 +1665,15 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>İşletme giderleri · {lurkDebts.length} kayıt</div></div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Business expenses · {lurkDebts.length} kayıt</div></div>
           </div>
           <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(lurkStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.left)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(lurkStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.left)}</div></div>
             <div style={{display:"flex",alignItems:"center",gap:9}}>
               <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(lurkStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(lurkStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{lurkStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
         </button>
@@ -1682,31 +1682,31 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>REMAINING</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
             <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Ödeme</button>}
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
               <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
-          {completedLurkDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedLurk(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedLurkDebts.length}</span><span>{showCompletedLurk?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedLurkDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
+          {completedLurkDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedLurk(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedLurkDebts.length}</span><span>{showCompletedLurk?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedLurkDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
         </div>}
       </div>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowInstallments(v=>!v)} aria-expanded={showInstallments} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>▣</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>Taksitler</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Ayrı taksit kayıtların · {installmentDebts.length} kayıt</div></div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>Taksitler</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Separate installment records · {installmentDebts.length} kayıt</div></div>
           </div>
           <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(installmentStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.left)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(installmentStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.left)}</div></div>
             <div style={{display:"flex",alignItems:"center",gap:9}}>
               <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(installmentStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(installmentStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{installmentStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showInstallments?"⌃":"⌄"}</div>
@@ -1717,28 +1717,28 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
               <div style={{width:76,height:76,borderRadius:"50%",background:"conic-gradient(#54e875 0deg "+(pct(d)/100*360)+"deg,#304638 "+(pct(d)/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}>
                 <div style={{width:60,height:60,borderRadius:"50%",background:"#14231c",display:"grid",placeItems:"center",textAlign:"center"}}>
-                  <div><div style={{fontSize:8,color:"#a9b8ad",fontWeight:700}}>ÖDENEN</div><div style={{fontSize:10,fontWeight:900,color:"#70f28a",lineHeight:1.25}}>{money(paid(d))}</div></div>
+                  <div><div style={{fontSize:8,color:"#a9b8ad",fontWeight:700}}>PAID</div><div style={{fontSize:10,fontWeight:900,color:"#70f28a",lineHeight:1.25}}>{money(paid(d))}</div></div>
                 </div>
               </div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:9,color:T.textDim}}>TOPLAM BORÇ</div>
+                <div style={{fontSize:9,color:T.textDim}}>TOTAL DEBT</div>
                 <div style={{fontSize:13,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-                <div style={{fontSize:9,color:T.textDim,marginTop:5}}>KALAN</div>
+                <div style={{fontSize:9,color:T.textDim,marginTop:5}}>REMAINING</div>
                 <div style={{fontSize:12,fontWeight:850,color:"#70f28a"}}>{money(remaining(d))}</div>
-                <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} taksit ödendi</div>
+                <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} installments paid</div>
               </div>
             </div>
             <div style={{display:"flex",gap:7,marginTop:9}}>
-              {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Sıradaki Taksiti Öde</button>}
-              <button onClick={()=>openInstallmentEditor(d)} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Planı Düzenle</button>
+              {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Pay Next Installment</button>}
+              <button onClick={()=>openInstallmentEditor(d)} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Edit Plan</button>
             </div>
-            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Diğer Taksitleri Gör"}</button>}
+            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Other Taksitleri Gör"}</button>}
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
               <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} kaldı</div>
-              {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Ödeme Kaydet</button>}
+              {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Record Payment</button>}
             </div>)}
           </div>)}
-          {completedInstallmentDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedInstallments(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedInstallmentDebts.length}</span><span>{showCompletedInstallments?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedInstallmentDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
+          {completedInstallmentDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedInstallments(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedInstallmentDebts.length}</span><span>{showCompletedInstallments?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedInstallmentDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
         </div>}
       </div>
       <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
@@ -1748,12 +1748,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
           </div>
           <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(fiddleStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.left)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(fiddleStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.left)}</div></div>
             <div style={{display:"flex",alignItems:"center",gap:9}}>
               <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(fiddleStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(fiddleStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{fiddleStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFiddle?"⌃":"⌄"}</div>
@@ -1763,16 +1763,16 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div>
             <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>REMAINING</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
             <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Ödeme</button>}
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
               <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {new Date(p.date).toLocaleDateString("tr-TR")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
-          {completedFiddleDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedFiddle(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedFiddleDebts.length}</span><span>{showCompletedFiddle?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedFiddleDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
+          {completedFiddleDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedFiddle(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedFiddleDebts.length}</span><span>{showCompletedFiddle?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedFiddleDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
         </div>}
       </div>
             <div style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
@@ -1782,12 +1782,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>ÖZGÜRLEŞME OPERASYONU</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 kayıt</div></div>
           </div>
           <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOPLAM BORÇ</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>ÖDENEN</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(freedomStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>KALAN</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.left)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.total)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(freedomStats.paid)}</div></div>
+            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.left)}</div></div>
             <div style={{display:"flex",alignItems:"center",gap:9}}>
               <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(freedomStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(freedomStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{freedomStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
+              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFreedom?"⌃":"⌄"}</div>
@@ -1796,25 +1796,25 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           {activeFreedomDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
             <div style={{fontSize:16,fontWeight:900,textTransform:"uppercase",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{d.name}</div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>TOPLAM</div><div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>KALAN</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:T.textDim}}>REMAINING</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
             <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% ödendi · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Ödeme</button>}
+              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
               <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
-            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Tarih belirtilmedi"}</span><b>{money(p.amount)}</b></div>)}</div>}
+            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Date belirtilmedi"}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
           {completedFreedomDebts.length>0&&<div style={{fontSize:10,color:"#70c98b",fontWeight:800}}>TAMAMLANANLAR · {completedFreedomDebts.length}</div>}
         </div>}
       </div>
 <div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
-        {[{label:"TOPLAM BORÇ",value:money(originalTotal)},{label:"ÖDENEN",value:money(paidTotal)},{label:"KALAN",value:money(total)},{label:"ÖDEME ORANI",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
+        {[{label:"TOTAL DEBT",value:money(originalTotal)},{label:"PAID",value:money(paidTotal)},{label:"REMAINING",value:money(total)},{label:"PAYMENT RATE",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
-        <div style={{fontSize:15,fontWeight:850,flex:1}}>Borçlarım <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:T.textDim,fontWeight:500,marginTop:2}}>Kartları sürükleyerek sıralayabilirsin</div></div>
-        <div style={{display:"flex",gap:5}}>{["Tümü","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
-        <button onClick={()=>{const name=window.prompt("Borç / ödeme adı:");if(!name?.trim())return;const totalValue=Number(window.prompt("Toplam tutar (TL):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Kişisel veya Nicchia","Kişisel")==="Nicchia"?"Nicchia":"Kişisel";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Borç Ekle</button>
+        <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:T.textDim,fontWeight:500,marginTop:2}}>Cardları sürükleyerek sıralayabilirsin</div></div>
+        <div style={{display:"flex",gap:5}}>{["All","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
+        <button onClick={()=>{const name=window.prompt("Borç / ödeme adı:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total tutar (TL):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Kişisel veya Nicchia","Kişisel")==="Nicchia"?"Nicchia":"Kişisel";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
       </div>
       <div className="lurk-personal-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8}}>
         {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className="lurk-personal-debt-row" style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:13,padding:"12px 14px",minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
@@ -1825,57 +1825,57 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               </div>
               <div style={{display:"flex",alignItems:"center",gap:6,marginTop:5}}>
                 <span style={{fontSize:9,fontWeight:750,color:d.group==="Kişisel"?"#71d993":"#9bbec7",background:d.group==="Kişisel"?"rgba(52,199,89,.10)":"rgba(109,158,172,.12)",padding:"3px 7px",borderRadius:20}}>{d.group}</span>
-                <span style={{fontSize:10,color:T.textDim}}>Toplam {money(d.total)}</span>
+                <span style={{fontSize:10,color:T.textDim}}>Total {money(d.total)}</span>
               </div>
             </div>
             <div style={{textAlign:"right",flexShrink:0,paddingLeft:8}}>
               <div style={{fontSize:16,fontWeight:900,letterSpacing:"-.3px"}}>{money(remaining(d))}</div>
-              <div style={{fontSize:9,color:T.textDim,marginTop:2}}>KALAN BORÇ</div>
+              <div style={{fontSize:9,color:T.textDim,marginTop:2}}>REMAINING DEBT</div>
             </div>
           </div>
           <div style={{marginTop:15,padding:"11px 12px",borderRadius:10,background:"rgba(255,255,255,.035)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:10,marginBottom:7}}>
-              <span style={{color:T.textSub,fontWeight:750}}>ÖDEME DURUMU</span>
+              <span style={{color:T.textSub,fontWeight:750}}>PAYMENT STATUS</span>
               <span style={{color:"#70d98b",fontWeight:850}}>%{pct(d).toFixed(0)} tamamlandı</span>
             </div>
             <div style={{height:7,background:"rgba(255,255,255,.09)",borderRadius:10,overflow:"hidden"}}>
               <div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#248A3D,#5BD77B)",borderRadius:10}}/>
             </div>
             <div style={{display:"flex",justifyContent:"space-between",gap:8,fontSize:10,color:T.textSub,marginTop:7}}>
-              <span>Ödenen <b style={{color:T.text}}>{money(paid(d))}</b></span>
-              <span>Toplam <b style={{color:T.text}}>{money(d.total)}</b></span>
+              <span>Paid <b style={{color:T.text}}>{money(paid(d))}</b></span>
+              <span>Total <b style={{color:T.text}}>{money(d.total)}</b></span>
             </div>
           </div>
           {(d.installments||[]).length>0&&<div style={{marginTop:9,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,padding:"2px 10px"}}>
-            <button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",background:"transparent",border:0,color:T.textSub,textAlign:"left",fontSize:10,fontWeight:750,padding:"8px 0"}}>{expanded[d.id]?"▾":"▸"} Taksit planı <span style={{color:T.textDim}}>· {(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{d.installments.length} ödendi</span></button>
+            <button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",background:"transparent",border:0,color:T.textSub,textAlign:"left",fontSize:10,fontWeight:750,padding:"8px 0"}}>{expanded[d.id]?"▾":"▸"} Installment Plan <span style={{color:T.textDim}}>· {(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{d.installments.length} ödendi</span></button>
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{display:"flex",alignItems:"center",gap:7,padding:"7px 0",borderTop:"1px solid rgba(255,255,255,.06)"}}>
-              <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due||"Tarih yok"} · {money(inst.paid)} / {money(inst.amount)}</div></div>
+              <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due||"Date yok"} · {money(inst.paid)} / {money(inst.amount)}</div></div>
               {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"6px 9px",borderRadius:7,border:0,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Öde</button>}
             </div>)}
           </div>}
           <div style={{display:"flex",gap:8,marginTop:11}}>
-            <button onClick={()=>{setPaymentFor(d);setAmount("");setNote("");}} style={{flex:1,padding:11,borderRadius:9,border:0,background:"linear-gradient(100deg,#34C759,#2dbb50)",color:"#061008",fontSize:11,fontWeight:900}}>+ Ödeme Yap</button>
+            <button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:11,borderRadius:9,border:0,background:"linear-gradient(100deg,#34C759,#2dbb50)",color:"#061008",fontSize:11,fontWeight:900}}>+ Payment Yap</button>
             <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"10px 13px",borderRadius:9,border:"1px solid "+T.border,background:"rgba(255,255,255,.045)",color:T.textSub,fontSize:10,fontWeight:700}}>Hareketler</button>
           </div>
           {showHistory&&<div style={{marginTop:10,borderTop:"1px solid "+T.border,paddingTop:7}}>{(d.payments||[]).slice().reverse().map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0"}}>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Tarih belirtilmedi":new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Date belirtilmedi":new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div>
             <button onClick={()=>reversePayment(d,p)} style={{color:T.danger,background:"transparent",border:0,fontSize:9}}>Geri al</button>
           </div>)}</div>}
         </div>)}
       </div>
-      {completedPersonalDebts.length>0&&<div style={{marginTop:10}}><button onClick={()=>setShowCompletedPersonalDebts(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:11,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedPersonalDebts.length}</span><span>{showCompletedPersonalDebts?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedPersonalDebts&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:7}}>{completedPersonalDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"10px 11px",borderRadius:10,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.75,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:11,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:3}}>Tamamlandı</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
+      {completedPersonalDebts.length>0&&<div style={{marginTop:10}}><button onClick={()=>setShowCompletedPersonalDebts(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:11,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedPersonalDebts.length}</span><span>{showCompletedPersonalDebts?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedPersonalDebts&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:7}}>{completedPersonalDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"10px 11px",borderRadius:10,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.75,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:11,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:3}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
       <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ Tüm ödeme hareketleri</button>
-      {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:T.textDim}}>{p.historical?"Tarih belirtilmedi":new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
+      {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:T.textDim}}>{p.historical?"Date belirtilmedi":new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
     </div>
-{editingInstallment&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Taksit planı</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{editingInstallment.name}</div>
-  <label style={{fontSize:11,color:T.textSub}}>Toplam borç (TL)</label><input type="number" min="0.01" step="0.01" value={installmentTotal} onChange={e=>setInstallmentTotal(e.target.value)} placeholder="Örn. 24000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
-  <label style={{fontSize:11,color:T.textSub}}>Her taksit tutarı (TL)</label><input type="number" min="0.01" step="0.01" value={installmentAmount} onChange={e=>setInstallmentAmount(e.target.value)} placeholder="Örn. 4000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
-  <label style={{fontSize:11,color:T.textSub}}>Taksit sayısı</label><input type="number" min="1" max="120" step="1" value={installmentCount} onChange={e=>setInstallmentCount(e.target.value)} placeholder="Örn. 6" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
-  <label style={{fontSize:11,color:T.textSub}}>İlk ödeme tarihi</label><input type="date" value={installmentStartDate} onChange={e=>setInstallmentStartDate(e.target.value)} style={{width:"100%",padding:12,marginTop:5,marginBottom:14,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
-  <div style={{fontSize:10,color:T.textDim,lineHeight:1.5,marginBottom:12}}>Taksitler aylık olarak oluşturulur. Son taksit, toplam tutarı tamamlayacak şekilde otomatik ayarlanır. Mevcut taksitlerdeki ödenmiş tutarlar mümkün olduğunca korunur.</div>
-  <button onClick={saveInstallmentPlan} style={{width:"100%",padding:13,background:T.accent,color:"#061008",border:0,borderRadius:10,fontWeight:850}}>Planı Kaydet</button><button onClick={()=>setEditingInstallment(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Vazgeç</button>
+{editingInstallment&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Installment Plan</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{editingInstallment.name}</div>
+  <label style={{fontSize:11,color:T.textSub}}>Total borç (TL)</label><input type="number" min="0.01" step="0.01" value={installmentTotal} onChange={e=>setInstallmentTotal(e.target.value)} placeholder="Örn. 24000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <label style={{fontSize:11,color:T.textSub}}>Amount per installment (TRY)</label><input type="number" min="0.01" step="0.01" value={installmentAmount} onChange={e=>setInstallmentAmount(e.target.value)} placeholder="Örn. 4000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <label style={{fontSize:11,color:T.textSub}}>Number of installments</label><input type="number" min="1" max="120" step="1" value={installmentCount} onChange={e=>setInstallmentCount(e.target.value)} placeholder="Örn. 6" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <label style={{fontSize:11,color:T.textSub}}>First payment date</label><input type="date" value={installmentStartDate} onChange={e=>setInstallmentStartDate(e.target.value)} style={{width:"100%",padding:12,marginTop:5,marginBottom:14,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
+  <div style={{fontSize:10,color:T.textDim,lineHeight:1.5,marginBottom:12}}>Installments are created monthly. The final installment is automatically adjusted to match the total. Existing paid amounts are preserved wherever possible.</div>
+  <button onClick={saveInstallmentPlan} style={{width:"100%",padding:13,background:T.accent,color:"#061008",border:0,borderRadius:10,fontWeight:850}}>Save Plan</button><button onClick={()=>setEditingInstallment(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Cancel</button>
 </Modal>}
-{paymentFor&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>{paymentFor.installment?"Taksit Ödemesi":"Ödeme kaydet"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{paymentFor.name||paymentFor.debt?.name} · {paymentFor.installment?(paymentFor.installment.label+" · "):""}Kalan {money(paymentFor.debt?Math.max(0,paymentFor.installment.amount-paymentFor.installment.paid):remaining(paymentFor))}</div><label style={{fontSize:11,color:T.textSub}}>Ödeme tutarı (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="Örn. 2000" style={{width:"100%",padding:14,marginTop:6,marginBottom:5,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:20,boxSizing:"border-box"}}/>{paymentFor.installment&&<div style={{fontSize:11,color:T.accentL,marginBottom:12,lineHeight:1.5}}>Kısmi ödeme yapabilirsin. İstediğin tutarı girmen yeterli. Kalan taksit bakiyesi otomatik güncellenir.</div>}<label style={{fontSize:11,color:T.textSub}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Ödeme notu" style={{width:"100%",padding:12,marginTop:6,marginBottom:14,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/><button onClick={paymentFor.debt?addInstallmentPayment:addPayment} style={{width:"100%",padding:14,background:T.accent,color:"#061008",border:0,borderRadius:11,fontWeight:850}}>Ödemeyi Kaydet</button><button onClick={()=>setPaymentFor(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Vazgeç</button></Modal>}
+{paymentFor&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>{paymentFor.installment?"Taksit Ödemesi":"Ödeme kaydet"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{paymentFor.name||paymentFor.debt?.name} · {paymentFor.installment?(paymentFor.installment.label+" · "):""}Remaining {money(paymentFor.debt?Math.max(0,paymentFor.installment.amount-paymentFor.installment.paid):remaining(paymentFor))}</div><label style={{fontSize:11,color:T.textSub}}>Payment amount (TRY)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="Örn. 2000" style={{width:"100%",padding:14,marginTop:6,marginBottom:5,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:20,boxSizing:"border-box"}}/>{paymentFor.installment&&<div style={{fontSize:11,color:T.accentL,marginBottom:12,lineHeight:1.5}}>Make partial paymentabilirsin. İstediğin tutarı girmen yeterli. Remaining taksit bakiyesi otomatik güncellenir.</div>}<label style={{fontSize:11,color:T.textSub}}>Notee (optional)</label><input value={note} onChange={e=>setNotee(e.target.value)} placeholder="Ödeme notu" style={{width:"100%",padding:12,marginTop:6,marginBottom:14,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/><button onClick={paymentFor.debt?addInstallmentPayment:addPayment} style={{width:"100%",padding:14,background:T.accent,color:"#061008",border:0,borderRadius:11,fontWeight:850}}>Save Payment</button><button onClick={()=>setPaymentFor(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Cancel</button></Modal>}
   </div>;
 }
 
@@ -1949,7 +1949,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         const url=lurkPlusUrl(member,token,members);
         setIssuedLinks(prev=>({...prev,[member.id]:url}));
 
-        try{await navigator.clipboard.writeText(url);msg("Müşteri bağlantısı oluşturuldu ve kopyalandı.");}
+        try{await navigator.clipboard.writeText(url);msg("Customer bağlantısı oluşturuldu ve kopyalandı.");}
         catch(e){msg("Bağlantı oluşturuldu. Aşağıdan kopyalayabilirsin.");}
       }else{
         rpc="lurk_plus_revoke_links";
@@ -1986,7 +1986,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
      if(raw===null)return;
      const amount=Number(raw.replace(",","."));
      if(!Number.isFinite(amount)||amount<=0){msg("Geçerli bir bakiye tutarı gir.");return;}
-     const method=window.confirm("Ödeme kartla mı alındı?\n\nTamam: Kart\nİptal: Nakit")?"card":"cash";
+     const method=window.confirm("Ödeme kartla mı alındı?\n\nTamam: Card\nCancel: Cash")?"card":"cash";
      const date=new Date().toISOString();
      setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,method,balanceAfter:nextBalance,note:"Bakiye yüklendi"}]};}));
      msg(member.name+" · "+fm(amount)+" bakiye "+(method==="card"?"kartla":"nakit")+" yüklendi.");
@@ -2001,7 +2001,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     msg(member.name+" · "+amount+" kahve hakkı eklendi.");
   }
   async function deleteMember(member){
-    if(!window.confirm(member.name+" adlı LURK+ üyesini silmek istediğine emin misin? Bakiye/kahve hakkı ve hareket geçmişi üye listesinden kaldırılacak. Müşteri bağlantıları da iptal edilecek."))return;
+    if(!window.confirm(member.name+" adlı LURK+ üyesini silmek istediğine emin misin? Bakiye/kahve hakkı ve hareket geçmişi üye listesinden kaldırılacak. Customer bağlantıları da iptal edilecek."))return;
     const secret=window.prompt("LURK+ bağlantı yönetim anahtarını gir:");
     if(!secret)return;
     if(secret.length<24){msg("Yönetim anahtarı en az 24 karakter olmalı.");return;}
@@ -2021,30 +2021,30 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     <div className="lurk-screen ds-lurk-plus">
       <div style={{background:"rgba(13,13,13,0.98)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"18px 16px",display:"flex",alignItems:"center",gap:12}}>
         <button onClick={()=>setV("home")} style={{background:"transparent",border:0,color:T.textSub,fontSize:24,cursor:"pointer"}}>←</button>
-        <div style={{flex:1}}><div style={{fontSize:24,fontWeight:850,letterSpacing:"-0.8px",color:T.text}}>LURK<span style={{color:T.accentL}}>+</span></div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>Bakiye ve kahve hakkı üyelikleri</div></div>
-        <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Üye Ekle</button>
+        <div style={{flex:1}}><div style={{fontSize:24,fontWeight:850,letterSpacing:"-0.8px",color:T.text}}>LURK<span style={{color:T.accentL}}>+</span></div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>Balance and coffee credit memberships</div></div>
+        <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Add Member</button>
       </div>
       <div style={{padding:14}}>
-        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>Henüz LURK+ üyesi yok</div><div style={{fontSize:12}}>İlk üyeni ekleyip başlangıç bakiyesini belirle.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>selectLurkPlusMember(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Üyelik: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":m.membershipType!=="coffee"&&!m.unlimited&&(Number(m.balance)||0)<0?"#FF453A":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Sınırsız":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Kahve hakkı üyeliği":"Bakiye üyeliği"} · Hareketleri gör ›</div></div></button>)}
+        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>No LURK+ members yet</div><div style={{fontSize:12}}>Add your first member and set their starting balance.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>selectLurkPlusMember(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Membership: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":m.membershipType!=="coffee"&&!m.unlimited&&(Number(m.balance)||0)<0?"#FF453A":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Unlimited":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Coffee credit membership":"Bakiye üyeliği"} · View activity ›</div></div></button>)}
         {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><button onClick={()=>{const next=window.prompt("LURK+ üyesinin yeni adı:",m.name);if(next===null)return;const clean=next.trim();if(!clean){msg("Üye adı boş olamaz.");return;}if(members.some(x=>x.id!==m.id&&x.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde başka bir LURK+ üyesi zaten var.");return;}setMembers(prev=>prev.map(x=>x.id===m.id?{...x,name:clean,updatedAt:new Date().toISOString()}:x));msg("Üye adı güncellendi.");}} style={{padding:"4px 8px",background:"rgba(255,255,255,.06)",color:T.textSub,border:"1px solid rgba(255,255,255,.14)",borderRadius:7,fontSize:10,fontWeight:750,cursor:"pointer",whiteSpace:"nowrap"}}>Edit</button></div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Öpücük bakiyesi":m.membershipType==="coffee"?"Kalan kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&(Number(m.balance)||0)<0?"#FF453A":T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Sınırsız kullanım":" "+fm(m.balance)}</div></div>
-          {m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&<button onClick={()=>addMemberBalance(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Bakiye yükle</button>}
-           {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Kahve hakkı ekle</button>}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><button onClick={()=>{const next=window.prompt("LURK+ üyesinin yeni adı:",m.name);if(next===null)return;const clean=next.trim();if(!clean){msg("Üye adı boş olamaz.");return;}if(members.some(x=>x.id!==m.id&&x.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde başka bir LURK+ üyesi zaten var.");return;}setMembers(prev=>prev.map(x=>x.id===m.id?{...x,name:clean,updatedAt:new Date().toISOString()}:x));msg("Üye adı güncellendi.");}} style={{padding:"4px 8px",background:"rgba(255,255,255,.06)",color:T.textSub,border:"1px solid rgba(255,255,255,.14)",borderRadius:7,fontSize:10,fontWeight:750,cursor:"pointer",whiteSpace:"nowrap"}}>Edit</button></div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Öpücük bakiyesi":m.membershipType==="coffee"?"Remaining kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&(Number(m.balance)||0)<0?"#FF453A":T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Unlimited kullanım":" "+fm(m.balance)}</div></div>
+          {m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&<button onClick={()=>addMemberBalance(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Add balance</button>}
+           {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Add coffee credits</button>}
           <div style={{background:"rgba(52,199,89,.07)",border:"1px solid rgba(52,199,89,.18)",borderRadius:11,padding:11,marginBottom:13}}>
-            <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Müşteri bağlantısı</div>
-            <div style={{fontSize:10,color:T.textSub,lineHeight:1.5,marginBottom:9}}>Bu bağlantıyı müşteriye gönder. Bağlantıyı bilen kişi yalnızca bu üyenin bakiye ve hareketlerini görebilir.</div>
-            <button disabled={linkBusy} onClick={()=>manageLink(m,"create")} style={{width:"100%",padding:10,background:T.accent,color:"#fff",border:0,borderRadius:9,fontWeight:800,fontSize:11,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"İşleniyor…":"Yeni bağlantı oluştur / yenile"}</button>
-            <button disabled={linkBusy} onClick={()=>revealMemberLink(m)} style={{width:"100%",padding:9,marginTop:7,background:"rgba(255,255,255,.06)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:8,fontSize:11,fontWeight:750,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Yükleniyor…":"Mevcut bağlantıyı göster"}</button>
-            {issuedLinks[m.id]&&<><div style={{fontSize:10,color:T.textSub,overflowWrap:"anywhere",padding:"8px 0"}}>{issuedLinks[m.id]}</div><button onClick={()=>navigator.clipboard.writeText(issuedLinks[m.id]).then(()=>msg("Bağlantı kopyalandı."))} style={{width:"100%",padding:9,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Bağlantıyı Kopyala</button><button onClick={()=>window.open("https://wa.me/?text="+encodeURIComponent(m.name+" için LURK+ bakiye bağlantın: "+issuedLinks[m.id]),"_blank","noopener,noreferrer")} style={{width:"100%",padding:9,background:"rgba(37,211,102,.12)",color:"#55D98B",border:"1px solid rgba(37,211,102,.25)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>WhatsApp ile Gönder</button></>}
-            <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Tüm bağlantıları iptal et</button>
+            <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Customer bağlantısı</div>
+            <div style={{fontSize:10,color:T.textSub,lineHeight:1.5,marginBottom:9}}>Send this link to the customer. Anyone with the link can view only this member's balance and activity.</div>
+            <button disabled={linkBusy} onClick={()=>manageLink(m,"create")} style={{width:"100%",padding:10,background:T.accent,color:"#fff",border:0,borderRadius:9,fontWeight:800,fontSize:11,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"İşleniyor…":"New bağlantı oluştur / yenile"}</button>
+            <button disabled={linkBusy} onClick={()=>revealMemberLink(m)} style={{width:"100%",padding:9,marginTop:7,background:"rgba(255,255,255,.06)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:8,fontSize:11,fontWeight:750,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Uploadniyor…":"Mevcut bağlantıyı göster"}</button>
+            {issuedLinks[m.id]&&<><div style={{fontSize:10,color:T.textSub,overflowWrap:"anywhere",padding:"8px 0"}}>{issuedLinks[m.id]}</div><button onClick={()=>navigator.clipboard.writeText(issuedLinks[m.id]).then(()=>msg("Link copied."))} style={{width:"100%",padding:9,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Copy Link</button><button onClick={()=>window.open("https://wa.me/?text="+encodeURIComponent(m.name+" için LURK+ bakiye bağlantın: "+issuedLinks[m.id]),"_blank","noopener,noreferrer")} style={{width:"100%",padding:9,background:"rgba(37,211,102,.12)",color:"#55D98B",border:"1px solid rgba(37,211,102,.25)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Send via WhatsApp</button></>}
+            <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Revoke All Links</button>
           </div>
-          <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BAKİYE HAREKETLERİ</div>
-          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>Henüz hareket kaydı yok.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Öpücük borçlandı 💋":h.type==="kiss_refund"?"Öpücük iade edildi":h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?(h.itemName||"Kahve hakkı kullanıldı"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Kahve hakkı iade edildi"):h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>İşlem sonrası: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" öpücük":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
-          <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Üyeliği Sil</button>
-          <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Detayı Kapat</button>
+          <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BALANCE ACTIVITY</div>
+          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Öpücük borçlandı 💋":h.type==="kiss_refund"?"Öpücük iade edildi":h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?(h.itemName||"Kahve hakkı kullanıldı"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Kahve hakkı iade edildi"):h.type==="refund"?"Product iadesi":(h.itemName||"Product alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" öpücük":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
+          <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Delete Membership</button>
+          <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Close Details</button>
         </div>)}
       </div>
-      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>Yeni LURK+ Üyesi</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Üyelik türünü seçip başlangıç değerini gir.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Üye adı *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Üyelik türü *</label><select value={memberType} onChange={e=>setMemberType(e.target.value)} style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}><option value="balance">Bakiye üyeliği (TL)</option><option value="coffee">Kahve hakkı üyeliği</option></select><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>{memberType==="coffee"?"Başlangıç kahve hakkı *":"Başlangıç bakiyesi (TL) *"}</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode={memberType==="coffee"?"numeric":"decimal"} placeholder={memberType==="coffee"?"Örn. 6":"Örn. 500"} onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Üyeyi Kaydet</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button></Modal>}
+      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>New LURK+ Member</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Choose a membership type and enter the starting value.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Member name *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Membership type *</label><select value={memberType} onChange={e=>setMemberType(e.target.value)} style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}><option value="balance">Balance membership (TRY)</option><option value="coffee">Coffee credit membership</option></select><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>{memberType==="coffee"?"Başlangıç kahve hakkı *":"Başlangıç bakiyesi (TL) *"}</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode={memberType==="coffee"?"numeric":"decimal"} placeholder={memberType==="coffee"?"Örn. 6":"Örn. 500"} onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Member</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button></Modal>}
     </div>
   );
 }
@@ -2071,22 +2071,22 @@ function LurkPlusPortal({token}){
   const kissCount=(member?.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0);
   const isBeliz=member?.name?.trim().toLocaleLowerCase("tr-TR")==="beliz";
   const memberValue=isBeliz?kissCount+" ÖPÜCÜK":member?.membershipType==="coffee"?(Number(member.coffeeCredits)||0)+" KAHVE HAKKI":member?.unlimited?"SINIRSIZ":fm(Number(member?.balance)||0);
-  const memberLabel=isBeliz?"BİRİKEN ÖPÜCÜK BORCUN":member?.membershipType==="coffee"?"KALAN KAHVE HAKKIN":member?.unlimited?"ÜYELİK HAKKIN":"GÜNCEL BAKİYEN";
+  const memberLabel=isBeliz?"BİRİKEN ÖPÜCÜK BORCUN":member?.membershipType==="coffee"?"REMAINING KAHVE HAKKIN":member?.unlimited?"ÜYELİK HAKKIN":"GÜNCEL BAKİYEN";
   return <div style={{minHeight:"100vh",background:"#080A08",color:"#F1EEE6",fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",padding:"30px 16px 50px"}}>
     <div style={{maxWidth:520,margin:"0 auto"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
         <div style={{fontSize:29,fontWeight:900,letterSpacing:"-1.5px"}}>LURK<span style={{color:"#79A66A"}}>+</span></div>
         <div style={{fontSize:9,letterSpacing:"3px",lineHeight:1.8,textAlign:"right",color:"#B7B4A9"}}>MEMBER<br/>ACCESS</div>
       </div>
-      <div style={{fontSize:11,color:"#8E9289",letterSpacing:"1.4px",marginBottom:27}}>ÜYELİK BİLGİLERİN VE KULLANIM GEÇMİŞİN</div>
-      {loading?<div style={{padding:28,textAlign:"center",color:"#A0A0A0"}}>Hesabın yükleniyor…</div>:error?<div style={{padding:22,background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:15}}>
-        <div style={{fontSize:17,fontWeight:800,marginBottom:7}}>Bağlantı açılamadı</div><div style={{fontSize:12,color:"#A0A0A0",lineHeight:1.6}}>Bu bağlantı geçersiz, iptal edilmiş veya geçici olarak erişilemiyor. LURK ekibiyle iletişime geçebilirsin.</div><button onClick={refresh} style={{marginTop:16,padding:11,width:"100%",border:0,borderRadius:9,background:"#789B68",color:"#101510",fontWeight:800}}>Yeniden Dene</button>
+      <div style={{fontSize:11,color:"#8E9289",letterSpacing:"1.4px",marginBottom:27}}>YOUR MEMBERSHIP DETAILS AND USAGE HISTORY</div>
+      {loading?<div style={{padding:28,textAlign:"center",color:"#A0A0A0"}}>Loading your account…</div>:error?<div style={{padding:22,background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:15}}>
+        <div style={{fontSize:17,fontWeight:800,marginBottom:7}}>Unable to open link</div><div style={{fontSize:12,color:"#A0A0A0",lineHeight:1.6}}>This link is invalid, revoked, or temporarily unavailable. Please contact the LURK team.</div><button onClick={refresh} style={{marginTop:16,padding:11,width:"100%",border:0,borderRadius:9,background:"#789B68",color:"#101510",fontWeight:800}}>Newden Dene</button>
       </div>:member&&<>
         <div style={{position:"relative",overflow:"hidden",background:"linear-gradient(145deg,#F1EBDD 0%,#E4DAC5 55%,#D8CDB6 100%)",color:ink,borderRadius:22,padding:"22px 20px 17px",marginBottom:21,boxShadow:"0 18px 42px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.8)",border:"1px solid rgba(255,255,255,.55)"}}>
           <div style={{position:"absolute",inset:0,opacity:.16,pointerEvents:"none",backgroundImage:"repeating-linear-gradient(0deg,rgba(65,52,32,.12) 0px,rgba(65,52,32,.12) 1px,transparent 1px,transparent 4px)"}}/>
           <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center",paddingBottom:12,borderBottom:"1px solid rgba(35,35,27,.35)"}}>
             <div style={{fontSize:25,fontWeight:950,letterSpacing:"-1.3px"}}>LURK<span style={{color:"#668B55"}}>+</span></div>
-            <div style={{fontSize:9,fontWeight:800,letterSpacing:"1.8px"}}>ÜYELİK KARTI</div>
+            <div style={{fontSize:9,fontWeight:800,letterSpacing:"1.8px"}}>MEMBERSHIP CARD</div>
           </div>
           <div style={{position:"relative",paddingTop:17}}>
             <div style={{fontSize:19,fontWeight:750,letterSpacing:"-.4px"}}>{member.name}</div>
@@ -2104,16 +2104,16 @@ function LurkPlusPortal({token}){
         </div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:11,gap:10}}>
           <div style={{fontSize:15,fontWeight:850,letterSpacing:"-.3px"}}>Hesap hareketleri</div>
-          <button onClick={refresh} style={{padding:"9px 13px",background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.15)",borderRadius:11,color:"#F1EEE6",fontSize:11,cursor:"pointer"}}>↻ Güncelle</button>
+          <button onClick={refresh} style={{padding:"9px 13px",background:"rgba(255,255,255,.045)",border:"1px solid rgba(255,255,255,.15)",borderRadius:11,color:"#F1EEE6",fontSize:11,cursor:"pointer"}}>↻ Refresh</button>
         </div>
         <div style={{background:"linear-gradient(145deg,#111411,#0D100D)",border:"1px solid rgba(255,255,255,.12)",borderRadius:16,padding:"0 14px"}}>
-          {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>Henüz bakiye hareketi yok.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
+          {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>No balance activity yet.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
             <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#91B783",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?(h.itemName||"Kahve hakkı kullanıldı"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Kahve hakkı iade edildi"):h.type==="refund"?"Ürün iadesi":(h.itemName||"Ürün alımı")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>İşlem sonrası: {isBeliz?(Number(h.balanceAfter)||0)+" öpücük":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(Number(h.balanceAfter)||0)}</div></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?(h.itemName||"Kahve hakkı kullanıldı"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Kahve hakkı iade edildi"):h.type==="refund"?"Product iadesi":(h.itemName||"Product alımı")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" öpücük":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(Number(h.balanceAfter)||0)}</div></div>
             <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF6B61":"#34C759",whiteSpace:"nowrap"}}>{isBeliz?(h.type==="kiss_debt"?"+":"−")+h.amount+" öpücük":member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
           </div>)}
         </div>
-        <div style={{fontSize:10,color:"#777",textAlign:"center",marginTop:16,lineHeight:1.5}}>Bilgiler LURK sistemindeki güncel kayıttan alınır.</div>
+        <div style={{fontSize:10,color:"#777",textAlign:"center",marginTop:16,lineHeight:1.5}}>Information is retrieved from the latest record in the LURK system.</div>
       </>}
     </div>
   </div>;
@@ -2240,7 +2240,7 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
   function openCustomerEdit(customer){setCustomerEditing(customer);setCustomerName(customer.name||"");setCustomerError("");}
   function saveCustomerEdit(){
     const clean=customerName.trim();
-    if(!clean){setCustomerError("Müşteri adı zorunlu.");return;}
+    if(!clean){setCustomerError("Customer adı zorunlu.");return;}
     const duplicate=customers.find(c=>c.id!==customerEditing?.id&&c.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));
     if(duplicate){setCustomerError("Bu isimde başka bir müşteri zaten kayıtlı.");return;}
     setCustomers(prev=>prev.map(c=>c.id===customerEditing.id?{...c,name:clean,updatedAt:new Date().toISOString()}:c));
@@ -2295,8 +2295,8 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
         </button>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Customer Management</div>
         <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:14,marginBottom:18}}>
-          <div style={{fontSize:13,color:T.textSub,marginBottom:10}}>{customers.length} kayıtlı müşteri · Bilgilerini buradan düzenleyebilirsin.</div>
-          {customers.length===0?<div style={{fontSize:12,color:T.textDim,padding:"8px 0"}}>Henüz kayıtlı müşteri yok.</div>:customers.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(customer=><div key={customer.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderTop:"1px solid rgba(255,255,255,.06)"}}>
+          <div style={{fontSize:13,color:T.textSub,marginBottom:10}}>{customers.length} registered customers · You can edit their details here.</div>
+          {customers.length===0?<div style={{fontSize:12,color:T.textDim,padding:"8px 0"}}>No registered customers yet.</div>:customers.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(customer=><div key={customer.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderTop:"1px solid rgba(255,255,255,.06)"}}>
             <div style={{width:32,height:32,borderRadius:10,background:"rgba(52,199,89,.12)",color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:13,flexShrink:0}}>{(customer.name||"?").trim().charAt(0).toLocaleUpperCase("tr-TR")}</div>
             <div style={{flex:1,minWidth:0,fontSize:13,fontWeight:700,color:T.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{customer.name}</div>
             <button onClick={()=>openCustomerEdit(customer)} style={{padding:"7px 11px",background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Edit</button>
@@ -2305,12 +2305,12 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Data & Backup</div>
         <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:15}}>
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Data Backup</div>
-          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:13}}>Masa durumları, adisyonlar, raporlar, müşteriler, veresiye defteri ve menüyü tek bir JSON dosyasına indirir. Bu işlem mevcut kayıtları değiştirmez.</div>
-          <button onClick={exportBackup} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>↓ Yedek İndir</button>
+          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:13}}>Downloads table statuses, orders, reports, customers, the tab ledger, and the menu in a single JSON file. This does not change existing records.</div>
+          <button onClick={exportBackup} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>↓ Download Backup</button>
           {backupMsg&&<div role="status" style={{fontSize:12,color:T.accentL,marginTop:10}}>{backupMsg}</div>}
           <div style={{height:1,background:"rgba(255,255,255,.08)",margin:"16px 0"}}/>
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Restore Backup</div>
-          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:12}}>LURK POS tarafından oluşturulmuş, biçimi doğrulanmış JSON yedeği seç. Geri yükleme mevcut kayıtların yerine geçer.</div>
+          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:12}}>Select a valid JSON backup created by LURK POS. Restoring it will replace the existing records.</div>
           <label style={{display:"block",boxSizing:"border-box",padding:13,textAlign:"center",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,color:T.text,fontWeight:750,cursor:"pointer"}}>
             {importBusy?"Yedek okunuyor…":"↑ Yedek Dosyası Seç"}
             <input type="file" accept=".json,application/json" disabled={importBusy} onChange={e=>inspectBackup(e.target.files?.[0])} style={{display:"none"}}/>
@@ -2318,19 +2318,19 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
           {importMsg&&<div role="status" style={{fontSize:12,lineHeight:1.5,color:pendingImport?T.warn:T.textSub,marginTop:10}}>{importMsg}</div>}
           {pendingImport&&<div style={{marginTop:10}}>
             <div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Seçilen dosya: <b style={{color:T.text}}>{pendingImport.filename}</b></div>
-            <button onClick={applyBackup} style={{width:"100%",padding:13,background:T.danger,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Mevcut Verileri Değiştir ve Geri Yükle</button>
-            <button onClick={()=>{setPendingImport(null);setImportMsg("Geri yükleme iptal edildi.");}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer",marginTop:4}}>İptal</button>
+            <button onClick={applyBackup} style={{width:"100%",padding:13,background:T.danger,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Replace Existing Data and Restore</button>
+            <button onClick={()=>{setPendingImport(null);setImportMsg("Geri yükleme iptal edildi.");}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer",marginTop:4}}>Cancel</button>
           </div>}
-          <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Önce mevcut verilerin yedeğini indir. Yedek hassas müşteri ve satış bilgileri içerebilir.</div>
+          <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Download a backup of your current data first. Backups may contain sensitive customer and sales information.</div>
         </div>
       </div>
       {customerEditing&&<Modal>
-        <div style={{fontSize:17,fontWeight:800,color:T.text,marginBottom:14}}>Müşteriyi Düzenle</div>
+        <div style={{fontSize:17,fontWeight:800,color:T.text,marginBottom:14}}>Customeryi Edit</div>
         <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad</label>
-        <input autoFocus value={customerName} onChange={e=>{setCustomerName(e.target.value);setCustomerError("");}} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,boxSizing:"border-box"}}/>
+        <input autoFocus value={customerName} onChange={e=>{setCustomerName(e.target.value);setCustomerError("");}} placeholder="Customer adı" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,boxSizing:"border-box"}}/>
         {customerError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{customerError}</div>}
-        <button onClick={saveCustomerEdit} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
-        <button onClick={()=>setCustomerEditing(null)} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
+        <button onClick={saveCustomerEdit} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Changes</button>
+        <button onClick={()=>setCustomerEditing(null)} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button>
       </Modal>}
     </div>
   );
@@ -2355,8 +2355,8 @@ function Confirm({title,msg,onOk,onCancel}){
           {msg&&<div style={{fontSize:13,color:T.textSub}}>{msg}</div>}
         </div>
         <div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex"}}>
-          <button onClick={onCancel} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.08)",color:T.text,fontSize:16,cursor:"pointer"}}>İptal</button>
-          <button onClick={onOk} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:16,cursor:"pointer"}}>Onayla</button>
+          <button onClick={onCancel} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.08)",color:T.text,fontSize:16,cursor:"pointer"}}>Cancel</button>
+          <button onClick={onOk} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:16,cursor:"pointer"}}>Confirm</button>
         </div>
       </div>
     </div>
