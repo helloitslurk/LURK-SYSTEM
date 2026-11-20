@@ -2164,88 +2164,70 @@ function CustomersScreen({orders,customers,setCustomers,setV,msg,balancesVisible
 }
 /* ─── MENU ─── */
 function MenuScreen({menu,setMenu,setV}){
-  const[showAdd,setShowAdd]=useState(false);
-  const[editingItem,setEditingItem]=useState(null);
-  const[newName,setNewName]=useState("");
-  const[newPrice,setNewPrice]=useState("");
-  const[newCat,setNewCat]=useState("Kahve");
-  const[addError,setAddError]=useState("");
-  const cats=[...new Set(menu.map(m=>m.cat))];
-  function openEdit(item){setEditingItem(item);setNewName(item.name);setNewPrice(String(item.price));setNewCat(item.cat);setAddError("");}
-  function deleteItem(){
-    if(!editingItem)return;
-    const confirmed=window.confirm("“"+editingItem.name+"” ürününü menüden kalıcı olarak silmek istiyor musun? Geçmiş satış kayıtları korunur.");
-    if(!confirmed)return;
-    setMenu(prev=>prev.filter(m=>m.id!==editingItem.id));
-    setEditingItem(null);setNewName("");setNewPrice("");setAddError("");
-  }
-  function saveEdit(){
-    const validated=validateMenuItemInput(newName,newPrice);
-    if(validated.error){setAddError(validated.error);return;}
-    setMenu(prev=>prev.map(m=>m.id===editingItem.id?{...m,name:validated.name,price:validated.price}:m));
-    setEditingItem(null);setNewName("");setNewPrice("");setAddError("");
-  }
-
-  return(
-    <div className="lurk-screen lurk-menu-screen ds-menu">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
-        <button onClick={()=>setV("settings")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Menü</div>
-        <button onClick={()=>setShowAdd(true)} style={{background:"#34C759",border:"none",borderRadius:20,padding:"6px 14px",fontSize:12,cursor:"pointer",color:"#fff",fontWeight:700}}>+ Ürün</button>
-      </div>
-      <div style={{padding:"14px"}}>
-        {cats.map(cat=>(
-          <div key={cat} style={{marginBottom:20}}>
-            <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>{cat}</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-              {menu.filter(m=>m.cat===cat).map(item=>(
-                <div key={item.id} style={{background:item.on?T.bg2:"rgba(255,255,255,0.02)",border:"0.5px solid "+(item.on?"rgba(255,255,255,0.09)":"rgba(255,255,255,0.04)"),borderRadius:12,padding:"12px",position:"relative"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
-                    <div style={{fontSize:11,fontWeight:700,color:item.on?T.text:T.textDim,lineHeight:1.3,flex:1,paddingRight:6,textDecoration:item.on?"none":"line-through"}}>{item.name}</div>
-                    <div onClick={()=>setMenu(p=>p.map(m=>m.id===item.id?{...m,on:!m.on}:m))} style={{width:28,height:16,borderRadius:8,background:item.on?"#34C759":"#333",position:"relative",cursor:"pointer",flexShrink:0}}>
-                      <div style={{width:12,height:12,borderRadius:"50%",background:"#fff",position:"absolute",top:2,left:item.on?14:2,transition:"left 0.15s"}}/>
-                    </div>
-                  </div>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
-                    <div style={{fontSize:13,fontWeight:800,color:item.on?T.accentL:T.textDim}}>{fm(item.price)}</div>
-                    <button onClick={()=>openEdit(item)} style={{padding:"6px 9px",background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer"}}>Edit</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-      {editingItem&&(
-        <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Ürünü Düzenle</div>
-          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ürün adı</label>
-          <input autoFocus value={newName} onChange={e=>{setNewName(e.target.value);setAddError("");}} placeholder="Ürün adı" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Fiyat (TL)</label>
-          <input type="number" min="0.01" step="0.01" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} placeholder="Fiyat (TL)" style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={saveEdit} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer"}}>Değişiklikleri Kaydet</button>
-          <button onClick={deleteItem} style={{width:"100%",padding:"12px",background:"rgba(255,69,58,.10)",border:"1px solid rgba(255,69,58,.28)",borderRadius:10,color:"#FF6B63",fontSize:13,fontWeight:700,cursor:"pointer",marginTop:10}}>Ürünü Sil</button>
-          <button onClick={()=>{setEditingItem(null);setAddError("");}} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
-        </Modal>
-      )}
-      {showAdd&&(
-        <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:16,color:T.text}}>Yeni Ürün</div>
-          <input placeholder="Ürün adı" value={newName} onChange={e=>setNewName(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <input type="number" min="0.01" step="0.01" placeholder="Fiyat (TL)" value={newPrice} onChange={e=>{setNewPrice(e.target.value);setAddError("");}} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:10,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:16,background:"#1A1A1A",color:T.text}}>
-            {cats.map(c=><option key={c} value={c}>{c}</option>)}
-          </select>
-          {addError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{addError}</div>}
-          <button onClick={()=>{const validated=validateMenuItemInput(newName,newPrice);if(validated.error){setAddError(validated.error);return;}setMenu(p=>[...p,{id:Date.now(),name:validated.name,price:validated.price,cat:newCat,on:true}]);setNewName("");setNewPrice("");setAddError("");setShowAdd(false);}} style={{width:"100%",padding:"14px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.3)"}}>Ekle</button>
-          <button onClick={()=>setShowAdd(false)} style={{width:"100%",padding:"10px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>İptal</button>
-        </Modal>
-      )}
-    </div>
-  );
+ const [showForm,setShowForm]=useState(false);
+ const [editing,setEditing]=useState(null);
+ const [name,setName]=useState("");
+ const [price,setPrice]=useState("");
+ const [category,setCategory]=useState("Coffee");
+ const [image,setImage]=useState("");
+ const [description,setDescription]=useState("");
+ const [error,setError]=useState("");
+ const [dragProduct,setDragProduct]=useState(null);
+ const [dragCategory,setDragCategory]=useState(null);
+ const cats=[...new Set(menu.map(m=>m.cat))];
+ function openNew(){setEditing(null);setName("");setPrice("");setCategory(cats[0]||"Coffee");setImage("");setDescription("");setError("");setShowForm(true);}
+ function openEdit(item){setEditing(item);setName(item.name);setPrice(String(item.price));setCategory(item.cat);setImage(item.image||"");setDescription(item.description||"");setError("");setShowForm(true);}
+ function save(){
+  const valid=validateMenuItemInput(name,price);if(valid.error){setError(valid.error);return;}
+  const fields={name:valid.name,price:valid.price,cat:category,image:image.trim(),description:description.trim(),on:true};
+  if(editing)setMenu(prev=>prev.map(m=>m.id===editing.id?{...m,...fields}:m));
+  else setMenu(prev=>[...prev,{id:Date.now(),...fields}]);
+  setShowForm(false);setEditing(null);setName("");setPrice("");setImage("");setDescription("");setError("");
+ }
+ function archive(){
+  if(!editing)return;
+  setMenu(prev=>prev.map(m=>m.id===editing.id?{...m,on:false}:m));
+  setShowForm(false);setEditing(null);
+ }
+ function reorderProduct(targetId){
+  if(!dragProduct||dragProduct===targetId)return;
+  setMenu(prev=>{const next=prev.slice();const from=next.findIndex(m=>m.id===dragProduct),to=next.findIndex(m=>m.id===targetId);if(from<0||to<0||next[from].cat!==next[to].cat)return prev;const [item]=next.splice(from,1);next.splice(to,0,item);return next;});
+  setDragProduct(null);
+ }
+ function reorderCategory(target){
+  if(!dragCategory||dragCategory===target)return;
+  setMenu(prev=>{const ordered=[...new Set(prev.map(m=>m.cat))];const from=ordered.indexOf(dragCategory),to=ordered.indexOf(target);if(from<0||to<0)return prev;const [cat]=ordered.splice(from,1);ordered.splice(to,0,cat);return ordered.flatMap(c=>prev.filter(m=>m.cat===c));});
+  setDragCategory(null);
+ }
+ function addCategory(){const raw=window.prompt("New category name:");if(!raw||!raw.trim())return;const clean=raw.trim();if(cats.some(c=>c.toLowerCase()===clean.toLowerCase()))return;setMenu(prev=>[...prev,{id:Date.now(),name:"New Product",price:0,cat:clean,on:false,archived:true}]);}
+ return <div className="lurk-screen lurk-menu-screen lurk-menu-v2">
+  <header className="ds-page-head"><div><div className="ds-eyebrow">LURK / CATALOG MANAGEMENT</div><h1>Menu & Products</h1></div><div className="ds-head-actions"><button className="ds-button" onClick={addCategory}>＋ Add Category</button><button className="ds-button ds-primary-button" onClick={openNew}>＋ Add Product</button></div></header>
+  <p className="lurk-menu-hint">Drag products to reorder them. Drag category headers to change category order.</p>
+  {cats.map(cat=><section key={cat} className="lurk-menu-category" draggable onDragStart={()=>setDragCategory(cat)} onDragOver={e=>e.preventDefault()} onDrop={()=>reorderCategory(cat)}>
+   <header><h2>{cat}</h2><span>{menu.filter(m=>m.cat===cat).length} products</span></header>
+   <div className="lurk-menu-product-grid">
+    {menu.filter(m=>m.cat===cat).map(item=><article key={item.id} className={"lurk-menu-product "+(!item.on?"is-archived":"")} draggable onDragStart={()=>setDragProduct(item.id)} onDragOver={e=>e.preventDefault()} onDrop={()=>reorderProduct(item.id)}>
+     <button className="lurk-menu-product-main" onClick={()=>openEdit(item)}>
+      {item.image?<img src={item.image} alt="" loading="lazy"/>:<span className="lurk-menu-product-placeholder">☕</span>}
+      <b>{item.name}</b><small>{item.description||cat}</small><strong>{fm(item.price)}</strong>
+     </button>
+     <div className="lurk-menu-product-actions"><span>{item.on?"Available":"Archived"}</span><button onClick={()=>setMenu(prev=>prev.map(m=>m.id===item.id?{...m,on:!m.on}:m))}>{item.on?"Archive":"Restore"}</button></div>
+    </article>)}
+   </div>
+  </section>)}
+  {showForm&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">PRODUCT CATALOG</div><h2>{editing?"Edit Product":"Add Product"}</h2>
+   <label>Product Name</label><input autoFocus value={name} onChange={e=>{setName(e.target.value);setError("");}} placeholder="Product name"/>
+   <label>Category</label><select value={category} onChange={e=>setCategory(e.target.value)}>{cats.filter(c=>menu.some(m=>m.cat===c&&m.price>0)).map(c=><option key={c} value={c}>{c}</option>)}</select>
+   <label>Price (TL)</label><input type="number" min="0.01" step="0.01" value={price} onChange={e=>{setPrice(e.target.value);setError("");}} placeholder="0.00"/>
+   <label>Product Image URL</label><input value={image} onChange={e=>setImage(e.target.value)} placeholder="https://..."/>
+   <label>Description (Optional)</label><textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Short product description" rows={2}/>
+   {error&&<div role="alert" className="lurk-form-error">{error}</div>}
+   <button className="ds-button ds-primary-button" onClick={save}>{editing?"Save Changes":"Add Product"}</button>
+   {editing&&<button className="lurk-archive-action" onClick={archive}>Archive Product</button>}
+   <button className="lurk-modal-cancel" onClick={()=>setShowForm(false)}>Cancel</button>
+  </div></Modal>}
+ </div>;
 }
-
 /* ─── SETTINGS ─── */
 function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,logs,customers,creditEntries,menu,day,personalDebts,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay,setPersonalDebts}){
   const [backupMsg,setBackupMsg]=useState("");
