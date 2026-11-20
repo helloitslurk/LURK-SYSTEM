@@ -3,6 +3,7 @@ name: LURK build check
 on:
   push:
     branches:
+      - main
       - lurk-update-test
   pull_request:
     branches:
