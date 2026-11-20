@@ -2083,7 +2083,14 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const [method,setMethod]=useState("cash");
   const [note,setNote]=useState("");
   const [ledgerSubmitting,setLedgerSubmitting]=useState(false);
-  const ledgerSubmittingRef=useRef(false);  const currentMonth=thisMonth();
+  const ledgerSubmittingRef=useRef(false);
+  useEffect(()=>{
+    if(!ledgerAction){
+      ledgerSubmittingRef.current=false;
+      setLedgerSubmitting(false);
+    }
+  },[ledgerAction]);
+  const currentMonth=thisMonth();
   const [selectedMonth,setSelectedMonth]=useState(currentMonth);
   const orderMonths=orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)&&m<=currentMonth);
   const firstMonth=orderMonths.length?orderMonths.reduce((earliest,m)=>m<earliest?m:earliest,currentMonth):currentMonth;
@@ -2174,6 +2181,12 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
       {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:12,color:T.textSub,margin:"5px 0 16px"}}>Müşteri özeti</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}><div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.16)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>{monthLabel(selectedMonth)} harcaması</div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(monthlyTotalFor(detail))}</div></div><div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>Toplam harcama</div><div style={{fontSize:18,fontWeight:850,color:T.text}}>{fm(totalFor(detail))}</div></div></div>
         <div style={{fontWeight:750,fontSize:13,color:T.text,marginBottom:8}}>Son adisyonlar</div>
+        <div style={{fontSize:11,color:T.textSub,marginBottom:5}}>Açık bakiye</div>
+        <div style={{fontSize:23,fontWeight:850,color:balanceFor(detail)>0?T.danger:T.accentL,marginBottom:13}}>{fm(balanceFor(detail))}</div>
+        <div style={{display:"flex",gap:8,marginBottom:18}}>
+          <button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setAmount("");setNote("");setLedgerAction("debt");}} style={{flex:1,padding:11,background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontWeight:750,cursor:"pointer"}}>＋ Borç Ekle</button>
+          <button disabled={balanceFor(detail)<=0} onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setAmount("");setNote("");setMethod("cash");setLedgerAction("payment");}} style={{flex:1,padding:11,background:balanceFor(detail)>0?T.accent:T.bg3,color:balanceFor(detail)>0?"#fff":T.textDim,border:0,borderRadius:10,fontWeight:750,cursor:balanceFor(detail)>0?"pointer":"not-allowed"}}>₺ Tahsilat Al</button>
+        </div>
         {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,6).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
         <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
       </Modal>}
