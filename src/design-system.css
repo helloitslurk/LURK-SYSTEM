@@ -1395,3 +1395,30 @@ body{position:static!important}
 .lurk-weekly-bar-wrap small{font-size:10px!important;font-weight:800!important;color:#7c8578!important;padding:3px 0 1px}
 .lurk-chart-tooltip{bottom:calc(100% + 8px)!important;padding:9px 11px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:10px!important;background:#20271f!important;box-shadow:0 10px 24px rgba(20,30,20,.2)!important}
 @media(max-width:700px){.lurk-chart-card{padding:17px 14px 14px!important}.lurk-weekly-chart{height:190px!important;gap:6px!important;padding-left:2px!important;padding-right:2px!important}.lurk-chart-value{font-size:8px}}
+
+
+/* Fit the complete desktop dashboard within one viewport */
+@media(min-width:1000px) and (min-height:620px){
+  .lurk-dashboard-v2{
+    box-sizing:border-box!important;height:calc(100dvh - 70px)!important;
+    min-height:0!important;max-height:calc(100dvh - 70px)!important;
+    overflow:hidden!important;padding:12px clamp(18px,2.2vw,32px) 14px!important;
+    display:grid!important;grid-template-rows:auto auto minmax(0,1fr)!important;gap:12px!important;
+  }
+  .lurk-dashboard-heading{margin:0!important;min-height:58px}
+  .lurk-dashboard-heading h1{font-size:27px!important}
+  .lurk-kpi-grid{gap:12px!important;margin:0!important}
+  .lurk-kpi-card{min-height:112px!important;padding:16px 19px!important}
+  .lurk-kpi-card strong{font-size:clamp(23px,2.1vw,31px)!important}
+  .lurk-dashboard-lower{min-height:0!important;grid-template-columns:minmax(0,1.8fr) minmax(220px,.8fr)!important;grid-template-rows:minmax(0,1fr) auto!important;gap:12px!important}
+  .lurk-chart-card,.lurk-weekly-total{min-height:0!important;height:100%!important;box-sizing:border-box!important}
+  .lurk-chart-card{padding:15px 18px 12px!important}
+  .lurk-chart-card h2{margin-bottom:10px!important}
+  .lurk-weekly-chart{height:clamp(125px,20vh,185px)!important;padding-top:10px!important}
+  .lurk-weekly-total{display:flex!important;flex-direction:column!important;justify-content:space-between!important;padding:18px!important}
+  .lurk-weekly-total strong{font-size:clamp(24px,2.2vw,32px)!important}
+  .lurk-ops-card{grid-column:1/-1!important;min-height:72px!important;padding:12px 16px!important;display:grid!important;grid-template-columns:minmax(150px,.7fr) minmax(220px,1.4fr) minmax(190px,1fr)!important;align-items:center!important;gap:14px!important}
+  .lurk-ops-card>div:first-child{gap:12px}
+  .lurk-ops-card>button{min-height:38px!important}
+  .lurk-day-action{margin:0!important;padding:0!important;border:0!important}
+}
