@@ -831,6 +831,34 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
 .personal-finance form{background:#fff!important;border:1px solid #e3eae3!important;box-shadow:0 8px 30px #1720190b}
 @media(max-width:700px){.lurk-screen:not(.ref-dashboard){min-height:calc(100dvh - 68px)!important;padding-bottom:calc(82px + env(safe-area-inset-bottom))!important}.lurk-tables-screen>div:nth-child(2),.lurk-reports-screen>div:nth-child(2),.lurk-customers-screen>div:nth-child(2),.lurk-menu-screen>div:nth-child(2),.lurk-settings-screen>div:nth-child(2){padding-left:12px!important;padding-right:12px!important}.lurk-order-screen{height:100dvh!important;max-height:100dvh!important}.lurk-order-screen>div:first-child{padding-top:max(10px,env(safe-area-inset-top))!important}}
 
+
+/* FINAL HOME GRID FIX: the shared outer sidebar already owns navigation.
+   Remove the retired dashboard's second, empty sidebar column. */
+.lurk-app:has(.ref-dashboard) .ref-dashboard{
+  display:block!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  width:100%!important;max-width:none!important;
+}
+.lurk-app:has(.ref-dashboard) .ref-main{
+  width:100%!important;max-width:none!important;min-width:0!important;
+  margin:0!important;border-radius:0!important;
+}
+.lurk-app:has(.ref-dashboard) .ref-content{
+  width:100%!important;max-width:1600px!important;
+  margin:0 auto!important;min-width:0!important;
+}
+@media(min-width:1000px){
+ .lurk-app:has(.ref-dashboard){height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important}
+ .lurk-app:has(.ref-dashboard) .ref-dashboard{height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important}
+ .lurk-app:has(.ref-dashboard) .ref-main{height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important}
+ .lurk-app:has(.ref-dashboard) .ref-content{height:auto!important;overflow:visible!important;padding:24px clamp(22px,3vw,44px) 40px!important}
+}
+@media(max-width:999px){
+ .lurk-app:has(.ref-dashboard){height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important}
+ .lurk-app:has(.ref-dashboard) .ref-dashboard{height:auto!important;min-height:100dvh!important;max-height:none!important;overflow:visible!important}
+ .lurk-app:has(.ref-dashboard) .ref-main{height:auto!important;min-height:100dvh!important;overflow:visible!important}
+ .lurk-app:has(.ref-dashboard) .ref-content{height:auto!important;overflow:visible!important;padding:18px 14px 30px!important}
+}
 `}</style>
       {view!=="order"&&<aside className="lurk-shell-sidebar" aria-label="Ana navigasyon">
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
