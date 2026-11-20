@@ -1338,3 +1338,29 @@ body{position:static!important}
 .lurk-table-actions-menu{z-index:5}
 .lurk-table-actions-popover{z-index:1000}
 .lurk-table-actions-popover button{font-family:inherit;font-size:12px;font-weight:600}
+
+
+/* Compact order lines with contextual quantity actions */
+.lurk-order-compact-line{
+  position:relative!important;display:block!important;
+  padding:9px 11px!important;margin:0 0 6px!important;
+  border:1px solid #e7ebe3!important;border-radius:11px!important;
+  background:#fff!important;color:#252b22!important;
+  box-shadow:0 1px 3px rgba(20,30,20,.035)!important;
+}
+.lurk-order-line-main{display:flex;align-items:center;gap:10px;min-width:0}
+.lurk-order-line-copy{flex:1;min-width:0}
+.lurk-order-line-name{font-size:12px;font-weight:800;line-height:1.25;color:#252b22;overflow-wrap:anywhere}
+.lurk-order-line-meta{font-size:9px;font-weight:600;color:#92998f;margin-top:3px}
+.lurk-order-line-price{display:flex;flex-direction:column;align-items:flex-end;gap:1px;white-space:nowrap}
+.lurk-order-line-price span{font-size:9px;color:#858d81}
+.lurk-order-line-price strong{font-size:12px;font-weight:850;color:#709d1b}
+.lurk-order-line-price small{font-size:9px;color:#c34b48}
+.lurk-order-line-menu{position:relative;flex:0 0 auto;z-index:4}
+.lurk-order-line-more{width:31px;height:31px;border:1px solid #e2e8de;border-radius:9px;background:#fff;color:#52634a;font-size:19px;line-height:1;cursor:pointer}
+.lurk-order-line-more:hover{background:#f3f7ef;border-color:#cbdcc4}
+.lurk-order-line-popover{position:absolute;right:0;top:calc(100% + 6px);z-index:1000;width:190px;padding:5px;background:#fff;border:1px solid #e3e9df;border-radius:11px;box-shadow:0 12px 30px rgba(24,37,29,.17)}
+.lurk-order-line-popover button{display:flex;align-items:center;width:100%;min-height:35px;padding:8px 9px;border:0;border-radius:7px;background:transparent;color:#263228;text-align:left;font-family:inherit;font-size:11px;font-weight:650;cursor:pointer}
+.lurk-order-line-popover button:hover{background:#f3f7ef}
+.lurk-order-line-qty{margin-top:5px;font-size:9px;color:#92998f}
+.lurk-order-line-qty b{color:#47543d;font-size:10px}
