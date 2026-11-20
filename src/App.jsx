@@ -487,7 +487,7 @@ function POSApp({onLock}){
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:T.bg,fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",padding:24,color:T.text}}>
       <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(255,255,255,.1)",borderRadius:18,padding:24}}>
         <div style={{fontSize:26,marginBottom:12}}>⚠</div>
-        <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Data yüklenemedi</div>
+        <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Data could not be loaded</div>
         <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>The app was paused to prevent overwriting records because the Supabase connection failed. Check your internet connection and try again.</div>
         <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Newden Dene</button>
       </div>
@@ -518,7 +518,7 @@ function POSApp({onLock}){
           <span className={"lurk-pos-status "+(day?"is-open":"is-closed")} style={{display:"inline-flex",alignItems:"center",justifyContent:"center",minWidth:36,padding:"5px 8px",borderRadius:7,fontSize:10,fontWeight:850,letterSpacing:".14em",color:day?"#137a3c":"#c33c3c",background:day?"#e1f5e8":"#fde9e8",boxShadow:day?"inset 0 0 0 1px #bce8cb":"inset 0 0 0 1px #f5c8c5"}} title={day?"Business day started":"Business day closed"}>POS</span>
           <button className="lurk-sidebar-toggle" onClick={()=>setSidebarCollapsed(v=>!v)} aria-label={sidebarCollapsed?"Expand menu":"Collapse menu"} title={sidebarCollapsed?"Expand menu":"Collapse menu"}>{sidebarCollapsed?"»":"«"}</button>
         </div>
-        <div className="lurk-shell-section-label">{sidebarCollapsed?"MENÜ":"WORKSPACE"}</div>
+        <div className="lurk-shell-section-label">{sidebarCollapsed?"MENU":"WORKSPACE"}</div>
         <nav className="lurk-shell-nav">
           {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
@@ -1327,7 +1327,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
           <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} REVENUE</div>
           <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
-          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan orderslar{selectedMonth===thisMonth()?" + current items on open tables":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
+          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan orderslar{selectedMonth===thisMonth()?" + current items on open tables":""}{manualCashRevenue>0?" + manual cash collections":""}</div>
         </div>
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
           <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>ANNUAL REVENUE</div>
@@ -1425,7 +1425,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
     const headers=["Date","Table","Customer","Subtotal","Discount","Total","Cash","Card","On account","Payment Method","Productler"];
     const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Cash + Card":o.pt==="cash"?"Cash":o.pt==="card"?"Card":o.pt==="credit"?"On account":"Other",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
     const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),e.type==="manual_cash"?"Manual cash collection":"On account defteri",e.customerName||"",0,0,0,((e.type==="payment"&&e.method==="cash")||e.type==="manual_cash")?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Debt record":e.type==="manual_cash"?"Manual · Cash":"Collection · "+(e.method==="cash"?"Cash":e.method==="card"?"Card":"Other"),e.note||""]);
-    const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Cash":"Card"),""];}));
+    const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ balance top-up",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Cash":"Card"),""];}));
     const csv=[headers,...rows,...ledgerRows,...topupRows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
     const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lurk-satis-"+sel+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -1481,7 +1481,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
         ))}
       </div>
 
-      {/* Günler */}
+      {/* Days */}
       <div style={{padding:"0 14px 14px"}}>
         <div style={{fontSize:10,fontWeight:850,color:"#B9B7A9",textTransform:"uppercase",letterSpacing:"2px",marginBottom:12}}>DAILY RECORDS</div>
         {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>No records for this month</div>}
@@ -1534,10 +1534,10 @@ const PERSONAL_DEBT_SEED=[
   {id:"ucuncuoglu",group:"Business",name:"Ucuncuoglu Real Estate",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Installment",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
   {id:"heyz",group:"Business",name:"Heyz Installment",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Installment",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
   {id:"fiddle",group:"Personal",name:"Taha Fiddle III Installment",total:55000,note:"20.000 TL paid · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Previously paid"}],installments:[]},
-  {id:"fiddle-tyres",group:"Personal",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Front indicator light",total:200,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-inspection",group:"Personal",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-insurance",group:"Personal",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-tyres",group:"Personal",name:"Fiddle III · Lastikler",total:4000,note:"Estimated",payments:[],installments:[]},
+  {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Front indicator light",total:200,note:"Estimated",payments:[],installments:[]},
+  {id:"fiddle-inspection",group:"Personal",name:"Fiddle III · Muayene",total:1500,note:"Estimated",payments:[],installments:[]},
+  {id:"fiddle-insurance",group:"Personal",name:"Fiddle III · Sigorta",total:3500,note:"Estimated",payments:[],installments:[]},
   {id:"yildiz",group:"Personal",name:"Yildiz Driving School",total:13000,payments:[],installments:[]},
   {id:"a2",group:"Personal",name:"A2 Exam Fee",total:2000,payments:[],installments:[]},
   {id:"beliz-plan",group:"Personal",name:"Beliz Installment",total:72000,note:"Installment 1 completed; TRY 3,000 paid toward installment 2, TRY 5,000 remaining.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. installment previously paid for installment ",installmentId:"beliz-2"}],installments:[
@@ -1588,7 +1588,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         group:"Installments"
       } :lurkIds.has(d.id)?{...d,category:"lurk",folder:"LURK"}:fiddleIds.has(d.id)?{
         ...d,
-        name:d.id==="fiddle"?"Fiddle III Installment":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Exam Fee",
+        name:d.id==="fiddle"?"Fiddle III Installment":d.id==="fiddle-tyres"?"Tires":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Insurance":d.id==="fiddle-inspection"?"Vehicle Inspection":d.id==="yildiz"?"Driving School":"Driving License · A2 Exam Fee",
         category:"fiddle",
         folder:"FIDDLE III"
       }:d));
@@ -1843,7 +1843,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:T.textDim,fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
         <div style={{display:"flex",gap:5}}>{["All","Personal","Business"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
-        <button onClick={()=>{const name=window.prompt("Debt / payment name:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total amount (TRY):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Personal veya Business","Personal")==="Business"?"Business":"Personal";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
+        <button onClick={()=>{const name=window.prompt("Debt / payment name:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total amount (TRY):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Group: Personal or Business","Personal")==="Business"?"Business":"Personal";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
       </div>
       <div className="lurk-personal-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8}}>
         {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className="lurk-personal-debt-row pf-debt-card" style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:13,padding:"12px 14px",minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
@@ -2002,13 +2002,13 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     const amount=Math.floor(Number(balance));
     if(!clean){msg("Enter a member name.");return;}
     if(!balance.trim()||!Number.isFinite(amount)||amount<0||(memberType==="balance"&&!Number.isFinite(Number(balance)))){msg(memberType==="coffee"?"Enter a valid number of coffee credits.":"Enter a valid balance.");return;}
-    if(members.some(m=>m.name.trim().toLocaleLowerCase("en-US")===clean.toLocaleLowerCase("en-US"))){msg("Bu isimde LURK+ üyesi zaten var.");return;}
+    if(members.some(m=>m.name.trim().toLocaleLowerCase("en-US")===clean.toLocaleLowerCase("en-US"))){msg("A LURK+ member with this name already exists.");return;}
     const createdAt=new Date().toISOString();
     const entry=memberType==="coffee"
       ?{id:uid(),type:"credit_topup",date:createdAt,amount,balanceAfter:amount,note:"Starting coffee credits"}
       :{id:uid(),type:"topup",date:createdAt,amount:Number(balance),balanceAfter:Number(balance),note:"Starting balance"};
     setMembers(prev=>[{id:uid(),name:clean,membershipType:memberType,balance:memberType==="balance"?Math.round(Number(balance)*100)/100:0,coffeeCredits:memberType==="coffee"?amount:0,createdAt,history:[entry]},...prev]);
-    setName("");setBalance("");setMemberType("balance");setShowForm(false);msg("LURK+ üyesi eklendi.");
+    setName("");setBalance("");setMemberType("balance");setShowForm(false);msg("LURK+ member added.");
   }
   function addMemberBalance(member){
      const raw=window.prompt(member.name+" balance to add (TRY):");
@@ -2017,8 +2017,8 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
      if(!Number.isFinite(amount)||amount<=0){msg("Enter a valid balance amount.");return;}
      const method=window.confirm("Was the payment made by card?\n\nOK: Card\nCancel: Cash")?"card":"cash";
      const date=new Date().toISOString();
-     setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,method,balanceAfter:nextBalance,note:"Balance yüklendi"}]};}));
-     msg(member.name+" · "+fm(amount)+" bakiye "+(method==="card"?"kartla":"nakit")+" yüklendi.");
+     setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,method,balanceAfter:nextBalance,note:"Balance topped up"}]};}));
+     msg(member.name+" · "+fm(amount)+" balance added via "+(method==="card"?"card":"cash")+".");
    }
    function addCoffeeCredits(member){
     const raw=window.prompt(member.name+" coffee credits to add:");
@@ -2043,7 +2043,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
       setSelectedMemberId(null);
       setIssuedLinks(prev=>{const next={...prev};delete next[member.id];return next;});
       msg(member.name+" LURK+ listesinden silindi.");
-    }catch(e){msg(e.message||"Üye silinemedi.");}
+    }catch(e){msg(e.message||"Could not delete member.");}
     finally{setLinkBusy(false);}
   }
   return(
@@ -2068,12 +2068,12 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
             <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Revoke All Links</button>
           </div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BALANCE ACTIVITY</div>
-          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Balance yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("en-US")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("en-US")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
+          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Balance yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" refunded":"Coffee credit refunded"):h.type==="refund"?"Product refund":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("en-US")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("en-US")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
           <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Delete Membership</button>
           <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Close Details</button>
         </div>)}
       </div>
-      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>New LURK+ Member</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Choose a membership type and enter the starting value.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Member name *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Membership type *</label><select value={memberType} onChange={e=>setMemberType(e.target.value)} style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}><option value="balance">Balance membership (TRY)</option><option value="coffee">Coffee credit membership</option></select><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>{memberType==="coffee"?"Starting coffee credits *":"Starting balance (TL) *"}</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode={memberType==="coffee"?"numeric":"decimal"} placeholder={memberType==="coffee"?"e.g. 6":"e.g. 500"} onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Member</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button></Modal>}
+      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>New LURK+ Member</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Choose a membership type and enter the starting value.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Member name *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Full name" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Membership type *</label><select value={memberType} onChange={e=>setMemberType(e.target.value)} style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}><option value="balance">Balance membership (TRY)</option><option value="coffee">Coffee credit membership</option></select><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>{memberType==="coffee"?"Starting coffee credits *":"Starting balance (TL) *"}</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode={memberType==="coffee"?"numeric":"decimal"} placeholder={memberType==="coffee"?"e.g. 6":"e.g. 500"} onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Member</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button></Modal>}
     </div>
   );
 }
@@ -2138,7 +2138,7 @@ function LurkPlusPortal({token}){
         <div style={{background:"linear-gradient(145deg,#111411,#0D100D)",border:"1px solid rgba(255,255,255,.12)",borderRadius:16,padding:"0 14px"}}>
           {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>No balance activity yet.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
             <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#91B783",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Balance yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" kisses":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(Number(h.balanceAfter)||0)}</div></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Balance yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" refunded":"Coffee credit refunded"):h.type==="refund"?"Product refund":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" kisses":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(Number(h.balanceAfter)||0)}</div></div>
             <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF6B61":"#34C759",whiteSpace:"nowrap"}}>{isBeliz?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
           </div>)}
         </div>
@@ -2348,7 +2348,7 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
           {pendingImport&&<div style={{marginTop:10}}>
             <div style={{fontSize:12,color:T.textSub,marginBottom:10}}>Selected file: <b style={{color:T.text}}>{pendingImport.filename}</b></div>
             <button onClick={applyBackup} style={{width:"100%",padding:13,background:T.danger,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Replace Existing Data and Restore</button>
-            <button onClick={()=>{setPendingImport(null);setImportMsg("Geri yükleme iptal edildi.");}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer",marginTop:4}}>Cancel</button>
+            <button onClick={()=>{setPendingImport(null);setImportMsg("Restore cancelled.");}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer",marginTop:4}}>Cancel</button>
           </div>}
           <div style={{fontSize:11,color:T.textDim,marginTop:10}}>Download a backup of your current data first. Backups may contain sensitive customer and sales information.</div>
         </div>
