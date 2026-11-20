@@ -331,3 +331,100 @@
  .ds-sales-report>div:nth-child(3)>div>div:nth-child(2){grid-column:2;grid-row:1/3;text-align:right}
  .ds-sales-report>div:nth-child(4){padding-top:0!important}
 }
+
+
+/* Stage 6: customer, loyalty, menu, finance and settings surfaces */
+.ds-customers,.ds-lurk-plus,.ds-menu,.ds-settings,.ds-personal-finance{
+  min-height:100vh;background:var(--lurk-bg)!important;color:var(--lurk-ink)!important;
+  font-family:'Manrope','Inter',sans-serif;padding-bottom:38px
+}
+.ds-customers>div:first-child,.ds-lurk-plus>div:first-child,.ds-menu>div:first-child,.ds-settings>div:first-child{
+  position:sticky;top:0;z-index:12;background:rgba(255,255,255,.94)!important;
+  color:var(--lurk-ink)!important;border-bottom:1px solid var(--lurk-border)!important;
+  box-shadow:0 4px 18px rgba(24,37,29,.035);backdrop-filter:blur(18px)!important;
+  padding:18px clamp(16px,3vw,34px)!important
+}
+.ds-customers>div:first-child :where(div,button),.ds-lurk-plus>div:first-child :where(div,button),
+.ds-menu>div:first-child :where(div,button),.ds-settings>div:first-child :where(div,button){color:var(--lurk-ink)!important}
+.ds-customers>div:first-child button:last-child,.ds-lurk-plus>div:first-child button:last-child,
+.ds-menu>div:first-child button:last-child{background:var(--lurk-green)!important;color:#fff!important;border:0!important;border-radius:12px!important;padding:11px 16px!important}
+.ds-customers>div:nth-child(2),.ds-lurk-plus>div:nth-child(2),.ds-menu>div:nth-child(2),.ds-settings>div:nth-child(2){
+  max-width:1120px;margin:0 auto;padding:24px clamp(15px,3vw,32px)!important
+}
+.ds-customers input,.ds-customers select,.ds-lurk-plus input,.ds-lurk-plus select,
+.ds-menu input,.ds-menu select,.ds-settings input,.ds-personal-finance input,.ds-personal-finance select{
+  background:#fff!important;color:var(--lurk-ink)!important;border:1px solid var(--lurk-border-strong)!important;
+  border-radius:12px!important;box-shadow:none!important;outline-color:#A8CFAE
+}
+.ds-customers input::placeholder,.ds-lurk-plus input::placeholder,.ds-menu input::placeholder{color:var(--lurk-subtle)!important}
+.ds-customers>div:nth-child(2)>div:first-child>div,
+.ds-lurk-plus>div:nth-child(2)>div:first-child,
+.ds-settings>div:nth-child(2)>div:where(:nth-child(2),:nth-child(4)),
+.ds-menu>div:nth-child(2)>div>div:where(:nth-child(2),:nth-child(3)){
+  background:#fff!important;border:1px solid var(--lurk-border)!important;border-radius:18px!important;
+  box-shadow:var(--lurk-shadow-card)!important;color:var(--lurk-ink)!important
+}
+.ds-customers>div:nth-child(2)>div:nth-child(3){color:var(--lurk-muted)!important}
+.ds-customers>div:nth-child(2)>div:nth-child(4)>button{
+  background:#fff!important;border:1px solid var(--lurk-border)!important;border-radius:15px!important;
+  box-shadow:var(--lurk-shadow-card);color:var(--lurk-ink)!important;padding:14px!important;
+  transition:transform .18s var(--lurk-motion),box-shadow .18s var(--lurk-motion)
+}
+.ds-customers>div:nth-child(2)>div:nth-child(4)>button :where(div,span){color:inherit}
+.ds-customers>div:nth-child(2)>div:nth-child(4)>button>div:nth-child(2)>div:first-child{color:var(--lurk-ink)!important}
+.ds-customers>div:nth-child(2)>div:nth-child(4)>button>div:nth-child(2)>div:last-child{color:var(--lurk-muted)!important}
+.ds-customers>div:nth-child(2)>div:nth-child(4)>button>div:nth-child(3)>div:first-child{color:var(--lurk-green-deep)!important}
+.ds-customers :where(label){color:var(--lurk-muted)!important}
+.ds-lurk-plus>div:nth-child(2)>div{
+  background:#fff!important;border:1px solid var(--lurk-border)!important;border-radius:18px!important;
+  color:var(--lurk-ink)!important;box-shadow:var(--lurk-shadow-card)
+}
+.ds-lurk-plus>div:nth-child(2) :where(div,span,b,strong){color:var(--lurk-ink)}
+.ds-lurk-plus>div:nth-child(2) button{border-radius:11px!important}
+.ds-lurk-plus>div:nth-child(2) button[style*="52,199,89"],.ds-lurk-plus>div:nth-child(2) button[style*="#34C759"]{
+  background:var(--lurk-green)!important;color:#fff!important;border-color:transparent!important
+}
+.ds-menu>div:nth-child(2)>div{margin-bottom:24px!important}
+.ds-menu>div:nth-child(2)>div>div:first-child{
+  color:var(--lurk-muted)!important;font-size:10px!important;letter-spacing:.13em!important;
+  font-weight:850!important;margin-bottom:11px!important
+}
+.ds-menu>div:nth-child(2)>div>div:nth-child(2)>div{
+  background:#fff!important;border:1px solid var(--lurk-border)!important;border-radius:15px!important;
+  box-shadow:var(--lurk-shadow-card)!important;color:var(--lurk-ink)!important;padding:14px!important
+}
+.ds-menu>div:nth-child(2)>div>div:nth-child(2)>div :where(div,span,input){color:var(--lurk-ink)}
+.ds-menu>div:nth-child(2)>div>div:nth-child(2)>div button{border-radius:10px!important}
+.ds-settings>div:nth-child(2)>div:first-child,.ds-settings>div:nth-child(2)>div:nth-child(3){
+  color:var(--lurk-muted)!important;font-size:10px!important;letter-spacing:.12em!important;font-weight:850!important
+}
+.ds-settings>div:nth-child(2)>button,.ds-settings>div:nth-child(2)>div:nth-child(2),
+.ds-settings>div:nth-child(2)>div:nth-child(4){
+  background:#fff!important;border:1px solid var(--lurk-border)!important;border-radius:17px!important;
+  box-shadow:var(--lurk-shadow-card)!important;color:var(--lurk-ink)!important
+}
+.ds-settings>div:nth-child(2)>button{margin-bottom:18px!important}
+.ds-settings>div:nth-child(2)>div:nth-child(2) :where(div,span,b),
+.ds-settings>div:nth-child(2)>div:nth-child(4) :where(div,span,b){color:var(--lurk-ink)}
+.ds-settings button{transition:transform .16s var(--lurk-motion),box-shadow .16s var(--lurk-motion)}
+.ds-personal-finance{padding-top:0!important}
+.ds-personal-finance>div:not(.lurk-modal-backdrop){
+  color:var(--lurk-ink)
+}
+.ds-personal-finance :where(button){border-radius:11px!important}
+.ds-personal-finance :where(input,select){min-height:42px;box-sizing:border-box}
+.ds-personal-finance .lurk-modal-panel{background:#fff!important;color:var(--lurk-ink)!important}
+.ds-personal-finance .lurk-modal-panel :where(div,label){color:var(--lurk-ink)}
+.ds-personal-finance .lurk-modal-panel input{background:#fff!important;color:var(--lurk-ink)!important}
+@media(hover:hover) and (pointer:fine){
+ .ds-customers>div:nth-child(2)>div:nth-child(4)>button:hover,
+ .ds-menu>div:nth-child(2)>div>div:nth-child(2)>div:hover,
+ .ds-settings>div:nth-child(2)>button:hover{transform:translateY(-2px);box-shadow:var(--lurk-shadow-hover)!important;border-color:var(--lurk-border-strong)!important}
+}
+@media(max-width:700px){
+ .ds-customers,.ds-lurk-plus,.ds-menu,.ds-settings{padding-bottom:100px}
+ .ds-customers>div:nth-child(2),.ds-lurk-plus>div:nth-child(2),.ds-menu>div:nth-child(2),.ds-settings>div:nth-child(2){padding:16px 13px!important}
+ .ds-customers>div:nth-child(2)>div:nth-child(4)>button{padding:11px!important}
+ .ds-menu>div:nth-child(2)>div>div:nth-child(2){grid-template-columns:1fr!important}
+ .ds-settings>div:nth-child(2)>div:nth-child(2),.ds-settings>div:nth-child(2)>div:nth-child(4){padding:13px!important}
+}
