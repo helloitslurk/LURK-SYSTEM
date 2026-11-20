@@ -515,7 +515,7 @@ function POSApp({onLock}){
       <aside className="lurk-shell-sidebar" aria-label="Ana gezinme">
         <div className="lurk-shell-brand">
           <img src="/lurk-logo.svg" alt="LURK."/>
-          <span className={"lurk-pos-status "+(day?"is-open":"is-closed")} title={day?"Business day started":"Business day closed"}>POS</span>
+          <span className={"lurk-pos-status "+(day?"is-open":"is-closed")} style={{display:"inline-flex",alignItems:"center",justifyContent:"center",minWidth:36,padding:"5px 8px",borderRadius:7,fontSize:10,fontWeight:850,letterSpacing:".14em",color:day?"#137a3c":"#c33c3c",background:day?"#e1f5e8":"#fde9e8",boxShadow:day?"inset 0 0 0 1px #bce8cb":"inset 0 0 0 1px #f5c8c5"}} title={day?"Business day started":"Business day closed"}>POS</span>
           <button className="lurk-sidebar-toggle" onClick={()=>setSidebarCollapsed(v=>!v)} aria-label={sidebarCollapsed?"Expand menu":"Collapse menu"} title={sidebarCollapsed?"Expand menu":"Collapse menu"}>{sidebarCollapsed?"»":"«"}</button>
         </div>
         <div className="lurk-shell-section-label">{sidebarCollapsed?"MENÜ":"WORKSPACE"}</div>
