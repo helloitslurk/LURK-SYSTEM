@@ -293,7 +293,7 @@ function POSApp({onLock}){
       const lp=await sbGet("lurk_plus_members",[]);
       const pd=await sbGet("lurk_personal_debts",null).catch(()=>null);
       setTbl(Array.isArray(t)?t:[]);
-      setOrd(Array.isArray(o)?o:[]);
+      setOrd((Array.isArray(o)?o:[]).slice().reverse().map((order,index)=>({...order,orderNumber:Number(order.orderNumber)||index+1})).reverse());
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
       setLurkPlusMembers(Array.isArray(lp)?lp:[]);
@@ -460,8 +460,11 @@ function POSApp({onLock}){
     }
     const allPayments=normalized;
     const orderId=uid();
+    let storedNext=1;try{storedNext=Number(localStorage.getItem("lurk_next_order_number"))||1;}catch(e){}
+    const orderNumber=Math.max(storedNext,orders.reduce((max,o)=>Math.max(max,Number(o.orderNumber)||0),0)+1);
+    try{localStorage.setItem("lurk_next_order_number",String(orderNumber+1));}catch(e){}
     const methodSet=[...new Set(allPayments.map(p=>p.method))];
-    const order={id:orderId,date:tod(),total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
+    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
     paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
@@ -1304,6 +1307,69 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
       </div>
     </div>
   );
+}
+
+/* ─── SALES HISTORY ─── */
+function SalesHistoryScreen({orders,setOrders,balancesVisible,setV}){
+ const [query,setQuery]=useState("");
+ const [payment,setPayment]=useState("all");
+ const [status,setStatus]=useState("all");
+ const [table,setTable]=useState("all");
+ const [from,setFrom]=useState("");
+ const [to,setTo]=useState("");
+ const [selected,setSelected]=useState(null);
+ const money=v=>balancesVisible?fm(v):"••••••";
+ const rows=orders.filter(o=>!o.partialPayment).filter(o=>{
+  const no=String(o.orderNumber||"").padStart(5,"0");
+  const method=o.pt==="split"?"split":o.pt==="cash"?"cash":o.pt==="card"?"card":o.pt||"other";
+  const state=o.status==="cancelled"?"cancelled":"completed";
+  return (!query||no.includes(query.replace(/^#/,""))||String(o.orderNumber||"").includes(query.replace(/^#/,""))) &&
+   (payment==="all"||method===payment) && (status==="all"||state===status) &&
+   (table==="all"||(o.table||"")===table) && (!from||o.date>=from) && (!to||o.date<=to);
+ }).sort((a,b)=>(Number(b.orderNumber)||0)-(Number(a.orderNumber)||0)||String(b.date||"").localeCompare(String(a.date||"")));
+ const completed=orders.filter(o=>!o.partialPayment&&o.status!=="cancelled");
+ const revenue=completed.reduce((sum,o)=>sum+(Number(o.total)||0),0);
+ const tableNames=[...new Set(orders.map(o=>o.table).filter(Boolean))].sort();
+ function exportCsv(){
+  const data=[["Order ID","Date","Table","Customer","Items","Discount","Total","Payment Method","Status"],...rows.map(o=>["#"+String(o.orderNumber||"").padStart(5,"0"),o.date,o.table||"",o.g||"",(o.items||[]).map(i=>i.name+" x"+i.qty).join(" | "),Number(o.discount)||0,Number(o.total)||0,o.pt||"",o.status==="cancelled"?"Cancelled":"Completed"])];
+  const csv=data.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
+  const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="lurk-sales-history-"+tod()+".csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }
+ function cancelOrder(order){
+  if(!window.confirm("Cancel order #"+String(order.orderNumber||"").padStart(5,"0")+"? It will remain in Sales History and be excluded from revenue."))return;
+  setOrders(prev=>prev.map(o=>o.id===order.id?{...o,status:"cancelled",cancelledAt:new Date().toISOString()}:o));
+  setSelected(null);
+ }
+ return <div className="lurk-screen lurk-sales-history">
+  <header className="ds-page-head"><div><div className="ds-eyebrow">LURK / SALES</div><h1>Sales History</h1></div><button className="ds-button ds-primary-button" onClick={exportCsv}>↓ Export CSV</button></header>
+  <div className="lurk-history-kpis">
+   <div className="lurk-kpi-card lurk-kpi-primary"><span>Total Orders</span><strong>{completed.length.toLocaleString("en-US")}</strong><small>Completed orders</small></div>
+   <div className="lurk-kpi-card lurk-kpi-primary"><span>Total Revenue</span><strong>{money(revenue)}</strong><small>Cancelled orders excluded</small></div>
+   <div className="lurk-kpi-card"><span>Cancelled</span><strong>{orders.filter(o=>!o.partialPayment&&o.status==="cancelled").length}</strong><small>Order records retained</small></div>
+  </div>
+  <div className="lurk-history-filters">
+   <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Order ID"/>
+   <select value={payment} onChange={e=>setPayment(e.target.value)}><option value="all">All Payments</option><option value="cash">Cash</option><option value="card">Credit Card</option><option value="split">Split</option></select>
+   <select value={status} onChange={e=>setStatus(e.target.value)}><option value="all">All Statuses</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+   <select value={table} onChange={e=>setTable(e.target.value)}><option value="all">All Tables</option>{tableNames.map(t=><option key={t}>{t}</option>)}</select>
+   <input aria-label="From date" type="date" value={from} onChange={e=>setFrom(e.target.value)}/>
+   <input aria-label="To date" type="date" value={to} onChange={e=>setTo(e.target.value)}/>
+  </div>
+  <div className="lurk-history-table-wrap">
+   <table className="lurk-history-table"><thead><tr><th>ORDER ID</th><th>DATE</th><th>TABLE</th><th>ITEMS</th><th>PAYMENT</th><th>TOTAL</th><th>STATUS</th></tr></thead><tbody>
+    {rows.map(o=><tr key={o.id} onClick={()=>setSelected(o)}><td><b>#{String(o.orderNumber||"").padStart(5,"0")}</b></td><td>{o.date}</td><td>{o.table||"—"}</td><td>{(o.items||[]).reduce((n,i)=>n+(Number(i.qty)||0),0)}</td><td>{o.pt==="split"?"Split":o.pt==="cash"?"Cash":o.pt==="card"?"Credit Card":o.pt||"Other"}</td><td><strong>{money(o.total)}</strong></td><td><span className={"lurk-status "+(o.status==="cancelled"?"occupied":"available")}>{o.status==="cancelled"?"Cancelled":"Completed"}</span></td></tr>)}
+   </tbody></table>
+   {!rows.length&&<div className="lurk-table-empty"><h3>No sales found</h3><p>Try changing your filters.</p></div>}
+  </div>
+  {selected&&<Modal><div className="lurk-history-detail"><div className="lurk-eyebrow">ORDER DETAILS</div><h2>#{String(selected.orderNumber||"").padStart(5,"0")}</h2><p>{selected.date} · {selected.table||"No table"} · {selected.g||"Guest"}</p>
+   <div className="lurk-history-detail-lines">{(selected.items||[]).map((item,i)=><div key={item.oid||i}><span>{item.name} × {item.qty}</span><b>{money((Number(item.price)||0)*(Number(item.qty)||0))}</b></div>)}</div>
+   <div className="lurk-history-detail-total"><span>Total</span><strong>{money(selected.total)}</strong></div>
+   <button className="ds-button ds-primary-button" onClick={()=>window.print()}>Print Receipt</button>
+   {selected.status!=="cancelled"&&<button className="lurk-cancel-order" onClick={()=>cancelOrder(selected)}>Cancel Order</button>}
+   <button className="lurk-modal-cancel" onClick={()=>setSelected(null)}>Close</button>
+  </div></Modal>}
+ </div>;
 }
 
 /* ─── REPORTS ─── */
