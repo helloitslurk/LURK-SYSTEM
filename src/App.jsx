@@ -712,6 +712,9 @@ function POSApp({onLock}){
         @media(max-width:999px){.home-topbar{height:70px;padding:0 20px}.home-dashboard{width:calc(100% - 36px);padding-top:25px}.home-overview{grid-template-columns:1fr 1fr}.home-page-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-app .editorial-home{padding-bottom:76px!important}}
         @media(max-width:650px){.home-brand img{width:105px}.home-brand span{display:none}.home-top-actions{gap:7px}.home-clock{font-size:9px}.home-clock b{font-size:12px}.home-top-actions button{width:31px;height:31px}.home-dashboard{width:calc(100% - 28px);padding-top:22px}.home-intro h1{font-size:35px}.home-overview{grid-template-columns:1fr;gap:9px}.home-revenue{padding:21px 19px;min-height:0}.home-revenue-number{font-size:47px;margin:18px 0 7px}.home-revenue-details{margin-top:17px}.home-revenue-details b{font-size:11px}.home-month{min-height:0;padding:18px}.home-month>strong{margin:13px 0 10px}.home-bars{height:55px}.home-workspace{margin-top:24px}.home-page-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.home-page-grid>button{min-height:125px;padding:14px}.month-feature>b{font-size:21px}.home-day-action{gap:10px}.home-day-action button{padding:12px 11px;white-space:nowrap}}
       
+/* Global horizontal-overflow guard; vertical scrolling remains owned by each screen */
+html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
+.lurk-app{width:100%;max-width:100vw;overflow-x:hidden}
 /* Reference dashboard: viewport-safe layout overrides */
 .lurk-app:has(.ref-dashboard){height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;padding-bottom:0!important}
 .lurk-app:has(.ref-dashboard) .lurk-bottom-nav{display:none!important}
@@ -771,7 +774,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
  const daysInMonth=new Date(clock.getFullYear(),clock.getMonth()+1,0).getDate();
  const days=Array.from({length:daysInMonth},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),i+1),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return{key,day:i+1,total:orders.filter(o=>o.date===key&&!o.partialPayment).reduce((v,o)=>v+(Number(o.total)||0),0)+(key===today?openRevenue:0)};});
  const monthTotal=days.reduce((v,d)=>v+d.total,0),maxDay=Math.max(1,...days.map(d=>d.total));
- const nav=[{k:"home",icon:"▦",label:"Genel Bakış"},{k:"tables",icon:"▤",label:"Masalar",meta:openTables.length+" açık"},{k:"reports",icon:"◷",label:"Raporlar"},{k:"customers",icon:"♙",label:"Müşteriler"},{k:"lurkPlus",icon:"✳",label:"LURK+"},{k:"menu",icon:"☷",label:"Menü Yönetimi"}];
+ const nav=[{k:"home",icon:"▦",label:"Genel Bakış"},{k:"tables",icon:"▤",label:"Masalar",meta:openTables.length+" açık"},{k:"reports",icon:"◷",label:"Raporlar"},{k:"customers",icon:"♙",label:"Müşteriler"},{k:"lurkPlus",icon:"✳",label:"LURK+"},{k:"menu",icon:"☷",label:"Menü Yönetimi"},{k:"personal",icon:"₺",label:"Kişisel Finans"},{k:"settings",icon:"⚙",label:"Ayarlar"}];
  return <div className="lurk-screen lurk-home-screen ref-dashboard">
   <aside className="ref-sidebar">
    <div className="ref-side-brand"><div className="ref-brand-mark">L</div><div><b>LURK</b><small>COFFEE / POS</small></div></div>
