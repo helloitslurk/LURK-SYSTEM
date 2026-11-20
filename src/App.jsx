@@ -897,37 +897,39 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
 
 /* ─── HOME ─── */
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balancesVisible,setBalancesVisible}){
- const [clock,setClock]=useState(()=>new Date()),[hoveredDay,setHoveredDay]=useState(null),[searchQuery,setSearchQuery]=useState("");
- useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),1000);return()=>clearInterval(timer);},[]);
- const today=tod(),year=clock.getFullYear(),month=String(clock.getMonth()+1).padStart(2,"0"),monthKey=year+"-"+month;
- const monthOrders=orders.filter(o=>String(o.date||"").startsWith(monthKey)&&!o.partialPayment);
- const monthRevenue=monthOrders.reduce((sum,o)=>sum+(Number(o.total)||0),0);
- const monthCash=monthOrders.reduce((sum,o)=>sum+paymentAmount(o,"cash"),0),monthCard=monthOrders.reduce((sum,o)=>sum+paymentAmount(o,"card"),0);
- const openTables=tables.filter(t=>t.s==="o");
- const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(year,clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment).reduce((sum,o)=>sum+(Number(o.total)||0),0);return{key,date:d,amount,label:d.toLocaleDateString("tr-TR",{weekday:"short"}),dateLabel:d.toLocaleDateString("tr-TR",{day:"numeric",month:"short"})};});
- const maxDay=Math.max(1,...recentDays.map(d=>d.amount)),chartMax=Math.ceil(maxDay/1000)*1000||1000;
- const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment);
- const nav=[{k:"home",label:"Ana Sayfa"},{k:"tables",label:"Masalar"},{k:"reports",label:"Raporlar"},{k:"customers",label:"Müşteriler"},{k:"lurkPlus",label:"LURK+"},{k:"menu",label:"Menü"},{k:"personal",label:"Kişisel Finans"},{k:"settings",label:"Ayarlar"}];
- const goSearch=()=>{const q=searchQuery.trim().toLocaleLowerCase("tr-TR");if(!q)return;const found=nav.find(n=>n.label.toLocaleLowerCase("tr-TR").includes(q)||q.includes(n.label.toLocaleLowerCase("tr-TR")));if(found)setV(found.k);};
+ const [clock,setClock]=useState(()=>new Date());
+ const [hoveredDay,setHoveredDay]=useState(null);
+ useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),60000);return()=>clearInterval(timer);},[]);
+ const today=tod();
+ const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(Number(o.total)||0),0);return{key,date:d,amount,label:d.toLocaleDateString("en-US",{weekday:"short"}),dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
+ const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment&&o.status!=="cancelled");
+ const todayRevenue=todayOrders.reduce((sum,o)=>sum+(Number(o.total)||0),0);
+ const avgOrder=todayOrders.length?todayRevenue/todayOrders.length:0;
+ const maxDay=Math.max(1,...recentDays.map(d=>d.amount));
  const money=v=>balancesVisible?fm(v):"••••••";
- return <div className="lurk-screen lurk-home-screen ref-dashboard ds-home">
-  <main className="ref-main">
-   <header className="ref-topbar">
-    <div className="ref-heading-copy"><h1>Sales Overview</h1><p>LURK / BUSINESS DASHBOARD</p></div>
-    <div className="ref-search"><span>⌕</span><input value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} onKeyDown={e=>e.key==="Enter"&&goSearch()} placeholder="Sayfa ara..."/>{searchQuery&&<button onClick={()=>setSearchQuery("")} aria-label="Aramayı temizle">×</button>}</div>
-    <div className="ref-top-actions"><span className="ref-date">{clock.toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"})}</span><button aria-label="Tutarları gizle veya göster" onClick={()=>setBalancesVisible(v=>!v)}>{balancesVisible?"◉":"⊘"}</button><button aria-label="Ekranı kilitle" onClick={onLock}>⌑</button><b className="ref-avatar">L</b></div>
-   </header>
-   <div className="ref-content">
-    <div className="ds-home-title-row"><div><span className="ds-eyebrow">LURK COFFEE / OVERVIEW</span><h2>İşletme Özeti</h2><p>Satışların ve günlük operasyonun tek bakışta.</p></div><div className={"ds-home-day-pill "+(day?"is-open":"")}><i/>{day?"İşletme açık":"İşletme kapalı"}</div></div>
-    <section className="ds-home-grid">
-     <article className="ds-home-card ds-home-revenue"><div className="ds-home-card-head"><span>TOPLAM CİRO</span><b>•••</b></div><strong>{money(monthRevenue)} <small>TL</small></strong><div className="ds-home-revenue-foot"><span>Bu ay gerçekleşen satış</span><i>↗</i></div></article>
-     <article className="ds-home-card ds-home-transactions"><div className="ds-home-card-head"><span>TOPLAM ADİSYON</span><b>•••</b></div><strong>{balancesVisible?monthOrders.length:"••"}</strong><small>Bu ay tamamlanan adisyon</small><div className="ds-home-trend"><i>↗</i><span>Satış kayıtları</span></div></article>
-     <article className="ds-home-card ds-home-growth"><div className="ds-home-card-head"><div><span>GÜNLÜK SATIŞ</span><small>Son 7 günün performansı</small></div><div className="ds-home-period"><span>7 gün</span></div></div><div className="ds-home-growth-value">{money(recentDays.reduce((sum,d)=>sum+d.amount,0))}<small> TL</small></div><div className="ds-home-line-chart" role="img" aria-label="Son yedi günlük satış grafiği"><div className="ds-home-chart-grid"><i/><i/><i/></div><svg viewBox="0 0 520 150" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id="ds-home-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="7" stroke="#B7ED83" strokeWidth="2" opacity=".48"/></pattern><linearGradient id="ds-home-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#A8E85E" stopOpacity=".28"/><stop offset="100%" stopColor="#A8E85E" stopOpacity="0"/></linearGradient></defs><path d={recentDays.map((d,i)=>{const x=12+i*82.5,y=128-(d.amount/chartMax)*100;return(i?"L":"M")+x+" "+y}).join(" ")+" L507 145 L12 145 Z"} fill="url(#ds-home-fill)"/><path d={recentDays.map((d,i)=>{const x=12+i*82.5,y=128-(d.amount/chartMax)*100;return(i?"L":"M")+x+" "+y}).join(" ")} fill="none" stroke="#75C92E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>{recentDays.map((d,i)=>{const x=12+i*82.5,y=128-(d.amount/chartMax)*100;return <circle key={d.key} cx={x} cy={y} r={hoveredDay===d.key?6:3.5} fill="#fff" stroke="#75C92E" strokeWidth="2" onMouseEnter={()=>setHoveredDay(d.key)} onMouseLeave={()=>setHoveredDay(null)}/>})}</svg></div><div className="ds-home-chart-labels">{recentDays.map(d=><span key={d.key}>{d.label}</span>)}</div></article>
-     <article className="ds-home-card ds-home-sales"><div className="ds-home-card-head"><div><span>TAHSİLAT DAĞILIMI</span><small>Bu ay alınan ödemeler</small></div><b>•••</b></div><div className="ds-home-payment-total">{money(monthCash+monthCard)}<small> TL</small></div><div className="ds-home-payment-track"><i style={{width:(monthCash+monthCard)>0?(monthCash/(monthCash+monthCard)*100)+"%":"0%"}}/></div><div className="ds-home-payment-legend"><span><i className="cash"/>Nakit <b>{money(monthCash)}</b></span><span><i className="card"/>Kart <b>{money(monthCard)}</b></span></div></article>
-     <article className="ds-home-card ds-home-operations"><div className="ds-home-card-head"><div><span>GÜNLÜK OPERASYON</span><small>Bugünkü işletme durumu</small></div><b>•••</b></div><div className="ds-home-operation-row"><span>Bugünkü adisyon</span><strong>{todayOrders.length}</strong></div><div className="ds-home-operation-row"><span>Açık masa</span><strong>{openTables.length}</strong></div><div className="ds-home-operation-row"><span>Aktif masa hesabı</span><strong>{money(openTables.reduce((sum,t)=>sum+t.order.reduce((v,o)=>v+o.price*o.qty,0),0))}</strong></div><button className={"ds-home-day-action "+(day?"is-close":"")} onClick={day?closeDay:openDay}>{day?"GÜNÜ KAPAT":"GÜNÜ BAŞLAT"} <span>↗</span></button></article>
-    </section>
-   </div>
-  </main>
+ const total7=recentDays.reduce((sum,d)=>sum+d.amount,0);
+ const openTables=tables.filter(t=>t.s==="o");
+ return <div className="lurk-screen lurk-home-screen ds-home lurk-dashboard-v2">
+  <div className="lurk-dashboard-heading"><div><span className="lurk-eyebrow">LURK COFFEE</span><h1>Dashboard</h1></div><span className={"lurk-open-status "+(day?"is-open":"")}>{day?"Business Open":"Business Closed"}</span></div>
+  <section className="lurk-kpi-grid">
+   <article className="lurk-kpi-card lurk-kpi-primary"><span>Today's Revenue</span><strong>{money(todayRevenue)}</strong><small>{todayOrders.length} completed orders</small></article>
+   <article className="lurk-kpi-card"><span>Orders</span><strong>{todayOrders.length}</strong><small>Today</small></article>
+   <article className="lurk-kpi-card"><span>Average Order Value</span><strong>{money(avgOrder)}</strong><small>Today</small></article>
+  </section>
+  <section className="lurk-dashboard-lower">
+   <article className="lurk-chart-card">
+    <h2>SON 7 GÜN SATIŞ GRAFİĞİ</h2>
+    <div className="lurk-weekly-chart" role="group" aria-label="Sales over the last seven days">
+     {recentDays.map(d=><button key={d.key} className={"lurk-weekly-bar-wrap "+(hoveredDay===d.key?"is-active":"")} onMouseEnter={()=>setHoveredDay(d.key)} onMouseLeave={()=>setHoveredDay(null)} onFocus={()=>setHoveredDay(d.key)} onBlur={()=>setHoveredDay(null)} onClick={()=>setHoveredDay(hoveredDay===d.key?null:d.key)} aria-label={d.dateLabel+", "+money(d.amount)}>
+      {hoveredDay===d.key&&<span className="lurk-chart-tooltip"><b>{d.dateLabel}</b><strong>{money(d.amount)}</strong></span>}
+      <span className="lurk-weekly-bar" style={{height:Math.max(5,(d.amount/maxDay)*100)+"%"}}/>
+      <small>{d.label}</small>
+     </button>)}
+    </div>
+   </article>
+   <article className="lurk-kpi-card lurk-kpi-primary lurk-weekly-total"><span>Last 7 Days Revenue</span><strong>{money(total7)}</strong><small>Automatically updated</small></article>
+   <article className="lurk-ops-card"><div><span>Open Tables</span><strong>{openTables.length}</strong></div><button onClick={()=>setV("tables")}>View Tables <b>↗</b></button><div className="lurk-day-action"><span>{day?"Business is open":"Business is closed"}</span><button onClick={day?closeDay:openDay}>{day?"Close Day":"Start Day"}</button></div></article>
+  </section>
  </div>;
 }
 /* ─── TABLES ─── */
