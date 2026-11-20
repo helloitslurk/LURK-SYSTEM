@@ -951,140 +951,46 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
 }
 /* ─── TABLES ─── */
 function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomers,setV,setSel,msg}){
-  const[showNew,setShowNew]=useState(false);
-  const[selectedCustomerId,setSelectedCustomerId]=useState("");
-  const[customerQuery,setCustomerQuery]=useState("");
-  const[showAll,setShowAll]=useState(true);
-  const[delId,setDelId]=useState(null);
-  const nameRef=useRef(null);
-  const openT=tables.filter(t=>t.s==="o");
-  const displayed=showAll?tables:openT;
-  const openCount=openT.length;
-  const freeCount=tables.length-openCount;
-  const openRevenue=openT.reduce((sum,t)=>sum+t.order.reduce((n,o)=>n+o.price*o.qty,0),0);
-
-  function addTable(){
-    const selectedMember=selectedCustomerId.startsWith("lurk:")?lurkPlusMembers.find(m=>m.id===selectedCustomerId.slice(5)):null;
-    let selectedCustomer=customers.find(c=>c.id===selectedCustomerId);
-    const typedName=(nameRef.current?nameRef.current.value:"").trim();
-    const customerName=selectedMember?selectedMember.name:selectedCustomer?selectedCustomer.name:typedName;
-    if(!customerName){msg("Kayıtlı müşteri seç veya yeni müşteri adını gir.");return;}
-    if(!selectedMember&&!selectedCustomer){
-      const normalized=customerName.toLocaleLowerCase("tr-TR");
-      selectedCustomer=customers.find(c=>c.name.trim().toLocaleLowerCase("tr-TR")===normalized);
-      if(!selectedCustomer){
-        selectedCustomer={id:uid(),name:customerName,phone:"",createdAt:new Date().toISOString(),points:0,creditBalance:0};
-        setCustomers(prev=>prev.some(c=>c.name.trim().toLocaleLowerCase("tr-TR")===normalized)?prev:[selectedCustomer,...prev]);
-      }
-    }
-    const usedNumbers=tables.map(t=>/^Masa (\d+)$/.exec(t.lbl||"")).filter(Boolean).map(m=>Number(m[1]));
-    let number=1;
-    while(usedNumbers.includes(number))number++;
-    const id=uid();
-    setTbl(p=>[...p,{id,lbl:"Masa "+number,s:"free",order:[],g:customerName,customerId:selectedCustomer?.id||null,lurkPlusId:selectedMember?.id||null}]);
-    if(nameRef.current)nameRef.current.value="";
-    setSelectedCustomerId("");setCustomerQuery("");
-    setShowNew(false);
-    setSel(id);
-    setV("order");
-  }
-
-  return(
-    <div className="lurk-screen lurk-tables-screen ds-tables">
-      <header className="ds-page-head">
-        <div>
-          <div className="ds-eyebrow">LURK / FLOOR MANAGEMENT</div>
-          <h1>Masalar</h1>
-          <p>Salonun anlık durumu ve açık adisyonlar.</p>
-        </div>
-        <div className="ds-head-actions">
-          <button className={"ds-button ds-filter-button "+(!showAll?"is-selected":"")} onClick={()=>setShowAll(p=>!p)}>{showAll?"Açık masalar":"Tüm masalar"}</button>
-          <button className="ds-button ds-primary-button" onClick={()=>setShowNew(true)}><span>＋</span> Yeni adisyon</button>
-        </div>
-      </header>
-
-      <section className="ds-table-overview" aria-label="Masa özeti">
-        <div className="ds-overview-card ds-overview-highlight">
-          <span className="ds-overview-icon">◷</span>
-          <div><span>Açık adisyon</span><strong>{openCount}</strong></div>
-          <small>Şu an işlemde</small>
-        </div>
-        <div className="ds-overview-card">
-          <span className="ds-overview-icon">▦</span>
-          <div><span>Boş masa</span><strong>{freeCount}</strong></div>
-          <small>Yeni misafir için hazır</small>
-        </div>
-        <div className="ds-overview-card">
-          <span className="ds-overview-icon">₺</span>
-          <div><span>Açık hesap toplamı</span><strong>{fm(openRevenue)}</strong></div>
-          <small>{openCount} aktif adisyon</small>
-        </div>
-      </section>
-
-      <div className="ds-table-section-head">
-        <div><h2>{showAll?"Salon görünümü":"Açık adisyonlar"}</h2><span>{displayed.length} masa listeleniyor</span></div>
-        <div className="ds-table-legend"><span><i className="is-free"/> Boş</span><span><i className="is-open"/> Açık adisyon</span></div>
-      </div>
-
-      {displayed.length===0?(
-        <div className="ds-table-empty">
-          <div className="ds-empty-symbol">▦</div>
-          <h3>{showAll?"Henüz masa eklenmemiş":"Açık adisyon bulunmuyor"}</h3>
-          <p>{showAll?"İlk adisyonu oluşturarak salonu kullanmaya başlayabilirsin.":"Şu anda tüm masalar boş görünüyor."}</p>
-          {showAll&&<button className="ds-button ds-primary-button" onClick={()=>setShowNew(true)}>＋ İlk adisyonu oluştur</button>}
-        </div>
-      ):(
-        <div className="ds-table-grid">
-          {displayed.map(t=>{
-            const total=t.order.reduce((sum,o)=>sum+o.price*o.qty,0);
-            const isOpen=t.s==="o";
-            const count=t.order.reduce((sum,o)=>sum+o.qty,0);
-            return(
-              <article key={t.id} className={"ds-table-card "+(isOpen?"is-open":"is-free")}>
-                <div className="ds-table-card-top">
-                  <div className="ds-table-number">{t.lbl}</div>
-                  <button className="ds-table-delete" aria-label={t.lbl+" sil"} onClick={()=>setDelId(t.id)}>···</button>
-                </div>
-                <div className="ds-table-status"><i/>{isOpen?"Açık adisyon":"Boş masa"}</div>
-                <div className="ds-table-guest">{t.g||"Misafir bekleniyor"}</div>
-                <div className="ds-table-total">{isOpen?fm(total):"Henüz sipariş yok"}</div>
-                <div className="ds-table-card-bottom">
-                  <span>{isOpen?count+" ürün":"Masa hazır"}</span>
-                  <button className="ds-button ds-table-action" onClick={()=>{setSel(t.id);setV("order");}}>{isOpen?"Adisyona dön":"Masayı aç"} <span>↗</span></button>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      )}
-
-      {showNew&&(
-        <Modal>
-          <div className="ds-new-order-modal">
-            <div className="ds-eyebrow">YENİ KAYIT</div>
-            <div className="ds-modal-title">Yeni adisyon</div>
-            <p className="ds-modal-copy">Misafirini seç veya yeni bir isimle devam et.</p>
-            {(customers.length>0||lurkPlusMembers.length>0)&&<>
-              <label className="ds-modal-label">Müşteri veya LURK+ üyesi ara</label>
-              <input className="ds-input" value={customerQuery} onChange={e=>{setCustomerQuery(e.target.value);setSelectedCustomerId("");if(nameRef.current)nameRef.current.value="";}} placeholder="İsim yazmaya başla..."/>
-              <div className="ds-customer-results">
-                {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(c=><button key={"customer:"+c.id} className={selectedCustomerId===c.id?"is-selected":""} onClick={()=>{setSelectedCustomerId(c.id);setCustomerQuery(c.name);if(nameRef.current)nameRef.current.value="";}}><span>{c.name}</span><small>Müşteri</small></button>)}
-                {lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).map(m=><button key={"lurk:"+m.id} className={selectedCustomerId==="lurk:"+m.id?"is-selected":""} onClick={()=>{setSelectedCustomerId("lurk:"+m.id);setCustomerQuery(m.name);if(nameRef.current)nameRef.current.value="";}}><span>{m.name}</span><small>LURK+ · {fm(m.balance)}</small></button>)}
-                {customers.filter(c=>c.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&lurkPlusMembers.filter(m=>m.name.toLocaleLowerCase("tr-TR").includes(customerQuery.trim().toLocaleLowerCase("tr-TR"))).length===0&&<div className="ds-no-customer">Eşleşen kayıt yok. Yeni isim girebilirsin.</div>}
-              </div>
-            </>}
-            <label className="ds-modal-label">Yeni müşteri adı</label>
-            <input ref={nameRef} className="ds-input" placeholder="Misafir adı" onChange={()=>{setSelectedCustomerId("");setCustomerQuery("");}} onKeyDown={e=>{if(e.key==="Enter")addTable();}}/>
-            <button className="ds-button ds-primary-button ds-modal-submit" onClick={addTable}>Müşteriyi seç ve siparişe geç <span>→</span></button>
-            <button className="ds-modal-cancel" onClick={()=>{setShowNew(false);setSelectedCustomerId("");setCustomerQuery("");}}>Vazgeç</button>
-          </div>
-        </Modal>
-      )}
-      {delId&&<Confirm title="Masayı Sil" msg="Bu masa silinecek." onOk={()=>{const target=tables.find(t=>t.id===delId);if(target&&(target.s==="o"||(Array.isArray(target.order)&&target.order.length>0))){setDelId(null);msg("Bu masada açık sipariş var. Siparişi kapatmadan masayı silemezsin.");return;}setTbl(p=>p.filter(t=>t.id!==delId));setDelId(null);msg("Masa silindi.");}} onCancel={()=>setDelId(null)}/>}
-    </div>
-  );
+ const [showAdd,setShowAdd]=useState(false);
+ const [tableName,setTableName]=useState("");
+ const [deleteId,setDeleteId]=useState(null);
+ const [filter,setFilter]=useState("all");
+ const visible=tables.filter(t=>filter==="all"||(filter==="occupied"?t.s==="o":t.s!=="o"));
+ function addTable(){
+  const clean=tableName.trim();
+  if(!clean){msg("Enter a table name.");return;}
+  if(tables.some(t=>(t.lbl||"").trim().toLowerCase()===clean.toLowerCase())){msg("A table with this name already exists.");return;}
+  const id=uid();
+  setTbl(prev=>[...prev,{id,lbl:clean,s:"free",order:[],g:"",customerId:null,lurkPlusId:null,partialPayments:[]}]);
+  setTableName("");setShowAdd(false);msg("Table added.");
+ }
+ return <div className="lurk-screen lurk-tables-screen ds-tables lurk-tables-list">
+  <header className="ds-page-head"><div><div className="ds-eyebrow">LURK / FLOOR MANAGEMENT</div><h1>Tables</h1></div><button className="ds-button ds-primary-button" onClick={()=>setShowAdd(true)}>＋ Add Table</button></header>
+  <section className="lurk-table-list-toolbar">
+   <div className="lurk-table-filters">
+    {[["all","All Tables"],["occupied","Occupied"],["available","Available"]].map(([key,label])=><button key={key} className={filter===key?"active":""} onClick={()=>setFilter(key)}>{label}</button>)}
+   </div>
+   <span>{visible.length} tables</span>
+  </section>
+  <div className="lurk-table-list-wrap">
+   <div className="lurk-table-list-head"><span>TABLE</span><span>STATUS</span><span>ORDER</span><span>AMOUNT</span><span>TIME</span><span></span></div>
+   {visible.length===0?<div className="lurk-table-empty"><h3>{tables.length?"No tables match this filter":"No tables yet"}</h3><p>Add a table to start taking orders.</p><button className="ds-button ds-primary-button" onClick={()=>setShowAdd(true)}>＋ Add Table</button></div>:visible.map(t=>{
+    const occupied=t.s==="o";
+    const count=(t.order||[]).reduce((n,line)=>n+(Number(line.qty)||0),0);
+    const amount=(t.order||[]).reduce((n,line)=>n+(Number(line.price)||0)*(Number(line.qty)||0),0);
+    const started=t.oa?new Date(t.oa):null;
+    const duration=started&&!Number.isNaN(started.getTime())?Math.max(0,Math.floor((Date.now()-started.getTime())/60000))+" min":"—";
+    return <div className="lurk-table-list-row" key={t.id}>
+     <b>{t.lbl}</b><span className={"lurk-status "+(occupied?"occupied":"available")}>{occupied?"Occupied":"Available"}</span>
+     <span>{occupied?count+" items":"—"}</span><strong>{occupied?fm(amount):"—"}</strong><span>{occupied?duration:"—"}</span>
+     <div className="lurk-table-row-actions"><button className="lurk-open-table" onClick={()=>{setSel(t.id);setV("order");}}>{occupied?"Open Order":"Open Table"} ↗</button><button className="lurk-delete-table" onClick={()=>setDeleteId(t.id)} aria-label={"Delete "+t.lbl}>···</button></div>
+    </div>;
+   })}
+  </div>
+  {showAdd&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Add Table</h2><label htmlFor="lurk-table-name">Table Name</label><input id="lurk-table-name" autoFocus value={tableName} onChange={e=>setTableName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTable()} placeholder="e.g. Table 01"/><button className="ds-button ds-primary-button" onClick={addTable}>Add Table</button><button className="lurk-modal-cancel" onClick={()=>{setShowAdd(false);setTableName("");}}>Cancel</button></div></Modal>}
+  {deleteId&&<Confirm title="Delete Table" msg="This table will be removed." onOk={()=>{const t=tables.find(x=>x.id===deleteId);if(t&&(t.s==="o"||(t.order||[]).length)){msg("Close the active order before deleting this table.");setDeleteId(null);return;}setTbl(prev=>prev.filter(x=>x.id!==deleteId));setDeleteId(null);msg("Table deleted.");}} onCancel={()=>setDeleteId(null)}/>}
+ </div>;
 }
-
 /* ─── ORDER ─── */
 function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTableCustomer,addItem,chQ,pay,moveTableOrder,setTbl,setV,setSel}){
   const[showMenu,setShowMenu]=useState(table.order.length===0);
