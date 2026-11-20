@@ -711,7 +711,29 @@ function POSApp({onLock}){
         .lurk-bottom-nav{background:#fff!important;border-top:1px solid #E5EBE4!important;box-shadow:0 -5px 20px #174c3508!important}.lurk-nav-button span:first-child{color:#829387!important}.lurk-nav-button span:last-child{color:#78877C!important}
         @media(max-width:999px){.home-topbar{height:70px;padding:0 20px}.home-dashboard{width:calc(100% - 36px);padding-top:25px}.home-overview{grid-template-columns:1fr 1fr}.home-page-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-app .editorial-home{padding-bottom:76px!important}}
         @media(max-width:650px){.home-brand img{width:105px}.home-brand span{display:none}.home-top-actions{gap:7px}.home-clock{font-size:9px}.home-clock b{font-size:12px}.home-top-actions button{width:31px;height:31px}.home-dashboard{width:calc(100% - 28px);padding-top:22px}.home-intro h1{font-size:35px}.home-overview{grid-template-columns:1fr;gap:9px}.home-revenue{padding:21px 19px;min-height:0}.home-revenue-number{font-size:47px;margin:18px 0 7px}.home-revenue-details{margin-top:17px}.home-revenue-details b{font-size:11px}.home-month{min-height:0;padding:18px}.home-month>strong{margin:13px 0 10px}.home-bars{height:55px}.home-workspace{margin-top:24px}.home-page-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.home-page-grid>button{min-height:125px;padding:14px}.month-feature>b{font-size:21px}.home-day-action{gap:10px}.home-day-action button{padding:12px 11px;white-space:nowrap}}
-      `}</style>
+      
+/* Reference dashboard: viewport-safe layout overrides */
+.lurk-app:has(.ref-dashboard){height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;padding-bottom:0!important}
+.lurk-app:has(.ref-dashboard) .lurk-bottom-nav{display:none!important}
+.lurk-app:has(.ref-dashboard) .ref-dashboard{height:100dvh!important;min-height:0!important;max-height:100dvh!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;display:grid!important;grid-template-columns:248px minmax(0,1fr)!important;overflow:hidden!important;background:#f7f8f6!important;color:#172019!important}
+.ref-dashboard,.ref-dashboard *{box-sizing:border-box}
+.ref-sidebar{height:100dvh;min-height:0;background:#111513;color:#f6f8f5;padding:24px 18px 18px;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.ref-side-brand{display:flex;align-items:center;gap:10px;padding:0 7px 25px}.ref-brand-mark{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#8bdc18;color:#14200d;font-weight:900;font-style:normal}.ref-side-brand>div:nth-child(2){display:flex;flex-direction:column;gap:2px}.ref-side-brand b{font-size:17px}.ref-side-brand small{font-size:9px;letter-spacing:.15em;color:#9ca69f}
+.ref-side-search{height:40px;flex:0 0 40px;border-radius:22px;background:#252b27;padding:0 13px;color:#aeb8b1;font-size:12px;margin-bottom:26px;display:flex;align-items:center;gap:10px}.ref-side-search span{white-space:nowrap}
+.ref-nav-label{font-size:10px;font-weight:800;letter-spacing:.13em;color:#7e8a82;padding:0 11px 10px}.ref-nav{display:flex;flex-direction:column;gap:5px}.ref-nav button{height:42px;min-height:42px;border:0;border-radius:23px;padding:0 12px;background:transparent;color:#b7c0ba;display:flex;align-items:center;gap:11px;text-align:left;font-size:12px;cursor:pointer;white-space:nowrap}.ref-nav button.selected{background:#8bdc18;color:#10170c;font-weight:700}.ref-nav button>i{width:19px;text-align:center;font-size:17px;font-style:normal}.ref-nav button small{margin-left:auto;font-size:9px}.ref-settings-label{margin-top:25px}.ref-sidebar-bottom{margin-top:auto;border:1px solid #303a33;border-radius:11px;padding:11px;font-size:11px;flex:0 0 auto}.ref-sidebar-bottom i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#8bdc18;margin-right:8px}
+.ref-main{height:calc(100dvh - 16px);min-height:0;min-width:0;background:#f7f8f6;border-radius:25px 0 0 25px;margin:8px 0 8px -1px;overflow:hidden;display:flex;flex-direction:column}
+.ref-topbar{height:62px;min-height:62px;flex:0 0 62px;display:flex;align-items:center;gap:16px;padding:0 28px;border-bottom:1px solid #ecefeb;background:#fff;color:#818b84;font-size:11px}.ref-top-actions{margin-left:auto;display:flex;align-items:center;gap:9px}.ref-top-actions button{width:35px;height:35px;border:0;border-radius:50%;background:#f4f6f3;color:#26342a;font-size:17px;cursor:pointer}.ref-avatar{width:34px;height:34px;border-radius:50%;background:#dce8d8;color:#245239;display:grid;place-items:center}.ref-mobile-brand{display:none}
+.ref-content{padding:clamp(16px,2.2vh,26px) clamp(18px,2.5vw,34px) 18px;max-width:1600px;width:100%;margin:0 auto;min-height:0;flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+.ref-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:clamp(12px,1.8vh,20px)}.ref-heading>div>small,.ref-panel-heading small,.ref-quick-heading small{font-size:9px;font-weight:800;letter-spacing:.13em;color:#829087}.ref-heading h1{font-size:clamp(25px,2.5vw,34px);line-height:1.08;letter-spacing:-.04em;margin:7px 0 5px;font-weight:650}.ref-heading p{font-size:12px;color:#7b857e;margin:0}.ref-day-state{border:1px solid #e6ebe5;background:#fff;padding:8px 11px;border-radius:25px;font-size:9px;font-weight:800;color:#8a938d;white-space:nowrap}.ref-day-state.is-open{color:#287449}
+.ref-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.ref-stat-card,.ref-panel{background:#fff;border:1px solid #e9ede8;border-radius:15px;box-shadow:0 2px 8px #14231905;min-width:0}.ref-stat-card{padding:14px 15px}.ref-stat-card>div{display:flex;align-items:center;justify-content:space-between;gap:6px;color:#66736a;font-size:11px}.ref-stat-card i{font-style:normal;width:29px;height:29px;flex:0 0 29px;border-radius:50%;background:#f2f5f1;display:grid;place-items:center;font-size:14px}.ref-stat-card strong{display:block;font-size:clamp(17px,1.9vw,25px);letter-spacing:-.04em;margin:9px 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ref-stat-card small{font-size:9px;color:#879189;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.ref-dashboard-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,1fr);gap:13px}.ref-panel{padding:16px 18px}.ref-panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.ref-panel-heading h2,.ref-quick-heading h2{font-size:18px;letter-spacing:-.03em;margin:4px 0 2px;font-weight:650}.ref-panel-heading p{font-size:10px;color:#89938c;margin:0}.ref-panel-heading button{border:1px solid #e7ece7;border-radius:8px;background:#fff;padding:7px 9px;color:#3c4940;font-size:10px;cursor:pointer}.ref-chart-summary{display:flex;flex-direction:column;gap:2px;margin-top:10px}.ref-chart-summary b{font-size:22px;letter-spacing:-.04em}.ref-chart-summary span{font-size:9px;color:#89938c}.ref-chart{height:clamp(105px,17vh,160px);display:flex;gap:9px;margin-top:9px}.ref-chart-axis{display:flex;flex-direction:column;justify-content:space-between;color:#9aa39c;font-size:8px}.ref-chart-bars{display:flex;align-items:stretch;justify-content:space-between;gap:4px;flex:1;min-width:0;border-bottom:1px solid #e9eee9;background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(25% - 1px),#edf0ed calc(25% - 1px),#edf0ed 25%)}.ref-chart-bars>div{height:100%;flex:1;display:flex;align-items:flex-end;justify-content:center;min-width:0}.ref-chart-bars i{display:block;width:min(72%,16px);background:#dfe6df;border-radius:5px 5px 0 0;min-height:2px}.ref-chart-bars>div.current i{background:#8bdc18}.ref-chart-foot{display:flex;justify-content:space-between;margin:7px 0 0 25px;color:#98a199;font-size:8px}
+.ref-live{font-size:8px;font-weight:800;color:#258452;background:#edf7ef;padding:6px 8px;border-radius:18px;white-space:nowrap}.ref-op-row{display:flex;align-items:center;gap:9px;padding:clamp(9px,1.5vh,14px) 0;border-bottom:1px solid #eef1ed;font-size:10px}.ref-op-row i{width:29px;height:29px;flex:0 0 29px;border-radius:9px;background:#eff7e9;color:#4a8b25;display:grid;place-items:center;font-style:normal}.ref-op-row b{margin-left:auto;white-space:nowrap}.ref-primary-action{width:100%;margin-top:12px;border:0;border-radius:9px;background:#8bdc18;color:#17200f;padding:11px;font-size:9px;font-weight:850;cursor:pointer}
+.ref-quick-section{margin-top:14px}.ref-quick-heading{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:9px}.ref-quick-heading h2{margin-bottom:0}.ref-quick-heading>span{font-size:8px;letter-spacing:.12em;color:#9aa39c}.ref-quick-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.ref-quick-grid button{background:#fff;border:1px solid #e9ede8;border-radius:11px;min-height:61px;padding:10px;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;gap:5px;text-align:left;cursor:pointer;color:#202820;min-width:0}.ref-quick-grid i{font-size:15px;color:#54942b;font-style:normal}.ref-quick-grid b{font-size:9px;align-self:end;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ref-quick-grid span{grid-column:2;grid-row:1/3;color:#8c988f;font-size:10px}
+@media(max-height:760px) and (min-width:701px){.ref-content{padding-top:12px;padding-bottom:10px}.ref-heading{margin-bottom:10px}.ref-heading h1{font-size:25px}.ref-stat-card{padding:10px 12px}.ref-stat-card strong{margin:6px 0 3px}.ref-dashboard-grid{gap:10px}.ref-panel{padding:12px 14px}.ref-chart{height:105px}.ref-quick-section{margin-top:10px}.ref-quick-grid button{min-height:52px;padding:8px}.ref-op-row{padding:8px 0}.ref-primary-action{padding:9px;margin-top:8px}}
+@media(max-width:1100px) and (min-width:701px){.lurk-app:has(.ref-dashboard) .ref-dashboard{grid-template-columns:205px minmax(0,1fr)!important}.ref-sidebar{padding:20px 13px}.ref-content{padding-left:18px;padding-right:18px}.ref-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ref-dashboard-grid{grid-template-columns:minmax(0,1.2fr) minmax(220px,1fr)}.ref-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.lurk-app:has(.ref-dashboard){height:100dvh!important;overflow:hidden!important}.lurk-app:has(.ref-dashboard) .ref-dashboard{display:block!important;overflow:hidden!important}.ref-sidebar{display:none}.ref-main{height:100dvh;margin:0;border-radius:0;overflow:hidden}.ref-topbar{height:56px;min-height:56px;padding:0 14px;justify-content:space-between}.ref-mobile-brand{display:flex;align-items:center;gap:8px;color:#19231b}.ref-mobile-brand .ref-brand-mark{width:28px;height:28px}.ref-topbar>span{display:none}.ref-top-actions{gap:6px}.ref-top-actions button{width:32px;height:32px}.ref-avatar{width:30px;height:30px}.ref-content{height:calc(100dvh - 56px);padding:17px 13px 18px;overflow-y:auto}.ref-heading{align-items:flex-start;margin-bottom:13px}.ref-heading h1{font-size:25px}.ref-heading p{font-size:10px}.ref-day-state{font-size:8px;padding:7px 8px}.ref-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}.ref-stat-card{padding:11px}.ref-stat-card>div{font-size:10px}.ref-stat-card strong{font-size:18px;margin:7px 0 3px}.ref-stat-card small{font-size:8px}.ref-stat-card i{width:25px;height:25px;flex-basis:25px}.ref-dashboard-grid{grid-template-columns:1fr;gap:9px}.ref-panel{padding:13px}.ref-panel-heading h2{font-size:16px}.ref-chart{height:115px}.ref-quick-section{margin-top:11px}.ref-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ref-quick-grid button{min-height:54px;padding:8px}.ref-quick-grid b{font-size:9px}}
+
+`}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
 
@@ -741,60 +763,41 @@ function POSApp({onLock}){
 
 /* ─── HOME ─── */
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balancesVisible,setBalancesVisible}){
-  const [clock,setClock]=useState(()=>new Date());
-  useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),1000);return()=>clearInterval(timer);},[]);
-  const today=tod();
-  const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment);
-  const cash=todayOrders.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
-  const card=todayOrders.reduce((s,o)=>s+paymentAmount(o,"card"),0);
-  const closed=todayOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
-  const openTables=tables.filter(t=>t.s==="o");
-  const openRevenue=openTables.reduce((s,t)=>s+t.order.reduce((a,o)=>a+(Number(o.price)||0)*(Number(o.qty)||0),0),0);
-  const total=closed+openRevenue;
-  const monthStart=new Date(new Date().getFullYear(),new Date().getMonth(),1);
-  const daysInMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
-  const days=Array.from({length:daysInMonth},(_,i)=>{const d=new Date(monthStart.getFullYear(),monthStart.getMonth(),i+1);const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return {key,day:i+1,total:orders.filter(o=>o.date===key&&!o.partialPayment).reduce((s,o)=>s+(Number(o.total)||0),0)+(key===today?openRevenue:0)};});
-  const monthTotal=days.reduce((s,d)=>s+d.total,0), maxDay=Math.max(1,...days.map(d=>d.total));
-  const pages=[
-    {k:"tables",n:"01",icon:"▦",label:"Masalar",sub:openTables.length+" açık masa"},
-    {k:"reports",n:"02",icon:"↗",label:"Raporlar",sub:"Satış geçmişi"},
-    {k:"customers",n:"03",icon:"◎",label:"Müşteriler",sub:"Müşteri kayıtları"},
-    {k:"lurkPlus",n:"04",icon:"＋",label:"LURK+",sub:"Üyelik ve bakiyeler"},
-    {k:"menu",n:"05",icon:"☷",label:"Menü yönetimi",sub:"Ürünler ve fiyatlar"}
-  ];
-  return <div className="lurk-screen lurk-home-screen editorial-home">
-    <header className="home-topbar">
-      <div className="home-brand"><img src="/lurk-logo.svg" alt="LURK."/><span>COFFEE / POS SYSTEM</span></div>
-      <div className="home-top-actions"><div className="home-clock"><span>{clock.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</span><b>{clock.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</b></div><button onClick={()=>setBalancesVisible(v=>!v)}>{balancesVisible?"◉":"⊘"}</button><button onClick={onLock}>⌑</button></div>
-    </header>
-    <main className="home-dashboard">
-      <div className="home-intro"><div><span className="home-eyebrow">LURK / GÜNLÜK ÖZET</span><h1>Günün nasıl<br/>geçiyor?</h1><p>İşletmenin bugünkü nabzı.</p></div><div className={"home-day-pill "+(day?"active":"")}><i/>{day?"GÜN AÇIK":"GÜN KAPALI"}</div></div>
-      <section className="home-overview">
-        <div className="home-revenue">
-          <div className="home-revenue-head"><span>BUGÜNÜN TOPLAM CİROSU</span><b><i/> CANLI</b></div>
-          <div className="home-revenue-number">{balancesVisible?fm(total).replace(" TL",""):"••••••"}<small>₺</small></div>
-          <div className="home-revenue-note">{todayOrders.length} kapanan adisyon <span>·</span> {openTables.length} açık masa</div>
-          <div className="home-revenue-details"><div><span>NAKİT</span><b>{balancesVisible?fm(cash):"••••"}</b></div><div><span>KART</span><b>{balancesVisible?fm(card):"••••"}</b></div><div><span>AÇIK HESAP</span><b>{balancesVisible?fm(openRevenue):"••••"}</b></div></div>
-        </div>
-        <div className="home-month">
-          <div className="home-month-head"><div><span>AYLIK PERFORMANS</span><b>{clock.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})}</b></div><button onClick={()=>setV("monthReview")}>Detay ↗</button></div>
-          <strong>{balancesVisible?fm(monthTotal):"••••••"}</strong>
-          <div className="home-bars">{days.map(d=><div key={d.key} className={d.key===today?"today":""} title={d.day+". gün · "+fm(d.total)}><i style={{height:Math.max(d.total?4:2,d.total/maxDay*100)+"%"}}/></div>)}</div>
-          <div className="home-bar-labels"><span>AY BAŞI</span><span>BUGÜN</span><span>AY SONU</span></div>
-        </div>
-      </section>
-      <section className="home-workspace">
-        <div className="home-section-title"><div><span>ÇALIŞMA ALANI</span><h2>Hızlı erişim</h2></div><small>01 / 05</small></div>
-        <div className="home-page-grid">
-          {pages.map((p,i)=><button key={p.k} className={i===0?"featured":""} onClick={()=>setV(p.k)}><span className="home-page-number">{p.n}</span><span className="home-page-icon">{p.icon}</span><b>{p.label}</b><small>{p.sub}</small><em>↗</em></button>)}
-          <button className="month-feature" onClick={()=>setV("monthReview")}><span>AY SONU DEĞERLENDİRMESİ</span><b>Bu ay<br/>nasıl geçti?</b><small>Ciroyu ve en çok satanları incele ↗</small></button>
-        </div>
-      </section>
-      <footer className="home-day-action"><div><span>OPERASYON</span><b>{day?"Gün devam ediyor":"Yeni güne hazır mısın?"}</b></div><button onClick={day?closeDay:openDay}>{day?"GÜNÜ KAPAT":"GÜNÜ BAŞLAT"}　→</button></footer>
-    </main>
-  </div>;
-}
-/* ─── TABLES ─── */
+ const [clock,setClock]=useState(()=>new Date());
+ useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),1000);return()=>clearInterval(timer);},[]);
+ const today=tod(),todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment);
+ const cash=todayOrders.reduce((s,o)=>s+paymentAmount(o,"cash"),0),card=todayOrders.reduce((s,o)=>s+paymentAmount(o,"card"),0),closed=todayOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
+ const openTables=tables.filter(t=>t.s==="o"),openRevenue=openTables.reduce((s,t)=>s+t.order.reduce((a,o)=>a+(Number(o.price)||0)*(Number(o.qty)||0),0),0),total=closed+openRevenue;
+ const daysInMonth=new Date(clock.getFullYear(),clock.getMonth()+1,0).getDate();
+ const days=Array.from({length:daysInMonth},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),i+1),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return{key,day:i+1,total:orders.filter(o=>o.date===key&&!o.partialPayment).reduce((v,o)=>v+(Number(o.total)||0),0)+(key===today?openRevenue:0)};});
+ const monthTotal=days.reduce((v,d)=>v+d.total,0),maxDay=Math.max(1,...days.map(d=>d.total));
+ const nav=[{k:"home",icon:"▦",label:"Genel Bakış"},{k:"tables",icon:"▤",label:"Masalar",meta:openTables.length+" açık"},{k:"reports",icon:"◷",label:"Raporlar"},{k:"customers",icon:"♙",label:"Müşteriler"},{k:"lurkPlus",icon:"✳",label:"LURK+"},{k:"menu",icon:"☷",label:"Menü Yönetimi"}];
+ return <div className="lurk-screen lurk-home-screen ref-dashboard">
+  <aside className="ref-sidebar">
+   <div className="ref-side-brand"><div className="ref-brand-mark">L</div><div><b>LURK</b><small>COFFEE / POS</small></div></div>
+   <div className="ref-side-search">⌕ <span>Menüde ara...</span></div>
+   <div className="ref-nav-label">ANA MENÜ</div>
+   <nav className="ref-nav">{nav.map(n=><button key={n.k} className={n.k==="home"?"selected":""} onClick={()=>setV(n.k)}><i>{n.icon}</i><span>{n.label}</span>{n.meta&&<small>{n.meta}</small>}</button>)}</nav>
+   <div className="ref-nav-label ref-settings-label">İŞLETME</div>
+   <nav className="ref-nav"><button onClick={()=>setV("monthReview")}><i>▥</i><span>Ay Sonu Özeti</span></button><button onClick={onLock}><i>⌑</i><span>Ekranı Kilitle</span></button></nav>
+   <div className="ref-sidebar-bottom"><i/> <span>{day?"Gün açık":"Gün kapalı"}</span></div>
+  </aside>
+  <main className="ref-main">
+   <header className="ref-topbar"><div className="ref-mobile-brand"><b className="ref-brand-mark">L</b><strong>LURK</strong></div><span>{clock.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span><div className="ref-top-actions"><button aria-label="Tutarları gizle veya göster" onClick={()=>setBalancesVisible(v=>!v)}>{balancesVisible?"◉":"⊘"}</button><button aria-label="Ekranı kilitle" onClick={onLock}>⌑</button><b className="ref-avatar">L</b></div></header>
+   <div className="ref-content">
+    <section className="ref-heading"><div><small>LURK / İŞLETME PANELİ</small><h1>Merhaba, LURK!</h1><p>Bugünkü işletme performansına genel bakış.</p></div><span className={"ref-day-state "+(day?"is-open":"")}>●　{day?"GÜN AÇIK":"GÜN KAPALI"}</span></section>
+    <section className="ref-stat-grid">
+     {[{label:"Bugünün Cirosu",value:fm(total),note:todayOrders.length+" kapanan adisyon",icon:"₺"},{label:"Açık Masalar",value:String(openTables.length),note:fm(openRevenue)+" açık hesap",icon:"▤"},{label:"Nakit Tahsilat",value:fm(cash),note:"Bugün alınan nakit",icon:"↘"},{label:"Kart Tahsilat",value:fm(card),note:"Bugün alınan kart",icon:"▣"}].map(x=><article className="ref-stat-card" key={x.label}><div><span>{x.label}</span><i>{x.icon}</i></div><strong>{balancesVisible?x.value:"••••••"}</strong><small>{x.note}</small></article>)}
+    </section>
+    <section className="ref-dashboard-grid">
+     <article className="ref-panel ref-sales"><div className="ref-panel-heading"><div><small>PERFORMANS</small><h2>Satış Özeti</h2><p>{clock.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})}</p></div><button onClick={()=>setV("monthReview")}>Ayı incele ↗</button></div><div className="ref-chart-summary"><b>{balancesVisible?fm(monthTotal):"••••••"}</b><span>Bu ay toplam ciro</span></div><div className="ref-chart"><div className="ref-chart-axis"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0</span></div><div className="ref-chart-bars">{days.map(d=><div key={d.key} className={d.key===today?"current":""} title={d.day+". gün · "+(balancesVisible?fm(d.total):"gizli")}><i style={{height:Math.max(d.total?3:1,d.total/maxDay*100)+"%"}}/></div>)}</div></div><div className="ref-chart-foot"><span>AY BAŞI</span><span>AY SONU</span></div></article>
+     <article className="ref-panel ref-ops"><div className="ref-panel-heading"><div><small>GÜNLÜK OPERASYON</small><h2>Gün durumu</h2></div><span className="ref-live">{day?"● AKTİF":"● KAPALI"}</span></div>{[{icon:"✓",label:"Kapanan adisyon",value:todayOrders.length},{icon:"▤",label:"Açık masa",value:openTables.length},{icon:"₺",label:"Nakit + kart",value:balancesVisible?fm(cash+card):"••••"}].map(x=><div className="ref-op-row" key={x.label}><i>{x.icon}</i><span>{x.label}</span><b>{x.value}</b></div>)}<button className="ref-primary-action" onClick={day?closeDay:openDay}>{day?"GÜNÜ KAPAT":"GÜNÜ BAŞLAT"}　↗</button></article>
+    </section>
+    <section className="ref-quick-section"><div className="ref-quick-heading"><div><small>KISAYOLLAR</small><h2>Çalışma alanı</h2></div><span>HIZLI ERİŞİM</span></div><div className="ref-quick-grid">{nav.filter(n=>n.k!=="home").map(n=><button key={n.k} onClick={()=>setV(n.k)}><i>{n.icon}</i><b>{n.label}</b><span>↗</span></button>)}<button onClick={()=>setV("monthReview")}><i>▥</i><b>Ay Sonu Özeti</b><span>↗</span></button></div></section>
+   </div>
+  </main>
+ </div>;
+}/* ─── TABLES ─── */
 function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomers,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
   const[selectedCustomerId,setSelectedCustomerId]=useState("");
