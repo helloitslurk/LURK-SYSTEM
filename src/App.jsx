@@ -1555,7 +1555,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     setEditingInstallment(null);
     msg("Taksit planı kaydedildi.");
   }
-  if(!unlocked)return <div className="lurk-screen personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Bu sayfaya erişmek için POS PIN'ini tekrar gir.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Kontrol ediliyor…":"Kilidi Aç"}</button></form></div>;
+  if(!unlocked)return <div className="lurk-screen personal-finance ds-personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Bu sayfaya erişmek için POS PIN'ini tekrar gir.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Kontrol ediliyor…":"Kilidi Aç"}</button></form></div>;
   const paidTotal=debts.reduce((sum,d)=>sum+paid(d),0);
   const originalTotal=debts.reduce((sum,d)=>sum+Number(d.total||0),0);
   const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
@@ -1968,7 +1968,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     finally{setLinkBusy(false);}
   }
   return(
-    <div className="lurk-screen">
+    <div className="lurk-screen ds-lurk-plus">
       <div style={{background:"rgba(13,13,13,0.98)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"18px 16px",display:"flex",alignItems:"center",gap:12}}>
         <button onClick={()=>setV("home")} style={{background:"transparent",border:0,color:T.textSub,fontSize:24,cursor:"pointer"}}>←</button>
         <div style={{flex:1}}><div style={{fontSize:24,fontWeight:850,letterSpacing:"-0.8px",color:T.text}}>LURK<span style={{color:T.accentL}}>+</span></div><div style={{fontSize:11,color:T.textSub,marginTop:2}}>Bakiye ve kahve hakkı üyelikleri</div></div>
@@ -2129,7 +2129,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
     msg(ledgerAction==="debt"?"Borç kaydedildi.":"Tahsilat kaydedildi.");
   }
   return(
-    <div className="lurk-screen lurk-customers-screen">
+    <div className="lurk-screen lurk-customers-screen ds-customers">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"rgba(13,13,13,0.98)"}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
@@ -2211,7 +2211,7 @@ function MenuScreen({menu,setMenu,setV}){
   }
 
   return(
-    <div className="lurk-screen lurk-menu-screen">
+    <div className="lurk-screen lurk-menu-screen ds-menu">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("settings")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:20,fontWeight:800,letterSpacing:"-0.5px",flex:1}}>Menü</div>
@@ -2319,7 +2319,7 @@ function SettingsScreen({setV,tables,orders,logs,customers,creditEntries,menu,da
     setBackupMsg("Yedek dosyası indirildi. Güvenli bir yerde sakla.");
   }
   return(
-    <div className="lurk-screen lurk-settings-screen">
+    <div className="lurk-screen lurk-settings-screen ds-settings">
       <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"16px 14px 14px",display:"flex",alignItems:"center",gap:10}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px"}}>Ayarlar</div>
