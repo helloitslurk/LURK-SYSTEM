@@ -299,8 +299,18 @@ function POSApp({onLock}){
         const ids=new Set(MENU.map(x=>x.id));
         const refreshedIds=new Set([102,103,104,106,107,110,113,114,201,202,203,204,205,601]);
         const retiredIds=new Set([201,205]);
-        const mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,name:refreshedIds.has(mi.id)?mi.name:(f.name||mi.name),price:refreshedIds.has(mi.id)?mi.price:f.price,on:f.on,cat:refreshedIds.has(mi.id)?mi.cat:(f.cat||mi.cat)}:mi;});
+        let mm=MENU.map(mi=>{const f=m.find(x=>x.id===mi.id);return f?{...mi,name:refreshedIds.has(mi.id)?mi.name:(f.name||mi.name),price:refreshedIds.has(mi.id)?mi.price:f.price,on:f.on,cat:refreshedIds.has(mi.id)?mi.cat:(f.cat||mi.cat)}:mi;});
         m.filter(x=>!ids.has(x.id)&&!retiredIds.has(x.id)).forEach(x=>mm.push(x));
+        const coffeeKey=name=>String(name||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/İ/g,"I").replace(/ı/g,"I").toUpperCase().replace(/\\s+/g," ").trim();
+        const isCoffeeName=name=>["TURKISH COFFEE","TURK KAHVESI"].includes(coffeeKey(name));
+        const savedCoffee=m.filter(x=>isCoffeeName(x.name));
+        const canonicalCoffee=savedCoffee.find(x=>coffeeKey(x.name)==="TURKISH COFFEE")||savedCoffee.find(x=>coffeeKey(x.name)==="TURK KAHVESI")||mm.find(x=>x.id===617)||mm.find(x=>isCoffeeName(x.name));
+        if(canonicalCoffee){
+          const unifiedCoffee={...canonicalCoffee,name:"TURKISH COFFEE",cat:canonicalCoffee.cat||"Kahve"};
+          const firstCoffeeIndex=mm.findIndex(x=>isCoffeeName(x.name));
+          mm=mm.filter(x=>!isCoffeeName(x.name));
+          mm.splice(Math.max(0,firstCoffeeIndex),0,unifiedCoffee);
+        }
         setMenu(mm);
       }
       let savedDay=d;
