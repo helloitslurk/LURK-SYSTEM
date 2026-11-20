@@ -438,7 +438,9 @@ function POSApp({onLock}){
     if(paymentInProgress.current)return;
     const t=tables.find(x=>x.id===tid);
     if(!t)return;
-    const sub=t.order.reduce((s,o)=>s+(o.revenueExcluded?0:Math.max(0,(Number(o.price)||0)*(Number(o.qty)||0)-(Number(o.discount)||0))),0);
+    const grossSubtotal=t.order.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.price)||0)*(Number(o.qty)||0)),0);
+    const itemDiscountTotal=t.order.reduce((s,o)=>s+(o.revenueExcluded?0:Math.min((Number(o.price)||0)*(Number(o.qty)||0),Math.max(0,Number(o.discount)||0))),0);
+    const sub=Math.max(0,grossSubtotal-itemDiscountTotal);
     const previousPayments=Array.isArray(t.partialPayments)?t.partialPayments:[];
     const previousPaid=previousPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
     const isCredit=pt==="credit";
@@ -464,7 +466,7 @@ function POSApp({onLock}){
     const orderNumber=Math.max(storedNext,orders.reduce((max,o)=>Math.max(max,Number(o.orderNumber)||0),0)+1);
     try{localStorage.setItem("lurk_next_order_number",String(orderNumber+1));}catch(e){}
     const methodSet=[...new Set(allPayments.map(p=>p.method))];
-    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,discount:Number(o.discount)||0,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
+    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,subtotal:grossSubtotal,itemDiscount:itemDiscountTotal,orderDiscount:Math.max(0,sub-finalTotal),discount:itemDiscountTotal+Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,discount:Number(o.discount)||0,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
     paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
