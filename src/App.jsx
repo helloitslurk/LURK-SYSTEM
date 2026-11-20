@@ -899,7 +899,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
-      {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} creditEntries={creditEntries} setCreditEntries={setCreditEntries} setV={setV} msg={msg}/>}
+      {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg} balancesVisible={balancesVisible}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
       {view!=="order"&&(
@@ -2121,135 +2121,48 @@ function LurkPlusPortal({token}){
 }
 
 /* ─── CUSTOMERS ─── */
-function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditEntries,setV,msg}){
-  const [query,setQuery]=useState("");
-  const [editing,setEditing]=useState(null);
-  const [name,setName]=useState("");
-  const [phone,setPhone]=useState("");
-  const [showForm,setShowForm]=useState(false);
-  const [detail,setDetail]=useState(null);
-  const [ledgerAction,setLedgerAction]=useState(null);
-  const [amount,setAmount]=useState("");
-  const [method,setMethod]=useState("cash");
-  const [note,setNote]=useState("");
-  const [ledgerSubmitting,setLedgerSubmitting]=useState(false);
-  const ledgerSubmittingRef=useRef(false);
-  useEffect(()=>{
-    if(!ledgerAction){
-      ledgerSubmittingRef.current=false;
-      setLedgerSubmitting(false);
-    }
-  },[ledgerAction]);
-  const currentMonth=thisMonth();
-  const [selectedMonth,setSelectedMonth]=useState(currentMonth);
-  const orderMonths=orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)&&m<=currentMonth);
-  const firstMonth=orderMonths.length?orderMonths.reduce((earliest,m)=>m<earliest?m:earliest,currentMonth):currentMonth;
-  const availableMonths=[];
-  for(let cursor=firstMonth;cursor<=currentMonth;){
-    availableMonths.push(cursor);
-    const [year,month]=cursor.split("-").map(Number);
-    const next=new Date(year,month,1);
-    cursor=next.getFullYear()+"-"+String(next.getMonth()+1).padStart(2,"0");
-  }
-  availableMonths.reverse();
-  const monthLabel=(month)=>{const [year,mm]=month.split("-").map(Number);return new Date(year,mm-1,1).toLocaleDateString("tr-TR",{month:"long",year:"numeric"});};
-  const matchesCustomer=(o,c)=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"));
-  const customerOrders=(c)=>orders.filter(o=>matchesCustomer(o,c));
-  const manualCashFor=(c,month=null)=>creditEntries.filter(e=>e.type==="manual_cash"&&((e.customerId&&e.customerId===c.id)||(!e.customerId&&e.customerName&&e.customerName.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR")))&&(!month||(e.date||"").slice(0,7)===month)).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
-  const totalFor=(c)=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0)+manualCashFor(c);
-  const orderCountFor=(c)=>customerOrders(c).filter(o=>!o.partialPayment).length;
-  const monthlyTotalFor=(c,month=selectedMonth)=>orders.filter(o=>matchesCustomer(o,c)&&(o.date||"").slice(0,7)===month).reduce((sum,o)=>sum+(Number(o.total)||0),0)+manualCashFor(c,month);
-  const pointsFor=(c)=>Math.floor((orders.filter(o=>(o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))).reduce((sum,o)=>sum+paymentAmount(o,"cash")+paymentAmount(o,"card"),0)+ledgerFor(c).filter(e=>e.type==="payment").reduce((sum,e)=>sum+(Number(e.amount)||0),0))/100);
-  const ledgerFor=(c)=>creditEntries.filter(e=>e.customerId===c.id).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-  const balanceFor=(c)=>ledgerFor(c).reduce((sum,e)=>sum+(e.type==="debt"?1:-1)*(Number(e.amount)||0),0);
-  const filtered=customers.filter(c=>(c.name+" "+(c.phone||"")).toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR"))).sort((a,b)=>monthlyTotalFor(b)-monthlyTotalFor(a)||a.name.localeCompare(b.name,"tr"));
-  function openNew(){setEditing(null);setName("");setPhone("");setShowForm(true);}
-  function openEdit(c){setEditing(c);setName(c.name);setPhone(c.phone||"");setShowForm(true);}
-  function saveCustomer(){
-    const clean=name.trim(), tel=editing?(editing.phone||""):"";
-    if(!clean){msg("Müşteri adı zorunlu.");return;}
-    const duplicateName=customers.find(c=>c.id!==editing?.id&&c.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));
-    if(duplicateName){msg("Bu isimde bir müşteri zaten kayıtlı. Mevcut kaydı düzenle.");return;}
-    if(editing){setCustomers(prev=>prev.map(c=>c.id===editing.id?{...c,name:clean,phone:tel,updatedAt:new Date().toISOString()}:c));setDetail({...editing,name:clean,phone:tel});msg("Müşteri güncellendi.");}
-    else{const c={id:uid(),name:clean,phone:tel,createdAt:new Date().toISOString(),points:0,creditBalance:0};setCustomers(prev=>[c,...prev]);msg("Müşteri kaydedildi.");}
-    setShowForm(false);
-  }
-  function saveLedger(){
-    if(ledgerSubmittingRef.current)return;
-    const value=Math.round(Number(amount)*100)/100;
-    if(!detail){return;}
-    if(!Number.isFinite(value)||value<=0){msg("Geçerli bir tutar gir.");return;}
-    if(ledgerAction==="payment"&&value>Math.max(0,balanceFor(detail))+.009){msg("Tahsilat açık bakiyeden fazla olamaz.");return;}
-    ledgerSubmittingRef.current=true;
-    setLedgerSubmitting(true);    const entry={id:uid(),customerId:detail.id,customerName:detail.name,type:ledgerAction==="debt"?"debt":"payment",amount:value,method:ledgerAction==="debt"?"credit":method,date:new Date().toISOString(),note:note.trim()};
-    setCreditEntries(prev=>[entry,...prev]);
-    setAmount("");setNote("");setLedgerAction(null);
-    msg(ledgerAction==="debt"?"Borç kaydedildi.":"Tahsilat kaydedildi.");
-  }
-  return(
-    <div className="lurk-screen lurk-customers-screen ds-customers">
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"22px 16px 18px",display:"flex",alignItems:"center",gap:12,background:"rgba(13,13,13,0.98)"}}>
-        <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
-        <div style={{fontSize:23,fontWeight:850,letterSpacing:"-.7px",flex:1}}>Müşteriler<div style={{fontSize:11,fontWeight:500,color:T.textSub,marginTop:3,letterSpacing:0}}>Müşteri ilişkileri ve hesap özeti</div></div>
-        <button onClick={openNew} style={{padding:"9px 13px",background:T.accent,border:0,borderRadius:12,color:"#fff",fontWeight:750,cursor:"pointer",boxShadow:"0 5px 18px rgba(52,199,89,.18)"}}>＋ Yeni</button>
-      </div>
-      <div style={{padding:14}}>
-        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Müşteri veya telefon ara…" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10}}/>
-        <div style={{marginBottom:14}}>
-          <div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.18)",borderRadius:16,padding:"15px 14px"}}>
-            <div style={{fontSize:10,color:T.textSub,fontWeight:700,textTransform:"uppercase",letterSpacing:".6px"}}>Kayıtlı müşteri</div>
-            <div style={{fontSize:26,fontWeight:850,color:T.text,marginTop:5}}>{customers.length}</div>
-          </div>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-          <div style={{fontSize:12,color:T.textSub,flex:1}}>{filtered.length} müşteri · {monthLabel(selectedMonth)} harcamasına göre sıralı</div>
-          <select value={selectedMonth} onChange={e=>setSelectedMonth(e.target.value)} aria-label="Ay seç" style={{maxWidth:155,padding:"8px 10px",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,textTransform:"capitalize",fontSize:11}}>
-            {availableMonths.map(month=><option key={month} value={month}>{monthLabel(month)}</option>)}
-          </select>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-        {filtered.map((c,index)=><button key={c.id} onClick={()=>setDetail(c)} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"12px",textAlign:"left",background:"linear-gradient(110deg,rgba(255,255,255,.055),rgba(255,255,255,.025))",border:"1px solid rgba(255,255,255,.08)",borderRadius:14,color:T.text,cursor:"pointer",minWidth:0}}>
-          <div style={{width:42,height:42,flexShrink:0,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(52,199,89,.12)",border:"1px solid rgba(52,199,89,.2)",color:T.accentL,fontSize:16,fontWeight:850}}>{(c.name||"?").trim().charAt(0).toLocaleUpperCase("tr-TR")}</div>
-          <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:13,fontWeight:800,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</div>
-            <div style={{fontSize:10,color:T.textSub,marginTop:4}}>{orderCountFor(c)} sipariş <span style={{padding:"0 4px",color:T.textDim}}>·</span> Sıra {index+1}</div>
-          </div>
-          <div style={{textAlign:"right",flexShrink:0}}>
-            <div style={{fontSize:12,fontWeight:800,color:T.accentL}}>{fm(monthlyTotalFor(c))}</div>
-            <div style={{fontSize:9,color:T.textSub,marginTop:3}}>{monthLabel(selectedMonth)}</div>
-          </div>
-          <div style={{fontSize:20,color:T.textDim,marginLeft:2}}>›</div>
-        </button>)}
-        </div>
-        {!filtered.length&&<div style={{padding:"30px 20px",textAlign:"center",background:"rgba(255,255,255,.035)",border:"1px dashed rgba(255,255,255,.14)",borderRadius:16,color:T.textSub}}><div style={{fontSize:28,marginBottom:8}}>♙</div><div style={{fontSize:14,fontWeight:750,color:T.text,marginBottom:5}}>{query?"Müşteri bulunamadı":"Henüz müşteri eklenmemiş"}</div><div style={{fontSize:12,lineHeight:1.5,marginBottom:query?0:14}}>{query?"Farklı bir isim veya telefon deneyebilirsin.":"İlk müşteri profilini oluştur, kayıt burada otomatik görünsün."}</div>{!query&&<button onClick={openNew} style={{padding:"10px 14px",background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:750}}>＋ İlk müşteriyi ekle</button>}</div>}
-      </div>
-      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,marginBottom:16,color:T.text}}>{editing?"Müşteriyi Düzenle":"Yeni Müşteri"}</div>
-        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Müşteri adı" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
-        <button onClick={saveCustomer} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Kaydet</button>
-        <button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
-      </Modal>}
-      {detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text}}>{detail.name}</div><div style={{fontSize:12,color:T.textSub,margin:"5px 0 16px"}}>Müşteri özeti</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}><div style={{background:"rgba(52,199,89,.09)",border:"1px solid rgba(52,199,89,.16)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>{monthLabel(selectedMonth)} harcaması</div><div style={{fontSize:18,fontWeight:850,color:T.accentL}}>{fm(monthlyTotalFor(detail))}</div></div><div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:12,padding:13}}><div style={{fontSize:10,color:T.textSub,marginBottom:5}}>Toplam harcama</div><div style={{fontSize:18,fontWeight:850,color:T.text}}>{fm(totalFor(detail))}</div></div></div>
-        <div style={{fontWeight:750,fontSize:13,color:T.text,marginBottom:8}}>Son adisyonlar</div>
-        <div style={{fontSize:11,color:T.textSub,marginBottom:5}}>Açık bakiye</div>
-        <div style={{fontSize:23,fontWeight:850,color:balanceFor(detail)>0?T.danger:T.accentL,marginBottom:13}}>{fm(balanceFor(detail))}</div>
-        <div style={{display:"flex",gap:8,marginBottom:18}}>
-          <button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setAmount("");setNote("");setLedgerAction("debt");}} style={{flex:1,padding:11,background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontWeight:750,cursor:"pointer"}}>＋ Borç Ekle</button>
-          <button disabled={balanceFor(detail)<=0} onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setAmount("");setNote("");setMethod("cash");setLedgerAction("payment");}} style={{flex:1,padding:11,background:balanceFor(detail)>0?T.accent:T.bg3,color:balanceFor(detail)>0?"#fff":T.textDim,border:0,borderRadius:10,fontWeight:750,cursor:balanceFor(detail)>0?"pointer":"not-allowed"}}>₺ Tahsilat Al</button>
-        </div>
-        {orders.filter(o=>(o.customerId&&o.customerId===detail.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===detail.name.trim().toLocaleLowerCase("tr-TR"))).slice(0,6).map(o=><div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.06)",fontSize:12,color:T.text}}><span>{o.date} · {o.table||"Masa"}</span><b>{fm(o.total)}</b></div>)}
-        <button onClick={()=>setDetail(null)} style={{width:"100%",padding:12,marginTop:14,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,fontWeight:700,cursor:"pointer"}}>Kapat</button>
-      </Modal>}
-      {ledgerAction&&detail&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>{ledgerAction==="debt"?"Borç Ekle":"Tahsilat Al"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{detail.name} · Mevcut bakiye {fm(balanceFor(detail))}</div>
-        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tutar (TL)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="0,00" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
-        {ledgerAction==="payment"&&<><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Tahsilat yöntemi</label><div style={{display:"flex",gap:8,marginBottom:12}}>{["cash","card"].map(m=><button key={m} onClick={()=>setMethod(m)} style={{flex:1,padding:10,background:method===m?"rgba(52,199,89,.15)":T.bg2,color:method===m?T.accentL:T.textSub,border:"1px solid "+(method===m?T.accent:"rgba(255,255,255,.1)"),borderRadius:9,cursor:"pointer"}}>{m==="cash"?"Nakit":"Kart"}</button>)}</div></>}
-        <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Not (isteğe bağlı)</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Örn. önceki sipariş" style={{width:"100%",padding:12,marginBottom:14,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/>
-        <button onClick={saveLedger} disabled={ledgerSubmitting} style={{width:"100%",padding:13,background:ledgerSubmitting?T.bg3:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:ledgerSubmitting?"not-allowed":"pointer",opacity:ledgerSubmitting ? 0.65 : 1}}>{ledgerSubmitting?"Kaydediliyor…":ledgerAction==="debt"?"Borcu Kaydet":"Tahsilatı Kaydet"}</button><button onClick={()=>{ledgerSubmittingRef.current=false;setLedgerSubmitting(false);setLedgerAction(null);}} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Vazgeç</button>
-      </Modal>}
-    </div>
-  );
+function CustomersScreen({orders,customers,setCustomers,setV,msg,balancesVisible=true}){
+ const [query,setQuery]=useState("");
+ const [showAdd,setShowAdd]=useState(false);
+ const [name,setName]=useState("");
+ const [detail,setDetail]=useState(null);
+ const money=v=>balancesVisible?fm(v):"••••••";
+ const customerOrders=c=>orders.filter(o=>!o.partialPayment&&o.status!=="cancelled"&&((o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("tr-TR")===c.name.trim().toLocaleLowerCase("tr-TR"))));
+ const totalFor=c=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0);
+ const filtered=customers.filter(c=>c.name.toLocaleLowerCase("en-US").includes(query.trim().toLocaleLowerCase("en-US")));
+ const regular=filtered.filter(c=>!c.lurkPlus);
+ const members=filtered.filter(c=>!!c.lurkPlus);
+ function addCustomer(){
+  const clean=name.trim();
+  if(!clean){msg("Customer name is required.");return;}
+  if(customers.some(c=>c.name.trim().toLowerCase()===clean.toLowerCase())){msg("This customer already exists.");return;}
+  setCustomers(prev=>[{id:uid(),name:clean,lurkPlus:false,createdAt:new Date().toISOString()},...prev]);
+  setName("");setShowAdd(false);msg("Customer added.");
+ }
+ function toggleMember(customer){
+  const next=!customer.lurkPlus;
+  setCustomers(prev=>prev.map(c=>c.id===customer.id?{...c,lurkPlus:next,updatedAt:new Date().toISOString()}:c));
+  setDetail(prev=>prev?.id===customer.id?{...prev,lurkPlus:next}:prev);
+  msg(next?"LURK+ membership activated.":"LURK+ membership removed.");
+ }
+ function renderCustomer(c){
+  const list=customerOrders(c);
+  return <button key={c.id} className="lurk-customer-row" onClick={()=>setDetail(c)}>
+   <span className="lurk-customer-avatar">{(c.name||"?").trim().charAt(0).toUpperCase()}</span>
+   <span className="lurk-customer-row-main"><b>{c.name}</b><small>{list.length} orders</small></span>
+   <strong>{money(totalFor(c))}</strong><span className="lurk-customer-chevron">›</span>
+  </button>;
+ }
+ return <div className="lurk-screen lurk-customers-screen lurk-customers-v2">
+  <header className="ds-page-head"><div><div className="ds-eyebrow">LURK / CUSTOMER RELATIONSHIPS</div><h1>Customers</h1></div><button className="ds-button ds-primary-button" onClick={()=>{setName("");setShowAdd(true);}}>＋ Add Customer</button></header>
+  <div className="lurk-customer-summary"><div className="lurk-kpi-card lurk-kpi-primary"><span>All Customers</span><strong>{customers.length}</strong></div><div className="lurk-kpi-card lurk-kpi-primary"><span>LURK+ Members</span><strong>{customers.filter(c=>c.lurkPlus).length}</strong></div></div>
+  <input className="lurk-customer-search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search customers"/>
+  <section className="lurk-customer-block"><div className="lurk-customer-block-head"><h2>All Customers</h2><span>{regular.length}</span></div>{regular.length?regular.map(renderCustomer):<div className="lurk-customer-empty">No regular customers found.</div>}</section>
+  <section className="lurk-customer-block lurk-plus-block"><div className="lurk-customer-block-head"><h2>LURK+ Members</h2><span>{members.length}</span></div>{members.length?members.map(renderCustomer):<div className="lurk-customer-empty">No LURK+ members yet.</div>}</section>
+  {showAdd&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">CUSTOMER DIRECTORY</div><h2>Add Customer</h2><label htmlFor="new-customer-name">Full Name</label><input id="new-customer-name" autoFocus value={name} onChange={e=>setName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addCustomer()} placeholder="Customer name"/><button className="ds-button ds-primary-button" onClick={addCustomer}>Add Customer</button><button className="lurk-modal-cancel" onClick={()=>setShowAdd(false)}>Cancel</button></div></Modal>}
+  {detail&&(()=>{const list=customerOrders(detail);const products={};list.forEach(o=>(o.items||[]).forEach(i=>{products[i.name]=(products[i.name]||0)+(Number(i.qty)||0);}));const top=Object.entries(products).sort((a,b)=>b[1]-a[1]).slice(0,5);const total=totalFor(detail);const last=list.slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")))[0];return <Modal><div className="lurk-customer-detail"><div className="lurk-customer-detail-avatar">{detail.name.trim().charAt(0).toUpperCase()}</div><div className="lurk-eyebrow">CUSTOMER PROFILE</div><h2>{detail.name}</h2><div className="lurk-customer-detail-kpis"><div className="lurk-kpi-card lurk-kpi-primary"><span>Total Spent</span><strong>{money(total)}</strong></div><div className="lurk-kpi-card lurk-kpi-primary"><span>Total Orders</span><strong>{list.length}</strong></div><div className="lurk-kpi-card"><span>Average Order</span><strong>{money(list.length?total/list.length:0)}</strong></div></div><div className="lurk-customer-detail-section"><b>Most Ordered Products</b>{top.length?top.map(([product,count])=><div key={product}><span>{product}</span><strong>{count}</strong></div>):<p>No order history yet.</p>}</div><div className="lurk-customer-last-order">Last Order <b>{last?.date||"—"}</b></div><button className={"lurk-membership-toggle "+(detail.lurkPlus?"is-member":"")} onClick={()=>toggleMember(detail)}>{detail.lurkPlus?"Remove LURK+ Membership":"Make LURK+ Member"}</button><button className="lurk-modal-cancel" onClick={()=>setDetail(null)}>Close</button></div></Modal>})()}
+ </div>;
 }
-
 /* ─── MENU ─── */
 function MenuScreen({menu,setMenu,setV}){
   const[showAdd,setShowAdd]=useState(false);
