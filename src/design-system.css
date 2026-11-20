@@ -1063,3 +1063,119 @@ body{background:#F1F2EF!important}
 }
 .lurk-app .personal-finance [style*="linear-gradient(145deg,#11140F"] [style*="color:#70c98b"],
 .lurk-app .personal-finance [style*="linear-gradient(145deg,#11140f"] [style*="color:#70c98b"]{color:#75df96!important}
+
+
+/* PERSONAL FINANCE REDESIGN · align with the light editorial Menu system */
+.lurk-app .personal-finance{
+  background:#f7f9f5!important;color:#202820!important;
+}
+.lurk-app .personal-finance .pf-summary-card{
+  background:#fff!important;background-image:none!important;
+  border:1px solid #e3e9df!important;border-radius:16px!important;
+  padding:18px!important;margin:0 0 14px!important;
+  box-shadow:0 3px 14px rgba(24,37,29,.035)!important;
+  animation:pf-card-in .42s cubic-bezier(.2,.7,.2,1) both;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+.lurk-app .personal-finance .pf-summary-card:hover{
+  transform:translateY(-2px)!important;border-color:#cbdcc4!important;
+  box-shadow:0 10px 24px rgba(24,37,29,.075)!important;
+}
+.lurk-app .personal-finance .pf-summary-card>button{
+  color:#202820!important;
+}
+.lurk-app .personal-finance .pf-summary-card>button>div[style*="display:contents"]>div>div:first-child{
+  color:#778273!important;
+}
+.lurk-app .personal-finance .pf-summary-card>button>div[style*="display:contents"]>div>div:last-child{
+  color:#202820!important;
+}
+.lurk-app .personal-finance .pf-summary-card>button>div[style*="display:contents"]>div:nth-child(2)>div:last-child{
+  color:#168d45!important;
+}
+.lurk-app .personal-finance .pf-summary-card>button>div[style*="display:flex"]>div:last-child{
+  color:#687567!important;
+}
+.lurk-app .personal-finance .pf-summary-card>button>div[style*="display:flex"]>div:first-child{
+  box-shadow:0 0 0 1px #dce9d9 inset;
+}
+.lurk-app .personal-finance .pf-summary-card>button>div[style*="display:flex"]>div:first-child>div{
+  background:#fff!important;color:#168d45!important;
+}
+.lurk-app .personal-finance .pf-summary-card .lurk-folder-debt-row{
+  background:#f8faf7!important;border:1px solid #e3e9df!important;
+  border-radius:13px!important;box-shadow:none!important;
+  animation:pf-card-in .35s ease both;
+}
+.lurk-app .personal-finance .pf-summary-card .lurk-folder-debt-row :where(div,span,b,strong){
+  color:#263228!important;
+}
+.lurk-app .personal-finance .pf-summary-card .lurk-folder-debt-row :where(button){
+  color:#263228!important;
+}
+.lurk-app .personal-finance .pf-summary-card .lurk-folder-debt-row :where(button:first-child){
+  background:#a5dc32!important;color:#18210f!important;border:0!important;
+}
+.lurk-app .personal-finance .pf-summary-card .lurk-folder-debt-row :where(button:last-child){
+  background:#fff!important;color:#536447!important;border:1px solid #dce5d8!important;
+}
+.lurk-app .personal-finance .pf-kpi-card{
+  background:#fff!important;border:1px solid #e3e9df!important;
+  border-radius:15px!important;box-shadow:0 3px 14px rgba(24,37,29,.035)!important;
+  animation:pf-card-in .45s ease both;
+}
+.lurk-app .personal-finance .pf-debt-card{
+  background:#fff!important;background-image:none!important;
+  color:#202820!important;border:1px solid #e3e9df!important;
+  border-radius:15px!important;box-shadow:0 3px 14px rgba(24,37,29,.04)!important;
+  padding:17px!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+  animation:pf-card-in .42s ease both;
+}
+.lurk-app .personal-finance .pf-debt-card:hover{
+  transform:translateY(-2px)!important;border-color:#cbdcc4!important;
+  box-shadow:0 9px 22px rgba(24,37,29,.075)!important;
+}
+.lurk-app .personal-finance .pf-debt-card :where(div,span,b,strong){
+  color:#263228!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:nth-child(2){
+  background:#f4f7f2!important;border:1px solid #edf1e9!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:nth-child(2) :where(span){
+  color:#687567!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:nth-child(2) :where(b){
+  color:#202820!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:nth-child(2)>div:nth-child(2){
+  background:#e5ebe2!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:nth-child(2)>div:nth-child(2)>div{
+  background:linear-gradient(90deg,#7fbd32,#a5dc32)!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:last-child button:first-child{
+  background:#a5dc32!important;color:#18210f!important;
+  box-shadow:0 4px 12px rgba(121,174,31,.16)!important;
+}
+.lurk-app .personal-finance .pf-debt-card>div:last-child button:last-child{
+  background:#fff!important;color:#536447!important;border:1px solid #dce5d8!important;
+}
+.lurk-app .personal-finance .pf-debt-card button{
+  transition:transform .16s ease,filter .16s ease,box-shadow .16s ease!important;
+}
+.lurk-app .personal-finance .pf-debt-card button:hover{
+  transform:translateY(-1px)!important;filter:brightness(.98);
+}
+@keyframes pf-card-in{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .lurk-app .personal-finance .pf-summary-card,
+  .lurk-app .personal-finance .pf-kpi-card,
+  .lurk-app .personal-finance .pf-debt-card{animation:none!important;transition:none!important}
+}
+@media(max-width:760px){
+  .lurk-app .personal-finance .pf-summary-card{padding:13px!important}
+  .lurk-app .personal-finance .pf-debt-card{padding:13px!important}
+}
