@@ -1372,7 +1372,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
 
   return(
-    <div className="lurk-screen lurk-reports-screen ds-month-review" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
+    <div className="lurk-screen lurk-reports-screen ds-sales-report" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
       <div style={{background:"#0B0D0A",borderBottom:"1px solid rgba(233,225,207,.13)",padding:"20px 16px 17px",display:"flex",alignItems:"center",gap:11}}>
         <button onClick={()=>setV("home")} style={{background:"none",border:"none",fontSize:20,cursor:"pointer",padding:0,color:T.textSub,lineHeight:1}}>←</button>
         <div style={{fontSize:25,fontWeight:900,letterSpacing:"-1px",flex:1,color:"#F0EBDD"}}>Raporlar<div style={{fontSize:9,fontWeight:700,letterSpacing:"2.4px",color:"#92958A",marginTop:4}}>LURK / SALES LEDGER</div></div><button onClick={addManualCash} style={{background:"#24452B",color:"#E9E1CF",border:"1px solid rgba(233,225,207,.2)",borderRadius:9,padding:"10px 11px",fontSize:10,fontWeight:850,cursor:"pointer",whiteSpace:"nowrap"}}>＋ Nakit ekle</button><button onClick={exportMonthCsv} style={{background:"#E9E1CF",color:"#171914",border:"1px solid #F6EFDF",borderRadius:9,padding:"10px 13px",fontSize:11,fontWeight:850,cursor:"pointer"}}>↓ CSV</button>
