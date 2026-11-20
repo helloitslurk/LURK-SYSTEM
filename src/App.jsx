@@ -497,8 +497,7 @@ function POSApp({onLock}){
   ];
 
   return(
-    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>      <style>{`        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         .lurk-app { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
         .lurk-app button, .lurk-app button div, .lurk-app button span { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
         * { box-sizing: border-box; }
@@ -689,6 +688,29 @@ function POSApp({onLock}){
           .lurk-app .editorial-home-pages { padding:18px 14px 0 !important; }
           .lurk-app .editorial-home-day { padding:14px 14px 18px !important; }
         }
+
+        /* Structural redesign: editorial operations dashboard */
+        .lurk-app .editorial-home{background:#F7F8F4!important;color:#174C35!important;min-height:100vh;font-family:Manrope,Inter,sans-serif!important}
+        .home-topbar{height:82px;background:#fff;border-bottom:1px solid #E5EBE4;padding:0 4%;display:flex;align-items:center;justify-content:space-between}
+        .home-brand,.home-top-actions{display:flex;align-items:center;gap:16px}.home-brand img{width:145px}.home-brand span{font-size:9px;letter-spacing:1.6px;color:#849187;border-left:1px solid #E2E9E1;padding-left:16px;font-weight:800}
+        .home-clock{display:flex;flex-direction:column;align-items:flex-end;gap:3px;color:#87948A;font-size:10px;text-transform:capitalize}.home-clock b{font-size:14px;color:#174C35}
+        .home-top-actions button{width:36px;height:36px;border:1px solid #E3EAE1;border-radius:50%;background:#F5F8F3;color:#315C41;cursor:pointer}
+        .home-dashboard{width:min(1380px,92%);margin:auto;padding:34px 0 30px}
+        .home-intro{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}.home-eyebrow,.home-section-title>div>span,.home-day-action>div>span{font-size:9px;font-weight:800;letter-spacing:1.7px;color:#87958A}
+        .home-intro h1{font-size:clamp(34px,4vw,48px);line-height:1.02;letter-spacing:-2.5px;margin:10px 0 7px;color:#174C35}.home-intro p{margin:0;color:#8A968D;font-size:12px}
+        .home-day-pill{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid #E2E9E1;border-radius:30px;background:#fff;color:#849187;font-size:9px;font-weight:800;letter-spacing:1px}.home-day-pill i,.home-revenue-head b i{width:7px;height:7px;border-radius:50%;background:#B6C1B7}.home-day-pill.active{background:#EDF6EF;color:#287047;border-color:#D5E8D9}.home-day-pill.active i,.home-revenue-head b i{background:#5AC987}
+        .home-overview{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+        .home-revenue{background:#174C35;color:#fff;border-radius:16px;padding:26px 29px;min-height:260px;box-shadow:0 12px 32px #174c3518}
+        .home-revenue-head,.home-month-head{display:flex;justify-content:space-between;align-items:center}.home-revenue-head>span,.home-revenue-head b{font-size:9px;font-weight:800;letter-spacing:1.4px;color:#B7D2BF}.home-revenue-head b{display:flex;align-items:center;gap:7px;color:#D4E8D9}
+        .home-revenue-number{font-size:clamp(42px,5vw,64px);font-weight:800;letter-spacing:-3px;margin:24px 0 8px;line-height:1}.home-revenue-number small{font-size:24px;color:#A5CDB0;margin-left:8px}.home-revenue-note{font-size:10px;color:#B7D2BF}
+        .home-revenue-details{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border-top:1px solid #ffffff2b;margin-top:22px;padding-top:15px}.home-revenue-details div{display:flex;flex-direction:column;gap:7px;min-width:0}.home-revenue-details span{font-size:8px;letter-spacing:1.3px;color:#9FC2AA;font-weight:800}.home-revenue-details b{font-size:13px;white-space:nowrap}
+        .home-month{background:#fff;border:1px solid #E5EBE4;border-radius:16px;padding:23px;min-height:260px}.home-month-head>div{display:flex;flex-direction:column;gap:7px}.home-month-head span{font-size:9px;letter-spacing:1.4px;color:#87958A;font-weight:800}.home-month-head b{font-size:17px;text-transform:capitalize}.home-month-head button{background:#EFF6F0;border:0;border-radius:7px;padding:8px 10px;color:#286342;font-size:10px;font-weight:800;cursor:pointer}.home-month>strong{display:block;font-size:25px;letter-spacing:-1px;margin:18px 0 14px}.home-bars{height:72px;display:flex;align-items:flex-end;gap:3px;border-bottom:1px solid #E8EEE7}.home-bars>div{height:100%;flex:1;display:flex;align-items:flex-end;min-width:0}.home-bars i{width:100%;display:block;min-height:2px;background:#DCE9DE;border-radius:3px 3px 0 0}.home-bars .today i{background:#39A96B}.home-bar-labels{display:flex;justify-content:space-between;margin-top:8px;color:#9AA69C;font-size:8px;letter-spacing:1px}
+        .home-workspace{margin-top:32px}.home-section-title{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:13px}.home-section-title h2{font-size:22px;letter-spacing:-.8px;margin:5px 0 0}.home-section-title small{font-size:9px;color:#9BA79D;letter-spacing:1px}
+        .home-page-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.home-page-grid>button{position:relative;min-height:137px;padding:17px 19px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;background:#fff;border:1px solid #E4EBE3;border-radius:11px;color:#174C35;cursor:pointer;transition:.16s}.home-page-grid>button:hover{transform:translateY(-2px);border-color:#B9D6C0;box-shadow:0 8px 20px #174c3510}.home-page-number{font-size:9px;color:#9BA89D;font-weight:800;letter-spacing:1px}.home-page-icon{font-size:21px;color:#39A96B;margin:12px 0 7px}.home-page-grid b{font-size:14px}.home-page-grid small{font-size:10px;color:#89968C;margin-top:4px}.home-page-grid em{position:absolute;right:17px;bottom:17px;font-style:normal;color:#9BAC9F}.home-page-grid>button.featured{background:#EFF6F0;border-color:#DCEADF}.home-page-grid>button.month-feature{background:#E6F0E7;border-color:#D5E5D7}.month-feature>span{font-size:8px;letter-spacing:1.3px;color:#6D8A74;font-weight:800;margin-top:4px}.month-feature>b{font-size:23px;line-height:1.02;letter-spacing:-1px;margin-top:10px}.month-feature>small{color:#66816D!important;margin-top:9px!important}
+        .home-day-action{border-top:1px solid #E4EAE2;margin-top:20px;padding-top:17px;display:flex;align-items:center;justify-content:space-between}.home-day-action>div{display:flex;flex-direction:column;gap:5px}.home-day-action>div>b{font-size:12px}.home-day-action button{background:#174C35;color:#fff;border:0;border-radius:7px;padding:13px 17px;font-size:9px;font-weight:800;letter-spacing:1px;cursor:pointer}
+        .lurk-bottom-nav{background:#fff!important;border-top:1px solid #E5EBE4!important;box-shadow:0 -5px 20px #174c3508!important}.lurk-nav-button span:first-child{color:#829387!important}.lurk-nav-button span:last-child{color:#78877C!important}
+        @media(max-width:999px){.home-topbar{height:70px;padding:0 20px}.home-dashboard{width:calc(100% - 36px);padding-top:25px}.home-overview{grid-template-columns:1fr 1fr}.home-page-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lurk-app .editorial-home{padding-bottom:76px!important}}
+        @media(max-width:650px){.home-brand img{width:105px}.home-brand span{display:none}.home-top-actions{gap:7px}.home-clock{font-size:9px}.home-clock b{font-size:12px}.home-top-actions button{width:31px;height:31px}.home-dashboard{width:calc(100% - 28px);padding-top:22px}.home-intro h1{font-size:35px}.home-overview{grid-template-columns:1fr;gap:9px}.home-revenue{padding:21px 19px;min-height:0}.home-revenue-number{font-size:47px;margin:18px 0 7px}.home-revenue-details{margin-top:17px}.home-revenue-details b{font-size:11px}.home-month{min-height:0;padding:18px}.home-month>strong{margin:13px 0 10px}.home-bars{height:55px}.home-workspace{margin-top:24px}.home-page-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.home-page-grid>button{min-height:125px;padding:14px}.month-feature>b{font-size:21px}.home-day-action{gap:10px}.home-day-action button{padding:12px 11px;white-space:nowrap}}
       `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -719,111 +741,59 @@ function POSApp({onLock}){
 
 /* ─── HOME ─── */
 function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balancesVisible,setBalancesVisible}){
-  const [homeClock,setHomeClock]=useState(()=>new Date());
-  useEffect(()=>{
-    const timer=setInterval(()=>setHomeClock(new Date()),1000);
-    return ()=>clearInterval(timer);
-  },[]);
-
-  const[confirm,setConfirm]=useState(false);
+  const [clock,setClock]=useState(()=>new Date());
+  useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),1000);return()=>clearInterval(timer);},[]);
   const today=tod();
-  const todO=orders.filter(o=>o.date===today&&!o.partialPayment);
-  const todInc=todO.reduce((s,o)=>s+o.total,0);
-  const todCash=todO.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
-  const todCard=todO.reduce((s,o)=>s+paymentAmount(o,"card"),0);
-  const openT=tables.filter(t=>t.s==="o");
-  const openInc=openT.reduce((s,t)=>s+t.order.reduce((ss,o)=>ss+o.price*o.qty,0),0);
+  const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment);
+  const cash=todayOrders.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
+  const card=todayOrders.reduce((s,o)=>s+paymentAmount(o,"card"),0);
+  const closed=todayOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
+  const openTables=tables.filter(t=>t.s==="o");
+  const openRevenue=openTables.reduce((s,t)=>s+t.order.reduce((a,o)=>a+(Number(o.price)||0)*(Number(o.qty)||0),0),0);
+  const total=closed+openRevenue;
   const monthStart=new Date(new Date().getFullYear(),new Date().getMonth(),1);
   const daysInMonth=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
-  const monthDays=Array.from({length:daysInMonth},(_,i)=>{
-    const d=new Date(monthStart.getFullYear(),monthStart.getMonth(),i+1);
-    const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-    const closed=orders.filter(o=>o.date===key).reduce((sum,o)=>sum+(Number(o.total)||0),0);
-    const open=key===today?openInc:0;
-    return {key,day:String(d.getDate()),total:closed+open};
-  });
-  const chartMax=Math.max(1,...monthDays.map(d=>d.total));
-  const chartTicks=[0,0.5,1].map(f=>Math.round(chartMax*f));
-  const monthTotal=monthDays.reduce((sum,d)=>sum+d.total,0);
-
-  const PAGES=[
-    {k:"tables",label:"Masalar",icon:"⊞",sub:openT.length>0?openT.length+" açık masa":"Tüm masalar"},
-    {k:"reports",label:"Raporlar",icon:"≡",sub:"Satış geçmişi"},
-    {k:"customers",label:"Müşteriler",icon:"◎",sub:"Aylık sıralama"},
-    {k:"lurkPlus",label:"LURK+",icon:"＋",sub:"Ön ödemeli üyeler"},
-    {k:"monthReview",label:"Bu ay nasıl geçti?",icon:"↗",sub:"Ciro ve en çok kazandıran 5 ürün"},
-    {k:"menu",label:"Menü",icon:"☰",sub:"Ürün yönetimi"},
+  const days=Array.from({length:daysInMonth},(_,i)=>{const d=new Date(monthStart.getFullYear(),monthStart.getMonth(),i+1);const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return {key,day:i+1,total:orders.filter(o=>o.date===key&&!o.partialPayment).reduce((s,o)=>s+(Number(o.total)||0),0)+(key===today?openRevenue:0)};});
+  const monthTotal=days.reduce((s,d)=>s+d.total,0), maxDay=Math.max(1,...days.map(d=>d.total));
+  const pages=[
+    {k:"tables",n:"01",icon:"▦",label:"Masalar",sub:openTables.length+" açık masa"},
+    {k:"reports",n:"02",icon:"↗",label:"Raporlar",sub:"Satış geçmişi"},
+    {k:"customers",n:"03",icon:"◎",label:"Müşteriler",sub:"Müşteri kayıtları"},
+    {k:"lurkPlus",n:"04",icon:"＋",label:"LURK+",sub:"Üyelik ve bakiyeler"},
+    {k:"menu",n:"05",icon:"☷",label:"Menü yönetimi",sub:"Ürünler ve fiyatlar"}
   ];
-
-  return(
-    <div className="lurk-screen lurk-home-screen editorial-home">
-      {/* Header */}
-      <div className="editorial-home-header" style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
-        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
-          <div>
-            <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:168,maxWidth:"48vw",height:"auto",margin:"0",objectFit:"contain",objectPosition:"left center"}} />
-            <div style={{display:"flex",alignItems:"center",gap:9,flexWrap:"wrap",marginTop:5}}>
-              <span style={{fontSize:12,color:T.textSub}}>{homeClock.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
-              <span style={{width:3,height:3,borderRadius:"50%",background:T.textDim}}/>
-              <span style={{fontSize:12,fontWeight:750,color:T.accentL,fontVariantNumeric:"tabular-nums",letterSpacing:"0.3px"}}>{homeClock.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</span>
-            </div>
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <button type="button" onClick={onLock} aria-label="POS sistemini kilitle" title="Sistemi kilitle" style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:16,cursor:"pointer"}}>⌑</button>
-            <button type="button" onClick={()=>setBalancesVisible(v=>!v)} aria-label={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} title={balancesVisible?"Bakiyeleri gizle":"Bakiyeleri göster"} style={{width:34,height:34,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:11,color:T.textSub,fontSize:17,cursor:"pointer"}}>{balancesVisible?"◉":"⊘"}</button>
-            <div style={{display:"flex",alignItems:"center",gap:6,background:day?"rgba(52,199,89,0.12)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(day?"rgba(52,199,89,0.3)":"rgba(255,255,255,0.1)"),borderRadius:20,padding:"6px 12px"}}>
-              <div style={{width:7,height:7,borderRadius:"50%",background:day?"#34C759":T.textDim}}/>
-              <span style={{fontSize:12,fontWeight:600,color:day?"#34C759":T.textSub}}>{day?"Açık":"Kapalı"}</span>
-            </div>
-          </div>
+  return <div className="lurk-screen lurk-home-screen editorial-home">
+    <header className="home-topbar">
+      <div className="home-brand"><img src="/lurk-logo.svg" alt="LURK."/><span>COFFEE / POS SYSTEM</span></div>
+      <div className="home-top-actions"><div className="home-clock"><span>{clock.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}</span><b>{clock.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</b></div><button onClick={()=>setBalancesVisible(v=>!v)}>{balancesVisible?"◉":"⊘"}</button><button onClick={onLock}>⌑</button></div>
+    </header>
+    <main className="home-dashboard">
+      <div className="home-intro"><div><span className="home-eyebrow">LURK / GÜNLÜK ÖZET</span><h1>Günün nasıl<br/>geçiyor?</h1><p>İşletmenin bugünkü nabzı.</p></div><div className={"home-day-pill "+(day?"active":"")}><i/>{day?"GÜN AÇIK":"GÜN KAPALI"}</div></div>
+      <section className="home-overview">
+        <div className="home-revenue">
+          <div className="home-revenue-head"><span>BUGÜNÜN TOPLAM CİROSU</span><b><i/> CANLI</b></div>
+          <div className="home-revenue-number">{balancesVisible?fm(total).replace(" TL",""):"••••••"}<small>₺</small></div>
+          <div className="home-revenue-note">{todayOrders.length} kapanan adisyon <span>·</span> {openTables.length} açık masa</div>
+          <div className="home-revenue-details"><div><span>NAKİT</span><b>{balancesVisible?fm(cash):"••••"}</b></div><div><span>KART</span><b>{balancesVisible?fm(card):"••••"}</b></div><div><span>AÇIK HESAP</span><b>{balancesVisible?fm(openRevenue):"••••"}</b></div></div>
         </div>
-
-        {/* Bugün ciro özeti: mobilde taşmayan kompakt kartlar */}
-        <div className="lurk-home-stats" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,width:"100%",minWidth:0}}>
-          {[
-            {label:"Toplam",val:fm(todInc+openInc),sub:todO.length+" kapanan"},
-            {label:"Nakit",val:fm(todCash),sub:"bugün"},
-            {label:"Kart",val:fm(todCard),sub:"bugün"},
-          ].map((s,i)=>(
-            <div className="editorial-home-stat" key={i} style={{background:"rgba(255,255,255,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.07)",minWidth:0,overflow:"hidden"}}>
-              <div style={{fontSize:9,color:T.textSub,fontWeight:650,textTransform:"uppercase",letterSpacing:"0.45px",marginBottom:5,whiteSpace:"nowrap"}}>{s.label}</div>
-              <div style={{fontSize:"clamp(11px, 2.8vw, 15px)",fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.45px",whiteSpace:"nowrap",fontVariantNumeric:"tabular-nums",filter:balancesVisible?"none":"blur(7px)",userSelect:balancesVisible?"auto":"none"}}>{balancesVisible?s.val.replace(" TL",""):"••••••"}</div>
-              <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
-            </div>
-          ))}
+        <div className="home-month">
+          <div className="home-month-head"><div><span>AYLIK PERFORMANS</span><b>{clock.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})}</b></div><button onClick={()=>setV("monthReview")}>Detay ↗</button></div>
+          <strong>{balancesVisible?fm(monthTotal):"••••••"}</strong>
+          <div className="home-bars">{days.map(d=><div key={d.key} className={d.key===today?"today":""} title={d.day+". gün · "+fm(d.total)}><i style={{height:Math.max(d.total?4:2,d.total/maxDay*100)+"%"}}/></div>)}</div>
+          <div className="home-bar-labels"><span>AY BAŞI</span><span>BUGÜN</span><span>AY SONU</span></div>
         </div>
-      </div>
-
-      {/* Hızlı erişim grid */}
-      <div className="editorial-home-pages" style={{padding:"16px 14px 0"}}>
-        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
-        <div className="lurk-home-pages-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-          {PAGES.map((p,i)=>(
-            <button className="lurk-home-page-card" key={p.k} onClick={()=>setV(p.k)} style={{background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:16,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,minHeight:90,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:-15,right:-15,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.03)"}}/>
-              <div style={{fontSize:22,marginBottom:10,color:T.textSub,opacity:0.6}}>{p.icon}</div>
-              <div style={{fontSize:14,fontWeight:700,color:T.text}}>{p.label}</div>
-              <div style={{fontSize:11,color:T.textDim,marginTop:3}}>{p.sub}</div>
-            </button>
-          ))}
+      </section>
+      <section className="home-workspace">
+        <div className="home-section-title"><div><span>ÇALIŞMA ALANI</span><h2>Hızlı erişim</h2></div><small>01 / 05</small></div>
+        <div className="home-page-grid">
+          {pages.map((p,i)=><button key={p.k} className={i===0?"featured":""} onClick={()=>setV(p.k)}><span className="home-page-number">{p.n}</span><span className="home-page-icon">{p.icon}</span><b>{p.label}</b><small>{p.sub}</small><em>↗</em></button>)}
+          <button className="month-feature" onClick={()=>setV("monthReview")}><span>AY SONU DEĞERLENDİRMESİ</span><b>Bu ay<br/>nasıl geçti?</b><small>Ciroyu ve en çok satanları incele ↗</small></button>
         </div>
-      </div>
-
-      <div className="editorial-home-day" style={{padding:"14px 14px 0"}}>
-        {day?(
-          <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
-            Günü Kapat
-          </button>
-        ):(
-          <button onClick={openDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
-            Günü Başlat
-          </button>
-        )}
-      </div>
-    </div>
-  );
+      </section>
+      <footer className="home-day-action"><div><span>OPERASYON</span><b>{day?"Gün devam ediyor":"Yeni güne hazır mısın?"}</b></div><button onClick={day?closeDay:openDay}>{day?"GÜNÜ KAPAT":"GÜNÜ BAŞLAT"}　→</button></footer>
+    </main>
+  </div>;
 }
-
 /* ─── TABLES ─── */
 function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomers,setV,setSel,msg}){
   const[showNew,setShowNew]=useState(false);
@@ -997,8 +967,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                     <div style={{textAlign:"right",flexShrink:0}}>
                       <div style={{fontSize:9,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
                       <div style={{fontSize:12,color:T.accentL,fontWeight:800,marginTop:1,whiteSpace:"nowrap"}}>{fm(item.price*item.qty)}</div>
-                    </div>
-                  </div>
+                    </div>                  </div>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
                     <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:26,borderRadius:7,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
                     <span style={{minWidth:20,textAlign:"center",fontWeight:800,fontSize:13,color:T.text}}>{item.qty}</span>
@@ -1497,8 +1466,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const installmentStats=folderStats(installmentDebts);
   const fiddleStats=folderStats(fiddleDebts);
   const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti"];
-  const freedomDebts=debts.filter(d=>freedomIds.includes(d.id));
-  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
+  const freedomDebts=debts.filter(d=>freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
   function reorderVisibleDebts(sourceId,targetId){
@@ -1997,8 +1965,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
   const [method,setMethod]=useState("cash");
   const [note,setNote]=useState("");
   const [ledgerSubmitting,setLedgerSubmitting]=useState(false);
-  const ledgerSubmittingRef=useRef(false);
-  const currentMonth=thisMonth();
+  const ledgerSubmittingRef=useRef(false);  const currentMonth=thisMonth();
   const [selectedMonth,setSelectedMonth]=useState(currentMonth);
   const orderMonths=orders.map(o=>(o.date||"").slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)&&m<=currentMonth);
   const firstMonth=orderMonths.length?orderMonths.reduce((earliest,m)=>m<earliest?m:earliest,currentMonth):currentMonth;
