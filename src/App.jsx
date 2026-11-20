@@ -292,7 +292,12 @@ function POSApp({onLock}){
       const ce=await sbGet("lurk_credit",[]);
       const lp=await sbGet("lurk_plus_members",[]);
       const pd=await sbGet("lurk_personal_debts",null).catch(()=>null);
-      setTbl(Array.isArray(t)?t:[]);
+      setTbl((Array.isArray(t)?t:[]).map(table=>{
+        const legacyName=String(table?.lbl||"").trim();
+        if(/^masa\\s*1$/i.test(legacyName)||/^table\\s*0?1$/i.test(legacyName))return {...table,lbl:"MOJO"};
+        if(/^masa\\s*2$/i.test(legacyName)||/^table\\s*0?2$/i.test(legacyName))return {...table,lbl:"DEREN"};
+        return table;
+      }));
       setOrd((Array.isArray(o)?o:[]).slice().reverse().map((order,index)=>({...order,orderNumber:Number(order.orderNumber)||index+1})).reverse());
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
@@ -960,9 +965,16 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
 function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomers,setV,setSel,msg}){
  const [showAdd,setShowAdd]=useState(false);
  const [tableName,setTableName]=useState("");
- const [deleteId,setDeleteId]=useState(null);
+ const [deleteId,setDeleteId]=useState(null);\n const [editId,setEditId]=useState(null);\n const [editName,setEditName]=useState("");
  const [filter,setFilter]=useState("all");
  const visible=tables.filter(t=>filter==="all"||(filter==="occupied"?t.s==="o":t.s!=="o"));
+ function saveTableName(){
+  const clean=editName.trim();
+  if(!clean){msg("Enter a table name.");return;}
+  if(tables.some(t=>t.id!==editId&&(t.lbl||"").trim().toLowerCase()===clean.toLowerCase())){msg("A table with this name already exists.");return;}
+  setTbl(prev=>prev.map(t=>t.id===editId?{...t,lbl:clean}:t));
+  setEditId(null);setEditName("");msg("Table name updated.");
+ }
  function addTable(){
   const clean=tableName.trim();
   if(!clean){msg("Enter a table name.");return;}
@@ -990,12 +1002,12 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
     return <div className="lurk-table-list-row" key={t.id}>
      <b>{t.lbl}</b><span className={"lurk-status "+(occupied?"occupied":"available")}>{occupied?"Occupied":"Available"}</span>
      <span>{occupied?count+" items":"—"}</span><strong>{occupied?fm(amount):"—"}</strong><span>{occupied?duration:"—"}</span>
-     <div className="lurk-table-row-actions"><button className="lurk-open-table" onClick={()=>{setSel(t.id);setV("order");}}>{occupied?"Open Order":"Open Table"} ↗</button><button className="lurk-delete-table" onClick={()=>setDeleteId(t.id)} aria-label={"Delete "+t.lbl}>···</button></div>
+     <div className="lurk-table-row-actions"><button className="lurk-open-table" onClick={()=>{setSel(t.id);setV("order");}}>{occupied?"Open Order":"Open Table"} ↗</button><button className="lurk-delete-table" onClick={()=>{setEditId(t.id);setEditName(t.lbl||"");}} aria-label={"Rename "+t.lbl} title="Rename table">✎</button><button className="lurk-delete-table" onClick={()=>setDeleteId(t.id)} aria-label={"Delete "+t.lbl}>···</button></div>
     </div>;
    })}
   </div>
-  {showAdd&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Add Table</h2><label htmlFor="lurk-table-name">Table Name</label><input id="lurk-table-name" autoFocus value={tableName} onChange={e=>setTableName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTable()} placeholder="e.g. Table 01"/><button className="ds-button ds-primary-button" onClick={addTable}>Add Table</button><button className="lurk-modal-cancel" onClick={()=>{setShowAdd(false);setTableName("");}}>Cancel</button></div></Modal>}
-  {deleteId&&<Confirm title="Delete Table" msg="This table will be removed." onOk={()=>{const t=tables.find(x=>x.id===deleteId);if(t&&(t.s==="o"||(t.order||[]).length)){msg("Close the active order before deleting this table.");setDeleteId(null);return;}setTbl(prev=>prev.filter(x=>x.id!==deleteId));setDeleteId(null);msg("Table deleted.");}} onCancel={()=>setDeleteId(null)}/>}
+  {showAdd&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Add Table</h2><label htmlFor="lurk-table-name">Table Name</label><input id="lurk-table-name" autoFocus value={tableName} onChange={e=>setTableName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTable()} placeholder="e.g. MOJO"/><button className="ds-button ds-primary-button" onClick={addTable}>Add Table</button><button className="lurk-modal-cancel" onClick={()=>{setShowAdd(false);setTableName("");}}>Cancel</button></div></Modal>}
+  {editId&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Rename Table</h2><label htmlFor="lurk-edit-table-name">Table Name</label><input id="lurk-edit-table-name" autoFocus value={editName} onChange={e=>setEditName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&saveTableName()}/><button className="ds-button ds-primary-button" onClick={saveTableName}>Save Name</button><button className="lurk-modal-cancel" onClick={()=>{setEditId(null);setEditName("");}}>Cancel</button></div></Modal>}\n  {deleteId&&<Confirm title="Delete Table" msg="This table will be removed." onOk={()=>{const t=tables.find(x=>x.id===deleteId);if(t&&(t.s==="o"||(t.order||[]).length)){msg("Close the active order before deleting this table.");setDeleteId(null);return;}setTbl(prev=>prev.filter(x=>x.id!==deleteId));setDeleteId(null);msg("Table deleted.");}} onCancel={()=>setDeleteId(null)}/>}
  </div>;
 }
 /* ─── ORDER ─── */
