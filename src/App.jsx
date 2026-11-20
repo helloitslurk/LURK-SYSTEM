@@ -951,7 +951,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
     <div className="lurk-weekly-chart" role="group" aria-label="Sales over the last seven days">
      {recentDays.map(d=><button key={d.key} className={"lurk-weekly-bar-wrap "+(hoveredDay===d.key?"is-active":"")} onMouseEnter={()=>setHoveredDay(d.key)} onMouseLeave={()=>setHoveredDay(null)} onFocus={()=>setHoveredDay(d.key)} onBlur={()=>setHoveredDay(null)} onClick={()=>setHoveredDay(hoveredDay===d.key?null:d.key)} aria-label={d.dateLabel+", "+money(d.amount)}>
       {hoveredDay===d.key&&<span className="lurk-chart-tooltip"><b>{d.dateLabel}</b><strong>{money(d.amount)}</strong></span>}
-      <span className="lurk-weekly-bar" style={{height:Math.max(5,(d.amount/maxDay)*100)+"%"}}/>
+      <span className="lurk-chart-value">{money(d.amount).replace(" TL","")}</span><span className="lurk-weekly-bar" style={{height:Math.max(5,(d.amount/maxDay)*100)+"%"}}/>
       <small>{d.label}</small>
      </button>)}
     </div>
