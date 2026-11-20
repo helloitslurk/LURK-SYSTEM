@@ -1179,3 +1179,40 @@ body{background:#F1F2EF!important}
   .lurk-app .personal-finance .pf-summary-card{padding:13px!important}
   .lurk-app .personal-finance .pf-debt-card{padding:13px!important}
 }
+
+
+/* APP-WIDE WHEEL SCROLL FIX
+   Keep the dashboard shell from trapping the document in a fixed-height,
+   overflow-hidden viewport. The page itself becomes the vertical scroller. */
+html,body,#root{
+  height:auto!important;min-height:100%!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+}
+.lurk-app:has(.ref-dashboard){
+  height:auto!important;min-height:100dvh!important;max-height:none!important;
+  overflow:visible!important;
+}
+.lurk-app:has(.ref-dashboard) .ref-dashboard{
+  height:auto!important;min-height:100dvh!important;max-height:none!important;
+  overflow:visible!important;align-items:stretch!important;
+}
+.lurk-app:has(.ref-dashboard) .ref-sidebar{
+  position:sticky!important;top:0!important;height:100dvh!important;
+  align-self:start!important;overflow-y:auto!important;
+}
+.lurk-app:has(.ref-dashboard) .ref-main{
+  height:auto!important;min-height:100dvh!important;max-height:none!important;
+  overflow:visible!important;min-width:0!important;
+}
+.lurk-app:has(.ref-dashboard) .ref-content{
+  height:auto!important;min-height:calc(100dvh - 116px)!important;
+  max-height:none!important;overflow:visible!important;
+  overscroll-behavior:auto!important;
+}
+/* The old mobile shell also locked the page to the viewport. */
+@media(max-width:700px){
+  .lurk-app:has(.ref-dashboard){height:auto!important;min-height:100dvh!important;overflow:visible!important}
+  .lurk-app:has(.ref-dashboard) .ref-dashboard,
+  .lurk-app:has(.ref-dashboard) .ref-main{height:auto!important;min-height:100dvh!important;overflow:visible!important}
+  .lurk-app:has(.ref-dashboard) .ref-content{height:auto!important;min-height:calc(100dvh - 68px)!important;overflow:visible!important}
+}
