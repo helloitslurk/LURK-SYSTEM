@@ -196,8 +196,10 @@ function POSLogin({onLogin}){
       if(!r.ok)throw new Error("Giriş doğrulanamadı.");
       const token=await r.json();
       if(typeof token!=="string"||token.length<32){setError("PIN hatalı. Tekrar dene.");return;}
-      localStorage.setItem("lurk_pos_session",token);
-      sessionStorage.setItem("lurk_pos_session",token);
+      let stored=false;
+      try{localStorage.setItem("lurk_pos_session",token);stored=true;}catch(storageError){}
+      try{sessionStorage.setItem("lurk_pos_session",token);stored=true;}catch(storageError){}
+      if(!stored)throw new Error("Oturum bu tarayıcıda saklanamadı. Gizlilik ayarlarını kontrol et.");
       onLogin();
     }catch(e){setError(e.message||"Bağlantı hatası. Tekrar dene.");}
     finally{setBusy(false);}
