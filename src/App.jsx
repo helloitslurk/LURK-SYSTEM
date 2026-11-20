@@ -1822,7 +1822,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
               {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
+              <button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {new Date(p.date).toLocaleDateString("en-US")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
@@ -1855,7 +1855,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
               {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
+              <button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {p.date?new Date(p.date).toLocaleDateString("en-US"):"Date not specified"}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
