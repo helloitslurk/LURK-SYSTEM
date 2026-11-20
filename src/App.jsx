@@ -89,11 +89,11 @@ const HISTORY=[
 ];
 
 const T={
-  bg:"#090B0A",bg2:"rgba(255,255,255,0.055)",bg3:"rgba(255,255,255,0.085)",
-  border:"rgba(255,255,255,0.12)",border2:"rgba(255,255,255,0.2)",
-  accent:"#34C759",accentL:"#34C759",accentD:"#248A3D",
-  text:"#F5F5F5",textSub:"#A0A0A0",textDim:"#666",
-  danger:"#FF453A",warn:"#FF9F0A",
+  bg:"#F7F8F6",bg2:"#FFFFFF",bg3:"#EEF3EE",
+  border:"#E4EAE4",border2:"#D4DED4",
+  accent:"#168D35",accentL:"#258E3D",accentD:"#126C2B",
+  text:"#172019",textSub:"#68756B",textDim:"#929C94",
+  danger:"#D94841",warn:"#C98518",
 };
 
 function posSessionToken(){
@@ -754,6 +754,37 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
 @media(max-height:760px) and (min-width:701px){.ref-content{padding-top:12px;padding-bottom:10px}.ref-heading{margin-bottom:10px}.ref-heading h1{font-size:25px}.ref-stat-card{padding:10px 12px}.ref-stat-card strong{margin:6px 0 3px}.ref-dashboard-grid{gap:10px}.ref-panel{padding:12px 14px}.ref-chart{height:105px}.ref-quick-section{margin-top:10px}.ref-quick-grid button{min-height:52px;padding:8px}.ref-op-row{padding:8px 0}.ref-primary-action{padding:9px;margin-top:8px}}
 @media(max-width:1100px) and (min-width:701px){.lurk-app:has(.ref-dashboard) .ref-dashboard{grid-template-columns:205px minmax(0,1fr)!important}.ref-sidebar{padding:20px 13px}.ref-content{padding-left:18px;padding-right:18px}.ref-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ref-dashboard-grid{grid-template-columns:minmax(0,1.2fr) minmax(220px,1fr)}.ref-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.lurk-app:has(.ref-dashboard){height:100dvh!important;overflow:hidden!important}.lurk-app:has(.ref-dashboard) .ref-dashboard{display:block!important;overflow:hidden!important}.ref-sidebar{display:none}.ref-main{height:100dvh;margin:0;border-radius:0;overflow:hidden}.ref-topbar{height:56px;min-height:56px;padding:0 14px;justify-content:space-between}.ref-mobile-brand{display:flex;align-items:center;gap:8px;color:#19231b}.ref-mobile-brand .ref-brand-mark{width:28px;height:28px}.ref-topbar>span{display:none}.ref-top-actions{gap:6px}.ref-top-actions button{width:32px;height:32px}.ref-avatar{width:30px;height:30px}.ref-content{height:calc(100dvh - 56px);padding:17px 13px 18px;overflow-y:auto}.ref-heading{align-items:flex-start;margin-bottom:13px}.ref-heading h1{font-size:25px}.ref-heading p{font-size:10px}.ref-day-state{font-size:8px;padding:7px 8px}.ref-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}.ref-stat-card{padding:11px}.ref-stat-card>div{font-size:10px}.ref-stat-card strong{font-size:18px;margin:7px 0 3px}.ref-stat-card small{font-size:8px}.ref-stat-card i{width:25px;height:25px;flex-basis:25px}.ref-dashboard-grid{grid-template-columns:1fr;gap:9px}.ref-panel{padding:13px}.ref-panel-heading h2{font-size:16px}.ref-chart{height:115px}.ref-quick-section{margin-top:11px}.ref-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.ref-quick-grid button{min-height:54px;padding:8px}.ref-quick-grid b{font-size:9px}}
+
+
+/* LURK POS shared light-green design system for all operational screens */
+.lurk-screen:not(.ref-dashboard){background:#f7f8f6!important;color:#172019!important;min-height:calc(100dvh - 76px)!important;max-width:100vw;overflow-x:hidden}
+.lurk-screen:not(.ref-dashboard)>div:first-child{background:#fff!important;color:#172019!important;border-bottom:1px solid #e5ebe5!important;box-shadow:0 2px 8px #17201905}
+.lurk-screen:not(.ref-dashboard) button{font-family:Inter,"Helvetica Neue",Arial,sans-serif}
+.lurk-screen:not(.ref-dashboard) input,.lurk-screen:not(.ref-dashboard) select,.lurk-screen:not(.ref-dashboard) textarea{background:#fff!important;color:#172019!important;border:1px solid #dfe7df!important;border-radius:10px}
+.lurk-screen:not(.ref-dashboard) input::placeholder,.lurk-screen:not(.ref-dashboard) textarea::placeholder{color:#929c94!important}
+.lurk-screen:not(.ref-dashboard) button[style*="background:#0B0D0A"],.lurk-screen:not(.ref-dashboard) button[style*="background: #0B0D0A"],.lurk-screen:not(.ref-dashboard) button[style*="background:#11140F"]{background:#fff!important;color:#26342a!important;border:1px solid #e1e9e1!important}
+.lurk-screen:not(.ref-dashboard) [style*="linear-gradient(145deg,#EDE5D4"]{background:#fff!important;color:#172019!important;border:1px solid #e2e9e2!important;box-shadow:0 3px 12px #17201908!important}
+.lurk-screen:not(.ref-dashboard) [style*="background:T.bg2"],.lurk-screen:not(.ref-dashboard) [style*="background: T.bg2"]{background:#fff!important;border-color:#e3eae3!important;color:#172019!important}
+.lurk-screen:not(.ref-dashboard) [style*="rgba(13,13,13"]{background:#fff!important;color:#172019!important;border-color:#e5ebe5!important}
+.lurk-screen:not(.ref-dashboard) [style*="rgba(255,255,255,0.05)"],.lurk-screen:not(.ref-dashboard) [style*="rgba(255,255,255,0.06)"],.lurk-screen:not(.ref-dashboard) [style*="rgba(255,255,255,0.055)"]{background:#f1f5f1!important;border-color:#e1e9e1!important;color:#26342a!important}
+.lurk-screen:not(.ref-dashboard) [style*="color:T.text"],.lurk-screen:not(.ref-dashboard) [style*="color: T.text"]{color:#172019!important}
+.lurk-screen:not(.ref-dashboard) [style*="color:T.textSub"],.lurk-screen:not(.ref-dashboard) [style*="color: T.textSub"]{color:#68756b!important}
+.lurk-screen:not(.ref-dashboard) [style*="color:T.textDim"],.lurk-screen:not(.ref-dashboard) [style*="color: T.textDim"]{color:#929c94!important}
+.lurk-bottom-nav{background:rgba(255,255,255,.97)!important;border-top:1px solid #e3eae3!important;box-shadow:0 -5px 18px #1720190a!important;backdrop-filter:blur(24px)!important}
+.lurk-bottom-nav button{color:#66736a!important}
+.lurk-bottom-nav button[aria-current="page"],.lurk-bottom-nav button.active{color:#168d35!important}
+.lurk-tables-screen,.lurk-reports-screen,.lurk-customers-screen,.lurk-menu-screen,.lurk-settings-screen,.personal-finance{padding-bottom:calc(86px + env(safe-area-inset-bottom))!important}
+.lurk-tables-screen>div:nth-child(2),.lurk-reports-screen>div:nth-child(2),.lurk-customers-screen>div:nth-child(2),.lurk-menu-screen>div:nth-child(2),.lurk-settings-screen>div:nth-child(2){max-width:1440px;margin:0 auto;width:100%}
+.lurk-tables-screen [style*="gridTemplateColumns"],.lurk-menu-screen [style*="gridTemplateColumns"]{min-width:0}
+.lurk-order-screen{background:#f7f8f6!important;color:#172019!important}
+.lurk-order-screen>div:first-child{background:#fff!important;color:#172019!important;border-bottom:1px solid #e5ebe5!important}
+.lurk-order-screen [style*="background:rgba(13,13,13"]{background:#fff!important;color:#172019!important;border-color:#e5ebe5!important}
+.lurk-order-screen [style*="background:T.bg2"],.lurk-order-screen [style*="background: T.bg2"]{background:#fff!important;color:#172019!important;border-color:#e3eae3!important}
+.lurk-order-screen [style*="color:T.text"],.lurk-order-screen [style*="color: T.text"]{color:#172019!important}
+.lurk-order-screen [style*="color:T.textSub"],.lurk-order-screen [style*="color: T.textSub"]{color:#68756b!important}
+.lurk-order-screen button{border-radius:10px}
+.personal-finance form{background:#fff!important;border:1px solid #e3eae3!important;box-shadow:0 8px 30px #1720190b}
+@media(max-width:700px){.lurk-screen:not(.ref-dashboard){min-height:calc(100dvh - 68px)!important;padding-bottom:calc(82px + env(safe-area-inset-bottom))!important}.lurk-tables-screen>div:nth-child(2),.lurk-reports-screen>div:nth-child(2),.lurk-customers-screen>div:nth-child(2),.lurk-menu-screen>div:nth-child(2),.lurk-settings-screen>div:nth-child(2){padding-left:12px!important;padding-right:12px!important}.lurk-order-screen{height:100dvh!important;max-height:100dvh!important}.lurk-order-screen>div:first-child{padding-top:max(10px,env(safe-area-inset-top))!important}}
 
 `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
