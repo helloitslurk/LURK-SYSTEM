@@ -1,7 +1,7 @@
 {
-  "name": "LURK | Adisyon Sistemi",
+  "name": "LURK POS",
   "short_name": "LURK",
-  "description": "Lurk adisyon ve satış yönetim sistemi",
+  "description": "LURK point-of-sale and sales management system",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F0F0F5",
