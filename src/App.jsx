@@ -988,10 +988,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
  }
  return <div className="lurk-screen lurk-tables-screen ds-tables lurk-tables-list">
   <header className="ds-page-head"><div><div className="ds-eyebrow">LURK / FLOOR MANAGEMENT</div><h1>Tables</h1></div><button className="ds-button ds-primary-button" onClick={()=>setShowAdd(true)}>＋ Add Table</button></header>
-  <section className="lurk-table-list-toolbar">
-   <div className="lurk-table-filters">
-    {[[ "all","All Tables"],["occupied","Occupied"],["available","Available"]].map(([key,label])=><button key={key} className={filter===key?"active":""} onClick={()=>setFilter(key)}>{label}</button>)}
-   </div>
+  <section className="lurk-table-list-toolbar lurk-table-list-toolbar-simple">
    <span>{visible.length} tables</span>
   </section>
   <div className="lurk-table-list-wrap">
