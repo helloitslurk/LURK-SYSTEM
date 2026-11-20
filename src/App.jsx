@@ -2383,15 +2383,15 @@ function Modal({children}){
 
 function Confirm({title,msg,onOk,onCancel}){
   return(
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.65)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
-      <div style={{background:"#1C1C1E",borderRadius:16,width:280,overflow:"hidden",border:"0.5px solid rgba(255,255,255,0.12)"}}>
-        <div style={{padding:"22px 18px 16px",textAlign:"center"}}>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>{title}</div>
-          {msg&&<div style={{fontSize:13,color:T.textSub}}>{msg}</div>}
-        </div>
-        <div style={{borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex"}}>
-          <button onClick={onCancel} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",borderRight:"0.5px solid rgba(255,255,255,0.08)",color:T.text,fontSize:16,cursor:"pointer"}}>Cancel</button>
-          <button onClick={onOk} style={{flex:1,padding:"15px 0",background:"transparent",border:"none",color:T.danger,fontWeight:700,fontSize:16,cursor:"pointer"}}>Confirm</button>
+    <div className="lurk-confirm-overlay" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)onCancel?.();}}>
+      <div className="lurk-confirm-card" role="dialog" aria-modal="true" aria-labelledby="lurk-confirm-title">
+        <div className="lurk-confirm-icon">!</div>
+        <div className="lurk-confirm-eyebrow">CONFIRM ACTION</div>
+        <h2 id="lurk-confirm-title">{title}</h2>
+        {msg&&<p>{msg}</p>}
+        <div className="lurk-confirm-actions">
+          <button className="lurk-confirm-cancel" onClick={onCancel}>Cancel</button>
+          <button className="lurk-confirm-delete" onClick={onOk}>Delete Table</button>
         </div>
       </div>
     </div>
