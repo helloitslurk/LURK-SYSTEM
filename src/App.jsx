@@ -1036,6 +1036,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const[disc,setDisc]=useState("");
   const[search,setSearch]=useState("");
   const[flash,setFlash]=useState(null);
+  const [lineActionId,setLineActionId]=useState(null);
   const[pt,setPt]=useState("cash");
   const[splitMode,setSplitMode]=useState(false);
   const[partialMode,setPartialMode]=useState(false);
@@ -1090,22 +1091,27 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                   <div style={{fontSize:14,fontWeight:600,color:T.textSub}}>No orders yet</div>
                 </div>
               :grouped.map((item,index)=>(
-                <div className="ds-order-line" key={item.oid||item.id} style={{background:index%2===0?"rgba(25,48,34,0.62)":"rgba(31,35,36,0.78)",borderRadius:10,padding:"7px 9px",marginBottom:4,border:"0.5px solid "+(index%2===0?"rgba(72,130,88,0.20)":"rgba(255,255,255,0.08)")}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginBottom:5}}>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:12,fontWeight:750,color:T.text,lineHeight:1.2,overflowWrap:"anywhere"}}>{item.name}</div>
-                      <div style={{fontSize:9,color:T.textDim,marginTop:2}}>{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Time added not recorded"}</div>
+                <div className="ds-order-line lurk-order-compact-line" key={item.oid||item.id}>
+                  <div className="lurk-order-line-main">
+                    <div className="lurk-order-line-copy">
+                      <div className="lurk-order-line-name">{item.name}</div>
+                      <div className="lurk-order-line-meta">{item.addedAt?new Date(item.addedAt).toLocaleString("tr-TR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Time added not recorded"}</div>
                     </div>
-                    <div style={{textAlign:"right",flexShrink:0}}>
-                      <div style={{fontSize:9,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
-                      <div style={{fontSize:12,color:T.accentL,fontWeight:800,marginTop:1,whiteSpace:"nowrap"}}>{fm(Math.max(0,item.price*item.qty-(Number(item.discount)||0)))}</div>{Number(item.discount)>0&&<div style={{fontSize:9,color:T.danger}}>−{fm(item.discount)} discount</div>}
-                    </div>                  </div>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:26,borderRadius:7,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
-                    <span style={{minWidth:20,textAlign:"center",fontWeight:800,fontSize:13,color:T.text}}>{item.qty}</span>
-                    <button aria-label={item.name+" increase"} onClick={()=>addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on})} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(52,199,89,0.3)",background:"rgba(52,199,89,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
-                    <button onClick={()=>setLineDiscount(item)} style={{flex:1,height:30,borderRadius:8,border:"1px solid #E5E8E0",background:"#fff",color:"#4E574A",fontSize:10,fontWeight:850,cursor:"pointer"}}>Discount</button>
+                    <div className="lurk-order-line-price">
+                      <span>{fm(item.price)} × {item.qty}</span>
+                      <strong>{fm(Math.max(0,item.price*item.qty-(Number(item.discount)||0)))}</strong>
+                      {Number(item.discount)>0&&<small>−{fm(item.discount)} discount</small>}
+                    </div>
+                    <div className="lurk-order-line-menu">
+                      <button className="lurk-order-line-more" aria-label={"Options for "+item.name} aria-haspopup="menu" aria-expanded={lineActionId===(item.oid||String(item.id))} onClick={()=>setLineActionId(lineActionId===(item.oid||String(item.id))?null:(item.oid||String(item.id)))}>···</button>
+                      {lineActionId===(item.oid||String(item.id))&&<div className="lurk-order-line-popover" role="menu">
+                        <button role="menuitem" onClick={()=>{chQ(table.id,item.oid||String(item.id),-1);setLineActionId(null);}}>− Decrease quantity</button>
+                        <button role="menuitem" onClick={()=>{addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on});setLineActionId(null);}}>＋ Increase quantity</button>
+                        <button role="menuitem" onClick={()=>{setLineDiscount(item);setLineActionId(null);}}>％ Discount</button>
+                      </div>}
+                    </div>
                   </div>
+                  <div className="lurk-order-line-qty">Quantity: <b>{item.qty}</b></div>
                 </div>
               ))
             }
