@@ -1442,9 +1442,11 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const topupTotal=lurkPlusTopups.reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const topupCash=lurkPlusTopups.filter(e=>e.method==="cash").reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const topupCard=lurkPlusTopups.filter(e=>e.method==="card").reduce((sum,e)=>sum+(Number(e.amount)||0),0);
+  const topupTotalDisplay=topupTotal;
   const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0)+monthLedger.filter(e=>(e.type==="payment"&&e.method==="cash")||e.type==="manual_cash").reduce((s,e)=>s+(Number(e.amount)||0),0)+topupCash;
   const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="card").reduce((s,e)=>s+(Number(e.amount)||0),0)+topupCard;
   const dayMap={};
+  lurkPlusTopups.forEach(e=>{const d=(e.date||"").slice(0,10);if(!d)return;if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};if(!dayMap[d].topups)dayMap[d].topups=[];dayMap[d].topups.push(e);});
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
   monthLedger.filter(e=>e.type==="manual_cash"&&e.date).forEach(e=>{const d=e.date.slice(0,10);if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};dayMap[d].inc+=(Number(e.amount)||0);if(!dayMap[d].manualCash)dayMap[d].manualCash=[];dayMap[d].manualCash.push(e);});
@@ -1472,6 +1474,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
           {label:"Sales",val:fm(totalInc),color:T.accentL},
           {label:"Cash collected",val:fm(totalCash),color:T.text},
           {label:"Card collected",val:fm(totalCard),color:T.text},
+          {label:"LURK+ top-ups",val:fm(topupTotalDisplay),color:T.text},
         ].map((s,i)=>(
           <div key={i} style={{background:"#E9E1CF",color:"#171914",borderRadius:11,padding:"13px 10px",border:"1px solid #F6EFDF",minWidth:0,boxShadow:"0 7px 18px rgba(0,0,0,.2)"}}>
             <div style={{fontSize:9,color:"#536258",fontWeight:850,textTransform:"uppercase",letterSpacing:"1px",marginBottom:7,whiteSpace:"nowrap"}}>{s.label}</div>
@@ -1500,6 +1503,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
                   <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
                 </div>
               </div>
+              {isExp&&(day.topups||[]).map((e,i)=><div key={"lurkplus-topup-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F5F8ED"}}><div><div style={{fontSize:13,color:T.text}}>{e.memberName||"LURK+ member"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>LURK+ balance top-up · {e.method==="card"?"Card":"Cash"}</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
               {isExp&&(day.manualCash||[]).map((e,i)=><div key={"manual-cash-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F1F7F1"}}><div><div style={{fontSize:13,color:T.text}}>{e.customerName||"Manual collection"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>Manual cash collection</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
                {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
                 <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#FAFBFA"}}>
