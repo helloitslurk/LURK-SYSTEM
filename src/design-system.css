@@ -1379,3 +1379,19 @@ body{position:static!important}
 .lurk-confirm-delete{border:1px solid #d94a42;background:#d94a42;color:#fff;box-shadow:0 4px 10px rgba(217,74,66,.16)}
 .lurk-confirm-actions button:focus-visible{outline:3px solid rgba(161,211,54,.5);outline-offset:2px}
 @keyframes lurk-confirm-in{from{opacity:0;transform:translateY(7px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+
+/* Dashboard chart refresh */
+.lurk-chart-card{position:relative;overflow:hidden;padding:22px 22px 18px!important;background:linear-gradient(145deg,#fff 0%,#fbfcf9 100%)!important;border:1px solid #e4eae1!important;box-shadow:0 10px 28px rgba(29,43,30,.055)!important}
+.lurk-chart-card h2{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 17px!important;font-size:11px!important;letter-spacing:.12em!important;color:#596456!important}
+.lurk-chart-card h2:after{content:"7 DAY TREND";display:inline-flex;align-items:center;padding:6px 9px;border:1px solid #e3edcf;border-radius:999px;background:#f3f8e9;color:#70952c;font-size:8px;letter-spacing:.1em;font-weight:900;white-space:nowrap}
+.lurk-weekly-chart{height:225px!important;position:relative;isolation:isolate;align-items:stretch!important;gap:clamp(8px,2.3vw,22px)!important;padding:16px 7px 0!important;border:0!important;background:repeating-linear-gradient(to bottom,transparent 0,transparent 24.5%,#edf1e9 25%,transparent 25.5%)!important;border-bottom:1px solid #e8ede5!important}
+.lurk-weekly-bar-wrap{justify-content:flex-end!important;gap:8px!important;padding:0 3px!important;border-radius:10px 10px 0 0!important;transition:background .18s ease!important}
+.lurk-weekly-bar-wrap:hover,.lurk-weekly-bar-wrap.is-active{background:linear-gradient(to top,rgba(174,218,78,.10),transparent 75%)!important}
+.lurk-chart-value{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7d8978;font-size:9px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;transition:color .18s ease}
+.lurk-weekly-bar{width:min(100%,48px)!important;min-height:5px!important;border-radius:8px 8px 3px 3px!important;background:linear-gradient(180deg,#c4e96a 0%,#9fce36 100%)!important;box-shadow:0 5px 12px rgba(155,198,57,.16)!important}
+.lurk-weekly-bar-wrap:hover .lurk-weekly-bar,.lurk-weekly-bar-wrap.is-active .lurk-weekly-bar{background:linear-gradient(180deg,#b2df48 0%,#79ae20 100%)!important;box-shadow:0 7px 16px rgba(126,174,32,.25)!important}
+.lurk-weekly-bar-wrap:hover .lurk-chart-value,.lurk-weekly-bar-wrap.is-active .lurk-chart-value{color:#567d19!important}
+.lurk-weekly-bar-wrap small{font-size:10px!important;font-weight:800!important;color:#7c8578!important;padding:3px 0 1px}
+.lurk-chart-tooltip{bottom:calc(100% + 8px)!important;padding:9px 11px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:10px!important;background:#20271f!important;box-shadow:0 10px 24px rgba(20,30,20,.2)!important}
+@media(max-width:700px){.lurk-chart-card{padding:17px 14px 14px!important}.lurk-weekly-chart{height:190px!important;gap:6px!important;padding-left:2px!important;padding-right:2px!important}.lurk-chart-value{font-size:8px}}
