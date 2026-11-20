@@ -1,0 +1,93 @@
+/* LURK POS Design System v1
+   Foundation only: tokens, typography, reusable surfaces and motion.
+   Screen-specific layouts are migrated in later project stages. */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --lurk-bg: #F6F8F5;
+  --lurk-surface: #FFFFFF;
+  --lurk-surface-soft: #EEF3EE;
+  --lurk-border: #E4EAE4;
+  --lurk-border-strong: #D5DED5;
+  --lurk-ink: #18251D;
+  --lurk-muted: #6C796F;
+  --lurk-subtle: #929D94;
+  --lurk-green: #258E3D;
+  --lurk-green-deep: #176B32;
+  --lurk-green-soft: #E8F3E9;
+  --lurk-danger: #D94841;
+  --lurk-warning: #C98518;
+  --lurk-radius-sm: 10px;
+  --lurk-radius-md: 16px;
+  --lurk-radius-lg: 22px;
+  --lurk-radius-xl: 28px;
+  --lurk-shadow-card: 0 3px 14px rgba(24, 37, 29, .045);
+  --lurk-shadow-hover: 0 12px 30px rgba(24, 37, 29, .095);
+  --lurk-motion: cubic-bezier(.2, .75, .25, 1);
+}
+
+.lurk-app {
+  font-family: 'Manrope', 'Inter', sans-serif !important;
+  color: var(--lurk-ink);
+  background: var(--lurk-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+.lurk-app :where(button, input, select, textarea) {
+  font-family: 'Manrope', 'Inter', sans-serif !important;
+}
+.lurk-app :where(button, [role="button"]) {
+  -webkit-tap-highlight-color: transparent;
+}
+.lurk-app :where(button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible) {
+  outline: 2px solid rgba(37, 142, 61, .62);
+  outline-offset: 2px;
+}
+
+/* Reusable primitives for the screen-by-screen migration. */
+.lurk-app .ds-card {
+  background: var(--lurk-surface);
+  border: 1px solid var(--lurk-border);
+  border-radius: var(--lurk-radius-lg);
+  box-shadow: var(--lurk-shadow-card);
+  transition: transform .22s var(--lurk-motion), box-shadow .22s var(--lurk-motion), border-color .22s var(--lurk-motion);
+}
+.lurk-app .ds-button {
+  border-radius: var(--lurk-radius-md);
+  transition: transform .16s var(--lurk-motion), box-shadow .2s var(--lurk-motion), background-color .2s var(--lurk-motion), border-color .2s var(--lurk-motion);
+}
+.lurk-app .ds-button:active {
+  transform: translateY(1px) scale(.985);
+}
+.lurk-app .ds-input {
+  min-height: 44px;
+  border: 1px solid var(--lurk-border-strong);
+  border-radius: var(--lurk-radius-md);
+  background: var(--lurk-surface);
+  color: var(--lurk-ink);
+  transition: border-color .18s var(--lurk-motion), box-shadow .18s var(--lurk-motion);
+}
+.lurk-app .ds-input:focus {
+  border-color: var(--lurk-green) !important;
+  box-shadow: 0 0 0 3px rgba(37, 142, 61, .12) !important;
+}
+.lurk-app .ds-muted { color: var(--lurk-muted); }
+.lurk-app .ds-eyebrow { color: var(--lurk-muted); font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+
+@media (hover: hover) and (pointer: fine) {
+  .lurk-app .ds-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--lurk-shadow-hover);
+    border-color: var(--lurk-border-strong);
+  }
+  .lurk-app .ds-button:hover { box-shadow: 0 5px 14px rgba(24, 37, 29, .09); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lurk-app *, .lurk-app *::before, .lurk-app *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
