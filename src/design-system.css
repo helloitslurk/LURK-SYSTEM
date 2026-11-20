@@ -1034,15 +1034,32 @@ body{background:#F1F2EF!important}
  .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded]{
   grid-template-columns:minmax(0,1fr) auto!important;row-gap:12px!important;column-gap:10px!important
  }
- .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded"]>div[style*="display:contents"]{
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded]>div[style*="display:contents"]{
   grid-column:1/-1;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px
  }
- .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded"]>div[style*="display:contents"]>div{min-width:0}
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded]>div[style*="display:contents"]>div{min-width:0}
 }
 @media(max-width:600px){
  .lurk-app .personal-finance>div:nth-child(2){padding:16px 12px 90px!important}
  .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"]{padding:13px!important}
- .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded"]>div[style*="display:contents"]{
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded]>div[style*="display:contents"]{
   grid-template-columns:1fr 1fr!important
  }
 }
+
+/* Dark personal-debt tiles need explicit high-contrast foregrounds. */
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140F"],
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140f"]{
+  color:#f1f7f1!important;border:1px solid #dce5d9!important;
+  border-radius:15px!important;box-shadow:0 5px 18px rgba(24,37,29,.06)!important
+}
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140F"] :where(div,span,b,strong,small),
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140f"] :where(div,span,b,strong,small){
+  color:#f1f7f1!important
+}
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140F"] :where(button),
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140f"] :where(button){
+  color:#f7fff8!important
+}
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140F"] [style*="color:#70c98b"],
+.lurk-app .personal-finance [style*="linear-gradient(145deg,#11140f"] [style*="color:#70c98b"]{color:#75df96!important}
