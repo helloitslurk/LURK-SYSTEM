@@ -10,7 +10,7 @@ const SB_KEY="sb_publishable_YiTDrcX7nnotBkoWqEWaHQ_tYHlT3NK";
 let lastStorageWriteError="";
 
 const MENU=[
-{id:101,name:"SİGARALIK FİLTRE",price:50,cat:"Kahve",on:true},
+{id:101,name:"CIGARETTE FILTER",price:50,cat:"Kahve",on:true},
 {id:102,name:"FILTER COFFEE",price:180,cat:"Kahve",on:true},
 {id:103,name:"AMERICANO",price:200,cat:"Kahve",on:true},
 {id:104,name:"LATTE",price:220,cat:"Kahve",on:true},
@@ -29,8 +29,8 @@ const MENU=[
 {id:211,name:"APPLE CINNAMON",price:310,cat:"Matcha",on:true},
 
 {id:206,name:"CREME BRULEE MATCHA",price:280,cat:"Matcha",on:true},
-{id:301,name:"SİYAH ÇAY",price:50,cat:"Cay",on:true},
-{id:302,name:"BİTKİ ÇAYI",price:180,cat:"Cay",on:true},
+{id:301,name:"BLACK TEA",price:50,cat:"Cay",on:true},
+{id:302,name:"HERBAL TEA",price:180,cat:"Cay",on:true},
 {id:303,name:"ICE TEA",price:220,cat:"Cay",on:true},
 {id:610,name:"HOMEMADE AZAHAR LEMONADE",price:350,cat:"Signature Drinks",on:true},
 {id:611,name:"SMOOTHIE",price:350,cat:"Signature Drinks",on:true},
@@ -40,10 +40,10 @@ const MENU=[
 {id:615,name:"ICE",price:20,cat:"Ekstra",on:true},
 {id:616,name:"+ ESPRESSO",price:50,cat:"Ekstra",on:true},
 {id:617,name:"TURKISH COFFEE",price:100,cat:"Kahve",on:true},
-{id:401,name:"MUHAMMARA SANDVİÇ",price:330,cat:"Sandvic",on:true},
-{id:402,name:"RENÇ SANDVİÇ",price:330,cat:"Sandvic",on:true},
-{id:403,name:"PESTO SANDVİÇ",price:300,cat:"Sandvic",on:true},
-{id:404,name:"TON BALIĞI SANDVİÇ",price:300,cat:"Sandvic",on:true},
+{id:401,name:"MUHAMMARA SANDWICH",price:330,cat:"Sandvic",on:true},
+{id:402,name:"ROASTED PEPPER SANDWICH",price:330,cat:"Sandvic",on:true},
+{id:403,name:"PESTO SANDWICH",price:300,cat:"Sandvic",on:true},
+{id:404,name:"TUNA SANDWICH",price:300,cat:"Sandvic",on:true},
 {id:501,name:"TIRAMISU",price:290,cat:"Tatli",on:true},
 {id:502,name:"SOFT COOKIE",price:175,cat:"Tatli",on:true},
 {id:601,name:"+ VEGAN MILK",price:70,cat:"Ekstra",on:true},
@@ -118,7 +118,7 @@ async function sbGet(key,fb){
 }
 async function sbSetNow(key,val){
   const token=posSessionToken();
-  if(!token){lastStorageWriteError="POS session not found. PIN ile yeniden giriş yap.";console.error(lastStorageWriteError);return false;}
+  if(!token){lastStorageWriteError="POS session not found. Please sign in again with your PIN.";console.error(lastStorageWriteError);return false;}
   let lastError;
   for(let attempt=0;attempt<3;attempt++){
     try{
@@ -483,7 +483,7 @@ function POSApp({onLock}){
       <div style={{maxWidth:420,textAlign:"center",background:T.bg2,border:"1px solid rgba(255,255,255,.1)",borderRadius:18,padding:24}}>
         <div style={{fontSize:26,marginBottom:12}}>⚠</div>
         <div style={{fontSize:18,fontWeight:800,marginBottom:8}}>Data yüklenemedi</div>
-        <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>Supabase bağlantısı başarısız olduğu için kayıtların üzerine yazmayı önlemek amacıyla uygulama durduruldu. Internet connectionnı kontrol edip yeniden dene.</div>
+        <div style={{fontSize:13,lineHeight:1.6,color:T.textSub,marginBottom:18}}>The app was paused to prevent overwriting records because the Supabase connection failed. Check your internet connection and try again.</div>
         <button onClick={()=>window.location.reload()} style={{width:"100%",padding:13,border:0,borderRadius:10,background:T.accent,color:"#fff",fontWeight:800,cursor:"pointer"}}>Newden Dene</button>
       </div>
     </div>
@@ -1054,7 +1054,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
         <button onClick={()=>setShowName(true)} style={{background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"5px 12px",fontSize:11,fontWeight:600,cursor:"pointer",color:table.g?T.accentL:T.textSub}}>{table.g||"+ Name"}</button>
       </div>
 
-      {/* SİPARİŞ GÖRÜNÜMÜ */}
+      {/* ORDER VIEW */}
       {!showMenu&&(
         <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
           <div style={{flex:1,minHeight:0,overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"8px 10px"}}>
@@ -1084,7 +1084,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
               ))
             }
           </div>
-          {/* Alt bar */}
+          {/* Bottom bar */}
           <div className="ds-order-footer" style={{flexShrink:0,padding:"8px 10px max(12px, env(safe-area-inset-bottom))",borderTop:"0.5px solid rgba(255,255,255,0.08)",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(20px)"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
               <span style={{fontSize:14,color:T.textSub,fontWeight:600}}>Total</span>
@@ -1100,16 +1100,16 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
         </div>
       )}
 
-      {/* MENÜ GÖRÜNÜMÜ */}
+      {/* MENU VIEW */}
       {showMenu&&(
         <div className="ds-order-menu" style={{flex:1,display:"flex",overflow:"hidden"}}>
-          {/* Sol: dikey kategori */}
+          {/* Left: vertical categories */}
           <div className="ds-order-categories" style={{width:72,background:"rgba(255,255,255,0.02)",borderRight:"0.5px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",overflowY:"auto",flexShrink:0}}>
             {cats.map(c=>(
               <button key={c} onClick={()=>setSelCat(c)} style={{padding:"14px 4px",border:"none",background:selCat===c?"rgba(52,199,89,0.12)":"transparent",borderLeft:"3px solid "+(selCat===c?T.accent:"transparent"),color:selCat===c?T.accent:T.textSub,fontSize:11,fontWeight:selCat===c?700:500,cursor:"pointer",textAlign:"center",lineHeight:1.3,flexShrink:0}}>{c}</button>
             ))}
           </div>
-          {/* Sağ: ürün grid */}
+          {/* Right: product grid */}
           <div className="ds-order-catalog" style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
             <div style={{flex:1,overflowY:"auto",padding:"10px 10px "+(itemCount>0?"80px":"20px")}}>
               <input className="ds-order-search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search products…" aria-label="Search menu items" style={{width:"100%",boxSizing:"border-box",padding:"11px 13px",marginBottom:10,borderRadius:10,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:T.text,fontSize:13,outline:"none"}} />
@@ -1132,7 +1132,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                 <div style={{display:"flex",gap:8,alignItems:"center"}}>
                   <button onClick={()=>setShowMenu(false)} style={{flex:1,background:T.bg3,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"11px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:8}}>
                     <span style={{background:T.accent,color:"#fff",borderRadius:20,fontSize:11,fontWeight:800,padding:"2px 8px",flexShrink:0}}>{itemCount}</span>
-                    <span style={{fontSize:12,color:T.textSub,flex:1}}>Siparişe dön →</span>
+                    <span style={{fontSize:12,color:T.textSub,flex:1}}>Back to Order →</span>
                   </button>
                   <button onClick={()=>setShowPay(true)} style={{background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,padding:"11px 18px",color:"#fff",fontWeight:800,fontSize:14,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)",whiteSpace:"nowrap",flexShrink:0}}>{fm(sub)}</button>
                 </div>
@@ -1140,7 +1140,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
             )}
             {itemCount===0&&(
               <div style={{flexShrink:0,padding:"10px 12px 20px",borderTop:"0.5px solid rgba(255,255,255,0.08)"}}>
-                <button onClick={()=>setShowMenu(false)} style={{width:"100%",padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>← Siparişe Dön</button>
+                <button onClick={()=>setShowMenu(false)} style={{width:"100%",padding:"13px",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.1)",borderRadius:12,color:T.textSub,fontWeight:600,fontSize:13,cursor:"pointer"}}>← Back to Order</button>
               </div>
             )}
           </div>
@@ -1169,7 +1169,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
               const targetTotal=(target.order||[]).reduce((sum,item)=>sum+item.price*item.qty,0);
               const selectedQty=table.order.reduce((sum,line)=>sum+Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0))),0);
               return <button key={target.id} onClick={()=>{moveTableOrder(table.id,target.id,table.order.map(line=>({key:line.oid||String(line.id),qty:Math.max(0,Math.min(line.qty,Number(moveSelections[line.oid||String(line.id)]??0)))})));setMoveSelections({});setShowMove(false);}} style={{width:"100%",padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,textAlign:"left",background:target.s==="o"?"rgba(52,199,89,.1)":T.bg2,border:"1px solid "+(target.s==="o"?"rgba(52,199,89,.3)":"rgba(255,255,255,.1)"),borderRadius:11,color:T.text,cursor:"pointer",opacity:selectedQty?1:.55}}>
-                <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Open masa · "+fm(targetTotal):"Boş masa"}</span></span>
+                <span><b style={{display:"block",fontSize:14}}>{target.lbl}</b><span style={{fontSize:11,color:T.textSub}}>{target.s==="o"?"Occupied table · "+fm(targetTotal):"Available table"}</span></span>
                 <span style={{color:T.accentL,fontSize:18}}>→</span>
               </button>;
             })}
@@ -1227,7 +1227,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
       {/* Ödeme modal */}
       {showPay&&(
         <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Ödeme Al</div>
+          <div style={{fontWeight:700,fontSize:17,marginBottom:4,color:T.text}}>Collect Payment</div>
           {previousPaid>0&&<div style={{fontSize:11,color:T.accentL,marginBottom:8}}>Previously Collected: {fm(previousPaid)}</div>}
           <div style={{fontSize:12,color:T.textSub,marginBottom:16}}>{table.lbl}{table.g?" · "+table.g:""}</div>
           <div style={{background:T.bg2,borderRadius:12,padding:"12px 14px",marginBottom:14,border:"0.5px solid rgba(255,255,255,0.08)"}}>
@@ -1247,13 +1247,13 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
               </button>
             ))}
           </div>
-          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Disable split payment":"Cash + kart olarak böl"}</button>
+          <button onClick={()=>{setSplitMode(v=>{if(!v)setPt("cash");return !v;});setCashPart(partialMode?partialAmount:"");setCardPart("");}} style={{width:"100%",padding:"9px",marginBottom:12,background:splitMode?"rgba(52,199,89,0.14)":"rgba(255,255,255,0.05)",border:"0.5px solid "+(splitMode?"rgba(52,199,89,0.4)":"rgba(255,255,255,0.12)"),borderRadius:10,color:splitMode?T.accentL:T.textSub,fontSize:12,fontWeight:700,cursor:"pointer"}}>{splitMode?"Disable split payment":"Split between cash and card"}</button>
           {splitMode&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
             <label style={{fontSize:11,color:T.textSub}}>Cash (TL)<input type="number" min="0" max={total} value={cashPart} onChange={e=>{setCashPart(e.target.value);setCardPart(String(Math.max(0,Math.round(((partialMode?paymentTarget:total)-(parseFloat(e.target.value)||0))*100)/100)));}} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
             <label style={{fontSize:11,color:T.textSub}}>Card (TL)<input type="number" min="0" max={total} value={cardPart} onChange={e=>setCardPart(e.target.value)} placeholder="0,00" style={{width:"100%",marginTop:5,padding:"10px",background:T.bg2,color:T.text,border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:9}}/></label>
           </div>}
           {splitMode&&<div style={{fontSize:11,color:Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-total)<0.009?T.accentL:"#FF6B6B",marginBottom:12}}>Payment total: {fm((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0))} / {fm(total)}</div>}
-          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Partial payment cannot exceed the remaining balance.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("Cash ve kart toplamı tahsil edilecek tutarla eşleşmeli.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>{partialMode?"Collect Partial Payment · "+fm(paymentTarget):"Collect Payment · "+fm(total)}</button>
+          <button onClick={()=>{const target=partialMode?paymentTarget:total;const payments=splitMode?[{method:"cash",amount:parseFloat(cashPart)||0},{method:"card",amount:parseFloat(cardPart)||0}]:[{method:pt,amount:target}];if(partialMode&&(!(target>0)||target>total+0.009)){msg("Partial payment cannot exceed the remaining balance.");return;}if(splitMode&&Math.abs((parseFloat(cashPart)||0)+(parseFloat(cardPart)||0)-target)>0.009){msg("The cash and card amounts must match the amount being collected.");return;}pay(table.id,pt,discVal,pt==="credit"?[{method:"credit",amount:total}]:payments,partialMode);if(pt==="credit"&&table.customerId)setShowPay(false);else if(partialMode&&target<total-0.009)setShowPay(false);}} style={{width:"100%",padding:"15px",background:"linear-gradient(135deg,#34C759,#248A3D)",border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:800,cursor:"pointer",boxShadow:"0 4px 16px rgba(52,199,89,0.35)"}}>{partialMode?"Collect Partial Payment · "+fm(paymentTarget):"Collect Payment · "+fm(total)}</button>
           <button onClick={()=>setShowPay(false)} style={{width:"100%",padding:"11px",background:"transparent",border:"none",color:T.textSub,fontSize:13,cursor:"pointer",marginTop:4}}>Cancel</button>
         </Modal>
       )}
@@ -1298,7 +1298,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
         <div style={{background:"linear-gradient(145deg,#EDE5D4 0%,#E3DAC6 100%)",color:"#171914",border:"1px solid rgba(255,255,255,.55)",borderRadius:13,padding:18,marginBottom:13,boxShadow:"0 9px 22px rgba(0,0,0,.24)"}}>
           <div style={{fontSize:10,color:"#62665A",fontWeight:850,letterSpacing:"1.3px",textTransform:"capitalize"}}>{monthLabel(selectedMonth)} REVENUE</div>
           <div style={{fontSize:31,fontWeight:950,color:"#24452B",letterSpacing:"-1.2px",marginTop:7}}>{fm(revenue)}</div>
-          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + açık masalardaki mevcut ürünler":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
+          <div style={{fontSize:10,color:"#77796E",fontWeight:650,marginTop:7}}>Kapanan adisyonlar{selectedMonth===thisMonth()?" + current items on open tables":""}{manualCashRevenue>0?" + manuel nakit tahsilatlar":""}</div>
         </div>
         <div style={{background:"linear-gradient(145deg,#11140F,#0D100D)",border:"1px solid rgba(233,225,207,.16)",borderRadius:12,padding:16,marginBottom:17,boxShadow:"0 7px 18px rgba(0,0,0,.18)"}}>
           <div style={{fontSize:10,fontWeight:850,color:"#D8D2C3",letterSpacing:"1.8px",marginBottom:4}}>YILLIK CİRO</div>
@@ -1492,30 +1492,30 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
 
 /* ─── PERSONAL FINANCE ─── */
 const PERSONAL_DEBT_SEED=[
-  {id:"beliz",group:"Kişisel",name:"Beliz",total:10000,note:"",payments:[],installments:[]},
-  {id:"ryze",group:"Kişisel",name:"Ryze",total:2000,note:"3K deren'den",payments:[],installments:[]},
-  {id:"ahmet-bakkal",group:"Kişisel",name:"Ahmet Abi Bakkal",total:1500,payments:[],installments:[]},
-  {id:"vodafone",group:"Kişisel",name:"Vodafone",total:23856,note:"30 Ekim",payments:[],installments:[]},
-  {id:"hepsiburada-limiti",group:"Kişisel",name:"Allburada Limiti",total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Previously paid amount (date not specified)",historical:true}],installments:[]},
-  {id:"hepsifinans",group:"Kişisel",name:"Allfinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
+  {id:"beliz",group:"Personal",name:"Beliz",total:10000,note:"",payments:[],installments:[]},
+  {id:"ryze",group:"Personal",name:"Ryze",total:2000,note:"3K deren'den",payments:[],installments:[]},
+  {id:"ahmet-bakkal",group:"Personal",name:"Ahmet Abi Bakkal",total:1500,payments:[],installments:[]},
+  {id:"vodafone",group:"Personal",name:"Vodafone",total:23856,note:"30 Ekim",payments:[],installments:[]},
+  {id:"hepsiburada-limiti",group:"Personal",name:"Allburada Limiti",total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Previously paid amount (date not specified)",historical:true}],installments:[]},
+  {id:"hepsifinans",group:"Personal",name:"Allfinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
   {id:"holdon",group:"Nicchia",name:"Holdon Coffee",total:7000,payments:[],installments:[]},
   {id:"mozaik",group:"Nicchia",name:"Mozaik İş Sağlığı",total:7000,payments:[],installments:[]},
   {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"2 Kasım",payments:[],installments:[]},
   {id:"kyk",group:"Nicchia",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Taksit",amount:2350,due:"",paid:0})),payments:[]},
   {id:"ucuncuoglu",group:"Nicchia",name:"Üçüncüoğlu Emlak",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
   {id:"heyz",group:"Nicchia",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
-  {id:"fiddle",group:"Kişisel",name:"Taha Fiddle III Taksit",total:55000,note:"20.000 TL ödendi · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Önceden ödenen"}],installments:[]},
-  {id:"fiddle-tyres",group:"Kişisel",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-stop",group:"Kişisel",name:"Fiddle III · Ön stop lambası",total:200,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-inspection",group:"Kişisel",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-insurance",group:"Kişisel",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
-  {id:"yildiz",group:"Kişisel",name:"Yıldız Sürücü Kursu",total:13000,payments:[],installments:[]},
-  {id:"a2",group:"Kişisel",name:"A2 Sınav Ücreti",total:2000,payments:[],installments:[]},
-  {id:"beliz-plan",group:"Kişisel",name:"Beliz Taksit",total:72000,note:"1. taksit tamamlandı; 2. taksitte 3.000 TL ödendi, 5.000 TL kaldı.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit için önceden ödenen",installmentId:"beliz-2"}],installments:[
+  {id:"fiddle",group:"Personal",name:"Taha Fiddle III Taksit",total:55000,note:"20.000 TL ödendi · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Önceden ödenen"}],installments:[]},
+  {id:"fiddle-tyres",group:"Personal",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Ön stop lambası",total:200,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-inspection",group:"Personal",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-insurance",group:"Personal",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
+  {id:"yildiz",group:"Personal",name:"Yıldız Sürücü Kursu",total:13000,payments:[],installments:[]},
+  {id:"a2",group:"Personal",name:"A2 Sınav Ücreti",total:2000,payments:[],installments:[]},
+  {id:"beliz-plan",group:"Personal",name:"Beliz Taksit",total:72000,note:"1. taksit tamamlandı; 2. taksitte 3.000 TL ödendi, 5.000 TL kaldı.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit için önceden ödenen",installmentId:"beliz-2"}],installments:[
     {id:"beliz-2",label:"2. Taksit",amount:8000,due:"2026-11-05",paid:3000},
     ...Array.from({length:8},(_,i)=>({id:"beliz-"+(i+3),label:(i+3)+". Taksit",amount:8000,due:["2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:0}))
   ]},
-  {id:"ruhsat",group:"Kişisel",name:"Annem Ruhsat Taksiti",total:119000,note:"14 taksit × 8.500 TL; ilk 3 taksit tamamlandı.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Taksit",amount:8500,due:"",paid:i<3?8500:0}))}
+  {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Taksiti",total:119000,note:"14 taksit × 8.500 TL; ilk 3 taksit tamamlandı.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Taksit",amount:8500,due:"",paid:i<3?8500:0}))}
 ];
 function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [unlocked,setUnlocked]=useState(false);
@@ -1571,10 +1571,10 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const allHistory=debts.flatMap(d=>(d.payments||[]).map(p=>({...p,debtName:d.name,debtId:d.id}))).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   const total=debts.reduce((s,d)=>s+remaining(d),0);
   async function unlock(e){e.preventDefault();if(checking||pin.length<6)return;setChecking(true);setPinError("");try{const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_pos_login",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_pin:pin})});if(!r.ok)throw new Error("PIN servisi yanıt vermedi (HTTP "+r.status+").");const token=await r.json();if(typeof token!=="string"||token.length<32)throw new Error("PIN hatalı. POS girişinde kullandığın PIN ile aynı olmalı.");setUnlocked(true);setPin("");}catch(err){setPinError(err.message||"Doğrulama yapılamadı.");}finally{setChecking(false);}}
-  function addPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;if(!paymentFor||!Number.isFinite(value)||value<=0||value>remaining(paymentFor)+0.001){msg("Enter a valid amount. Ödeme kalan borcu aşamaz.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==paymentFor.id?d:{...d,payments:[...(d.payments||[]),{id:"pay-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),amount:value,date,note:note.trim()}]}));msg(money(value)+" ödeme kaydedildi.");setPaymentFor(null);setAmount("");setNotee("");}
+  function addPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;if(!paymentFor||!Number.isFinite(value)||value<=0||value>remaining(paymentFor)+0.001){msg("Enter a valid amount. Payment cannot exceed the remaining balance.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==paymentFor.id?d:{...d,payments:[...(d.payments||[]),{id:"pay-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),amount:value,date,note:note.trim()}]}));msg(money(value)+" payment recorded.");setPaymentFor(null);setAmount("");setNotee("");}
   function payInstallment(debt,inst){const due=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));if(!due)return;setPaymentFor({debt,installment:inst,quick:true});setAmount(String(due));}
-  function addInstallmentPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;const debt=paymentFor?.debt,inst=paymentFor?.installment;if(!debt||!inst||value<=0||value>Number(inst.amount)-Number(inst.paid||0)+0.001){msg("Taksit için geçerli tutar gir.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,installments:d.installments.map(i=>i.id!==inst.id?i:{...i,paid:(Number(i.paid)||0)+value}),payments:[...(d.payments||[]),{id:"pay-"+Date.now(),amount:value,date,note:note.trim(),installmentId:inst.id,installmentLabel:inst.label}]}));msg(money(value)+" taksit ödemesi kaydedildi.");setPaymentFor(null);setAmount("");setNotee("");}
-  function reversePayment(debt,payment){if(!window.confirm(money(payment.amount)+" ödeme hareketi geri alınsın mı?"))return;setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,payments:(d.payments||[]).filter(p=>p.id!==payment.id),installments:(d.installments||[]).map(i=>i.id===payment.installmentId?{...i,paid:Math.max(0,(Number(i.paid)||0)-Number(payment.amount||0))}:i)}));}
+  function addInstallmentPayment(){const value=Math.round(Number(String(amount).replace(",","."))*100)/100;const debt=paymentFor?.debt,inst=paymentFor?.installment;if(!debt||!inst||value<=0||value>Number(inst.amount)-Number(inst.paid||0)+0.001){msg("Enter a valid installment amount.");return;}const date=new Date().toISOString();setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,installments:d.installments.map(i=>i.id!==inst.id?i:{...i,paid:(Number(i.paid)||0)+value}),payments:[...(d.payments||[]),{id:"pay-"+Date.now(),amount:value,date,note:note.trim(),installmentId:inst.id,installmentLabel:inst.label}]}));msg(money(value)+" installment payment recorded.");setPaymentFor(null);setAmount("");setNotee("");}
+  function reversePayment(debt,payment){if(!window.confirm(money(payment.amount)+" payment record be reversed?"))return;setDebts(prev=>prev.map(d=>d.id!==debt.id?d:{...d,payments:(d.payments||[]).filter(p=>p.id!==payment.id),installments:(d.installments||[]).map(i=>i.id===payment.installmentId?{...i,paid:Math.max(0,(Number(i.paid)||0)-Number(payment.amount||0))}:i)}));}
   function openInstallmentEditor(debt){
     setEditingInstallment(debt);
     setInstallmentTotal(debt.total?String(debt.total):"");
@@ -1588,7 +1588,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const eachValue=Math.round(Number(String(installmentAmount).replace(",","."))*100)/100;
     const count=Number(installmentCount);
     if(!debt||!Number.isFinite(totalValue)||totalValue<=0||!Number.isFinite(eachValue)||eachValue<=0||!Number.isInteger(count)||count<1||count>120||!/^\d{4}-\d{2}-\d{2}$/.test(installmentStartDate)){
-      msg("Total tutar, taksit tutarı, taksit sayısı ve ilk ödeme tarihi bilgilerini kontrol et.");return;
+      msg("Check the total amount, installment amount, number of installments, and first payment date.");return;
     }
     const existing=debt.installments||[];
     let allocated=0;
@@ -1605,10 +1605,10 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     setEditingInstallment(null);
     msg("Installment Plan kaydedildi.");
   }
-  if(!unlocked)return <div className="lurk-screen personal-finance ds-personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Kişisel</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Enter your POS PIN to access Personal.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Checking…":"Unlock"}</button></form></div>;
+  if(!unlocked)return <div className="lurk-screen personal-finance ds-personal-finance" style={{minHeight:"70vh",padding:"20px 14px",display:"grid",placeItems:"center"}}><form onSubmit={unlock} style={{width:"100%",maxWidth:360,background:T.bg2,border:"1px solid "+T.border,borderRadius:20,padding:24,textAlign:"center"}}><div style={{fontSize:34,color:T.accent,marginBottom:10}}>₺</div><div style={{fontSize:21,fontWeight:850,marginBottom:7}}>Personal</div><div style={{fontSize:12,color:T.textSub,marginBottom:18}}>Enter your POS PIN to access Personal.</div><input type="password" inputMode="numeric" autoComplete="current-password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="••••••" maxLength={32} autoFocus style={{width:"100%",padding:15,borderRadius:11,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:22,letterSpacing:8,textAlign:"center",boxSizing:"border-box"}}/>{pinError&&<div role="alert" style={{color:T.danger,fontSize:12,marginTop:10}}>{pinError}</div>}<button disabled={checking||pin.length<6} style={{width:"100%",padding:14,marginTop:16,border:0,borderRadius:11,background:T.accent,color:"#061008",fontWeight:850,opacity:checking||pin.length<6?.5:1}}>{checking?"Checking…":"Unlock"}</button></form></div>;
   const paidTotal=debts.reduce((sum,d)=>sum+paid(d),0);
   const originalTotal=debts.reduce((sum,d)=>sum+Number(d.total||0),0);
-  const groupTotals=["Kişisel","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
+  const groupTotals=["Personal","Nicchia"].map(group=>({group,value:debts.filter(d=>d.group===group).reduce((sum,d)=>sum+remaining(d),0)}));
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
 
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
@@ -1665,7 +1665,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Business expenses · {lurkDebts.length} kayıt</div></div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Business expenses · {lurkDebts.length} records</div></div>
           </div>
           <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.total)}</div></div>
@@ -1732,7 +1732,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Pay Next Installment</button>}
               <button onClick={()=>openInstallmentEditor(d)} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Edit Plan</button>
             </div>
-            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Taksitleri Gizle":"Other Taksitleri Gör"}</button>}
+            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Hide Installments":"View Other Installments"}</button>}
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
               <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:T.textDim,marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} kaldı</div>
               {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Record Payment</button>}
@@ -1745,7 +1745,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>🏍️</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, bakım ve ehliyet giderleri · {fiddleDebts.length} kayıt</div></div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, maintenance and license expenses · {fiddleDebts.length} kayıt</div></div>
           </div>
           <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.total)}</div></div>
@@ -1779,7 +1779,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <button onClick={()=>setShowFreedom(v=>!v)} aria-expanded={showFreedom} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
             <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>✦</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>ÖZGÜRLEŞME OPERASYONU</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 kayıt</div></div>
+            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FREEDOM PLAN</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 kayıt</div></div>
           </div>
           <div style={{display:"contents"}}>
             <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.total)}</div></div>
@@ -1803,7 +1803,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
               <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
-            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Date belirtilmedi"}</span><b>{money(p.amount)}</b></div>)}</div>}
+            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Ödeme"} · {p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Date not specified"}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
           {completedFreedomDebts.length>0&&<div style={{fontSize:10,color:"#70c98b",fontWeight:800}}>TAMAMLANANLAR · {completedFreedomDebts.length}</div>}
         </div>}
@@ -1813,8 +1813,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:T.textDim,fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:T.textDim,fontWeight:500,marginTop:2}}>Cardları sürükleyerek sıralayabilirsin</div></div>
-        <div style={{display:"flex",gap:5}}>{["All","Kişisel","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
-        <button onClick={()=>{const name=window.prompt("Borç / ödeme adı:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total tutar (TL):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Kişisel veya Nicchia","Kişisel")==="Nicchia"?"Nicchia":"Kişisel";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
+        <div style={{display:"flex",gap:5}}>{["All","Personal","Nicchia"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
+        <button onClick={()=>{const name=window.prompt("Debt / payment name:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total amount (TRY):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Grup: Personal veya Nicchia","Personal")==="Nicchia"?"Nicchia":"Personal";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
       </div>
       <div className="lurk-personal-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8}}>
         {visibleDebts.map(d=><div key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className="lurk-personal-debt-row" style={{background:"linear-gradient(145deg,#171c19,#121614)",border:"1px solid "+(draggingDebtId===d.id?"#34C759":"rgba(255,255,255,.10)"),borderRadius:13,padding:"12px 14px",minWidth:0,opacity:draggingDebtId===d.id?0.55:1,cursor:"grab",transition:"border-color .15s,opacity .15s",boxShadow:"0 5px 18px rgba(0,0,0,.12)"}}>
@@ -1824,7 +1824,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
                 <div style={{fontSize:18,fontWeight:900,letterSpacing:"-.35px",textTransform:"uppercase",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{d.name}</div>
               </div>
               <div style={{display:"flex",alignItems:"center",gap:6,marginTop:5}}>
-                <span style={{fontSize:9,fontWeight:750,color:d.group==="Kişisel"?"#71d993":"#9bbec7",background:d.group==="Kişisel"?"rgba(52,199,89,.10)":"rgba(109,158,172,.12)",padding:"3px 7px",borderRadius:20}}>{d.group}</span>
+                <span style={{fontSize:9,fontWeight:750,color:d.group==="Personal"?"#71d993":"#9bbec7",background:d.group==="Personal"?"rgba(52,199,89,.10)":"rgba(109,158,172,.12)",padding:"3px 7px",borderRadius:20}}>{d.group}</span>
                 <span style={{fontSize:10,color:T.textDim}}>Total {money(d.total)}</span>
               </div>
             </div>
@@ -1858,14 +1858,14 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <button onClick={()=>setShowHistory(v=>!v)} style={{padding:"10px 13px",borderRadius:9,border:"1px solid "+T.border,background:"rgba(255,255,255,.045)",color:T.textSub,fontSize:10,fontWeight:700}}>Hareketler</button>
           </div>
           {showHistory&&<div style={{marginTop:10,borderTop:"1px solid "+T.border,paddingTop:7}}>{(d.payments||[]).slice().reverse().map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0"}}>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Date belirtilmedi":new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Date not specified":new Date(p.date).toLocaleDateString("tr-TR")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Ödeme"}</div></div>
             <button onClick={()=>reversePayment(d,p)} style={{color:T.danger,background:"transparent",border:0,fontSize:9}}>Geri al</button>
           </div>)}</div>}
         </div>)}
       </div>
       {completedPersonalDebts.length>0&&<div style={{marginTop:10}}><button onClick={()=>setShowCompletedPersonalDebts(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 12px",borderRadius:10,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:11,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedPersonalDebts.length}</span><span>{showCompletedPersonalDebts?"Gizle ⌃":"Göster ⌄"}</span></button>{showCompletedPersonalDebts&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:8,marginTop:7}}>{completedPersonalDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"10px 11px",borderRadius:10,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.75,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:11,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:3}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b></div>)}</div>}</div>}
       <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ Tüm ödeme hareketleri</button>
-      {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:T.textDim}}>{p.historical?"Date belirtilmedi":new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
+      {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:T.textDim}}>{p.historical?"Date not specified":new Date(p.date).toLocaleString("tr-TR")} · {p.note||p.installmentLabel||"Ödeme"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:T.textDim}}>Henüz ödeme hareketi yok.</div>}</div>}
     </div>
 {editingInstallment&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Installment Plan</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{editingInstallment.name}</div>
   <label style={{fontSize:11,color:T.textSub}}>Total borç (TL)</label><input type="number" min="0.01" step="0.01" value={installmentTotal} onChange={e=>setInstallmentTotal(e.target.value)} placeholder="Örn. 24000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
@@ -1875,7 +1875,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   <div style={{fontSize:10,color:T.textDim,lineHeight:1.5,marginBottom:12}}>Installments are created monthly. The final installment is automatically adjusted to match the total. Existing paid amounts are preserved wherever possible.</div>
   <button onClick={saveInstallmentPlan} style={{width:"100%",padding:13,background:T.accent,color:"#061008",border:0,borderRadius:10,fontWeight:850}}>Save Plan</button><button onClick={()=>setEditingInstallment(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Cancel</button>
 </Modal>}
-{paymentFor&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>{paymentFor.installment?"Taksit Ödemesi":"Ödeme kaydet"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{paymentFor.name||paymentFor.debt?.name} · {paymentFor.installment?(paymentFor.installment.label+" · "):""}Remaining {money(paymentFor.debt?Math.max(0,paymentFor.installment.amount-paymentFor.installment.paid):remaining(paymentFor))}</div><label style={{fontSize:11,color:T.textSub}}>Payment amount (TRY)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="Örn. 2000" style={{width:"100%",padding:14,marginTop:6,marginBottom:5,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:20,boxSizing:"border-box"}}/>{paymentFor.installment&&<div style={{fontSize:11,color:T.accentL,marginBottom:12,lineHeight:1.5}}>Make partial paymentabilirsin. İstediğin tutarı girmen yeterli. Remaining taksit bakiyesi otomatik güncellenir.</div>}<label style={{fontSize:11,color:T.textSub}}>Notee (optional)</label><input value={note} onChange={e=>setNotee(e.target.value)} placeholder="Ödeme notu" style={{width:"100%",padding:12,marginTop:6,marginBottom:14,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/><button onClick={paymentFor.debt?addInstallmentPayment:addPayment} style={{width:"100%",padding:14,background:T.accent,color:"#061008",border:0,borderRadius:11,fontWeight:850}}>Save Payment</button><button onClick={()=>setPaymentFor(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Cancel</button></Modal>}
+{paymentFor&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>{paymentFor.installment?"Installment Payment":"Record Payment"}</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{paymentFor.name||paymentFor.debt?.name} · {paymentFor.installment?(paymentFor.installment.label+" · "):""}Remaining {money(paymentFor.debt?Math.max(0,paymentFor.installment.amount-paymentFor.installment.paid):remaining(paymentFor))}</div><label style={{fontSize:11,color:T.textSub}}>Payment amount (TRY)</label><input autoFocus type="number" min="0.01" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="Örn. 2000" style={{width:"100%",padding:14,marginTop:6,marginBottom:5,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,fontSize:20,boxSizing:"border-box"}}/>{paymentFor.installment&&<div style={{fontSize:11,color:T.accentL,marginBottom:12,lineHeight:1.5}}>You can make a partial payment by entering any amount. The remaining installment balance updates automatically.</div>}<label style={{fontSize:11,color:T.textSub}}>Note (optional)</label><input value={note} onChange={e=>setNotee(e.target.value)} placeholder="Ödeme notu" style={{width:"100%",padding:12,marginTop:6,marginBottom:14,borderRadius:10,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/><button onClick={paymentFor.debt?addInstallmentPayment:addPayment} style={{width:"100%",padding:14,background:T.accent,color:"#061008",border:0,borderRadius:11,fontWeight:850}}>Save Payment</button><button onClick={()=>setPaymentFor(null)} style={{width:"100%",padding:11,background:"transparent",border:0,color:T.textSub}}>Cancel</button></Modal>}
   </div>;
 }
 
@@ -1895,11 +1895,11 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     try{
       const response=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_get_link",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_member_id:memberId,p_admin_secret:linkAdminSecret})});
       const result=await response.json().catch(()=>null);
-      if(!response.ok)throw new Error(result?.message||"Bağlantı yüklenemedi");
+      if(!response.ok)throw new Error(result?.message||"Unable to load link");
       const token=typeof result==="string"?result:result?.url;
       const url=token?(token.startsWith("http")?token:lurkPlusUrl(members.find(m=>m.id===memberId)||{id:memberId,name:"uye"},token,members)):null;
       setIssuedLinks(prev=>({...prev,[memberId]:url}));
-    }catch(e){msg(e.message||"Bağlantı yüklenemedi.");}
+    }catch(e){msg(e.message||"Unable to load link.");}
     finally{setLinkBusy(false);}
   }
   function selectLurkPlusMember(memberId){
@@ -1908,9 +1908,9 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
   }
   async function getLinkSecret(){
     if(linkAdminSecret)return linkAdminSecret;
-    const secret=window.prompt("LURK+ bağlantı yönetim anahtarını gir:");
+    const secret=window.prompt("Enter the LURK+ link management key:");
     if(!secret)return null;
-    if(secret.length<24){msg("Yönetim anahtarı en az 24 karakter olmalı.");return null;}
+    if(secret.length<24){msg("The management key must be at least 24 characters.");return null;}
     setLinkAdminSecret(secret);
     return secret;
   }
@@ -1922,13 +1922,13 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     try{
       const response=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_get_link",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_member_id:member.id,p_admin_secret:secret})});
       const result=await response.json().catch(()=>null);
-      if(!response.ok)throw new Error(result?.message||"Bağlantı yüklenemedi");
+      if(!response.ok)throw new Error(result?.message||"Unable to load link");
       const token=typeof result==="string"?result:result?.url;
       const url=token?(token.startsWith("http")?token:lurkPlusUrl(member,token,members)):null;
       setIssuedLinks(prev=>({...prev,[member.id]:url}));
-      if(url)msg("Mevcut müşteri bağlantısı gösteriliyor.");
-      else msg("Bu üye için aktif bağlantı bulunamadı.");
-    }catch(e){msg(e.message||"Bağlantı yüklenemedi.");}
+      if(url)msg("Showing the existing customer link.");
+      else msg("No active link found for this member.");
+    }catch(e){msg(e.message||"Unable to load link.");}
     finally{setLinkBusy(false);}
   }
   async function manageLink(member,action){
@@ -1945,22 +1945,22 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         body={p_member_id:member.id,p_token:token,p_admin_secret:secret};
         const response=await fetch(SB_URL+"/rest/v1/rpc/"+rpc,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
         const result=await response.json().catch(()=>null);
-        if(!response.ok)throw new Error(result?.message||"Bağlantı oluşturulamadı");
+        if(!response.ok)throw new Error(result?.message||"Unable to create link");
         const url=lurkPlusUrl(member,token,members);
         setIssuedLinks(prev=>({...prev,[member.id]:url}));
 
-        try{await navigator.clipboard.writeText(url);msg("Customer bağlantısı oluşturuldu ve kopyalandı.");}
-        catch(e){msg("Bağlantı oluşturuldu. Aşağıdan kopyalayabilirsin.");}
+        try{await navigator.clipboard.writeText(url);msg("Customer link created and copied.");}
+        catch(e){msg("Link created. You can copy it below.");}
       }else{
         rpc="lurk_plus_revoke_links";
         body={p_member_id:member.id,p_admin_secret:secret};
         const response=await fetch(SB_URL+"/rest/v1/rpc/"+rpc,{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify(body)});
         const result=await response.json().catch(()=>null);
-        if(!response.ok)throw new Error(result?.message||"Bağlantı iptal edilemedi");
+        if(!response.ok)throw new Error(result?.message||"Unable to revoke link");
         setIssuedLinks(prev=>({...prev,[member.id]:null}));
-        msg("Üyenin tüm müşteri bağlantıları iptal edildi.");
+        msg("All customer links for this member have been revoked.");
       }
-    }catch(e){msg(e.message||"İşlem başarısız.");}
+    }catch(e){msg(e.message||"Action failed.");}
     finally{setLinkBusy(false);}
   }
   const [showForm,setShowForm]=useState(false);
@@ -1971,45 +1971,45 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
   function addMember(){
     const clean=name.trim();
     const amount=Math.floor(Number(balance));
-    if(!clean){msg("Üye adı gir.");return;}
-    if(!balance.trim()||!Number.isFinite(amount)||amount<0||(memberType==="balance"&&!Number.isFinite(Number(balance)))){msg(memberType==="coffee"?"Geçerli kahve hakkı gir.":"Geçerli bir bakiye gir.");return;}
+    if(!clean){msg("Enter a member name.");return;}
+    if(!balance.trim()||!Number.isFinite(amount)||amount<0||(memberType==="balance"&&!Number.isFinite(Number(balance)))){msg(memberType==="coffee"?"Enter a valid number of coffee credits.":"Enter a valid balance.");return;}
     if(members.some(m=>m.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde LURK+ üyesi zaten var.");return;}
     const createdAt=new Date().toISOString();
     const entry=memberType==="coffee"
-      ?{id:uid(),type:"credit_topup",date:createdAt,amount,balanceAfter:amount,note:"Başlangıç kahve hakkı"}
-      :{id:uid(),type:"topup",date:createdAt,amount:Number(balance),balanceAfter:Number(balance),note:"Başlangıç bakiyesi"};
+      ?{id:uid(),type:"credit_topup",date:createdAt,amount,balanceAfter:amount,note:"Starting coffee credits"}
+      :{id:uid(),type:"topup",date:createdAt,amount:Number(balance),balanceAfter:Number(balance),note:"Starting balance"};
     setMembers(prev=>[{id:uid(),name:clean,membershipType:memberType,balance:memberType==="balance"?Math.round(Number(balance)*100)/100:0,coffeeCredits:memberType==="coffee"?amount:0,createdAt,history:[entry]},...prev]);
     setName("");setBalance("");setMemberType("balance");setShowForm(false);msg("LURK+ üyesi eklendi.");
   }
   function addMemberBalance(member){
-     const raw=window.prompt(member.name+" için yüklenecek bakiye (TL):");
+     const raw=window.prompt(member.name+" balance to add (TRY):");
      if(raw===null)return;
      const amount=Number(raw.replace(",","."));
-     if(!Number.isFinite(amount)||amount<=0){msg("Geçerli bir bakiye tutarı gir.");return;}
-     const method=window.confirm("Ödeme kartla mı alındı?\n\nTamam: Card\nCancel: Cash")?"card":"cash";
+     if(!Number.isFinite(amount)||amount<=0){msg("Enter a valid balance amount.");return;}
+     const method=window.confirm("Was the payment made by card?\n\nOK: Card\nCancel: Cash")?"card":"cash";
      const date=new Date().toISOString();
      setMembers(prev=>prev.map(m=>{if(m.id!==member.id)return m;const nextBalance=Math.round(((Number(m.balance)||0)+amount)*100)/100;return{...m,balance:nextBalance,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"topup",date,amount,method,balanceAfter:nextBalance,note:"Bakiye yüklendi"}]};}));
      msg(member.name+" · "+fm(amount)+" bakiye "+(method==="card"?"kartla":"nakit")+" yüklendi.");
    }
    function addCoffeeCredits(member){
-    const raw=window.prompt(member.name+" için eklenecek kahve hakkı:");
+    const raw=window.prompt(member.name+" coffee credits to add:");
     if(raw===null)return;
     const amount=Number(raw);
-    if(!Number.isInteger(amount)||amount<1){msg("En az 1 tam kahve hakkı gir.");return;}
+    if(!Number.isInteger(amount)||amount<1){msg("Enter at least 1 whole coffee credit.");return;}
     const date=new Date().toISOString();
-    setMembers(prev=>prev.map(m=>m.id!==member.id?m:{...m,coffeeCredits:(Number(m.coffeeCredits)||0)+amount,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_topup",date,amount,balanceAfter:(Number(m.coffeeCredits)||0)+amount,note:"Kahve hakkı eklendi"}]}));
-    msg(member.name+" · "+amount+" kahve hakkı eklendi.");
+    setMembers(prev=>prev.map(m=>m.id!==member.id?m:{...m,coffeeCredits:(Number(m.coffeeCredits)||0)+amount,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_topup",date,amount,balanceAfter:(Number(m.coffeeCredits)||0)+amount,note:"Coffee credits added"}]}));
+    msg(member.name+" · "+amount+" coffee credits added.");
   }
   async function deleteMember(member){
-    if(!window.confirm(member.name+" adlı LURK+ üyesini silmek istediğine emin misin? Bakiye/kahve hakkı ve hareket geçmişi üye listesinden kaldırılacak. Customer bağlantıları da iptal edilecek."))return;
-    const secret=window.prompt("LURK+ bağlantı yönetim anahtarını gir:");
+    if(!window.confirm(member.name+"Are you sure you want to delete the LURK+ member named ? Their balance/coffee credits and activity history will be removed from the member list. Customer links will also be revoked."))return;
+    const secret=window.prompt("Enter the LURK+ link management key:");
     if(!secret)return;
-    if(secret.length<24){msg("Yönetim anahtarı en az 24 karakter olmalı.");return;}
+    if(secret.length<24){msg("The management key must be at least 24 characters.");return;}
     setLinkBusy(true);
     try{
       const response=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_revoke_links",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_member_id:member.id,p_admin_secret:secret})});
       const result=await response.json().catch(()=>null);
-      if(!response.ok)throw new Error(result?.message||"Üye bağlantıları iptal edilemedi. Üye silinmedi.");
+      if(!response.ok)throw new Error(result?.message||"Unable to revoke member links. The member was not deleted.");
       setMembers(prev=>prev.filter(m=>m.id!==member.id));
       setSelectedMemberId(null);
       setIssuedLinks(prev=>{const next={...prev};delete next[member.id];return next;});
@@ -2025,26 +2025,26 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
         <button onClick={()=>setShowForm(true)} style={{background:T.accent,border:0,borderRadius:22,padding:"9px 15px",color:"#fff",fontSize:12,fontWeight:800,cursor:"pointer"}}>+ Add Member</button>
       </div>
       <div style={{padding:14}}>
-        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>No LURK+ members yet</div><div style={{fontSize:12}}>Add your first member and set their starting balance.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>selectLurkPlusMember(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Membership: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":m.membershipType!=="coffee"&&!m.unlimited&&(Number(m.balance)||0)<0?"#FF453A":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Unlimited":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Coffee credit membership":"Bakiye üyeliği"} · View activity ›</div></div></button>)}
+        {members.length===0?<div style={{padding:"42px 20px",textAlign:"center",color:T.textSub,background:T.bg2,borderRadius:14}}><div style={{fontSize:30,marginBottom:10}}>＋</div><div style={{fontWeight:700,color:T.text,marginBottom:5}}>No LURK+ members yet</div><div style={{fontSize:12}}>Add your first member and set their starting balance.</div></div>:members.slice().sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(m=><button key={m.id} onClick={()=>selectLurkPlusMember(m.id)} style={{display:"flex",alignItems:"center",gap:12,width:"100%",textAlign:"left",background:T.bg2,border:"1px solid "+(selectedMemberId===m.id?"rgba(52,199,89,.35)":"rgba(255,255,255,.07)"),borderRadius:13,padding:12,marginBottom:8,cursor:"pointer",color:T.text}}><div style={{width:38,height:38,borderRadius:11,background:"rgba(52,199,89,.12)",display:"flex",alignItems:"center",justifyContent:"center",color:T.accentL,fontSize:16,fontWeight:800,flexShrink:0}}>{m.name.trim().charAt(0).toLocaleUpperCase("tr-TR")}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:750,overflowWrap:"anywhere"}}>{m.name}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>Membership: {new Date(m.createdAt||Date.now()).toLocaleDateString("tr-TR")}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:15,fontWeight:850,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":m.membershipType!=="coffee"&&!m.unlimited&&(Number(m.balance)||0)<0?"#FF453A":T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(m.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0)+" öpücük":m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" kahve hakkı":m.unlimited?"Unlimited":fm(m.balance)}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.membershipType==="coffee"?"Coffee credit membership":"Balance membership"} · View activity ›</div></div></button>)}
         {selectedMemberId&&members.filter(m=>m.id===selectedMemberId).map(m=><div key={m.id} style={{marginTop:12,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.09)",borderRadius:14,padding:13}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><button onClick={()=>{const next=window.prompt("LURK+ üyesinin yeni adı:",m.name);if(next===null)return;const clean=next.trim();if(!clean){msg("Üye adı boş olamaz.");return;}if(members.some(x=>x.id!==m.id&&x.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Bu isimde başka bir LURK+ üyesi zaten var.");return;}setMembers(prev=>prev.map(x=>x.id===m.id?{...x,name:clean,updatedAt:new Date().toISOString()}:x));msg("Üye adı güncellendi.");}} style={{padding:"4px 8px",background:"rgba(255,255,255,.06)",color:T.textSub,border:"1px solid rgba(255,255,255,.14)",borderRadius:7,fontSize:10,fontWeight:750,cursor:"pointer",whiteSpace:"nowrap"}}>Edit</button></div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Öpücük bakiyesi":m.membershipType==="coffee"?"Remaining kahve hakkı":"Güncel bakiye"}</div></div><div style={{fontSize:18,fontWeight:850,color:m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&(Number(m.balance)||0)<0?"#FF453A":T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Unlimited kullanım":" "+fm(m.balance)}</div></div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:10}}><div><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{fontSize:16,fontWeight:800,color:T.text}}>{m.name}</div><button onClick={()=>{const next=window.prompt("New name for the LURK+ member:",m.name);if(next===null)return;const clean=next.trim();if(!clean){msg("Member name cannot be empty.");return;}if(members.some(x=>x.id!==m.id&&x.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("Another LURK+ member with this name already exists.");return;}setMembers(prev=>prev.map(x=>x.id===m.id?{...x,name:clean,updatedAt:new Date().toISOString()}:x));msg("Member name updated.");}} style={{padding:"4px 8px",background:"rgba(255,255,255,.06)",color:T.textSub,border:"1px solid rgba(255,255,255,.14)",borderRadius:7,fontSize:10,fontWeight:750,cursor:"pointer",whiteSpace:"nowrap"}}>Edit</button></div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"Kiss balance":m.membershipType==="coffee"?"Remaining coffee credits":"Current balance"}</div></div><div style={{fontSize:18,fontWeight:850,color:m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&(Number(m.balance)||0)<0?"#FF453A":T.accentL}}>{m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" / toplam hak":m.unlimited?"Unlimited usage":" "+fm(m.balance)}</div></div>
           {m.membershipType!=="coffee"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("tr-TR")!=="beliz"&&<button onClick={()=>addMemberBalance(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Add balance</button>}
            {m.membershipType==="coffee"&&<button onClick={()=>addCoffeeCredits(m)} style={{width:"100%",padding:9,marginBottom:12,background:"rgba(52,199,89,.1)",color:T.accentL,border:"1px solid rgba(52,199,89,.2)",borderRadius:8,fontSize:11,fontWeight:800,cursor:"pointer"}}>+ Add coffee credits</button>}
           <div style={{background:"rgba(52,199,89,.07)",border:"1px solid rgba(52,199,89,.18)",borderRadius:11,padding:11,marginBottom:13}}>
             <div style={{fontSize:12,fontWeight:800,color:T.text,marginBottom:5}}>Customer bağlantısı</div>
             <div style={{fontSize:10,color:T.textSub,lineHeight:1.5,marginBottom:9}}>Send this link to the customer. Anyone with the link can view only this member's balance and activity.</div>
-            <button disabled={linkBusy} onClick={()=>manageLink(m,"create")} style={{width:"100%",padding:10,background:T.accent,color:"#fff",border:0,borderRadius:9,fontWeight:800,fontSize:11,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"İşleniyor…":"New bağlantı oluştur / yenile"}</button>
-            <button disabled={linkBusy} onClick={()=>revealMemberLink(m)} style={{width:"100%",padding:9,marginTop:7,background:"rgba(255,255,255,.06)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:8,fontSize:11,fontWeight:750,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Uploadniyor…":"Mevcut bağlantıyı göster"}</button>
-            {issuedLinks[m.id]&&<><div style={{fontSize:10,color:T.textSub,overflowWrap:"anywhere",padding:"8px 0"}}>{issuedLinks[m.id]}</div><button onClick={()=>navigator.clipboard.writeText(issuedLinks[m.id]).then(()=>msg("Link copied."))} style={{width:"100%",padding:9,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Copy Link</button><button onClick={()=>window.open("https://wa.me/?text="+encodeURIComponent(m.name+" için LURK+ bakiye bağlantın: "+issuedLinks[m.id]),"_blank","noopener,noreferrer")} style={{width:"100%",padding:9,background:"rgba(37,211,102,.12)",color:"#55D98B",border:"1px solid rgba(37,211,102,.25)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Send via WhatsApp</button></>}
+            <button disabled={linkBusy} onClick={()=>manageLink(m,"create")} style={{width:"100%",padding:10,background:T.accent,color:"#fff",border:0,borderRadius:9,fontWeight:800,fontSize:11,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Processing…":"Create / renew link"}</button>
+            <button disabled={linkBusy} onClick={()=>revealMemberLink(m)} style={{width:"100%",padding:9,marginTop:7,background:"rgba(255,255,255,.06)",color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:8,fontSize:11,fontWeight:750,cursor:"pointer",opacity:linkBusy?0.6:1}}>{linkBusy?"Uploadniyor…":"Show existing link"}</button>
+            {issuedLinks[m.id]&&<><div style={{fontSize:10,color:T.textSub,overflowWrap:"anywhere",padding:"8px 0"}}>{issuedLinks[m.id]}</div><button onClick={()=>navigator.clipboard.writeText(issuedLinks[m.id]).then(()=>msg("Link copied."))} style={{width:"100%",padding:9,background:T.bg3,color:T.text,border:"1px solid rgba(255,255,255,.1)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Copy Link</button><button onClick={()=>window.open("https://wa.me/?text="+encodeURIComponent(m.name+" your LURK+ balance link: "+issuedLinks[m.id]),"_blank","noopener,noreferrer")} style={{width:"100%",padding:9,background:"rgba(37,211,102,.12)",color:"#55D98B",border:"1px solid rgba(37,211,102,.25)",borderRadius:8,fontSize:11,cursor:"pointer",marginBottom:7}}>Send via WhatsApp</button></>}
             <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Revoke All Links</button>
           </div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BALANCE ACTIVITY</div>
-          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Öpücük borçlandı 💋":h.type==="kiss_refund"?"Öpücük iade edildi":h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?(h.itemName||"Kahve hakkı kullanıldı"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Kahve hakkı iade edildi"):h.type==="refund"?"Product iadesi":(h.itemName||"Product alımı")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" öpücük":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
+          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("tr-TR")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" öpücük":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
           <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Delete Membership</button>
           <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Close Details</button>
         </div>)}
       </div>
-      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>New LURK+ Member</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Choose a membership type and enter the starting value.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Member name *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Membership type *</label><select value={memberType} onChange={e=>setMemberType(e.target.value)} style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}><option value="balance">Balance membership (TRY)</option><option value="coffee">Coffee credit membership</option></select><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>{memberType==="coffee"?"Başlangıç kahve hakkı *":"Başlangıç bakiyesi (TL) *"}</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode={memberType==="coffee"?"numeric":"decimal"} placeholder={memberType==="coffee"?"Örn. 6":"Örn. 500"} onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Member</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button></Modal>}
+      {showForm&&<Modal><div style={{fontSize:18,fontWeight:800,color:T.text,marginBottom:6}}>New LURK+ Member</div><div style={{fontSize:12,color:T.textSub,marginBottom:16}}>Choose a membership type and enter the starting value.</div><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Member name *</label><input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ad soyad" style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Membership type *</label><select value={memberType} onChange={e=>setMemberType(e.target.value)} style={{width:"100%",padding:12,marginBottom:12,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}><option value="balance">Balance membership (TRY)</option><option value="coffee">Coffee credit membership</option></select><label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>{memberType==="coffee"?"Starting coffee credits *":"Starting balance (TL) *"}</label><input value={balance} onChange={e=>setBalance(e.target.value)} inputMode={memberType==="coffee"?"numeric":"decimal"} placeholder={memberType==="coffee"?"Örn. 6":"Örn. 500"} onKeyDown={e=>{if(e.key==="Enter")addMember();}} style={{width:"100%",padding:12,marginBottom:16,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10}}/><button onClick={addMember} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Member</button><button onClick={()=>setShowForm(false)} style={{width:"100%",padding:12,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button></Modal>}
     </div>
   );
 }
@@ -2058,9 +2058,9 @@ function LurkPlusPortal({token}){
     setLoading(true);setError(false);
     try{
       const r=await fetch(SB_URL+"/rest/v1/rpc/lurk_plus_member_by_token",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_token:token})});
-      if(!r.ok)throw new Error("Veri alınamadı");
+      if(!r.ok)throw new Error("Unable to retrieve data");
       const data=await r.json();
-      if(!data||!data.name)throw new Error("Bağlantı geçersiz veya iptal edilmiş");
+      if(!data||!data.name)throw new Error("Link is invalid or has been revoked");
       setMember(data);setUpdated(new Date());
     }catch(e){setMember(null);setError(true);}
     finally{setLoading(false);}
@@ -2070,8 +2070,8 @@ function LurkPlusPortal({token}){
   const cream="#E9E1CF", ink="#171914", green="#34C759";
   const kissCount=(member?.history||[]).reduce((n,h)=>n+(h.type==="kiss_debt"?(Number(h.amount)||0):h.type==="kiss_refund"?-(Number(h.amount)||0):0),0);
   const isBeliz=member?.name?.trim().toLocaleLowerCase("tr-TR")==="beliz";
-  const memberValue=isBeliz?kissCount+" ÖPÜCÜK":member?.membershipType==="coffee"?(Number(member.coffeeCredits)||0)+" KAHVE HAKKI":member?.unlimited?"SINIRSIZ":fm(Number(member?.balance)||0);
-  const memberLabel=isBeliz?"BİRİKEN ÖPÜCÜK BORCUN":member?.membershipType==="coffee"?"REMAINING KAHVE HAKKIN":member?.unlimited?"ÜYELİK HAKKIN":"GÜNCEL BAKİYEN";
+  const memberValue=isBeliz?kissCount+" KISSES":member?.membershipType==="coffee"?(Number(member.coffeeCredits)||0)+" KAHVE HAKKI":member?.unlimited?"SINIRSIZ":fm(Number(member?.balance)||0);
+  const memberLabel=isBeliz?"BİRİKEN KISSES BORCUN":member?.membershipType==="coffee"?"REMAINING KAHVE HAKKIN":member?.unlimited?"MEMBERSHIP CREDITS":"CURRENT BALANCE";
   return <div style={{minHeight:"100vh",background:"#080A08",color:"#F1EEE6",fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",padding:"30px 16px 50px"}}>
     <div style={{maxWidth:520,margin:"0 auto"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
@@ -2109,7 +2109,7 @@ function LurkPlusPortal({token}){
         <div style={{background:"linear-gradient(145deg,#111411,#0D100D)",border:"1px solid rgba(255,255,255,.12)",borderRadius:16,padding:"0 14px"}}>
           {!history.length?<div style={{padding:"24px 12px",textAlign:"center",fontSize:12,color:"#999D93"}}><div style={{fontSize:22,marginBottom:8,color:"#91A982"}}>♧</div>No balance activity yet.</div>:history.map(h=><div key={h.id} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"13px 0",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
             <div style={{width:29,height:29,borderRadius:9,background:h.type==="purchase"?"rgba(255,69,58,.12)":"rgba(52,199,89,.13)",display:"grid",placeItems:"center",color:h.type==="purchase"?"#FF6B61":"#91B783",flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Kahve hakkı eklendi"):h.type==="credit_use"?(h.itemName||"Kahve hakkı kullanıldı"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Kahve hakkı iade edildi"):h.type==="refund"?"Product iadesi":(h.itemName||"Product alımı")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" öpücük":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(Number(h.balanceAfter)||0)}</div></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750}}>{h.type==="topup"?(h.note||"Bakiye yüklendi"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" iade edildi":"Coffee credit refunded"):h.type==="refund"?"Product iadesi":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:4}}>{h.date?new Date(h.date).toLocaleString("tr-TR",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—"}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:"#A0A0A0",marginTop:3}}>After transaction: {isBeliz?(Number(h.balanceAfter)||0)+" öpücük":member.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" kahve hakkı":fm(Number(h.balanceAfter)||0)}</div></div>
             <div style={{fontSize:12,fontWeight:850,color:h.type==="purchase"?"#FF6B61":"#34C759",whiteSpace:"nowrap"}}>{isBeliz?(h.type==="kiss_debt"?"+":"−")+h.amount+" öpücük":member.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" hak":(h.type==="purchase"?"−":"+")+fm(Number(h.amount)||0)}</div>
           </div>)}
         </div>
@@ -2240,30 +2240,30 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
   function openCustomerEdit(customer){setCustomerEditing(customer);setCustomerName(customer.name||"");setCustomerError("");}
   function saveCustomerEdit(){
     const clean=customerName.trim();
-    if(!clean){setCustomerError("Customer adı zorunlu.");return;}
+    if(!clean){setCustomerError("Customer name is required.");return;}
     const duplicate=customers.find(c=>c.id!==customerEditing?.id&&c.name.trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));
-    if(duplicate){setCustomerError("Bu isimde başka bir müşteri zaten kayıtlı.");return;}
+    if(duplicate){setCustomerError("Another customer with this name already exists.");return;}
     setCustomers(prev=>prev.map(c=>c.id===customerEditing.id?{...c,name:clean,updatedAt:new Date().toISOString()}:c));
     setCustomerEditing(null);setCustomerError("");
   }
   function inspectBackup(file){
     setImportMsg("");setPendingImport(null);
     if(!file)return;
-    if(file.size>20*1024*1024){setImportMsg("Dosya 20 MB sınırını aşıyor.");return;}
+    if(file.size>20*1024*1024){setImportMsg("The file exceeds the 20 MB limit.");return;}
     setImportBusy(true);
     file.text().then(raw=>{
       const parsed=JSON.parse(raw);
       const validationError=validateBackup(parsed);
       if(validationError)throw new Error(validationError);
       setPendingImport({data:parsed.data,filename:file.name});
-      setImportMsg("Yedek doğrulandı. Geri yükleme mevcut kayıtların yerine geçecek.");
-    }).catch(e=>setImportMsg(e instanceof SyntaxError?"Dosya geçerli JSON değil.":(e?.message||"Yedek okunamadı."))).finally(()=>setImportBusy(false));
+      setImportMsg("Backup verified. Restoring it will replace existing records.");
+    }).catch(e=>setImportMsg(e instanceof SyntaxError?"The file is not valid JSON.":(e?.message||"Unable to read backup."))).finally(()=>setImportBusy(false));
   }
   function applyBackup(){
     if(!pendingImport)return;
     const d=pendingImport.data;
     setTables(d.lurk_t);setOrders(d.lurk_o);setLogs(d.lurk_l);setCustomers(d.lurk_customers);setCreditEntries(d.lurk_credit);setMenu(d.lurk_m);setDay(d.lurk_d);if(Array.isArray(d.lurk_personal_debts))setPersonalDebts(d.lurk_personal_debts);
-    setImportMsg("Yedek içeri aktarıldı. Kayıt göstergesi tamamlanana kadar uygulamayı kapatma.");
+    setImportMsg("Backup imported. Do not close the app until the save indicator completes.");
     setPendingImport(null);
   }
   function exportBackup(){
@@ -2274,7 +2274,7 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
     a.href=url;a.download="lurk-pos-yedek-"+tod()+".json";
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
-    setBackupMsg("Yedek dosyası indirildi. Güvenli bir yerde sakla.");
+    setBackupMsg("Backup downloaded. Store it somewhere safe.");
   }
   return(
     <div className="lurk-screen lurk-settings-screen ds-settings">
@@ -2312,7 +2312,7 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
           <div style={{fontSize:14,fontWeight:750,color:T.text}}>Restore Backup</div>
           <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,marginTop:5,marginBottom:12}}>Select a valid JSON backup created by LURK POS. Restoring it will replace the existing records.</div>
           <label style={{display:"block",boxSizing:"border-box",padding:13,textAlign:"center",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,color:T.text,fontWeight:750,cursor:"pointer"}}>
-            {importBusy?"Yedek okunuyor…":"↑ Yedek Dosyası Seç"}
+            {importBusy?"Yedek okunuyor…":"↑ Choose Backup File"}
             <input type="file" accept=".json,application/json" disabled={importBusy} onChange={e=>inspectBackup(e.target.files?.[0])} style={{display:"none"}}/>
           </label>
           {importMsg&&<div role="status" style={{fontSize:12,lineHeight:1.5,color:pendingImport?T.warn:T.textSub,marginTop:10}}>{importMsg}</div>}
@@ -2327,7 +2327,7 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
       {customerEditing&&<Modal>
         <div style={{fontSize:17,fontWeight:800,color:T.text,marginBottom:14}}>Customeryi Edit</div>
         <label style={{display:"block",fontSize:12,color:T.textSub,marginBottom:6}}>Ad soyad</label>
-        <input autoFocus value={customerName} onChange={e=>{setCustomerName(e.target.value);setCustomerError("");}} placeholder="Customer adı" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,boxSizing:"border-box"}}/>
+        <input autoFocus value={customerName} onChange={e=>{setCustomerName(e.target.value);setCustomerError("");}} placeholder="Customer name" style={{width:"100%",padding:12,marginBottom:10,background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.12)",borderRadius:10,boxSizing:"border-box"}}/>
         {customerError&&<div role="alert" style={{fontSize:12,color:T.danger,marginBottom:10}}>{customerError}</div>}
         <button onClick={saveCustomerEdit} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Save Changes</button>
         <button onClick={()=>setCustomerEditing(null)} style={{width:"100%",padding:11,background:"transparent",color:T.textSub,border:0,cursor:"pointer"}}>Cancel</button>
