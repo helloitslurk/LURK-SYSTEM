@@ -438,7 +438,7 @@ function POSApp({onLock}){
     if(paymentInProgress.current)return;
     const t=tables.find(x=>x.id===tid);
     if(!t)return;
-    const sub=t.order.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.price)||0)*(Number(o.qty)||0)),0);
+    const sub=t.order.reduce((s,o)=>s+(o.revenueExcluded?0:Math.max(0,(Number(o.price)||0)*(Number(o.qty)||0)-(Number(o.discount)||0))),0);
     const previousPayments=Array.isArray(t.partialPayments)?t.partialPayments:[];
     const previousPaid=previousPayments.reduce((sum,p)=>sum+(Number(p.amount)||0),0);
     const isCredit=pt==="credit";
@@ -464,7 +464,7 @@ function POSApp({onLock}){
     const orderNumber=Math.max(storedNext,orders.reduce((max,o)=>Math.max(max,Number(o.orderNumber)||0),0)+1);
     try{localStorage.setItem("lurk_next_order_number",String(orderNumber+1));}catch(e){}
     const methodSet=[...new Set(allPayments.map(p=>p.method))];
-    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
+    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,subtotal:sub,discount:Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,discount:Number(o.discount)||0,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
     paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
@@ -1014,12 +1014,23 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const[partialAmount,setPartialAmount]=useState("");
   const[cashPart,setCashPart]=useState("");
   const[cardPart,setCardPart]=useState("");
-  const sub=table.order.reduce((s,o)=>s+o.price*o.qty,0);
+  const sub=table.order.reduce((s,o)=>s+Math.max(0,(Number(o.price)||0)*(Number(o.qty)||0)-(Number(o.discount)||0)),0);
   const previousPaid=(Array.isArray(table.partialPayments)?table.partialPayments:[]).reduce((sum,p)=>sum+(Number(p.amount)||0),0);
   const discVal=Math.min(Math.max(0,sub-previousPaid),Math.max(0,parseFloat(disc)||0));
   const total=Math.max(0,Math.round((sub-previousPaid-discVal)*100)/100);
   const paymentTarget=partialMode?Math.min(total,Math.max(0,parseFloat(partialAmount)||0)):total;
   const itemCount=table.order.reduce((s,o)=>s+o.qty,0);
+
+  function setLineDiscount(item){
+    const current=Number(item.discount)||0;
+    const raw=window.prompt("Item discount (TL):",current?String(current):"");
+    if(raw===null)return;
+    const value=Math.round(Number(String(raw).replace(",","."))*100)/100;
+    const max=Math.max(0,(Number(item.price)||0)*(Number(item.qty)||0));
+    if(!Number.isFinite(value)||value<0||value>max){window.alert("Enter a valid TL discount up to "+fm(max)+".");return;}
+    const key=item.oid||String(item.id);
+    setTbl(prev=>prev.map(t=>t.id!==table.id?t:{...t,order:t.order.map(line=>(line.oid||String(line.id))===key?{...line,discount:value}:line)}));
+  }
 
   function handleAdd(item){
     addItem(table.id,item);
@@ -1059,12 +1070,13 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                     </div>
                     <div style={{textAlign:"right",flexShrink:0}}>
                       <div style={{fontSize:9,color:T.textSub,whiteSpace:"nowrap"}}>{fm(item.price)} × {item.qty}</div>
-                      <div style={{fontSize:12,color:T.accentL,fontWeight:800,marginTop:1,whiteSpace:"nowrap"}}>{fm(item.price*item.qty)}</div>
+                      <div style={{fontSize:12,color:T.accentL,fontWeight:800,marginTop:1,whiteSpace:"nowrap"}}>{fm(Math.max(0,item.price*item.qty-(Number(item.discount)||0)))}</div>{Number(item.discount)>0&&<div style={{fontSize:9,color:T.danger}}>−{fm(item.discount)} discount</div>}
                     </div>                  </div>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
                     <button aria-label={item.name+" azalt"} onClick={()=>chQ(table.id,item.oid||String(item.id),-1)} style={{flex:1,height:26,borderRadius:7,border:"0.5px solid rgba(255,59,48,0.3)",background:"rgba(255,59,48,0.08)",cursor:"pointer",fontSize:18,color:T.danger,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>−</button>
                     <span style={{minWidth:20,textAlign:"center",fontWeight:800,fontSize:13,color:T.text}}>{item.qty}</span>
                     <button aria-label={item.name+" artır"} onClick={()=>addItem(table.id,{id:item.id,name:item.name,price:item.price,cat:item.cat,on:item.on})} style={{flex:1,height:32,borderRadius:8,border:"0.5px solid rgba(52,199,89,0.3)",background:"rgba(52,199,89,0.12)",cursor:"pointer",fontSize:18,color:T.accentL,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}}>+</button>
+                    <button onClick={()=>setLineDiscount(item)} style={{flex:1,height:30,borderRadius:8,border:"1px solid #E5E8E0",background:"#fff",color:"#4E574A",fontSize:10,fontWeight:850,cursor:"pointer"}}>Discount</button>
                   </div>
                 </div>
               ))
