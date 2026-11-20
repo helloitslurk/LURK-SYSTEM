@@ -497,8 +497,7 @@ function POSApp({onLock}){
   ];
 
   return(
-    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>
-      <style>{`
+    <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         .lurk-app { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
         .lurk-app button, .lurk-app button div, .lurk-app button span { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
@@ -645,6 +644,51 @@ function POSApp({onLock}){
           .lurk-modal-backdrop { align-items: center !important; padding: 24px; }
           .lurk-modal-panel { max-width: 520px !important; border-radius: 20px !important; padding: 28px !important; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
         }
+
+        /* LURK POS 5.0 · Editorial Green home */
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+        .lurk-app { font-family: Manrope, Inter, sans-serif !important; }
+        .lurk-app .editorial-home { background:#F7F8F4 !important; color:#193B2B !important; min-height:calc(100vh - 76px); }
+        .lurk-app .editorial-home-header { background:#FFFFFF !important; border-bottom:1px solid #E7EBE4 !important; padding:28px 34px 24px !important; }
+        .lurk-app .editorial-home-header img { width:184px !important; }
+        .lurk-app .editorial-home-header span { color:#718176 !important; }
+        .lurk-app .editorial-home-header span[style*="font-weight: 750"] { color:#278653 !important; }
+        .lurk-app .editorial-home-header button { background:#F4F7F2 !important; border:1px solid #E2E9E0 !important; color:#315842 !important; }
+        .lurk-app .editorial-home-header > div > div:last-child > div { background:#EEF5EE !important; border:1px solid #DCE9DD !important; }
+        .lurk-app .editorial-home-header > div > div:last-child > div span { color:#24613F !important; }
+        .lurk-app .editorial-home-stat { background:#F7F9F5 !important; border:1px solid #E7ECE5 !important; border-radius:14px !important; padding:16px 18px !important; }
+        .lurk-app .editorial-home-stat > div:first-child { color:#78867B !important; letter-spacing:1px !important; }
+        .lurk-app .editorial-home-stat > div:nth-child(2) { color:#174C35 !important; font-size:clamp(18px,2vw,26px) !important; letter-spacing:-1px !important; }
+        .lurk-app .editorial-home-stat > div:last-child { color:#89958B !important; font-size:10px !important; }
+        .lurk-app .editorial-home-pages { padding:26px 34px 0 !important; }
+        .lurk-app .editorial-home-pages > div:first-child { color:#718176 !important; font-size:11px !important; letter-spacing:1.5px !important; margin-bottom:14px !important; }
+        .lurk-app .editorial-home-page-card { background:#FFFFFF !important; border:1px solid #E5EBE4 !important; border-radius:12px !important; color:#174C35 !important; box-shadow:0 3px 12px rgba(26,64,43,.035) !important; }
+        .lurk-app .editorial-home-page-card > div:first-child { background:rgba(57,169,107,.08) !important; }
+        .lurk-app .editorial-home-page-card > div:nth-child(2) { color:#39A96B !important; opacity:1 !important; font-size:25px !important; }
+        .lurk-app .editorial-home-page-card > div:nth-child(3) { color:#174C35 !important; font-size:16px !important; font-weight:800 !important; }
+        .lurk-app .editorial-home-page-card > div:nth-child(4) { color:#829087 !important; font-size:12px !important; }
+        .lurk-app .editorial-home-page-card:hover { border-color:#B9D5C1 !important; box-shadow:0 8px 22px rgba(26,64,43,.08) !important; }
+        .lurk-app .editorial-home-day { padding:18px 34px 26px !important; }
+        .lurk-app .editorial-home-day button { background:#174C35 !important; border:1px solid #174C35 !important; color:#FFFFFF !important; border-radius:9px !important; font-weight:800 !important; }
+        .lurk-bottom-nav { background:#FFFFFF !important; border:0 !important; border-top:1px solid #E5EBE4 !important; box-shadow:0 -5px 24px rgba(20,55,35,.05) !important; }
+        .lurk-nav-button span:first-child { color:#8A998D !important; }
+        .lurk-nav-button span:last-child { color:#78867B !important; }
+        .lurk-nav-button:hover { background:#F3F7F2 !important; }
+        @media (min-width:1000px) {
+          .lurk-app .editorial-home { min-height:100vh !important; height:100vh !important; }
+          .lurk-app .editorial-home-header { padding:34px 48px 26px !important; }
+          .lurk-app .editorial-home-pages { padding:30px 48px 0 !important; }
+          .lurk-app .editorial-home-page-card { padding:26px 28px !important; }
+          .lurk-app .editorial-home-day { padding:20px 48px 28px !important; }
+          .lurk-bottom-nav { background:#FFFFFF !important; border-right:1px solid #E5EBE4 !important; }
+          .lurk-nav-button { border-radius:10px !important; }
+        }
+        @media (max-width:699px) {
+          .lurk-app .editorial-home-header { padding:18px 16px 16px !important; }
+          .lurk-app .editorial-home-header img { width:148px !important; }
+          .lurk-app .editorial-home-pages { padding:18px 14px 0 !important; }
+          .lurk-app .editorial-home-day { padding:14px 14px 18px !important; }
+        }
       `}</style>
       {toast&&<div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",background:"#34C759",color:"#fff",padding:"9px 18px",borderRadius:20,fontSize:13,fontWeight:700,zIndex:999,whiteSpace:"nowrap",boxShadow:"0 4px 20px rgba(52,199,89,0.45)"}}>{toast}</div>}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Kaydediliyor…":"Kaydedildi"}</button>
@@ -712,9 +756,9 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
   ];
 
   return(
-    <div className="lurk-screen lurk-home-screen">
+    <div className="lurk-screen lurk-home-screen editorial-home">
       {/* Header */}
-      <div style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
+      <div className="editorial-home-header" style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"20px 16px 16px"}}>
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
           <div>
             <img src="/lurk-logo.svg" alt="LURK." style={{display:"block",width:168,maxWidth:"48vw",height:"auto",margin:"0",objectFit:"contain",objectPosition:"left center"}} />
@@ -741,7 +785,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
             {label:"Nakit",val:fm(todCash),sub:"bugün"},
             {label:"Kart",val:fm(todCard),sub:"bugün"},
           ].map((s,i)=>(
-            <div key={i} style={{background:"rgba(255,255,255,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.07)",minWidth:0,overflow:"hidden"}}>
+            <div className="editorial-home-stat" key={i} style={{background:"rgba(255,255,255,0.035)",borderRadius:11,padding:"10px 8px",border:"1px solid rgba(255,255,255,0.07)",minWidth:0,overflow:"hidden"}}>
               <div style={{fontSize:9,color:T.textSub,fontWeight:650,textTransform:"uppercase",letterSpacing:"0.45px",marginBottom:5,whiteSpace:"nowrap"}}>{s.label}</div>
               <div style={{fontSize:"clamp(11px, 2.8vw, 15px)",fontWeight:800,color:i===0?T.accentL:T.text,letterSpacing:"-0.45px",whiteSpace:"nowrap",fontVariantNumeric:"tabular-nums",filter:balancesVisible?"none":"blur(7px)",userSelect:balancesVisible?"auto":"none"}}>{balancesVisible?s.val.replace(" TL",""):"••••••"}</div>
               <div style={{fontSize:8,color:T.textDim,marginTop:3,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>TL · {s.sub}</div>
@@ -751,7 +795,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
       </div>
 
       {/* Hızlı erişim grid */}
-      <div style={{padding:"16px 14px 0"}}>
+      <div className="editorial-home-pages" style={{padding:"16px 14px 0"}}>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Sayfalar</div>
         <div className="lurk-home-pages-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {PAGES.map((p,i)=>(
@@ -765,7 +809,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
         </div>
       </div>
 
-      <div style={{padding:"14px 14px 0"}}>
+      <div className="editorial-home-day" style={{padding:"14px 14px 0"}}>
         {day?(
           <button onClick={closeDay} style={{width:"100%",padding:"14px 16px",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:14,color:T.text,fontSize:14,fontWeight:750,cursor:"pointer"}}>
             Günü Kapat
@@ -997,8 +1041,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
                 {menu.filter(m=>m.on&&(search.trim()?m.name.toLocaleLowerCase("tr-TR").includes(search.trim().toLocaleLowerCase("tr-TR")):m.cat===selCat)).map(item=>{
                   const inCart=table.order.filter(o=>o.id===item.id).reduce((sum,o)=>sum+o.qty,0);
                   const isFlash=flash===item.id;
-                  return(
-                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(52,199,89,0.25)":inCart>0?"rgba(52,199,89,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(52,199,89,0.35)":"rgba(255,255,255,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
+                  return(                    <button key={item.id} onClick={()=>handleAdd(item)} style={{background:isFlash?"rgba(52,199,89,0.25)":inCart>0?"rgba(52,199,89,0.1)":T.bg2,border:"0.5px solid "+(inCart>0?"rgba(52,199,89,0.35)":"rgba(255,255,255,0.08)"),borderRadius:12,padding:"12px 10px",cursor:"pointer",textAlign:"left",color:T.text,position:"relative",transition:"background 0.15s",outline:"none"}}>
                       {inCart>0&&<span style={{position:"absolute",top:6,right:8,background:T.accent,color:"#fff",borderRadius:20,fontSize:10,fontWeight:800,padding:"1px 6px"}}>×{inCart}</span>}
                       {isFlash&&<div style={{position:"absolute",inset:0,borderRadius:12,border:"2px solid #34C759",pointerEvents:"none"}}/>}
                       <div style={{fontSize:11,fontWeight:700,marginBottom:5,paddingRight:inCart>0?28:0,lineHeight:1.3,color:T.text}}>{item.name}</div>
@@ -1497,8 +1540,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(lurkStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(lurkStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{lurkStats.pct.toFixed(0)}%</div></div>
               <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>ÖDEME ORANI</div>
             </div>
-          </div>
-          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
+          </div>          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
         </button>
         {showLurk&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
           {activeLurkDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
@@ -1997,8 +2039,7 @@ function CustomersScreen({orders,customers,setCustomers,creditEntries,setCreditE
     if(!Number.isFinite(value)||value<=0){msg("Geçerli bir tutar gir.");return;}
     if(ledgerAction==="payment"&&value>Math.max(0,balanceFor(detail))+.009){msg("Tahsilat açık bakiyeden fazla olamaz.");return;}
     ledgerSubmittingRef.current=true;
-    setLedgerSubmitting(true);
-    const entry={id:uid(),customerId:detail.id,customerName:detail.name,type:ledgerAction==="debt"?"debt":"payment",amount:value,method:ledgerAction==="debt"?"credit":method,date:new Date().toISOString(),note:note.trim()};
+    setLedgerSubmitting(true);    const entry={id:uid(),customerId:detail.id,customerName:detail.name,type:ledgerAction==="debt"?"debt":"payment",amount:value,method:ledgerAction==="debt"?"credit":method,date:new Date().toISOString(),note:note.trim()};
     setCreditEntries(prev=>[entry,...prev]);
     setAmount("");setNote("");setLedgerAction(null);
     msg(ledgerAction==="debt"?"Borç kaydedildi.":"Tahsilat kaydedildi.");
