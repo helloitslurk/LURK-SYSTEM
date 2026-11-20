@@ -529,7 +529,8 @@ function POSApp({onLock}){
             <button className="lurk-profile-avatar" onClick={()=>setProfileOpen(v=>!v)} aria-expanded={profileOpen} aria-label="Open profile menu">L</button>
             {profileOpen&&<div className="lurk-profile-menu">
               <div className="lurk-profile-menu-heading">LURK POS</div>
-              <button onClick={()=>{setV("personal");setProfileOpen(false);}}>Personal</button>
+              <button onClick={()=>{setV("personal");setProfileOpen(false);}}>Personal Finance</button>
+              <button onClick={()=>{setV("menu");setProfileOpen(false);}}>Menu & Products</button>
               <button onClick={()=>{setV("settings");setProfileOpen(false);}}>Settings</button>
               <button onClick={()=>{setProfileOpen(false);onLock();}}>Lock Screen</button>
             </div>}
@@ -886,7 +887,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
         <div className="lurk-shell-section-label">WORKSPACE</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Ana Sayfa",icon:"⌂"},{k:"tables",label:"Tablelar",icon:"▦"},{k:"reports",label:"Raporlar",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"menu",label:"Menü",icon:"☕"},{k:"personal",label:"Personal Finance",icon:"₺"},{k:"settings",label:"Settings",icon:"⚙"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"tables",label:"Tables",icon:"▦"},{k:"reports",label:"Reports",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><span className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button type="button" aria-label="Lock screen" onClick={onLock}>⌑</button></div>
       </aside>}
