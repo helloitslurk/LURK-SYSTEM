@@ -948,3 +948,101 @@ body{background:#F1F2EF!important}
 @media(max-width:380px){
   .lurk-app .lurk-menu-product-grid{grid-template-columns:1fr}
 }
+
+
+/* PERSONAL FINANCE · readable editorial surface */
+.lurk-app .personal-finance{
+  --pf-ink:#202820;--pf-muted:#667365;--pf-line:#e3e9df;
+  box-sizing:border-box;width:100%;max-width:1600px;margin:0 auto;
+  padding:0 0 88px!important;background:#f7f9f5!important;color:var(--pf-ink)!important;
+  font-family:'Manrope','Inter',sans-serif!important;
+}
+.lurk-app .personal-finance>div:first-child{
+  position:sticky;top:0;z-index:15;background:rgba(255,255,255,.94)!important;
+  color:var(--pf-ink)!important;border-bottom:1px solid var(--pf-line)!important;
+  box-shadow:0 4px 18px rgba(24,37,29,.035);backdrop-filter:blur(16px);
+  padding:18px clamp(16px,3vw,34px)!important;
+}
+.lurk-app .personal-finance>div:first-child :where(div,button){color:var(--pf-ink)!important}
+.lurk-app .personal-finance>div:first-child button:last-child{
+  background:#edf3e9!important;border:1px solid #dce7d8!important;border-radius:10px!important;
+  padding:9px 14px!important;color:#30472d!important;font-weight:800
+}
+.lurk-app .personal-finance>div:nth-child(2){
+  width:100%;max-width:1500px!important;margin:0 auto!important;
+  padding:24px clamp(14px,3vw,36px) 90px!important;box-sizing:border-box
+}
+/* Folder summary cards: retain the forest-green identity, fix contrast everywhere. */
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"]{
+  background:linear-gradient(145deg,#173b29,#10291d)!important;
+  border:1px solid #2d6243!important;border-radius:16px!important;
+  box-shadow:0 8px 24px rgba(18,49,30,.09)!important;
+  padding:18px!important;margin-bottom:14px!important;
+  animation:pf-enter .42s ease both;
+  transition:transform .2s ease,box-shadow .2s ease
+}
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"]:hover{
+  box-shadow:0 12px 30px rgba(18,49,30,.14)!important
+}
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button{
+  color:#f5fff6!important
+}
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button>div,
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button>div :where(div,span){
+  color:#f1faf2!important
+}
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button>div :where(div[style*="color:#a9b8ad"],div[style*="color: #a9b8ad"]){
+  color:#c1d4c6!important
+}
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button>div[style*="display:contents"]>div:first-child :where(div){
+  color:#d0e0d2!important
+}
+.lurk-app .personal-finance .lurk-folder-debt-row{
+  background:linear-gradient(145deg,#20372a,#192c21)!important;
+  border:1px solid rgba(190,230,198,.16)!important;border-radius:13px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+  transition:transform .18s ease,border-color .18s ease
+}
+.lurk-app .personal-finance .lurk-folder-debt-row:hover{transform:translateY(-2px);border-color:rgba(112,242,138,.35)!important}
+.lurk-app .personal-finance .lurk-folder-debt-row :where(div,span,b,strong){color:#edf7ef}
+.lurk-app .personal-finance .lurk-folder-debt-row :where([style*="color:T.textDim"],[style*="color: T.textDim"]){color:#b7c9bb!important}
+.lurk-app .personal-finance .lurk-folder-debt-row :where(button){font-weight:850;transition:filter .16s ease,transform .16s ease}
+.lurk-app .personal-finance .lurk-folder-debt-row :where(button):hover{filter:brightness(1.08);transform:translateY(-1px)}
+/* Summary KPIs and personal debt cards use a calm, readable light canvas. */
+.lurk-app .personal-finance .lurk-kpi-card{
+  color:#202820!important;background:#fff!important;border:1px solid #e3e9df!important;
+  border-radius:15px!important;box-shadow:0 3px 14px rgba(24,37,29,.035)!important
+}
+.lurk-app .personal-finance .lurk-kpi-card :where(span,small,b){color:#687567!important}
+.lurk-app .personal-finance .lurk-kpi-card strong{color:#202820!important}
+.lurk-app .personal-finance :where(input,textarea,select){
+  background:#fff!important;color:#202820!important;border:1px solid #dce5d8!important;
+  border-radius:10px!important
+}
+.lurk-app .personal-finance :where(button){cursor:pointer}
+.lurk-app .personal-finance :where(button:focus-visible,input:focus-visible,select:focus-visible){
+  outline:3px solid rgba(95,180,105,.28)!important;outline-offset:2px
+}
+.lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] .lurk-folder-debt-row :where(button:not([style*="linear-gradient"])){
+  background:#294333!important;border-color:#45624c!important;color:#f3fff5!important
+}
+@keyframes pf-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+ .lurk-app .personal-finance *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media(max-width:900px){
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded]{
+  grid-template-columns:minmax(0,1fr) auto!important;row-gap:12px!important;column-gap:10px!important
+ }
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded"]>div[style*="display:contents"]{
+  grid-column:1/-1;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px
+ }
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded"]>div[style*="display:contents"]>div{min-width:0}
+}
+@media(max-width:600px){
+ .lurk-app .personal-finance>div:nth-child(2){padding:16px 12px 90px!important}
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"]{padding:13px!important}
+ .lurk-app .personal-finance>div:nth-child(2)>div[style*="linear-gradient(145deg,#102019"] button[aria-expanded"]>div[style*="display:contents"]{
+  grid-template-columns:1fr 1fr!important
+ }
+}
