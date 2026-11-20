@@ -497,3 +497,39 @@
   animation-iteration-count:1!important;transition-duration:.01ms!important
  }
 }
+
+
+/* Unified navigation shell and contrast reset */
+.lurk-root{--lurk-sidebar-width:248px}
+.lurk-shell-sidebar{display:none}
+.lurk-shell-brand{position:relative;gap:10px}
+.lurk-sidebar-toggle{margin-left:auto;width:28px;height:28px;border:1px solid var(--lurk-border);border-radius:8px;background:#fff;color:var(--lurk-muted);cursor:pointer;font-size:16px}
+.lurk-shell-nav-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lurk-root .lurk-shell-sidebar{color:var(--lurk-ink)}
+.lurk-root .lurk-shell-sidebar button{color:var(--lurk-muted)}
+.lurk-root .lurk-shell-sidebar button.active{color:var(--lurk-green-deep)}
+.lurk-root .lurk-app{background:var(--lurk-bg)!important;color:var(--lurk-ink)!important;font-family:'Manrope','Inter',sans-serif!important}
+.lurk-root .lurk-app :where(h1,h2,h3,h4,p,label,small,strong,b,span){text-shadow:none}
+.lurk-root .ref-sidebar{display:none!important}
+.lurk-root .ref-main{width:100%;max-width:1500px;margin:0 auto}
+.lurk-root .ref-dashboard{min-height:100vh;background:var(--lurk-bg);color:var(--lurk-ink)}
+.lurk-root .ref-topbar,.lurk-root .ref-content{color:var(--lurk-ink)}
+.lurk-root .ref-dashboard :where(h1,h2,h3,p,span,b,strong,small){color:inherit}
+@media(min-width:1000px){
+ .lurk-root .lurk-shell-sidebar{position:fixed;z-index:100;inset:0 auto 0 0;display:flex;flex-direction:column;width:var(--lurk-sidebar-width);padding:25px 18px 18px;background:#fff;border-right:1px solid var(--lurk-border);box-shadow:4px 0 24px rgba(24,37,29,.025);transition:width .2s ease}
+ .lurk-root .lurk-app{padding-left:var(--lurk-sidebar-width)!important;padding-bottom:0!important}
+ .lurk-root .lurk-bottom-nav{display:none!important}
+ .lurk-root-collapsed{--lurk-sidebar-width:76px}
+ .lurk-root-collapsed .lurk-shell-sidebar{padding-left:12px;padding-right:12px}
+ .lurk-root-collapsed .lurk-shell-brand{justify-content:center;padding-left:0;padding-right:0}
+ .lurk-root-collapsed .lurk-shell-brand img{display:none}
+ .lurk-root-collapsed .lurk-shell-brand span{display:none}
+ .lurk-root-collapsed .lurk-shell-section-label,.lurk-root-collapsed .lurk-shell-nav-label,.lurk-root-collapsed .lurk-shell-sidebar-footer>div,.lurk-root-collapsed .lurk-shell-sidebar-footer>button{display:none}
+ .lurk-root-collapsed .lurk-shell-nav button{justify-content:center;padding:0}
+ .lurk-root-collapsed .lurk-shell-nav button i{right:5px}
+ .lurk-root-collapsed .lurk-shell-sidebar-footer{justify-content:center;padding-left:0;padding-right:0}
+}
+@media(max-width:999px){
+ .lurk-root .lurk-shell-sidebar{display:none!important}
+ .lurk-root .lurk-app{padding-left:0!important}
+}
