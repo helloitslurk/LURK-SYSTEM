@@ -1216,3 +1216,73 @@ html,body,#root{
   .lurk-app:has(.ref-dashboard) .ref-main{height:auto!important;min-height:100dvh!important;overflow:visible!important}
   .lurk-app:has(.ref-dashboard) .ref-content{height:auto!important;min-height:calc(100dvh - 68px)!important;overflow:visible!important}
 }
+
+
+/* DEFINITIVE PAGE SCROLL OVERRIDE
+   The app shell contains legacy viewport-locked dashboard rules. Override
+   those rules at the actual LURK root, not only the retired ref-dashboard. */
+html,body,#root{
+  display:block!important;
+  width:100%!important;max-width:100%!important;
+  height:auto!important;min-height:100%!important;max-height:none!important;
+  overflow-x:hidden!important;overflow-y:visible!important;
+  overscroll-behavior-y:auto!important;
+}
+body{position:static!important}
+#root{min-height:100dvh!important}
+.lurk-root{
+  display:block!important;
+  width:100%!important;min-height:100dvh!important;
+  height:auto!important;max-height:none!important;
+  overflow:visible!important;
+}
+.lurk-root>div:nth-child(2){
+  display:block!important;position:relative!important;
+  width:100%!important;min-width:0!important;
+  height:auto!important;min-height:100dvh!important;max-height:none!important;
+  overflow:visible!important;
+}
+.lurk-root .lurk-app{
+  display:block!important;position:relative!important;
+  width:100%!important;max-width:none!important;
+  height:auto!important;min-height:100dvh!important;max-height:none!important;
+  overflow:visible!important;overflow-y:visible!important;
+  contain:none!important;
+}
+.lurk-root .lurk-app>.lurk-global-topbar{
+  position:sticky!important;top:0!important;
+}
+.lurk-root .lurk-app>.lurk-screen,
+.lurk-root .lurk-app>.lurk-home-screen,
+.lurk-root .lurk-app>.lurk-dashboard-v2,
+.lurk-root .lurk-app>.personal-finance,
+.lurk-root .lurk-app>.lurk-menu-screen,
+.lurk-root .lurk-app>.lurk-tables-screen,
+.lurk-root .lurk-app>.lurk-reports-screen,
+.lurk-root .lurk-app>.lurk-customers-screen,
+.lurk-root .lurk-app>.lurk-settings-screen{
+  height:auto!important;min-height:calc(100dvh - 70px)!important;
+  max-height:none!important;overflow:visible!important;
+}
+.lurk-root .lurk-app .lurk-home-screen{
+  height:auto!important;min-height:calc(100dvh - 70px)!important;
+  max-height:none!important;overflow:visible!important;
+}
+.lurk-root .lurk-app .lurk-home-screen>div:nth-child(2){
+  min-height:0!important;overflow:visible!important;
+}
+@media(min-width:1000px){
+  .lurk-root .lurk-app{padding-left:264px!important;padding-bottom:0!important}
+  .lurk-root-collapsed .lurk-app{padding-left:90px!important}
+}
+@media(max-width:999px){
+  .lurk-root .lurk-app{padding-left:0!important;padding-bottom:68px!important}
+}
+/* Order entry is intentionally a modal workspace and keeps its own scroll. */
+.lurk-root .lurk-app .lurk-order-screen{
+  height:min(88vh,850px)!important;max-height:88vh!important;
+  overflow:hidden!important;
+}
+.lurk-root .lurk-app .lurk-order-screen .ds-order{
+  min-height:0!important;overflow:auto!important;
+}
