@@ -1741,7 +1741,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
               {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
+              <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {new Date(p.date).toLocaleDateString("en-US")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
@@ -1784,7 +1784,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             </div>
             <div style={{display:"flex",gap:7,marginTop:9}}>
               {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Pay Next Installment</button>}
-              <button onClick={()=>openInstallmentEditor(d)} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Edit Plan</button><button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button>
+              <button onClick={()=>openInstallmentEditor(d)} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#e7f1e9",fontSize:10,fontWeight:800}}>Edit Plan</button><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button>
             </div>
             {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Hide Installments":"View Other Installments"}</button>}
             {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
@@ -1822,7 +1822,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
               {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
+              <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {new Date(p.date).toLocaleDateString("en-US")}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
@@ -1855,7 +1855,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             <div style={{fontSize:9,color:T.textDim,marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
             <div style={{display:"flex",gap:6,marginTop:9}}>
               {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
+              <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
             </div>
             {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {p.date?new Date(p.date).toLocaleDateString("en-US"):"Date not specified"}</span><b>{money(p.amount)}</b></div>)}</div>}
           </div>)}
@@ -1909,7 +1909,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>}
           <div style={{display:"flex",gap:8,marginTop:11}}>
             <button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:11,borderRadius:9,border:0,background:"linear-gradient(100deg,#34C759,#2dbb50)",color:"#061008",fontSize:11,fontWeight:900}}>+ Payment Yap</button>
-            <button onClick={()=>openDebtEditor(d)} style={{padding:"8px 10px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#d5e2d8",fontSize:10,fontWeight:800}}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"10px 13px",borderRadius:9,border:"1px solid "+T.border,background:"rgba(255,255,255,.045)",color:T.textSub,fontSize:10,fontWeight:700}}>Hareketler</button>
+            <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"10px 13px",borderRadius:9,border:"1px solid "+T.border,background:"rgba(255,255,255,.045)",color:T.textSub,fontSize:10,fontWeight:700}}>Hareketler</button>
           </div>
           {showHistory&&<div style={{marginTop:10,borderTop:"1px solid "+T.border,paddingTop:7}}>{(d.payments||[]).slice().reverse().map(p=><div key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0"}}>
             <div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:700}}>{money(p.amount)} · {p.historical?"Date not specified":new Date(p.date).toLocaleDateString("en-US")}</div><div style={{fontSize:9,color:T.textDim}}>{p.installmentLabel||p.note||"Payment"}</div></div>
