@@ -1438,17 +1438,18 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
   const salesInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
   const manualCashTotal=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===sel).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
-  const totalInc=salesInc+manualCashTotal;
+
   const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
   const lurkPlusTopups=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>({...h,method:h.method||"cash",memberName:m.name})));
   const topupTotal=lurkPlusTopups.reduce((sum,e)=>sum+(Number(e.amount)||0),0);
+  const totalInc=salesInc+manualCashTotal+topupTotal;
   const topupCash=lurkPlusTopups.filter(e=>e.method==="cash").reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const topupCard=lurkPlusTopups.filter(e=>e.method==="card").reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const topupTotalDisplay=topupTotal;
   const totalCash=mo.reduce((s,o)=>s+paymentAmount(o,"cash"),0)+monthLedger.filter(e=>(e.type==="payment"&&e.method==="cash")||e.type==="manual_cash").reduce((s,e)=>s+(Number(e.amount)||0),0)+topupCash;
   const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="card").reduce((s,e)=>s+(Number(e.amount)||0),0)+topupCard;
   const dayMap={};
-  lurkPlusTopups.forEach(e=>{const d=(e.date||"").slice(0,10);if(!d)return;if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};if(!dayMap[d].topups)dayMap[d].topups=[];dayMap[d].topups.push(e);});
+  lurkPlusTopups.forEach(e=>{const d=(e.date||"").slice(0,10);if(!d)return;if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};dayMap[d].inc+=(Number(e.amount)||0);if(!dayMap[d].topups)dayMap[d].topups=[];dayMap[d].topups.push(e);});
   mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
   monthLedger.filter(e=>e.type==="manual_cash"&&e.date).forEach(e=>{const d=e.date.slice(0,10);if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};dayMap[d].inc+=(Number(e.amount)||0);if(!dayMap[d].manualCash)dayMap[d].manualCash=[];dayMap[d].manualCash.push(e);});
