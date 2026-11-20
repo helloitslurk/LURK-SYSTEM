@@ -616,7 +616,8 @@ function POSApp({onLock}){
 
         .lurk-nav-button:focus-visible { outline: 2px solid rgba(91,220,130,.95); outline-offset: -3px; }
         @media (min-width: 1000px) {
-          .lurk-app { padding-left: 104px !important; padding-bottom: 0 !important; }
+          .lurk-app { padding-left: 248px !important; padding-bottom: 0 !important; }
+          .lurk-bottom-nav { display: none !important; }
           .lurk-bottom-nav {
             left: 0 !important; top: 0 !important; bottom: 0 !important;
             transform: none !important; width: 104px !important; max-width: 104px !important;
