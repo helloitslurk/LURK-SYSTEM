@@ -1433,3 +1433,14 @@ body{position:static!important}
 .personal-finance .pf-edit-plan-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:1!important;min-width:0!important;min-height:36px!important;padding:8px 12px!important;border:1px solid #cbdcc8!important;border-radius:9px!important;background:#eef5e9!important;color:#203b29!important;font-family:inherit!important;font-size:11px!important;font-weight:850!important;cursor:pointer!important}
 .personal-finance .pf-edit-plan-btn:hover{background:#dff0d5!important}
 .personal-finance .lurk-folder-debt-row{color:#f0f6f0!important}
+
+
+.personal-finance .pf-delete-card-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:40px;margin-top:12px;padding:9px 12px;border:1px solid rgba(226,76,76,.42);border-radius:10px;background:rgba(226,76,76,.09);color:#f08b83;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.personal-finance .pf-delete-card-btn:hover{background:rgba(226,76,76,.16);border-color:rgba(226,76,76,.7)}
+.personal-finance .pf-delete-confirm{margin-top:12px;padding:13px;border:1px solid rgba(226,76,76,.38);border-radius:11px;background:#281b1b;color:#f6e8e6}
+.personal-finance .pf-delete-confirm-title{font-size:13px;font-weight:900}
+.personal-finance .pf-delete-confirm p{font-size:11px;line-height:1.5;color:#d7b8b5;margin:6px 0 12px}
+.personal-finance .pf-delete-confirm-actions{display:flex;gap:8px}
+.personal-finance .pf-delete-confirm-actions button{flex:1;min-height:38px;border-radius:8px;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.personal-finance .pf-delete-confirm-actions button:first-child{border:1px solid rgba(255,255,255,.16);background:#26332b;color:#e5f0e7}
+.personal-finance .pf-delete-confirm-actions button:last-child{border:1px solid #a83e3e;background:#b83b3b;color:white}
