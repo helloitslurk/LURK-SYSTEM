@@ -1149,7 +1149,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
 
       {showMove&&(
         <Modal>
-          <div style={{fontWeight:800,fontSize:18,color:T.text,marginBottom:6}}>Productleri Başka Masaya Taşı</div>
+          <div style={{fontWeight:800,fontSize:18,color:T.text,marginBottom:6}}>Move Items to Another Table</div>
           <div style={{fontSize:12,color:T.textSub,lineHeight:1.5,marginBottom:12}}>Select the items and quantities to move. Unselected items will remain at this table.</div>
           <div style={{display:"flex",flexDirection:"column",gap:7,maxHeight:"32vh",overflowY:"auto",marginBottom:14}}>
             {table.order.map(line=>{
@@ -1183,7 +1183,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
         <Modal>
           <div style={{textAlign:"center",marginBottom:16}}>
             <div style={{fontSize:22,fontWeight:800,letterSpacing:"-0.5px",color:T.text}}>LURK.</div>
-            <div style={{fontSize:11,color:T.textSub,marginTop:2}}>Beşiktaş, Istanbul</div>
+            <div style={{fontSize:11,color:T.textSub,marginTop:2}}>Besiktas, Istanbul</div>
           </div>
           <div style={{borderTop:"1px dashed rgba(255,255,255,0.1)",marginBottom:12}}/>
           <div style={{marginBottom:12}}>
@@ -1395,7 +1395,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   function exportMonthCsv(){
     const headers=["Date","Masa","Customer","Subtotal","Discount","Total","Cash","Card","On account","Payment Method","Productler"];
     const rows=mo.map(o=>[o.date,o.table||"",o.g||"",Number(o.subtotal??o.total)||0,Number(o.discount)||0,Number(o.total)||0,paymentAmount(o,"cash"),paymentAmount(o,"card"),o.pt==="credit"?(Number(o.total)||0):0,o.pt==="split"?"Cash + Card":o.pt==="cash"?"Cash":o.pt==="card"?"Card":o.pt==="credit"?"On account":"Other",(o.items||[]).map(i=>i.name+" x"+i.qty).join("; ")]);
-    const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),e.type==="manual_cash"?"Manual cash collection":"On account defteri",e.customerName||"",0,0,0,((e.type==="payment"&&e.method==="cash")||e.type==="manual_cash")?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Borç kaydı":e.type==="manual_cash"?"Manual · Cash":"Collection · "+(e.method==="cash"?"Cash":e.method==="card"?"Card":"Other"),e.note||""]);
+    const ledgerRows=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel).map(e=>[(e.date||"").slice(0,10),e.type==="manual_cash"?"Manual cash collection":"On account defteri",e.customerName||"",0,0,0,((e.type==="payment"&&e.method==="cash")||e.type==="manual_cash")?(Number(e.amount)||0):0,e.type==="payment"&&e.method==="card"?(Number(e.amount)||0):0,e.type==="debt"?(Number(e.amount)||0):0,e.type==="debt"?"Debt record":e.type==="manual_cash"?"Manual · Cash":"Collection · "+(e.method==="cash"?"Cash":e.method==="card"?"Card":"Other"),e.note||""]);
     const topupRows=lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date&&(h.date||"").slice(0,7)===sel).map(h=>{const method=h.method||"cash";const amount=Number(h.amount)||0;return[(h.date||"").slice(0,10),"LURK+ bakiye yükleme",m.name,0,0,amount,method==="cash"?amount:0,method==="card"?amount:0,0,"LURK+ · "+(method==="cash"?"Cash":"Card"),""];}));
     const csv=[headers,...rows,...ledgerRows,...topupRows].map(row=>row.map(v=>{const x=String(v??"");return '"'+x.replace(/"/g,'""')+'"';}).join(";")).join("\r\n");
     const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
@@ -1500,22 +1500,22 @@ const PERSONAL_DEBT_SEED=[
   {id:"hepsifinans",group:"Personal",name:"Allfinans",total:56500,note:"30 Ekim",payments:[],installments:[]},
   {id:"holdon",group:"Nicchia",name:"Holdon Coffee",total:7000,payments:[],installments:[]},
   {id:"mozaik",group:"Nicchia",name:"Mozaik İş Sağlığı",total:7000,payments:[],installments:[]},
-  {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"2 Kasım",payments:[],installments:[]},
+  {id:"yemeksepeti",group:"Nicchia",name:"Yemeksepeti",total:3879,note:"November 2",payments:[],installments:[]},
   {id:"kyk",group:"Nicchia",name:"KYK",total:9400,installments:[1,2,3,4].map(n=>({id:"kyk-"+n,label:n+". Taksit",amount:2350,due:"",paid:0})),payments:[]},
-  {id:"ucuncuoglu",group:"Nicchia",name:"Üçüncüoğlu Emlak",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
+  {id:"ucuncuoglu",group:"Nicchia",name:"Ucuncuoglu Real Estate",total:130000,installments:Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:(i+1)+". Taksit",amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:0})),payments:[]},
   {id:"heyz",group:"Nicchia",name:"Heyz Taksit",total:60000,installments:Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:(i+1)+". Taksit",amount:10000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:0})),payments:[]},
   {id:"fiddle",group:"Personal",name:"Taha Fiddle III Taksit",total:55000,note:"20.000 TL paid · 27 Ekim 2026",payments:[{id:"fiddle-paid-1",amount:20000,date:"2026-10-27",note:"Previously paid"}],installments:[]},
   {id:"fiddle-tyres",group:"Personal",name:"Fiddle III · Lastikler",total:4000,note:"Tahmini",payments:[],installments:[]},
-  {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Ön stop lambası",total:200,note:"Tahmini",payments:[],installments:[]},
+  {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Front indicator light",total:200,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-inspection",group:"Personal",name:"Fiddle III · Muayene",total:1500,note:"Tahmini",payments:[],installments:[]},
   {id:"fiddle-insurance",group:"Personal",name:"Fiddle III · Sigorta",total:3500,note:"Tahmini",payments:[],installments:[]},
-  {id:"yildiz",group:"Personal",name:"Yıldız Sürücü Kursu",total:13000,payments:[],installments:[]},
-  {id:"a2",group:"Personal",name:"A2 Sınav Ücreti",total:2000,payments:[],installments:[]},
+  {id:"yildiz",group:"Personal",name:"Yildiz Driving School",total:13000,payments:[],installments:[]},
+  {id:"a2",group:"Personal",name:"A2 Exam Fee",total:2000,payments:[],installments:[]},
   {id:"beliz-plan",group:"Personal",name:"Beliz Taksit",total:72000,note:"1. taksit tamamlandı; 2. taksitte 3.000 TL paid, 5.000 TL remaining.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. taksit previously paid for installment ",installmentId:"beliz-2"}],installments:[
     {id:"beliz-2",label:"2. Taksit",amount:8000,due:"2026-11-05",paid:3000},
     ...Array.from({length:8},(_,i)=>({id:"beliz-"+(i+3),label:(i+3)+". Taksit",amount:8000,due:["2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:0}))
   ]},
-  {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Taksiti",total:119000,note:"14 taksit × 8.500 TL; ilk 3 taksit tamamlandı.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Taksit",amount:8500,due:"",paid:i<3?8500:0}))}
+  {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Taksiti",total:119000,note:"14 installments × TRY 8,500; first 3 installments completed.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Taksit",amount:8500,due:"",paid:i<3?8500:0}))}
 ];
 function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [unlocked,setUnlocked]=useState(false);
@@ -1554,12 +1554,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d.id==="yemeksepeti"&&Number(d.total)===3879&&(d.payments||[]).length===0?{...d,total:12000,payments:[{id:"yemeksepeti-paid-history",amount:8121,date:null,note:"Previously paid amount (date not specified)",historical:true}]}:d)
       .map(d=>movedIds.has(d.id)?{
         ...d,
-        name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Üçüncüoğlu Emlak":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
+        name:d.id==="ruhsat"?"Annem Ruhsat Taksiti":d.id==="ucuncuoglu"?"Ucuncuoglu Real Estate":d.id==="beliz-plan"?"Beliz Taksit":"Heyz Taksit",
         category:"installment",
         group:"Taksitler"
       } :lurkIds.has(d.id)?{...d,category:"lurk",folder:"LURK"}:fiddleIds.has(d.id)?{
         ...d,
-        name:d.id==="fiddle"?"Fiddle III Taksit":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Ön Stop Lambası":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Sınav Ücreti",
+        name:d.id==="fiddle"?"Fiddle III Taksit":d.id==="fiddle-tyres"?"Lastik":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Sigorta":d.id==="fiddle-inspection"?"Muayene":d.id==="yildiz"?"Sürücü Kursu":"Ehliyet · A2 Exam Fee",
         category:"fiddle",
         folder:"FIDDLE III"
       }:d));
