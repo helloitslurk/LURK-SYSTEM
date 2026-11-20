@@ -387,7 +387,7 @@ function POSApp({onLock}){
   }
   function setTableCustomer(tid,customer){
     const clean=typeof customer==="string"?customer.trim():(customer?.name||"").trim();
-    setTbl(prev=>prev.map(t=>t.id===tid?{...t,g:clean,customerId:typeof customer==="object"&&customer&&!customer.lurkPlus?customer.id:null,lurkPlusId:typeof customer==="object"&&customer?.lurkPlus?customer.id:null}:t));
+    setTbl(prev=>prev.map(t=>t.id===tid?{...t,g:clean,customerId:typeof customer==="object"&&customer?.id?customer.id:null,lurkPlusId:typeof customer==="object"&&customer?.legacyLurkPlus?customer.id:null}:t));
   }
   function chQ(tid,lineId,d){
     const table=tables.find(t=>t.id===tid);
@@ -1000,7 +1000,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
   const[showMenu,setShowMenu]=useState(table.order.length===0);
   const[selCat,setSelCat]=useState(cats[0]||"");
   const[showPay,setShowPay]=useState(false);
-  const[showName,setShowName]=useState(table.order.length===0&&!table.g);
+  const[showName,setShowName]=useState(false);
   const[showFis,setShowFis]=useState(false);
   const[showMove,setShowMove]=useState(false);
   const[moveSelections,setMoveSelections]=useState({});
@@ -1208,20 +1208,17 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
         </Modal>
       )}
 
-      {/* İsim modal */}
       {showName&&(
         <Modal>
-          <div style={{fontWeight:700,fontSize:17,marginBottom:6,color:T.text}}>Müşteri Seçimi</div>
-          <div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Kayıtlı müşteriyi seç veya yeni müşteri adını gir.</div>
-          {lurkPlusMembers.length>0&&<div style={{marginBottom:12}}>
-            <div style={{fontSize:11,fontWeight:800,color:T.accentL,marginBottom:6}}>LURK+ ÜYELERİ</div>
-            <div style={{maxHeight:125,overflowY:"auto"}}>{lurkPlusMembers.map(m=><button key={m.id} onClick={()=>{setTableCustomer(table.id,{...m,lurkPlus:true});setName(m.name);setShowName(false);}} style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,width:"100%",padding:11,marginBottom:5,textAlign:"left",background:table.lurkPlusId===m.id?"rgba(52,199,89,.13)":T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}><span>{m.name}</span><span style={{fontSize:11,color:T.accentL,whiteSpace:"nowrap"}}>{fm(m.balance)}</span></button>)}</div>
-          </div>}
-          {customers?.length>0&&<div style={{maxHeight:150,overflowY:"auto",marginBottom:12}}>{customers.map(c=><button key={c.id} onClick={()=>{setTableCustomer(table.id,c);setName(c.name);setShowName(false);}} style={{display:"block",width:"100%",padding:11,marginBottom:5,textAlign:"left",background:T.bg2,color:T.text,border:"1px solid rgba(255,255,255,.08)",borderRadius:9,cursor:"pointer"}}>{c.name}<span style={{display:"block",fontSize:11,color:T.textSub,marginTop:3}}>{c.phone||"Telefon yok"}</span></button>)}</div>}
-          <input autoFocus placeholder="Yeni müşteri adı (zorunlu)" value={name} onChange={e=>setName(e.target.value)}
-            onKeyDown={e=>{if(e.key==="Enter"&&name.trim()){setTableCustomer(table.id,name.trim());setShowName(false);}}}
-            style={{width:"100%",padding:"12px 14px",border:"0.5px solid rgba(255,255,255,0.15)",borderRadius:10,fontSize:16,outline:"none",boxSizing:"border-box",marginBottom:12,background:"rgba(255,255,255,0.07)",color:T.text}}/>
-          <button disabled={!name.trim()} onClick={()=>{if(!name.trim())return;setTableCustomer(table.id,name.trim());setShowName(false);}} style={{width:"100%",padding:"14px",background:name.trim()?"linear-gradient(135deg,#34C759,#248A3D)":T.bg3,border:"none",borderRadius:12,color:name.trim()?"#fff":T.textDim,fontSize:15,fontWeight:700,cursor:name.trim()?"pointer":"not-allowed"}}>Müşteriyi Onayla</button>
+          <div className="lurk-simple-modal">
+            <div className="lurk-eyebrow">ORDER CUSTOMER</div><h2>Select Customer</h2>
+            <p className="lurk-modal-copy">Customer selection is optional. You can continue as a guest.</p>
+            <div className="lurk-customer-picker">
+              {customers.map(c=><button key={c.id} onClick={()=>{setTableCustomer(table.id,c);setName(c.name);setShowName(false);}}><span>{c.name}</span>{c.lurkPlus&&<small>LURK+</small>}</button>)}
+            </div>
+            <button className="ds-button ds-primary-button" onClick={()=>{setTableCustomer(table.id,null);setName("");setShowName(false);}}>Continue as Guest</button>
+            <button className="lurk-modal-cancel" onClick={()=>setShowName(false)}>Cancel</button>
+          </div>
         </Modal>
       )}
 
