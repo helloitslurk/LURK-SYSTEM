@@ -514,7 +514,16 @@
 .lurk-root .ref-main{width:100%;max-width:1500px;margin:0 auto}
 .lurk-root .ref-dashboard{min-height:100vh;background:var(--lurk-bg);color:var(--lurk-ink)}
 .lurk-root .ref-topbar,.lurk-root .ref-content{color:var(--lurk-ink)}
-.lurk-root .ref-dashboard :where(h1,h2,h3,p,span,b,strong,small){color:inherit}
+/* Keep component-level semantic colors intact. The former blanket inherit rule erased KPI and status contrast. */
+.lurk-root .ref-dashboard{color:var(--lurk-ink)}
+.lurk-root .ref-dashboard .ref-topbar{color:var(--lurk-ink)}
+.lurk-root .ref-dashboard .ref-topbar p{color:var(--lurk-muted)}
+.lurk-root .ref-dashboard .ref-stat-card>div>span{color:var(--lurk-muted)}
+.lurk-root .ref-dashboard .ref-stat-card>strong{color:var(--lurk-green-deep)}
+.lurk-root .ref-dashboard .ref-stat-card>small{color:var(--lurk-subtle)}
+.lurk-root .ref-dashboard .ref-panel-heading p{color:var(--lurk-muted)}
+.lurk-root .ref-dashboard .ref-op-row>span{color:var(--lurk-muted)}
+.lurk-root .ref-dashboard .ref-op-row>b{color:var(--lurk-ink)}
 @media(min-width:1000px){
  .lurk-root .lurk-shell-sidebar{position:fixed;z-index:100;inset:0 auto 0 0;display:flex;flex-direction:column;width:var(--lurk-sidebar-width);padding:25px 18px 18px;background:#fff;border-right:1px solid var(--lurk-border);box-shadow:4px 0 24px rgba(24,37,29,.025);transition:width .2s ease}
  .lurk-root .lurk-app{padding-left:var(--lurk-sidebar-width)!important;padding-bottom:0!important}
