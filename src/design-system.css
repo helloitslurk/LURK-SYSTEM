@@ -1330,3 +1330,11 @@ body{position:static!important}
 .lurk-table-actions-popover button:hover{background:#f3f7ef}
 .lurk-table-actions-popover button.danger{color:#bd3d3d}
 .lurk-table-actions-popover button.danger:hover{background:#fff0ef}
+
+
+/* Keep table action menus visible outside the rounded table container */
+.lurk-table-list-wrap{overflow:visible!important}
+.lurk-table-list-head{border-radius:13px 13px 0 0}
+.lurk-table-actions-menu{z-index:5}
+.lurk-table-actions-popover{z-index:1000}
+.lurk-table-actions-popover button{font-family:inherit;font-size:12px;font-weight:600}
