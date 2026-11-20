@@ -225,7 +225,8 @@ function POSApp({onLock}){
   const paymentInProgress=useRef(false);
   const[view,setV]=useState("home");
   const[sidebarCollapsed,setSidebarCollapsed]=useState(false);
-  const[balancesVisible,setBalancesVisible]=useState(true);
+  const[balancesVisible,setBalancesVisible]=useState(()=>{try{return localStorage.getItem("lurk_amounts_visible")!=="false";}catch(e){return true;}});
+  const[profileOpen,setProfileOpen]=useState(false);
   const[sel,setSel]=useState(null);
   const[tables,setTbl]=useState([]);
   const[orders,setOrd]=useState([]);
@@ -238,6 +239,7 @@ function POSApp({onLock}){
   const[day,setDay]=useState(null);
   const[toast,setToast]=useState(null);
   const loaded=useRef(false);
+  useEffect(()=>{try{localStorage.setItem("lurk_amounts_visible",String(balancesVisible));}catch(e){}},[balancesVisible]);
   const timers=useRef({});
 
   function save(k,v){
@@ -492,12 +494,10 @@ function POSApp({onLock}){
   );
 
   const NAV=[
-    {k:"home",label:"Ana Sayfa",icon:"⌂"},
-    {k:"tables",label:"Masalar",icon:"⊞"},
+    {k:"home",label:"Dashboard",icon:"⌂"},
+    {k:"reports",label:"Reports",icon:"≡"},
+    {k:"tables",label:"Tables",icon:"⊞"},
     {k:"lurkPlus",label:"LURK+",icon:"＋"},
-    {k:"personal",label:"Kişisel",icon:"₺"},
-    {k:"reports",label:"Raporlar",icon:"≡"},
-    {k:"settings",label:"Ayarlar",icon:"⚙"},
   ];
 
   return(
@@ -510,11 +510,28 @@ function POSApp({onLock}){
         </div>
         <div className="lurk-shell-section-label">{sidebarCollapsed?"MENÜ":"ÇALIŞMA ALANI"}</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Ana Sayfa",icon:"⌂"},{k:"tables",label:"Masalar",icon:"▦"},{k:"reports",label:"Raporlar",icon:"▤"},{k:"customers",label:"Müşteriler",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"menu",label:"Menü",icon:"☕"},{k:"personal",label:"Kişisel Finans",icon:"₺"},{k:"settings",label:"Ayarlar",icon:"⚙"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><i className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"İşletme açık":"İşletme kapalı"}</small></div><button onClick={onLock} aria-label="Ekranı kilitle">⌑</button></div>
       </aside>
-      <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>      <style>{`        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+      <div style={{position:"relative"}}><div className="lurk-app" style={{background:T.bg,minHeight:view==="order"?"100dvh":"100vh",height:view==="order"?"100dvh":"auto",overflow:view==="order"?"hidden":"visible",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif",color:T.text,width:"100%",margin:"0 auto",paddingBottom:view==="order"?0:76,boxSizing:"border-box"}}>
+      <div className="lurk-global-topbar">
+        <div className="lurk-global-brand">LURK<span>.</span></div>
+        <div className="lurk-global-actions">
+          <span className="lurk-global-date">{new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"})}</span>
+          <button className="lurk-icon-button" onClick={()=>setBalancesVisible(v=>!v)} aria-label={balancesVisible?"Hide amounts":"Show amounts"} title={balancesVisible?"Hide amounts":"Show amounts"}>{balancesVisible?"◉":"⊘"}</button>
+          <div className="lurk-profile-wrap">
+            <button className="lurk-profile-avatar" onClick={()=>setProfileOpen(v=>!v)} aria-expanded={profileOpen} aria-label="Open profile menu">L</button>
+            {profileOpen&&<div className="lurk-profile-menu">
+              <div className="lurk-profile-menu-heading">LURK POS</div>
+              <button onClick={()=>{setV("personal");setProfileOpen(false);}}>Personal</button>
+              <button onClick={()=>{setV("settings");setProfileOpen(false);}}>Settings</button>
+              <button onClick={()=>{setProfileOpen(false);onLock();}}>Lock Screen</button>
+            </div>}
+          </div>
+        </div>
+      </div>
+      <style>{`        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         .lurk-app { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
         .lurk-app button, .lurk-app button div, .lurk-app button span { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
         * { box-sizing: border-box; }
