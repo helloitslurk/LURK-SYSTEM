@@ -980,11 +980,11 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
   setEditId(null);setEditName("");setActionId(null);msg("Table name updated.");
  }
  function addTable(){
-  const clean=tableName.trim();
-  if(!clean){msg("Enter a table name.");return;}
+  const member=lurkPlusMembers.find(m=>m.id===newTableMemberId)||null;
+  const clean=tableName.trim()||(member?member.name.trim():"");
+  if(!clean){msg("Enter a table name or select a LURK+ member.");return;}
   if(tables.some(t=>(t.lbl||"").trim().toLowerCase()===clean.toLowerCase())){msg("A table with this name already exists.");return;}
   const id=uid();
-  const member=lurkPlusMembers.find(m=>m.id===newTableMemberId)||null;
   setTbl(prev=>[...prev,{id,lbl:clean,s:"free",order:[],g:member?.name||"",customerId:null,lurkPlusId:member?.id||null,partialPayments:[]}]);
   setTableName("");setNewTableMemberId("");setShowAdd(false);msg(member?"Table added · linked to "+member.name+".":"Table added.");
  }
