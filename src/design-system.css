@@ -1886,3 +1886,39 @@ body{position:static!important}
   }
   .lurk-dashboard-lower>.lurk-ops-card{grid-column:1!important}
 }
+
+
+/* Dashboard alignment: top KPI columns share the chart / right-stack grid */
+@media(min-width:1000px){
+  .lurk-dashboard-v2>.lurk-kpi-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.1fr) minmax(0,.7fr) minmax(0,.8fr)!important;
+    gap:14px!important;
+    align-items:stretch!important;
+  }
+  .lurk-dashboard-v2>.lurk-dashboard-lower{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.8fr) minmax(0,.8fr)!important;
+    grid-template-rows:auto auto!important;
+    align-items:start!important;
+    gap:14px!important;
+  }
+  .lurk-dashboard-v2>.lurk-dashboard-lower>.lurk-chart-card{
+    grid-column:1!important;grid-row:1 / span 2!important;
+    align-self:start!important;height:auto!important;min-height:0!important;
+  }
+  .lurk-dashboard-v2>.lurk-dashboard-lower>.lurk-weekly-total{
+    grid-column:2!important;grid-row:1!important;
+    height:165px!important;min-height:165px!important;max-height:165px!important;
+    align-self:start!important;box-sizing:border-box!important;
+    padding:18px!important;
+  }
+  .lurk-dashboard-v2>.lurk-dashboard-lower>.lurk-weekly-total>strong{
+    font-size:clamp(23px,2vw,30px)!important;
+  }
+  .lurk-dashboard-v2>.lurk-dashboard-lower>.lurk-ops-card{
+    grid-column:2!important;grid-row:2!important;
+    align-self:start!important;width:100%!important;min-height:0!important;
+    box-sizing:border-box!important;
+  }
+}
