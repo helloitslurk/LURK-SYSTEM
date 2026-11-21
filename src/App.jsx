@@ -2111,6 +2111,37 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
     setMembers(prev=>prev.map(m=>m.id!==member.id?m:{...m,coffeeCredits:(Number(m.coffeeCredits)||0)+amount,updatedAt:date,history:[...(m.history||[]),{id:uid(),type:"credit_topup",date,amount,balanceAfter:(Number(m.coffeeCredits)||0)+amount,note:"Coffee credits added"}]}));
     msg(member.name+" · "+amount+" coffee credits added.");
   }
+  function removeMemberPurchase(member,entry){
+    const itemLabel=entry.itemName||"this product";
+    const unit=entry.type==="credit_use"?"coffee credit":entry.type==="kiss_debt"?"kiss":"TRY";
+    const restore=Number(entry.amount)||0;
+    const message=entry.type==="purchase"
+      ? "Remove "+itemLabel+" from "+member.name+"'s LURK+ activity? "+fm(restore)+" will be returned to the member balance."
+      : entry.type==="credit_use"
+        ? "Remove "+itemLabel+" from "+member.name+"'s LURK+ activity? "+restore+" coffee credit will be restored."
+        : "Remove "+itemLabel+" from "+member.name+"'s LURK+ activity? "+restore+" kiss debt will be cancelled.";
+    if(!window.confirm(message))return;
+    setMembers(prev=>prev.map(m=>{
+      if(m.id!==member.id)return m;
+      const original=m.history||[];
+      const removedIndex=original.findIndex(h=>h.id===entry.id);
+      if(removedIndex<0)return m;
+      const delta=entry.type==="kiss_debt"?-restore:restore;
+      const history=original.filter(h=>h.id!==entry.id).map((h,index)=>{
+        const originalIndex=original.findIndex(x=>x.id===h.id);
+        if(originalIndex<=removedIndex||h.balanceAfter==="Unlimited"||!Number.isFinite(Number(h.balanceAfter)))return h;
+        return {...h,balanceAfter:Math.round((Number(h.balanceAfter)+delta)*100)/100};
+      });
+      const patch={history,updatedAt:new Date().toISOString()};
+      if(entry.type==="purchase"&&!m.unlimited&&m.name.trim().toLocaleLowerCase("en-US")!=="beliz"){
+        patch.balance=Math.round(((Number(m.balance)||0)+restore)*100)/100;
+      }else if(entry.type==="credit_use"){
+        patch.coffeeCredits=(Number(m.coffeeCredits)||0)+restore;
+      }
+      return {...m,...patch};
+    }));
+    msg(member.name+" · "+itemLabel+" removed from LURK+ activity. The balance/credit was corrected.");
+  }
   async function deleteMember(member){
     if(!window.confirm(member.name+"Are you sure you want to delete the LURK+ member named ? Their balance/coffee credits and activity history will be removed from the member list. Customer links will also be revoked."))return;
     const secret=window.prompt("Enter the LURK+ link management key:");
@@ -2150,7 +2181,7 @@ function LurkPlusScreen({members,setMembers,msg,setV}){
             <button disabled={linkBusy} onClick={()=>manageLink(m,"revoke")} style={{width:"100%",padding:9,background:"transparent",color:T.danger,border:"1px solid rgba(255,69,58,.25)",borderRadius:8,fontSize:11,cursor:"pointer"}}>Revoke All Links</button>
           </div>
           <div style={{fontSize:11,fontWeight:800,color:T.textSub,letterSpacing:".4px",marginBottom:7}}>BALANCE ACTIVITY</div>
-          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Balance topped up"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" refunded":"Coffee credit refunded"):h.type==="refund"?"Product refund":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("en-US",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(h.balanceAfter)}</div></div><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("en-US")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("en-US")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" credits":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div></div>)}
+          {(!m.history||m.history.length===0)?<div style={{fontSize:12,color:T.textSub,padding:"12px 0"}}>No activity recorded yet.</div>:m.history.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(h=><div key={h.id} style={{display:"flex",gap:9,alignItems:"flex-start",padding:"9px 0",borderTop:"1px solid rgba(255,255,255,.07)"}}><div style={{width:28,height:28,borderRadius:9,background:h.type==="topup"?"rgba(52,199,89,.12)":h.type==="refund"?"rgba(52,199,89,.1)":"rgba(255,69,58,.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,color:h.type==="purchase"?T.danger:T.accentL,flexShrink:0}}>{h.type==="topup"?"＋":h.type==="refund"?"↩":"−"}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:750,color:T.text}}>{h.type==="kiss_debt"?"Kiss owed 💋":h.type==="kiss_refund"?"Kiss refunded":h.type==="topup"?(h.note||"Balance topped up"):h.type==="credit_topup"?(h.note||"Coffee credits added"):h.type==="credit_use"?(h.itemName||"Coffee credit used"):h.type==="credit_refund"?(h.itemName?h.itemName+" refunded":"Coffee credit refunded"):h.type==="refund"?"Product refund":(h.itemName||"Product purchase")}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>{new Date(h.date).toLocaleString("en-US",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}{h.table?" · "+h.table:""}</div><div style={{fontSize:10,color:T.textSub,marginTop:3}}>After transaction: {m.membershipType==="coffee"?(Number(h.balanceAfter)||0)+" coffee credits":fm(h.balanceAfter)}</div></div><div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}><div style={{fontSize:12,fontWeight:800,color:m.name.trim().toLocaleLowerCase("en-US")==="beliz"?"#FF69B4":h.type==="purchase"?T.danger:T.accentL,whiteSpace:"nowrap"}}>{m.name.trim().toLocaleLowerCase("en-US")==="beliz"?(h.type==="kiss_debt"?"+":"−")+h.amount+" kisses":m.membershipType==="coffee"?(h.type==="credit_use"?"−":h.type==="credit_refund"||h.type==="credit_topup"?"+":"")+h.amount+" credits":(h.type==="purchase"?"−":"+")+fm(h.amount)}</div>{["purchase","credit_use","kiss_debt"].includes(h.type)&&<button title="Remove incorrectly entered product" onClick={()=>removeMemberPurchase(m,h)} style={{padding:"5px 7px",background:"rgba(255,69,58,.1)",border:"1px solid rgba(255,69,58,.22)",borderRadius:7,color:T.danger,fontSize:11,cursor:"pointer"}}>✕</button>}</div></div>)}
           <button disabled={linkBusy} onClick={()=>deleteMember(m)} style={{width:"100%",marginTop:12,padding:10,background:"rgba(255,69,58,.08)",border:"1px solid rgba(255,69,58,.3)",borderRadius:9,color:T.danger,fontSize:12,fontWeight:800,cursor:"pointer",opacity:linkBusy?0.6:1}}>Delete Membership</button>
           <button onClick={()=>setSelectedMemberId(null)} style={{width:"100%",marginTop:8,padding:9,background:"transparent",border:"1px solid rgba(255,255,255,.1)",borderRadius:9,color:T.textSub,fontSize:11,cursor:"pointer"}}>Close Details</button>
         </div>)}
