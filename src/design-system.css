@@ -2120,3 +2120,9 @@ body{position:static!important}
     print-color-adjust:exact!important;
   }
 }
+
+
+/* Tables dashboard: enforce a readable 15px minimum across all interface text. */
+.lurk-app .ds-tables :where(*) {
+  font-size: max(15px, 1em) !important;
+}
