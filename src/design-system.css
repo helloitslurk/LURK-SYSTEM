@@ -1454,3 +1454,172 @@ body{position:static!important}
   .lurk-weekly-chart{gap:5px!important;padding-left:4px!important;padding-right:4px!important}
   .lurk-weekly-bar{width:min(100%,34px)!important}
 }
+
+
+/* MOBILE QUALITY PASS · iOS safe areas, touch targets, scrolling and compact layouts */
+@media(max-width:999px){
+  html,body,#root,.lurk-root,.lurk-root>div:nth-child(2),.lurk-root .lurk-app{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    overflow-x:hidden!important;
+  }
+  .lurk-root{min-height:100dvh!important}
+  .lurk-root .lurk-app{
+    min-height:100dvh!important;height:auto!important;max-height:none!important;
+    padding-left:0!important;
+    padding-bottom:calc(68px + env(safe-area-inset-bottom))!important;
+  }
+  .lurk-global-topbar{
+    height:58px!important;min-height:58px!important;
+    padding:0 13px!important;gap:8px!important;
+    padding-top:env(safe-area-inset-top)!important;
+  }
+  .lurk-global-brand{font-size:20px!important}
+  .lurk-global-actions{gap:7px!important}
+  .lurk-global-date{font-size:10px!important;white-space:nowrap}
+  .lurk-icon-button,.lurk-profile-avatar{width:38px!important;height:38px!important;flex:0 0 38px!important}
+  .lurk-profile-menu{right:0!important;top:44px!important;width:min(220px,calc(100vw - 24px))!important}
+  .lurk-bottom-nav{
+    position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+    transform:none!important;width:100%!important;max-width:none!important;
+    min-height:calc(60px + env(safe-area-inset-bottom))!important;
+    padding:5px 7px calc(5px + env(safe-area-inset-bottom))!important;
+    display:flex!important;align-items:stretch!important;justify-content:space-around!important;
+    gap:3px!important;border-radius:15px 15px 0 0!important;
+    background:rgba(255,255,255,.97)!important;
+    border:1px solid #e7e9e4!important;border-bottom:0!important;
+    box-shadow:0 -5px 22px rgba(24,37,29,.08)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+    backdrop-filter:blur(18px) saturate(150%)!important;
+    z-index:500!important;
+  }
+  .lurk-bottom-nav .lurk-nav-button{
+    min-width:0!important;min-height:48px!important;flex:1 1 0!important;
+    padding:6px 2px!important;gap:4px!important;border-radius:10px!important;
+    justify-content:center!important;
+  }
+  .lurk-bottom-nav .lurk-nav-button span:first-child{font-size:19px!important;line-height:1.1!important}
+  .lurk-bottom-nav .lurk-nav-button span:last-child{font-size:10px!important;line-height:1.15!important;font-weight:750!important}
+  .lurk-screen:not(.lurk-order-screen){
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    min-width:0!important;margin:0!important;
+    padding-bottom:calc(92px + env(safe-area-inset-bottom))!important;
+  }
+  .lurk-dashboard-v2{padding:17px 12px calc(94px + env(safe-area-inset-bottom))!important}
+  .lurk-dashboard-heading{gap:10px!important;margin-bottom:14px!important}
+  .lurk-dashboard-heading h1{font-size:25px!important}
+  .lurk-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .lurk-kpi-card{min-width:0!important;min-height:104px!important;padding:13px!important}
+  .lurk-kpi-card:first-child{grid-column:1/-1!important}
+  .lurk-kpi-card>strong{font-size:clamp(20px,5vw,27px)!important;overflow-wrap:anywhere}
+  .lurk-dashboard-lower{grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+  .lurk-chart-card,.lurk-weekly-total,.lurk-ops-card{min-width:0!important;width:100%!important}
+  .lurk-chart-card{padding:15px 12px!important}
+  .lurk-chart-card h2{font-size:10px!important;gap:6px!important}
+  .lurk-chart-card h2:after{font-size:7px!important;padding:5px 7px!important}
+  .lurk-weekly-chart{height:170px!important;gap:5px!important;padding:12px 2px 0!important}
+  .lurk-weekly-bar-wrap{min-width:0!important;padding:0 1px!important;gap:6px!important}
+  .lurk-weekly-bar{width:min(100%,32px)!important}
+  .lurk-chart-value{font-size:8px!important}
+  .lurk-weekly-bar-wrap small{font-size:9px!important}
+  .lurk-weekly-total{min-height:135px!important;padding:17px!important}
+  .lurk-ops-card{padding:15px!important}
+  .lurk-tables-screen,.lurk-reports-screen,.lurk-customers-screen,.lurk-menu-screen,.lurk-settings-screen,.personal-finance,.lurk-sales-history,.lurk-customers-v2{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    padding-left:12px!important;padding-right:12px!important;
+  }
+  .lurk-table-list-wrap{width:100%!important;max-width:100%!important;overflow:visible!important}
+  .lurk-table-list-row{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;padding:12px!important}
+  .lurk-table-row-actions{min-width:0!important;flex-wrap:wrap!important}
+  .lurk-open-table{min-height:40px!important;padding:9px 10px!important}
+  .lurk-table-actions-menu>.lurk-delete-table{min-width:40px!important;min-height:40px!important}
+  .lurk-history-kpis,.lurk-customer-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .lurk-history-filters{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .lurk-history-filters>*{min-width:0!important;width:100%!important}
+  .lurk-history-table-wrap{max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  .lurk-history-table{min-width:680px!important}
+  .lurk-customer-row{min-width:0!important}
+  .lurk-customer-row>strong{white-space:nowrap}
+  .lurk-menu-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .lurk-menu-product{min-width:0!important}
+  .lurk-menu-product-main{min-height:120px!important;padding:10px!important}
+  .lurk-menu-product-main b{overflow-wrap:anywhere}
+  .lurk-profile-menu,.lurk-table-actions-popover,.lurk-order-line-popover{max-width:calc(100vw - 24px)!important}
+  .lurk-modal-backdrop{
+    align-items:flex-end!important;justify-content:center!important;
+    padding:8px 8px calc(8px + env(safe-area-inset-bottom))!important;
+    overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+  }
+  .lurk-modal-panel{
+    box-sizing:border-box!important;width:100%!important;max-width:560px!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - 16px)!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+    padding:20px 16px calc(20px + env(safe-area-inset-bottom))!important;
+    border-radius:20px 20px 14px 14px!important;
+  }
+  .lurk-simple-modal{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    max-height:calc(100dvh - 24px - env(safe-area-inset-top))!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+    padding:19px!important;
+  }
+  .lurk-confirm-overlay{padding:14px 12px calc(14px + env(safe-area-inset-bottom))!important}
+  .lurk-confirm-card{width:100%!important;max-width:390px!important;padding:22px 18px 18px!important}
+  .lurk-order-screen{
+    position:fixed!important;left:8px!important;right:8px!important;top:calc(env(safe-area-inset-top) + 8px)!important;
+    bottom:calc(env(safe-area-inset-bottom) + 8px)!important;
+    transform:none!important;width:auto!important;height:auto!important;min-height:0!important;
+    max-height:none!important;border-radius:17px!important;overflow:hidden!important;
+  }
+  .lurk-order-screen .ds-order{
+    display:flex!important;flex-direction:column!important;min-height:0!important;
+    height:100%!important;max-height:100%!important;overflow:hidden!important;
+  }
+  .lurk-order-screen .ds-order-header{flex:0 0 auto!important;padding:10px 12px!important}
+  .lurk-order-screen .ds-order-categories{
+    flex:0 0 auto!important;max-width:100%!important;overflow-x:auto!important;
+    overflow-y:hidden!important;white-space:nowrap!important;-webkit-overflow-scrolling:touch!important;
+  }
+  .lurk-order-screen .ds-order-catalog,.lurk-order-screen .ds-order-lines{
+    min-width:0!important;min-height:0!important;overflow:auto!important;
+    -webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;
+  }
+  .lurk-order-screen .ds-order-footer{
+    flex:0 0 auto!important;padding:10px 12px calc(10px + env(safe-area-inset-bottom))!important;
+  }
+  .lurk-app :where(button,a,[role="button"]){touch-action:manipulation}
+  .lurk-app :where(input,select,textarea){
+    box-sizing:border-box!important;max-width:100%!important;min-width:0!important;
+    font-size:16px!important;
+  }
+}
+@media(max-width:600px){
+  .lurk-dashboard-heading{align-items:flex-start!important}
+  .lurk-open-status{flex-shrink:0!important;font-size:9px!important;padding:7px 9px!important}
+  .lurk-kpi-card>span{font-size:9px!important}
+  .lurk-kpi-card>small{font-size:9px!important}
+  .lurk-history-kpis .lurk-kpi-card:last-child{grid-column:1/-1!important}
+  .lurk-customer-detail-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .lurk-customer-detail-kpis .lurk-kpi-card:last-child{grid-column:1/-1!important}
+  .lurk-menu-category{padding:12px!important}
+  .lurk-menu-category>header h2{font-size:15px!important}
+  .lurk-menu-product-main img{height:84px!important}
+  .lurk-order-screen .ds-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  .lurk-order-screen .ds-order-categories{gap:4px!important}
+  .lurk-order-screen .ds-order-categories button{min-height:42px!important;padding:10px 12px!important}
+  .lurk-order-line-popover{width:min(190px,calc(100vw - 48px))!important}
+}
+@media(max-width:380px){
+  .lurk-global-date{display:none!important}
+  .lurk-dashboard-v2{padding-left:10px!important;padding-right:10px!important}
+  .lurk-kpi-card{padding:11px!important}
+  .lurk-menu-product-grid{grid-template-columns:1fr!important}
+  .lurk-history-filters{grid-template-columns:1fr!important}
+  .lurk-history-filters input:first-child{grid-column:auto!important}
+  .lurk-table-row-actions{gap:5px!important}
+  .lurk-open-table{font-size:9px!important;padding:8px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .lurk-root *,.lurk-root *::before,.lurk-root *::after{
+    scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;
+  }
+}
