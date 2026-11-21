@@ -2236,3 +2236,29 @@ body{position:static!important}
     font-size: 23px !important;
   }
 }
+
+
+/* Explicit Reports day-row typography hooks. */
+.lurk-root .lurk-app .ds-sales-report .lurk-report-day-summary {
+  padding: 20px 22px !important;
+}
+.lurk-root .lurk-app .ds-sales-report .lurk-report-day-date {
+  font-size: 29px !important;
+  line-height: 1.35 !important;
+}
+.lurk-root .lurk-app .ds-sales-report .lurk-report-day-meta {
+  font-size: 25px !important;
+  line-height: 1.35 !important;
+}
+.lurk-root .lurk-app .ds-sales-report .lurk-report-day-amount {
+  font-size: 30px !important;
+  line-height: 1.3 !important;
+}
+.lurk-root .lurk-app .ds-sales-report .lurk-report-day-chevron {
+  font-size: 26px !important;
+}
+@media(max-width:700px) {
+  .lurk-root .lurk-app .ds-sales-report .lurk-report-day-date { font-size: 22px !important; }
+  .lurk-root .lurk-app .ds-sales-report .lurk-report-day-meta { font-size: 18px !important; }
+  .lurk-root .lurk-app .ds-sales-report .lurk-report-day-amount { font-size: 23px !important; }
+}
