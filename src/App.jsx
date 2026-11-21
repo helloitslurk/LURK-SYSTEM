@@ -1765,6 +1765,11 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     if(ao!==null)return -1;if(bo!==null)return 1;
     return remaining(a)-remaining(b);
   });
+  const paymentAchievements=debts.flatMap(d=>[
+    {id:"debt-"+d.id,title:d.name,subtitle:"Payment completed",icon:"🏆",unlocked:remaining(d)<=0,amount:Number(d.total)||0,date:(d.payments||[]).filter(p=>!p.installmentId).slice(-1)[0]?.date||null},
+    ...(d.installments||[]).map(inst=>({id:"installment-"+d.id+"-"+inst.id,title:d.name+" · "+(inst.label||"Installment"),subtitle:"Installment completed",icon:"🎖️",unlocked:Number(inst.paid||0)>=Number(inst.amount||0)&&Number(inst.amount||0)>0,amount:Number(inst.amount)||0,date:(d.payments||[]).filter(p=>p.installmentId===inst.id).slice(-1)[0]?.date||null}))
+  ]);
+  const unlockedAchievements=paymentAchievements.filter(a=>a.unlocked).length;
   return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
@@ -1772,6 +1777,19 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Lock</button>
     </div>
     <div style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
+      <section style={{background:"linear-gradient(145deg,#211b12,#17150f)",border:"1px solid #55452a",borderRadius:14,padding:14,marginBottom:16}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:12}}>
+          <div><div style={{fontSize:15,fontWeight:900,color:"#f6d78a",letterSpacing:".2px"}}>🏅 ACHIEVEMENTS</div><div style={{fontSize:10,color:"#c2b18a",marginTop:3}}>Her ödeme tamamlandığında kendi rozeti açılır</div></div>
+          <div style={{fontSize:12,fontWeight:900,color:"#f6d78a",whiteSpace:"nowrap"}}>{unlockedAchievements} / {paymentAchievements.length}</div>
+        </div>
+        <div style={{height:6,background:"#3a3020",borderRadius:10,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:(paymentAchievements.length?unlockedAchievements/paymentAchievements.length*100:0)+"%",background:"linear-gradient(90deg,#d6a94d,#ffe6a0)",borderRadius:10,transition:"width .25s"}}/></div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(145px,1fr))",gap:8}}>
+          {paymentAchievements.map(a=><div key={a.id} style={{minWidth:0,padding:"10px 9px",borderRadius:10,border:"1px solid "+(a.unlocked?"#8a6b32":"#413a2b"),background:a.unlocked?"linear-gradient(145deg,#3b2e17,#292113)":"rgba(255,255,255,.025)",opacity:a.unlocked?1:.58,display:"flex",alignItems:"center",gap:8}}>
+            <div style={{width:34,height:34,flexShrink:0,borderRadius:10,display:"grid",placeItems:"center",fontSize:19,background:a.unlocked?"#59431f":"#302c24",filter:a.unlocked?"none":"grayscale(1)"}}>{a.unlocked?a.icon:"🔒"}</div>
+            <div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:850,color:a.unlocked?"#ffe5a4":"#c2bcae",lineHeight:1.3,overflowWrap:"anywhere"}}>{a.title}</div><div style={{fontSize:9,color:a.unlocked?"#d8bd7d":"#898477",marginTop:3}}>{a.unlocked?"BADGE UNLOCKED":"LOCKED"}</div></div>
+          </div>)}
+        </div>
+      </section>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
