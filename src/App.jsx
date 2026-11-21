@@ -1427,15 +1427,30 @@ function SalesHistoryScreen({orders,setOrders,balancesVisible,setV}){
 /* ─── REPORTS ─── */
 function printThermalReceipt(order){
   const esc=value=>String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  const win=window.open("","_blank","width=420,height=720");
-  if(!win){window.alert("Please allow pop-ups to print the receipt.");return;}
   const items=(order.items||[]).map(item=>'<div class="item"><span>'+esc(item.name)+' × '+esc(item.qty)+'</span><b>'+money((Number(item.price)||0)*(Number(item.qty)||0))+'</b></div>').join("");
   const html='<!doctype html><html><head><meta charset="utf-8"><title>LURK Receipt</title><style>'+
-    '@page{size:58mm 210mm;margin:2mm}*{box-sizing:border-box}html,body{margin:0;padding:0;width:54mm;background:#fff;color:#000;font-family:Arial,sans-serif;font-size:9pt;line-height:1.3}body{padding:1mm 0}.brand{font-size:14pt;font-weight:700;letter-spacing:.08em;margin-bottom:3mm}.muted{font-size:8pt;margin:1mm 0 3mm}.rule{border-top:1px dashed #777;margin:2.5mm 0}.id{font-size:14pt;font-weight:700;margin:2mm 0}.item{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm;padding:1.5mm 0}.item span{flex:1;min-width:0;overflow-wrap:anywhere}.item b{white-space:nowrap}.total{display:flex;justify-content:space-between;font-size:11pt;font-weight:700;margin:3mm 0}.foot{text-align:center;font-size:8pt;margin-top:5mm}'+
+    '@page{size:58mm 210mm;margin:2mm}*{box-sizing:border-box}html,body{margin:0!important;padding:0!important;width:54mm!important;min-width:54mm!important;max-width:54mm!important;background:#fff!important;color:#000!important;font-family:Arial,sans-serif;font-size:9pt;line-height:1.3}body{padding:1mm 0!important}.brand{font-size:14pt;font-weight:700;letter-spacing:.08em;margin-bottom:3mm}.muted{font-size:8pt;margin:1mm 0 3mm}.rule{border-top:1px dashed #777;margin:2.5mm 0}.id{font-size:14pt;font-weight:700;margin:2mm 0}.item{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm;padding:1.5mm 0;break-inside:avoid}.item span{flex:1;min-width:0;overflow-wrap:anywhere}.item b{white-space:nowrap}.total{display:flex;justify-content:space-between;font-size:11pt;font-weight:700;margin:3mm 0}.foot{text-align:center;font-size:8pt;margin-top:5mm}'+
     '</style></head><body><div class="brand">LURK.</div><div class="muted">'+esc(order.date||"")+'</div><div class="id">#'+esc(String(order.orderNumber||"").padStart(5,"0"))+'</div><div class="muted">'+esc(order.table||"No table")+' · '+esc(order.g||"Guest")+'</div><div class="rule"></div>'+items+'<div class="rule"></div><div class="total"><span>Total</span><span>'+esc(money(order.total))+'</span></div><div class="muted">Payment: '+esc(order.pt||"—")+'</div><div class="foot">Thank you for visiting LURK.</div></body></html>';
-  win.document.open();win.document.write(html);win.document.close();
-  win.focus();
-  win.setTimeout(()=>{try{win.focus();win.print();}catch(error){console.error("Receipt print failed",error);}},350);;
+  const frame=document.createElement("iframe");
+  frame.setAttribute("aria-hidden","true");
+  frame.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none;";
+  document.body.appendChild(frame);
+  const cleanup=()=>{try{frame.remove();}catch(e){}};
+  frame.onload=()=>{
+    try{
+      const w=frame.contentWindow;
+      w.onafterprint=cleanup;
+      w.focus();
+      w.print();
+      w.setTimeout(()=>{if(frame.isConnected)cleanup();},60000);
+    }catch(error){
+      cleanup();
+      window.alert("Receipt printing failed. Please check the printer settings and try again.");
+      console.error("Receipt print failed",error);
+    }
+  };
+  const doc=frame.contentDocument;
+  doc.open();doc.write(html);doc.close();
 }
 function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembers=[],customers=[],setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):""),...lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date).map(h=>h.date.slice(0,7)))].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
