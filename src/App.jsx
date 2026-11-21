@@ -1479,7 +1479,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
       </div>
 
       {/* Stat kartlar */}
-      <div style={{padding:"15px 14px",display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
+      <div className="ds-report-kpis" style={{padding:"15px 14px",display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:8}}>
         {[
           {label:"Sales",val:fm(totalInc),color:T.accentL},
           {label:"Cash collected",val:fm(totalCash),color:T.text},
