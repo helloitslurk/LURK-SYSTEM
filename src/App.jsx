@@ -2196,7 +2196,18 @@ function CustomersScreen({orders,customers,setCustomers,setV,msg,balancesVisible
  const [name,setName]=useState("");
  const [detail,setDetail]=useState(null);
  const money=v=>balancesVisible?fm(v):"••••••";
- const customerOrders=c=>orders.filter(o=>!o.partialPayment&&o.status!=="cancelled"&&((o.customerId&&o.customerId===c.id)||(!o.customerId&&o.g&&o.g.trim().toLocaleLowerCase("en-US")===c.name.trim().toLocaleLowerCase("en-US"))));
+ const normalizeCustomerName=value=>String(value??"").normalize("NFC").trim().replace(/\\s+/g," ").toLocaleLowerCase("tr-TR");
+ const orderCustomerNames=o=>[
+  o.g,o.customerName,o.customer_name,o.guestName,o.guest_name,
+  typeof o.customer==="string"?o.customer:o.customer?.name,
+  typeof o.client==="string"?o.client:o.client?.name
+ ].filter(v=>typeof v==="string"&&v.trim()&&!["—","-","take away","walk-in","guest"].includes(normalizeCustomerName(v)));
+ const customerOrders=c=>orders.filter(o=>{
+  if(o.partialPayment||o.status==="cancelled")return false;
+  if(o.customerId&&o.customerId===c.id)return true;
+  const target=normalizeCustomerName(c.name);
+  return !!target&&orderCustomerNames(o).some(name=>normalizeCustomerName(name)===target);
+ });
  const totalFor=c=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0);
  const filtered=customers.filter(c=>c.name.toLocaleLowerCase("en-US").includes(query.trim().toLocaleLowerCase("en-US")));
  const regular=filtered.filter(c=>!c.lurkPlus);
