@@ -228,6 +228,9 @@ function POSApp({onLock}){
   const[view,setV]=useState("home");
   const[sidebarCollapsed,setSidebarCollapsed]=useState(false);
   const[balancesVisible,setBalancesVisible]=useState(()=>{try{return localStorage.getItem("lurk_amounts_visible")!=="false";}catch(e){return true;}});
+  const[notifications,setNotifications]=useState(()=>{try{return JSON.parse(localStorage.getItem("lurk_notifications")||"[]");}catch(e){return [];}});
+  const[notificationsOpen,setNotificationsOpen]=useState(false);
+  const previousUnlockedBadges=useRef(null);
   const[profileOpen,setProfileOpen]=useState(false);
   const[sel,setSel]=useState(null);
   const[tables,setTbl]=useState([]);
@@ -243,6 +246,8 @@ function POSApp({onLock}){
   const[toast,setToast]=useState(null);
   const loaded=useRef(false);
   useEffect(()=>{try{localStorage.setItem("lurk_amounts_visible",String(balancesVisible));}catch(e){}},[balancesVisible]);
+  useEffect(()=>{try{localStorage.setItem("lurk_notifications",JSON.stringify(notifications.slice(0,50)));}catch(e){}},[notifications]);
+  useEffect(()=>{if(!ok)return;const unlocked=new Set(personalDebts.flatMap(d=>{const items=[];const paidGeneral=(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);const paidInstallments=(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0);if(Math.max(0,(Number(d.total)||0)-paidGeneral-paidInstallments)<=0)items.push("debt-"+d.id);(d.installments||[]).forEach(inst=>{const history=(d.payments||[]).filter(p=>p.installmentId===inst.id).reduce((s,p)=>s+(Number(p.amount)||0),0);if(Number(inst.amount||0)>0&&Math.max(Number(inst.paid)||0,history)+0.009>=Number(inst.amount||0))items.push("installment-"+d.id+"-"+inst.id);});return items;}));if(previousUnlockedBadges.current===null){previousUnlockedBadges.current=unlocked;return;}const newlyUnlocked=[...unlocked].filter(id=>!previousUnlockedBadges.current.has(id));previousUnlockedBadges.current=unlocked;if(newlyUnlocked.length){const titles=new Map(personalDebts.flatMap(d=>[{id:"debt-"+d.id,title:d.name},...(d.installments||[]).map(i=>({id:"installment-"+d.id+"-"+i.id,title:d.name+" · "+(i.label||"Installment")}))]).map(x=>[x.id,x.title]));const now=Date.now();setNotifications(prev=>[...newlyUnlocked.map((id,index)=>({id:"badge-"+now+"-"+index,badgeId:id,title:titles.get(id)||"New achievement",message:"Achievement unlocked!",date:new Date(now+index).toISOString(),read:false})),...prev].slice(0,50));setToast(newlyUnlocked.length===1?"🏅 Achievement unlocked: "+(titles.get(newlyUnlocked[0])||"New badge"): "🏅 "+newlyUnlocked.length+" new achievements unlocked!");}},[ok,personalDebts]);
   const timers=useRef({});
 
   function save(k,v){
@@ -542,6 +547,10 @@ function POSApp({onLock}){
         <div className="lurk-global-brand">LURK<span>.</span></div>
         <div className="lurk-global-actions">
           <span className="lurk-global-date">{new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"})}</span>
+          <div style={{position:"relative"}}>
+            <button className="lurk-icon-button" onClick={()=>setNotificationsOpen(v=>!v)} aria-label="Notifications" title="Notifications" style={{position:"relative"}}>♧{notifications.some(n=>!n.read)&&<span style={{position:"absolute",top:2,right:2,minWidth:7,height:7,borderRadius:9,background:"#f05b50",border:"2px solid "+T.bg}}/>}</button>
+            {notificationsOpen&&<div style={{position:"absolute",right:0,top:"calc(100% + 10px)",width:"min(340px,calc(100vw - 28px))",maxHeight:380,overflowY:"auto",zIndex:1000,background:"#171d19",border:"1px solid #34443a",borderRadius:13,boxShadow:"0 14px 36px rgba(0,0,0,.4)",padding:12}}><div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:9}}><b style={{fontSize:13}}>Notifications</b><button onClick={()=>setNotifications(prev=>prev.map(n=>({...n,read:true})))} style={{background:"transparent",border:0,color:"#9bb9a3",fontSize:10,cursor:"pointer"}}>Mark all read</button></div>{notifications.length?notifications.map(n=><button key={n.id} onClick={()=>{setNotifications(prev=>prev.map(x=>x.id===n.id?{...x,read:true}:x));setNotificationsOpen(false);setV("achievements");}} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 8px",border:0,borderRadius:8,marginBottom:4,background:n.read?"transparent":"rgba(214,169,77,.12)",color:"#f0e8d7",cursor:"pointer"}}><div style={{fontSize:11,fontWeight:850}}>🏅 {n.title}</div><div style={{fontSize:10,color:"#b6c0b8",marginTop:3}}>{n.message}</div><div style={{fontSize:9,color:"#89978d",marginTop:4}}>{new Date(n.date).toLocaleString()}</div></button>):<div style={{fontSize:11,color:"#9aa69d",padding:"16px 8px",textAlign:"center"}}>No notifications yet. New badges will appear here.</div>}</div>}
+          </div>
           <button className="lurk-icon-button" onClick={()=>setBalancesVisible(v=>!v)} aria-label={balancesVisible?"Hide amounts":"Show amounts"} title={balancesVisible?"Hide amounts":"Show amounts"}>{balancesVisible?"◉":"⊘"}</button>
           <div className="lurk-profile-wrap">
             <button className="lurk-profile-avatar" onClick={()=>setProfileOpen(v=>!v)} aria-expanded={profileOpen} aria-label="Open profile menu">L</button>
