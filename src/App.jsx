@@ -533,7 +533,7 @@ function POSApp({onLock}){
         </div>
         <div className="lurk-shell-section-label">{sidebarCollapsed?"MENU":"WORKSPACE"}</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"achievements",label:"Achievements",icon:"🏅"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><i className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button onClick={onLock} aria-label="Lock screen">⌑</button></div>
       </aside>
@@ -548,6 +548,7 @@ function POSApp({onLock}){
             {profileOpen&&<div className="lurk-profile-menu">
               <div className="lurk-profile-menu-heading">LURK POS</div>
               <button onClick={()=>{setV("personal");setProfileOpen(false);}}>Personal Finance</button>
+              <button onClick={()=>{setV("achievements");setProfileOpen(false);}}>Achievements</button>
               <button onClick={()=>{setV("menu");setProfileOpen(false);}}>Menu & Products</button>
               <button onClick={()=>{setV("settings");setProfileOpen(false);}}>Settings</button>
               <button onClick={()=>{setProfileOpen(false);onLock();}}>Lock Screen</button>
@@ -920,6 +921,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
+      {view==="achievements"&&<AchievementsScreen debts={personalDebts} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg} balancesVisible={balancesVisible}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible} printerSettings={printerSettings} setPrinterSettings={setPrinterSettings} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
@@ -1601,6 +1603,20 @@ const PERSONAL_DEBT_SEED=[
   ]},
   {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Installmenti",total:119000,note:"14 installments × TRY 8,500; first 3 installments completed.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Installment",amount:8500,due:"",paid:i<3?8500:0}))}
 ];
+function AchievementsScreen({debts,setV}){
+  const remaining=d=>Math.max(0,(Number(d.total)||0)-(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)-(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0));
+  const achievements=debts.flatMap(d=>[{id:"debt-"+d.id,title:d.name,icon:"🏆",unlocked:remaining(d)<=0},...(d.installments||[]).map(inst=>({id:"installment-"+d.id+"-"+inst.id,title:d.name+" · "+(inst.label||"Installment"),icon:"🎖️",unlocked:Number(inst.paid||0)>=Number(inst.amount||0)&&Number(inst.amount||0)>0}))]);
+  const unlocked=achievements.filter(a=>a.unlocked).length;
+  return <div className="lurk-screen lurk-achievements-screen" style={{padding:"18px 16px 100px",minHeight:"75vh",boxSizing:"border-box"}}>
+    <style>{" .lurk-achievement-card{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;transform:translateZ(0);position:relative;z-index:0;cursor:default}.lurk-achievement-card:hover{transform:translateY(-4px) scale(1.055);z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.38),0 0 0 1px rgba(255,211,119,.2);border-color:#c3943d!important}.lurk-achievement-card:focus-visible{outline:2px solid #f6d78a;outline-offset:3px}@media(prefers-reduced-motion:reduce){.lurk-achievement-card{transition:none}.lurk-achievement-card:hover{transform:none}}"}</style>
+    <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}><button onClick={()=>setV("home")} style={{background:"none",border:0,color:"#a7b1a8",fontSize:24,cursor:"pointer"}}>←</button><div><div style={{fontSize:22,fontWeight:850}}>Achievements</div><div style={{fontSize:11,color:"#9caa9e",marginTop:3}}>Personal payment milestones</div></div></div>
+    <section style={{background:"linear-gradient(145deg,#211b12,#17150f)",border:"1px solid #55452a",borderRadius:16,padding:16,marginBottom:16}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:12}}><div><div style={{fontSize:16,fontWeight:900,color:"#f6d78a",letterSpacing:".2px"}}>🏅 ACHIEVEMENTS</div><div style={{fontSize:11,color:"#c2b18a",marginTop:4}}>Her ödeme tamamlandığında kendi rozeti açılır</div></div><div style={{fontSize:14,fontWeight:900,color:"#f6d78a",whiteSpace:"nowrap"}}>{unlocked} / {achievements.length}</div></div>
+      <div style={{height:6,background:"#3a3020",borderRadius:10,overflow:"hidden",marginBottom:16}}><div style={{height:"100%",width:(achievements.length?unlocked/achievements.length*100:0)+"%",background:"linear-gradient(90deg,#d6a94d,#ffe6a0)",borderRadius:10,transition:"width .25s"}}/></div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(165px,1fr))",gap:9}}>{achievements.map(a=><div tabIndex={0} key={a.id} className="lurk-achievement-card" title={a.title} style={{minWidth:0,minHeight:62,padding:"11px 10px",borderRadius:11,border:"1px solid "+(a.unlocked?"#8a6b32":"#413a2b"),background:a.unlocked?"linear-gradient(145deg,#3b2e17,#292113)":"rgba(255,255,255,.025)",opacity:a.unlocked?1:.58,display:"flex",alignItems:"center",gap:9,boxSizing:"border-box"}}><div style={{width:36,height:36,flexShrink:0,borderRadius:10,display:"grid",placeItems:"center",fontSize:20,background:a.unlocked?"#59431f":"#302c24",filter:a.unlocked?"none":"grayscale(1)"}}>{a.unlocked?a.icon:"🔒"}</div><div style={{minWidth:0}}><div style={{fontSize:11,fontWeight:850,color:a.unlocked?"#ffe5a4":"#c2bcae",lineHeight:1.3,overflowWrap:"anywhere"}}>{a.title}</div><div style={{fontSize:9,color:a.unlocked?"#d8bd7d":"#898477",marginTop:4}}>{a.unlocked?"BADGE UNLOCKED":"LOCKED"}</div></div></div>)}</div>
+    </section>
+  </div>;
+}
 function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [unlocked,setUnlocked]=useState(false);
   const [pin,setPin]=useState("");
@@ -1765,11 +1781,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     if(ao!==null)return -1;if(bo!==null)return 1;
     return remaining(a)-remaining(b);
   });
-  const paymentAchievements=debts.flatMap(d=>[
-    {id:"debt-"+d.id,title:d.name,subtitle:"Payment completed",icon:"🏆",unlocked:remaining(d)<=0,amount:Number(d.total)||0,date:(d.payments||[]).filter(p=>!p.installmentId).slice(-1)[0]?.date||null},
-    ...(d.installments||[]).map(inst=>({id:"installment-"+d.id+"-"+inst.id,title:d.name+" · "+(inst.label||"Installment"),subtitle:"Installment completed",icon:"🎖️",unlocked:Number(inst.paid||0)>=Number(inst.amount||0)&&Number(inst.amount||0)>0,amount:Number(inst.amount)||0,date:(d.payments||[]).filter(p=>p.installmentId===inst.id).slice(-1)[0]?.date||null}))
-  ]);
-  const unlockedAchievements=paymentAchievements.filter(a=>a.unlocked).length;
   return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
@@ -1777,19 +1788,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Lock</button>
     </div>
     <div style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
-      <section style={{background:"linear-gradient(145deg,#211b12,#17150f)",border:"1px solid #55452a",borderRadius:14,padding:14,marginBottom:16}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:12}}>
-          <div><div style={{fontSize:15,fontWeight:900,color:"#f6d78a",letterSpacing:".2px"}}>🏅 ACHIEVEMENTS</div><div style={{fontSize:10,color:"#c2b18a",marginTop:3}}>Her ödeme tamamlandığında kendi rozeti açılır</div></div>
-          <div style={{fontSize:12,fontWeight:900,color:"#f6d78a",whiteSpace:"nowrap"}}>{unlockedAchievements} / {paymentAchievements.length}</div>
-        </div>
-        <div style={{height:6,background:"#3a3020",borderRadius:10,overflow:"hidden",marginBottom:12}}><div style={{height:"100%",width:(paymentAchievements.length?unlockedAchievements/paymentAchievements.length*100:0)+"%",background:"linear-gradient(90deg,#d6a94d,#ffe6a0)",borderRadius:10,transition:"width .25s"}}/></div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(145px,1fr))",gap:8}}>
-          {paymentAchievements.map(a=><div key={a.id} style={{minWidth:0,padding:"10px 9px",borderRadius:10,border:"1px solid "+(a.unlocked?"#8a6b32":"#413a2b"),background:a.unlocked?"linear-gradient(145deg,#3b2e17,#292113)":"rgba(255,255,255,.025)",opacity:a.unlocked?1:.58,display:"flex",alignItems:"center",gap:8}}>
-            <div style={{width:34,height:34,flexShrink:0,borderRadius:10,display:"grid",placeItems:"center",fontSize:19,background:a.unlocked?"#59431f":"#302c24",filter:a.unlocked?"none":"grayscale(1)"}}>{a.unlocked?a.icon:"🔒"}</div>
-            <div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:850,color:a.unlocked?"#ffe5a4":"#c2bcae",lineHeight:1.3,overflowWrap:"anywhere"}}>{a.title}</div><div style={{fontSize:9,color:a.unlocked?"#d8bd7d":"#898477",marginTop:3}}>{a.unlocked?"BADGE UNLOCKED":"LOCKED"}</div></div>
-          </div>)}
-        </div>
-      </section>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
