@@ -1922,3 +1922,83 @@ body{position:static!important}
     box-sizing:border-box!important;
   }
 }
+
+
+/* Reports order detail modal: restore high-contrast light surface */
+.lurk-history-detail{
+  background:#fff!important;
+  color:#202820!important;
+  border:1px solid #e1e8de!important;
+  border-radius:20px!important;
+  padding:28px!important;
+  box-shadow:0 22px 70px rgba(20,32,22,.18)!important;
+  opacity:1!important;
+  backdrop-filter:none!important;
+}
+.lurk-history-detail .lurk-eyebrow{
+  color:#788477!important;
+  font-size:11px!important;
+  letter-spacing:.12em!important;
+}
+.lurk-history-detail h2{
+  color:#172019!important;
+  font-size:28px!important;
+  font-weight:400!important;
+  margin:8px 0 10px!important;
+}
+.lurk-history-detail>p{
+  color:#68736a!important;
+  font-size:14px!important;
+  line-height:1.5!important;
+}
+.lurk-history-detail-lines{
+  border-top:1px solid #e4eae2!important;
+  border-bottom:1px solid #e4eae2!important;
+  padding:10px 0!important;
+}
+.lurk-history-detail-lines>div{
+  color:#344137!important;
+  font-size:14px!important;
+  line-height:1.5!important;
+}
+.lurk-history-detail-lines b{
+  color:#172019!important;
+  font-weight:500!important;
+}
+.lurk-history-detail-total{
+  color:#59665b!important;
+  font-size:16px!important;
+}
+.lurk-history-detail-total strong{
+  color:#172019!important;
+  font-size:21px!important;
+  font-weight:500!important;
+}
+.lurk-history-detail .ds-primary-button{
+  color:#172019!important;
+  background:#a8d936!important;
+  border:1px solid #a8d936!important;
+  font-size:15px!important;
+  font-weight:500!important;
+  min-height:48px!important;
+  border-radius:12px!important;
+}
+.lurk-history-detail .lurk-cancel-order{
+  color:#a8322b!important;
+  background:#fff1ef!important;
+  border:1px solid #f1c9c4!important;
+  font-size:14px!important;
+  font-weight:500!important;
+  min-height:46px!important;
+  border-radius:12px!important;
+}
+.lurk-history-detail .lurk-modal-cancel{
+  color:#536153!important;
+  background:#f4f7f2!important;
+  border:1px solid #e1e8de!important;
+  font-size:14px!important;
+  font-weight:500!important;
+  min-height:44px!important;
+  border-radius:12px!important;
+  margin-top:10px!important;
+}
