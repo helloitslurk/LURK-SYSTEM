@@ -1666,7 +1666,7 @@ const totalDebt=debts.reduce((s,d)=>s+(Number(d.total)||0),0);
 const general=GENERAL_ACHIEVEMENTS.map(a=>{
 let unlocked=!!a.initial;
 if(a.threshold)unlocked=unlocked||progressPaid>=a.threshold;
-if(a.id==="general-first-payment")unlocked=unlocked||totalPaid>0;
+if(a.id==="general-first-payment")unlocked=unlocked||progressPaid>0;
 if(a.id==="general-first-installment")unlocked=unlocked||debts.some(d=>(d.installments||[]).some(i=>Number(i.amount)>0&&Number(i.paid)>=Number(i.amount)));
 if(a.id==="general-debt-free-card")unlocked=unlocked||debts.some(d=>remaining(d)<=0);
 if(a.id==="general-first-big-close")unlocked=unlocked||events.some(e=>e.amount>=10000);
