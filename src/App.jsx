@@ -1543,15 +1543,15 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
           const isExp=exp===day.date;
           const log=day.log;
           return(
-            <div key={day.date} style={{background:"#FFFFFF",borderRadius:12,marginBottom:9,border:"1px solid #DDE5DD",overflow:"hidden",boxShadow:"0 3px 12px rgba(24,37,29,.06)"}}>
-              <div onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"15px 14px",cursor:"pointer"}}>
+            <div key={day.date} className="lurk-report-day-card" style={{background:"#FFFFFF",borderRadius:12,marginBottom:9,border:"1px solid #DDE5DD",overflow:"hidden",boxShadow:"0 3px 12px rgba(24,37,29,.06)"}}>
+              <div className="lurk-report-day-summary" onClick={()=>setExp(isExp?null:day.date)} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"15px 14px",cursor:"pointer"}}>
                 <div>
-                  <div style={{fontSize:14,fontWeight:800,color:"#18251D",letterSpacing:"-.2px"}}>{new Date(day.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",day:"numeric",month:"long"})}</div>
-                  <div style={{fontSize:10,color:"#66746A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} orders</div>
+                  <div className="lurk-report-day-date" style={{fontSize:14,fontWeight:800,color:"#18251D",letterSpacing:"-.2px"}}>{new Date(day.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",day:"numeric",month:"long"})}</div>
+                  <div className="lurk-report-day-meta" style={{fontSize:10,color:"#66746A",marginTop:4}}>{log?ft(log.oa)+" – "+ft(log.ca)+" · ":""}{day.orders.filter(o=>!o.partialPayment).length||log?.count||0} orders</div>
                 </div>
                 <div style={{textAlign:"right"}}>
-                  <div style={{fontSize:15,fontWeight:900,color:"#176B32"}}>{fm(day.inc)}</div>
-                  <div style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
+                  <div className="lurk-report-day-amount" style={{fontSize:15,fontWeight:900,color:"#176B32"}}>{fm(day.inc)}</div>
+                  <div className="lurk-report-day-chevron" style={{fontSize:11,color:T.textDim,marginTop:2}}>{isExp?"▲":"▽"}</div>
                 </div>
               </div>
               {isExp&&(day.topups||[]).map((e,i)=><div key={"lurkplus-topup-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F5F8ED"}}><div><div style={{fontSize:13,color:T.text}}>{e.memberName||"LURK+ member"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>LURK+ balance top-up · {e.method==="card"?"Card":"Cash"}</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
