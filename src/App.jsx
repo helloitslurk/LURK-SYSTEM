@@ -1660,21 +1660,23 @@ function achievementPaymentEvents(debts){return debts.flatMap(d=>(d.payments||[]
 function buildAchievements(debts){
 const remaining=d=>Math.max(0,(Number(d.total)||0)-(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)-(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0));
 const events=achievementPaymentEvents(debts);
-const totalPaid=debts.reduce((sum,d)=>sum+(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0),0);
+const progressEvents=events.filter(e=>e.date.toISOString().slice(0,10)>="2026-11-21");
+const progressPaid=progressEvents.reduce((sum,e)=>sum+e.amount,0);
+const totalDebt=debts.reduce((s,d)=>s+(Number(d.total)||0),0);
 const general=GENERAL_ACHIEVEMENTS.map(a=>{
 let unlocked=!!a.initial;
-if(a.threshold)unlocked=unlocked||totalPaid>=a.threshold;
+if(a.threshold)unlocked=unlocked||progressPaid>=a.threshold;
 if(a.id==="general-first-payment")unlocked=unlocked||totalPaid>0;
 if(a.id==="general-first-installment")unlocked=unlocked||debts.some(d=>(d.installments||[]).some(i=>Number(i.amount)>0&&Number(i.paid)>=Number(i.amount)));
 if(a.id==="general-debt-free-card")unlocked=unlocked||debts.some(d=>remaining(d)<=0);
 if(a.id==="general-first-big-close")unlocked=unlocked||events.some(e=>e.amount>=10000);
 if(a.id==="general-early-payment")unlocked=events.some(e=>{const i=(debts.find(d=>d.id===e.debtId)?.installments||[]).find(x=>x.id===e.installmentId);return !!(i?.due&&e.date.toISOString().slice(0,10)<i.due);});
-if(a.id==="general-two-day")unlocked=unlocked||events.some(e=>events.filter(x=>x.date.toDateString()===e.date.toDateString()).length>=2);
-if(a.id==="general-three-week")unlocked=unlocked||events.some(e=>events.filter(x=>Math.abs(x.date-e.date)<=6*86400000).length>=3);
-if(a.id==="general-five-month")unlocked=unlocked||events.some(e=>events.filter(x=>x.date.getFullYear()===e.date.getFullYear()&&x.date.getMonth()===e.date.getMonth()).length>=5);
-if(a.id==="general-half-debt"){const total=debts.reduce((s,d)=>s+(Number(d.total)||0),0);unlocked=total>0&&totalPaid>=total/2;}
+if(a.id==="general-two-day")unlocked=unlocked||progressEvents.some(e=>progressEvents.filter(x=>x.date.toDateString()===e.date.toDateString()).length>=2);
+if(a.id==="general-three-week")unlocked=unlocked||progressEvents.some(e=>progressEvents.filter(x=>Math.abs(x.date-e.date)<=6*86400000).length>=3);
+if(a.id==="general-five-month")unlocked=unlocked||progressEvents.some(e=>progressEvents.filter(x=>x.date.getFullYear()===e.date.getFullYear()&&x.date.getMonth()===e.date.getMonth()).length>=5);
+if(a.id==="general-half-debt"){const total=debts.reduce((s,d)=>s+(Number(d.total)||0),0);unlocked=total>0&&progressPaid>=total/2;}
 if(a.id==="general-last-debt")unlocked=debts.length>0&&debts.every(d=>remaining(d)<=0);
-if(a.id==="general-small-wins")unlocked=unlocked||events.some(e=>events.filter(x=>x.date.getFullYear()===e.date.getFullYear()&&x.date.getMonth()===e.date.getMonth()&&x.installmentId).length>=3);
+if(a.id==="general-small-wins")unlocked=unlocked||progressEvents.some(e=>progressEvents.filter(x=>x.date.getFullYear()===e.date.getFullYear()&&x.date.getMonth()===e.date.getMonth()&&x.installmentId).length>=3);
 return {...a,unlocked};
 });
 const debtAchievements=debts.flatMap(d=>[{id:"debt-"+d.id,title:d.name+" Borcu Kapandı",icon:"🏆",unlocked:remaining(d)<=0},...(d.installments||[]).map(i=>{const history=(d.payments||[]).filter(p=>p.installmentId===i.id).reduce((s,p)=>s+(Number(p.amount)||0),0);return{id:"installment-"+d.id+"-"+i.id,title:d.name+" · "+(i.label||"Taksit"),icon:"🎖️",unlocked:Number(i.amount)>0&&Math.max(Number(i.paid)||0,history)+0.009>=Number(i.amount)};})]);
@@ -1750,7 +1752,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     if(!unlocked)return;
     const movedIds=new Set(["ucuncuoglu","beliz-plan"]);
     const lurkIds=new Set(["holdon","yemeksepeti","mozaik","ruhsat","heyz"]);
-    const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"]);
+    const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","a2"]);
+    const freedomIds=new Set(["vodafone","hepsiburada-limiti","hepsifinans","kyk","yildiz"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>migratePersonalDebtRecords(prev)
       .filter(d=>!placeholderIds.has(d.id))
@@ -1764,7 +1767,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         name:d.id==="fiddle"?"Fiddle III Installment":d.id==="fiddle-tyres"?"Tires":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Insurance":d.id==="fiddle-inspection"?"Vehicle Inspection":d.id==="yildiz"?"Driving School":"Driving License · A2 Exam Fee",
         category:"fiddle",
         folder:"FIDDLE III"
-      }:d));
+      }:freedomIds.has(d.id)?{...d,category:"freedom",folder:"FREEDOM PLAN"}:d));
   },[unlocked]);
   const money=n=>(Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2})+" ₺";
   const paid=d=>(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);
