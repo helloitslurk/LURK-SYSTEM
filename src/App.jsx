@@ -2208,6 +2208,23 @@ function CustomersScreen({orders,customers,setCustomers,setV,msg,balancesVisible
   const target=normalizeCustomerName(c.name);
   return !!target&&orderCustomerNames(o).some(name=>normalizeCustomerName(name)===target);
  });
+ useEffect(()=>{
+  setCustomers(prev=>{
+   const known=new Set(prev.map(c=>normalizeCustomerName(c.name)));
+   const additions=[];
+   orders.forEach(o=>{
+    if(o.partialPayment||o.status==="cancelled")return;
+    if(o.customerId&&prev.some(c=>c.id===o.customerId))return;
+    orderCustomerNames(o).forEach(raw=>{
+     const name=String(raw).trim(),key=normalizeCustomerName(name);
+     if(!key||known.has(key))return;
+     known.add(key);
+     additions.push({id:uid(),name,lurkPlus:false,createdAt:o.date||new Date().toISOString(),importedFromLegacyOrder:true});
+    });
+   });
+   return additions.length?[...prev,...additions]:prev;
+  });
+ },[orders,setCustomers]);
  const totalFor=c=>customerOrders(c).reduce((sum,o)=>sum+(Number(o.total)||0),0);
  const filtered=customers.filter(c=>c.name.toLocaleLowerCase("en-US").includes(query.trim().toLocaleLowerCase("en-US")));
  const regular=filtered.filter(c=>!c.lurkPlus);
