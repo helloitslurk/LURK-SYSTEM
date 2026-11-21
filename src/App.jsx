@@ -1079,7 +1079,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
     <div className="lurk-screen lurk-order-screen ds-order" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
       {/* Top bar */}
       <div className="ds-order-header" style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-        <button onClick={()=>{setSel(null);setV(table.isTakeAway?"home":"tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}}>{table.isTakeAway?"← Back":"← Tables"}</button>
+        <button onClick={()=>{setSel(null);setV(table.isTakeAway?"home":"tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>{table.isTakeAway?"← Back":"← Tables"}</button>
         <div style={{flex:1}}>
           <div style={{fontWeight:700,fontSize:15,color:T.text}}>{table.lbl}</div>
           {table.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{table.g}</div>}
