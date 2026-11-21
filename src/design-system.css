@@ -1744,3 +1744,40 @@ body{position:static!important}
   .ds-sales-report>div[style*="gridTemplateColumns"]>div{padding:13px 11px!important}
   .ds-sales-report>div[style*="gridTemplateColumns"]>div>div:nth-child(2){font-size:19px!important}
 }
+
+
+/* Reports KPI cards: explicit selector, four cards in one desktop row */
+.ds-sales-report .ds-report-kpis{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:14px!important;
+  padding:18px clamp(18px,3vw,48px)!important;
+}
+.ds-sales-report .ds-report-kpis>div{
+  min-width:0!important;
+  padding:18px!important;
+  background:#fff!important;
+  border:1px solid #e0e7df!important;
+  border-radius:16px!important;
+  box-shadow:0 5px 18px rgba(24,37,29,.045)!important;
+}
+.ds-sales-report .ds-report-kpis>div>div:first-child{
+  font-size:13px!important;font-weight:400!important;letter-spacing:1px!important;
+  margin-bottom:12px!important;color:#68756b!important;
+}
+.ds-sales-report .ds-report-kpis>div>div:nth-child(2){
+  font-size:clamp(21px,2vw,28px)!important;font-weight:400!important;
+  letter-spacing:-.4px!important;
+}
+.ds-sales-report .ds-report-kpis>div>div:nth-child(3){
+  font-size:12px!important;font-weight:400!important;
+}
+@media(max-width:900px){
+  .ds-sales-report .ds-report-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;padding:14px!important}
+}
+@media(max-width:480px){
+  .ds-sales-report .ds-report-kpis{gap:8px!important;padding:12px!important}
+  .ds-sales-report .ds-report-kpis>div{padding:13px 11px!important}
+  .ds-sales-report .ds-report-kpis>div>div:nth-child(2){font-size:19px!important}
+}
