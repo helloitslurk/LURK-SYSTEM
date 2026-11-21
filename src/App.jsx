@@ -1536,7 +1536,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
       </div>
 
       {/* Days */}
-      <div style={{padding:"0 14px 14px"}}>
+      <div className="lurk-report-days-list" style={{padding:"0 14px 14px"}}>
         <div style={{fontSize:10,fontWeight:850,color:"#B9B7A9",textTransform:"uppercase",letterSpacing:"2px",marginBottom:12}}>DAILY RECORDS</div>
         {days.length===0&&<div style={{padding:"24px",textAlign:"center",fontSize:13,color:T.textSub,background:T.bg2,borderRadius:14}}>No records for this month</div>}
         {days.map(day=>{
