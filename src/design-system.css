@@ -2002,3 +2002,121 @@ body{position:static!important}
   border-radius:12px!important;
   margin-top:10px!important;
 }
+
+
+/* Thermal receipt printing: 58mm paper, up to 210mm page length */
+@page{
+  size:58mm 210mm;
+  margin:2mm;
+}
+@media print{
+  html,body{
+    width:54mm!important;
+    min-width:54mm!important;
+    max-width:54mm!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+  body *{
+    visibility:hidden!important;
+  }
+  .lurk-history-detail,
+  .lurk-history-detail *{
+    visibility:visible!important;
+  }
+  .lurk-history-detail{
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:54mm!important;
+    max-width:54mm!important;
+    min-width:0!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:1mm 0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    color:#000!important;
+    font-family:Arial,sans-serif!important;
+    font-size:9pt!important;
+    line-height:1.3!important;
+    opacity:1!important;
+    backdrop-filter:none!important;
+  }
+  .lurk-history-detail .lurk-eyebrow{
+    color:#000!important;
+    font-size:8pt!important;
+    letter-spacing:.08em!important;
+    margin:0 0 2mm!important;
+  }
+  .lurk-history-detail h2{
+    color:#000!important;
+    font-size:15pt!important;
+    font-weight:700!important;
+    margin:1mm 0 2mm!important;
+    overflow-wrap:anywhere!important;
+  }
+  .lurk-history-detail>p{
+    color:#000!important;
+    font-size:8pt!important;
+    line-height:1.35!important;
+    margin:0 0 3mm!important;
+    overflow-wrap:anywhere!important;
+  }
+  .lurk-history-detail-lines{
+    border-top:1px dashed #777!important;
+    border-bottom:1px dashed #777!important;
+    padding:2mm 0!important;
+    margin:2mm 0!important;
+  }
+  .lurk-history-detail-lines>div{
+    display:flex!important;
+    justify-content:space-between!important;
+    align-items:flex-start!important;
+    gap:2mm!important;
+    padding:1.2mm 0!important;
+    color:#000!important;
+    font-size:8.5pt!important;
+    line-height:1.3!important;
+    break-inside:avoid!important;
+  }
+  .lurk-history-detail-lines>div>span{
+    flex:1!important;
+    min-width:0!important;
+    overflow-wrap:anywhere!important;
+  }
+  .lurk-history-detail-lines>div>b{
+    flex-shrink:0!important;
+    color:#000!important;
+    font-weight:700!important;
+    white-space:nowrap!important;
+  }
+  .lurk-history-detail-total{
+    display:flex!important;
+    justify-content:space-between!important;
+    gap:2mm!important;
+    color:#000!important;
+    font-size:10pt!important;
+    margin:2mm 0!important;
+    padding-top:1mm!important;
+  }
+  .lurk-history-detail-total strong{
+    color:#000!important;
+    font-size:12pt!important;
+    font-weight:700!important;
+  }
+  .lurk-history-detail button{
+    display:none!important;
+  }
+  *{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+}
