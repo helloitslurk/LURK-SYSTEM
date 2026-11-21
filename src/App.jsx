@@ -247,7 +247,7 @@ function POSApp({onLock}){
   const loaded=useRef(false);
   useEffect(()=>{try{localStorage.setItem("lurk_amounts_visible",String(balancesVisible));}catch(e){}},[balancesVisible]);
   useEffect(()=>{try{localStorage.setItem("lurk_notifications",JSON.stringify(notifications.slice(0,50)));}catch(e){}},[notifications]);
-  useEffect(()=>{if(!ok)return;const unlocked=new Set(personalDebts.flatMap(d=>{const items=[];const paidGeneral=(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);const paidInstallments=(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0);if(Math.max(0,(Number(d.total)||0)-paidGeneral-paidInstallments)<=0)items.push("debt-"+d.id);(d.installments||[]).forEach(inst=>{const history=(d.payments||[]).filter(p=>p.installmentId===inst.id).reduce((s,p)=>s+(Number(p.amount)||0),0);if(Number(inst.amount||0)>0&&Math.max(Number(inst.paid)||0,history)+0.009>=Number(inst.amount||0))items.push("installment-"+d.id+"-"+inst.id);});return items;}));if(previousUnlockedBadges.current===null){previousUnlockedBadges.current=unlocked;return;}const newlyUnlocked=[...unlocked].filter(id=>!previousUnlockedBadges.current.has(id));previousUnlockedBadges.current=unlocked;if(newlyUnlocked.length){const titles=new Map(personalDebts.flatMap(d=>[{id:"debt-"+d.id,title:d.name},...(d.installments||[]).map(i=>({id:"installment-"+d.id+"-"+i.id,title:d.name+" · "+(i.label||"Installment")}))]).map(x=>[x.id,x.title]));const now=Date.now();setNotifications(prev=>[...newlyUnlocked.map((id,index)=>({id:"badge-"+now+"-"+index,badgeId:id,title:titles.get(id)||"New achievement",message:"Achievement unlocked!",date:new Date(now+index).toISOString(),read:false})),...prev].slice(0,50));setToast(newlyUnlocked.length===1?"🏅 Achievement unlocked: "+(titles.get(newlyUnlocked[0])||"New badge"): "🏅 "+newlyUnlocked.length+" new achievements unlocked!");}},[ok,personalDebts]);
+  useEffect(()=>{if(!ok)return;const current=buildAchievements(personalDebts).filter(a=>a.unlocked);const unlocked=new Set(current.map(a=>a.id));if(previousUnlockedBadges.current===null){previousUnlockedBadges.current=unlocked;return;}const newlyUnlocked=[...unlocked].filter(id=>!previousUnlockedBadges.current.has(id));previousUnlockedBadges.current=unlocked;if(newlyUnlocked.length){const titles=new Map(current.map(a=>[a.id,a.title]));const now=Date.now();setNotifications(prev=>[...newlyUnlocked.map((id,index)=>({id:"badge-"+now+"-"+index,badgeId:id,title:titles.get(id)||"New achievement",message:"Achievement unlocked!",date:new Date(now+index).toISOString(),read:false})),...prev].slice(0,50));setToast(newlyUnlocked.length===1?"🏅 Achievement unlocked: "+(titles.get(newlyUnlocked[0])||"New badge"):"🏅 "+newlyUnlocked.length+" new achievements unlocked!");}},[ok,personalDebts]);
   const timers=useRef({});
 
   function save(k,v){
@@ -312,7 +312,7 @@ function POSApp({onLock}){
       setCustomers(Array.isArray(c)?c:[]);
       setCreditEntries(Array.isArray(ce)?ce:[]);
       setLurkPlusMembers(Array.isArray(lp)?lp:[]);
-      setPersonalDebts((Array.isArray(pd)?pd:PERSONAL_DEBT_SEED).map(x=>x.id==="hepsiburada-limiti"&&Number(x.total)===6880&&!(x.payments||[]).length?{...x,total:22000,payments:[{id:"hepsiburada-history",amount:15120,date:null,note:"Previously paid amount (date not specified)",historical:true}]}:x).map(x=>x.id==="ucuncuoglu"?{...x,total:130000,installments:(x.installments||[]).map((it,i)=>i===8?{...it,amount:10000}:it)}:x));
+      setPersonalDebts(migratePersonalDebtRecords(Array.isArray(pd)?pd:PERSONAL_DEBT_SEED));
       const existing=new Set((Array.isArray(l)?l:[]).map(x=>x.date));
       const merged=[...(Array.isArray(l)?l:[]),...HISTORY.filter(h=>!existing.has(h.date))].sort((a,b)=>b.date.localeCompare(a.date));
       setLogs(merged);
@@ -1611,9 +1611,77 @@ const PERSONAL_DEBT_SEED=[
   ]},
   {id:"ruhsat",group:"Personal",name:"Annem Ruhsat Installmenti",total:119000,note:"14 installments × TRY 8,500; first 3 installments completed.",payments:[],installments:Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:(i+1)+". Installment",amount:8500,due:"",paid:i<3?8500:0}))}
 ];
+const GENERAL_ACHIEVEMENTS=[
+{id:"general-first-payment",title:"İlk Ödeme",icon:"💳",initial:true},
+{id:"general-first-installment",title:"İlk Taksit",icon:"🎖️",initial:true},
+{id:"general-debt-free-card",title:"Borçsuz Kart",icon:"🏆",initial:true},
+{id:"general-first-big-close",title:"İlk Büyük Kapanış · 10.000 TL",icon:"💥",initial:true},
+{id:"general-25k",title:"25K Özgürlük",icon:"🟢",initial:true,threshold:25000},
+{id:"general-50k",title:"50K Özgürlük",icon:"🟢",threshold:50000},
+{id:"general-100k",title:"100K Özgürlük",icon:"🟢",threshold:100000},
+{id:"general-early-payment",title:"Erken Ödeme",icon:"⏩"},
+{id:"general-150k",title:"150K Özgürlük",icon:"🟢",threshold:150000},
+{id:"general-200k",title:"200K Özgürlük",icon:"🟢",threshold:200000},
+{id:"general-250k",title:"250K Özgürlük",icon:"🟢",threshold:250000},
+{id:"general-two-day",title:"Bir Günde 2 Ödeme",icon:"📅",initial:true},
+{id:"general-three-week",title:"Bir Haftada 3 Ödeme",icon:"📆",initial:true},
+{id:"general-five-month",title:"Aynı Ayda 5 Ödeme",icon:"🗓️",initial:true},
+{id:"general-10k-reduction",title:"İlk 10.000 TL Borç Azaltma",icon:"📉",initial:true},
+{id:"general-half-debt",title:"Toplam Borcun Yarısı",icon:"⚖️"},
+{id:"general-last-debt",title:"Son Borç",icon:"🔓"},
+{id:"general-payment-record",title:"Ödeme Rekoru",icon:"📈"},
+{id:"general-small-wins",title:"Küçük Zaferler",icon:"✨"}
+];
+function migratePersonalDebtRecords(source){
+const list=(Array.isArray(source)?source:[]).map(d=>({...d,payments:Array.isArray(d.payments)?d.payments:[],installments:Array.isArray(d.installments)?d.installments:[]}));
+const get=id=>list.find(d=>d.id===id);
+const ensure=(id,defaults)=>{let d=get(id);if(!d){d={...defaults,payments:[],installments:[]};list.push(d);}return d;};
+const setPaid=(id,target)=>{const d=get(id);if(!d)return;const non=(d.payments||[]).filter(p=>!p.installmentId);const others=non.filter(p=>!p.historical);const otherTotal=others.reduce((s,p)=>s+(Number(p.amount)||0),0);const hist=Math.max(0,Math.round((target-otherTotal)*100)/100);d.payments=[...(d.payments||[]).filter(p=>p.installmentId||!p.historical),...(hist>0?[{id:"migration-"+id+"-paid",amount:hist,date:null,note:"Previously paid amount",historical:true}]:[])];};
+let d=ensure("beliz",{id:"beliz",group:"Personal",name:"BELIZ",total:10000});d.name="BELIZ";d.total=10000;setPaid("beliz",2000);
+ensure("ablam",{id:"ablam",group:"Personal",name:"ABLAM",total:5000});
+d=ensure("ahmet-bakkal",{id:"ahmet-bakkal",group:"Personal",name:"AHMET ABİ BAKKAL",total:1500});d.name="AHMET ABİ BAKKAL";d.total=1500;setPaid("ahmet-bakkal",500);
+d=ensure("heyz",{id:"heyz",group:"Business",name:"HEYZ",total:60000});d.name="HEYZ";d.total=60000;d.installments=Array.from({length:6},(_,i)=>({id:"heyz-"+(i+1),label:"Taksit "+(i+1),amount:i===5?5000:11000,due:["2026-11-10","2026-12-10","2027-01-10","2027-02-10","2027-03-10","2027-04-10"][i],paid:i===0?11000:0}));
+d=ensure("beliz-plan",{id:"beliz-plan",group:"Installments",name:"BELIZ Installment",total:80000});d.name="BELIZ Installment";d.total=80000;d.installments=Array.from({length:10},(_,i)=>({id:"beliz-"+(i+1),label:"Taksit "+(i+1),amount:8000,due:["2026-10-05","2026-11-05","2026-12-05","2027-01-05","2027-02-05","2027-03-05","2027-04-05","2027-05-05","2027-06-05","2027-07-05"][i],paid:i<2?8000:0}));
+d=ensure("ruhsat",{id:"ruhsat",group:"Installments",name:"Annem Ruhsat Taksiti",total:119000});d.name="Annem Ruhsat Taksiti";d.total=119000;d.installments=Array.from({length:14},(_,i)=>({id:"ruhsat-"+(i+1),label:"Taksit "+(i+1),amount:8500,due:"",paid:i<4?8500:0}));
+d=ensure("yemeksepeti",{id:"yemeksepeti",group:"Business",name:"Yemeksepeti",total:12000});d.name="Yemeksepeti";d.total=12000;setPaid("yemeksepeti",8000);
+d=ensure("mozaik",{id:"mozaik",group:"Business",name:"Mozaik İş Sağlığı",total:7000});d.name="Mozaik İş Sağlığı";d.total=7000;
+d=ensure("kyk",{id:"kyk",group:"Freedom Plan",name:"KYK",total:15000});d.name="KYK";d.total=15000;d.installments=Array.from({length:8},(_,i)=>({id:"kyk-"+(i+1),label:"Taksit "+(i+1),amount:1875,due:"",paid:0}));
+d=get("ucuncuoglu");if(d){d.total=130000;d.installments=Array.from({length:9},(_,i)=>({id:"uc-"+(i+1),label:"Taksit "+(i+1),amount:i===8?10000:15000,due:["2026-11-11","2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"][i],paid:Number(d.installments?.[i]?.paid)||0}));}
+d=get("fiddle");if(d){d.name="Fiddle III Installment";d.total=55000;setPaid("fiddle",20000);}
+d=get("fiddle-insurance");if(d){d.name="Insurance";d.total=11500;}
+d=get("fiddle-inspection");if(d){d.name="Vehicle Inspection";d.total=1500;}
+d=ensure("yildiz",{id:"yildiz",group:"Personal",name:"DRIVING SCHOOL",total:15000});d.name="DRIVING SCHOOL";d.total=15000;
+d=get("hepsiburada-limiti");if(d){d.name="HEPSİBURADA LİMİTİ";d.total=22000;setPaid("hepsiburada-limiti",16285);}
+d=get("hepsifinans");if(d){d.name="HEPSİFİNANS";d.total=56500;}
+d=get("vodafone");if(d){d.name="VODAFONE";d.total=23856;}
+return list;
+}
+function achievementPaymentEvents(debts){return debts.flatMap(d=>(d.payments||[]).filter(p=>Number(p.amount)>0&&p.date).map(p=>({amount:Number(p.amount),date:new Date(p.date),debtId:d.id,installmentId:p.installmentId}))).filter(p=>!Number.isNaN(p.date.getTime()));}
+function buildAchievements(debts){
+const remaining=d=>Math.max(0,(Number(d.total)||0)-(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)-(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0));
+const events=achievementPaymentEvents(debts);
+const totalPaid=debts.reduce((sum,d)=>sum+(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0),0);
+const general=GENERAL_ACHIEVEMENTS.map(a=>{
+let unlocked=!!a.initial;
+if(a.threshold)unlocked=unlocked||totalPaid>=a.threshold;
+if(a.id==="general-first-payment")unlocked=unlocked||totalPaid>0;
+if(a.id==="general-first-installment")unlocked=unlocked||debts.some(d=>(d.installments||[]).some(i=>Number(i.amount)>0&&Number(i.paid)>=Number(i.amount)));
+if(a.id==="general-debt-free-card")unlocked=unlocked||debts.some(d=>remaining(d)<=0);
+if(a.id==="general-first-big-close")unlocked=unlocked||events.some(e=>e.amount>=10000);
+if(a.id==="general-early-payment")unlocked=events.some(e=>{const i=(debts.find(d=>d.id===e.debtId)?.installments||[]).find(x=>x.id===e.installmentId);return !!(i?.due&&e.date.toISOString().slice(0,10)<i.due);});
+if(a.id==="general-two-day")unlocked=unlocked||events.some(e=>events.filter(x=>x.date.toDateString()===e.date.toDateString()).length>=2);
+if(a.id==="general-three-week")unlocked=unlocked||events.some(e=>events.filter(x=>Math.abs(x.date-e.date)<=6*86400000).length>=3);
+if(a.id==="general-five-month")unlocked=unlocked||events.some(e=>events.filter(x=>x.date.getFullYear()===e.date.getFullYear()&&x.date.getMonth()===e.date.getMonth()).length>=5);
+if(a.id==="general-half-debt"){const total=debts.reduce((s,d)=>s+(Number(d.total)||0),0);unlocked=total>0&&totalPaid>=total/2;}
+if(a.id==="general-last-debt")unlocked=debts.length>0&&debts.every(d=>remaining(d)<=0);
+if(a.id==="general-small-wins")unlocked=unlocked||events.some(e=>events.filter(x=>x.date.getFullYear()===e.date.getFullYear()&&x.date.getMonth()===e.date.getMonth()&&x.installmentId).length>=3);
+return {...a,unlocked};
+});
+const debtAchievements=debts.flatMap(d=>[{id:"debt-"+d.id,title:d.name+" Borcu Kapandı",icon:"🏆",unlocked:remaining(d)<=0},...(d.installments||[]).map(i=>{const history=(d.payments||[]).filter(p=>p.installmentId===i.id).reduce((s,p)=>s+(Number(p.amount)||0),0);return{id:"installment-"+d.id+"-"+i.id,title:d.name+" · "+(i.label||"Taksit"),icon:"🎖️",unlocked:Number(i.amount)>0&&Math.max(Number(i.paid)||0,history)+0.009>=Number(i.amount)};})]);
+return [...general,...debtAchievements];
+}
 function AchievementsScreen({debts,setV}){
-  const remaining=d=>Math.max(0,(Number(d.total)||0)-(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)-(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0));
-  const achievements=debts.flatMap(d=>[{id:"debt-"+d.id,title:d.name,icon:"🏆",unlocked:remaining(d)<=0},...(d.installments||[]).map(inst=>{const historyPaid=(d.payments||[]).filter(p=>p.installmentId===inst.id).reduce((sum,p)=>sum+(Number(p.amount)||0),0);const installmentPaid=Math.max(Number(inst.paid)||0,historyPaid);return{id:"installment-"+d.id+"-"+inst.id,title:d.name+" · "+(inst.label||"Installment"),icon:"🎖️",unlocked:Number(inst.amount||0)>0&&installmentPaid+0.009>=Number(inst.amount||0)};})]);
+  const achievements=buildAchievements(debts);
   const unlocked=achievements.filter(a=>a.unlocked).length;
   return <div className="lurk-screen lurk-achievements-screen" style={{padding:"18px 16px 100px",minHeight:"75vh",boxSizing:"border-box"}}>
     <style>{" .lurk-achievement-card{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;transform:translateZ(0);position:relative;z-index:0;cursor:default}.lurk-achievement-card:hover{transform:translateY(-4px) scale(1.055);z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.38),0 0 0 1px rgba(255,211,119,.2);border-color:#c3943d!important}.lurk-achievement-card:focus-visible{outline:2px solid #f6d78a;outline-offset:3px}@media(prefers-reduced-motion:reduce){.lurk-achievement-card{transition:none}.lurk-achievement-card:hover{transform:none}}"}</style>
@@ -1684,9 +1752,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const lurkIds=new Set(["holdon","yemeksepeti","mozaik","ruhsat","heyz"]);
     const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
-    setDebts(prev=>prev
+    setDebts(prev=>migratePersonalDebtRecords(prev)
       .filter(d=>!placeholderIds.has(d.id))
-      .map(d=>d.id==="ahmet-bakkal"&&Number(d.total)===1000?{...d,total:1500}:d.id==="beliz"&&Number(d.total)===8000?{...d,total:10000}:d.id==="yemeksepeti"&&Number(d.total)===3879&&(d.payments||[]).length===0?{...d,total:12000,payments:[{id:"yemeksepeti-paid-history",amount:8121,date:null,note:"Previously paid amount (date not specified)",historical:true}]}:d)
       .map(d=>movedIds.has(d.id)?{
         ...d,
         name:d.id==="ruhsat"?"Annem Ruhsat Installmenti":d.id==="ucuncuoglu"?"Ucuncuoglu Real Estate":d.id==="beliz-plan"?"Beliz Installment":"Heyz Installment",
