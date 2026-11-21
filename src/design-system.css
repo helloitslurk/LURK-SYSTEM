@@ -1843,3 +1843,46 @@ body{position:static!important}
   .lurk-dashboard-lower>.lurk-chart-card{height:auto!important;min-height:0!important}
   .lurk-dashboard-lower>.lurk-chart-card .lurk-weekly-chart{height:180px!important}
 }
+
+
+/* Dashboard: compact weekly revenue card and move operations into the freed space */
+@media(min-width:1000px){
+  .lurk-dashboard-lower{
+    grid-template-columns:minmax(0,1.8fr) minmax(260px,.8fr)!important;
+    grid-template-rows:auto auto!important;
+    align-items:start!important;
+    row-gap:14px!important;
+  }
+  .lurk-dashboard-lower>.lurk-chart-card{
+    grid-column:1!important;grid-row:1!important;
+    align-self:start!important;height:auto!important;min-height:0!important;
+  }
+  .lurk-dashboard-lower>.lurk-weekly-total{
+    grid-column:2!important;grid-row:1!important;
+    align-self:start!important;height:300px!important;min-height:300px!important;
+    max-height:300px!important;box-sizing:border-box!important;
+  }
+  .lurk-dashboard-lower>.lurk-ops-card{
+    grid-column:2!important;grid-row:2!important;
+    align-self:start!important;width:100%!important;min-height:0!important;
+    box-sizing:border-box!important;
+    display:flex!important;flex-direction:column!important;
+    align-items:stretch!important;gap:14px!important;
+    padding:18px!important;
+  }
+  .lurk-dashboard-lower>.lurk-ops-card>div:first-child{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+  }
+  .lurk-dashboard-lower>.lurk-ops-card>button{width:100%!important;min-height:42px!important}
+  .lurk-dashboard-lower>.lurk-ops-card .lurk-day-action{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    gap:10px!important;margin:0!important;padding-top:12px!important;
+    border-top:1px solid #e8ede5!important;
+  }
+}
+@media(max-width:999px){
+  .lurk-dashboard-lower>.lurk-weekly-total{
+    height:auto!important;min-height:190px!important;max-height:none!important;
+  }
+  .lurk-dashboard-lower>.lurk-ops-card{grid-column:1!important}
+}
