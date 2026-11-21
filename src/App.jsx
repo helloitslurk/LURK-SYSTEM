@@ -895,7 +895,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
  .lurk-app:has(.ref-dashboard) .ref-content{height:auto!important;overflow:visible!important;padding:18px 14px 30px!important}
 }
 `}</style>
-      {view!=="order"&&<aside className="lurk-shell-sidebar" aria-label="Ana navigasyon">
+      {view!=="order"&&view!=="takeaway"&&<aside className="lurk-shell-sidebar" aria-label="Ana navigasyon">
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
         <div className="lurk-shell-section-label">WORKSPACE</div>
         <nav className="lurk-shell-nav">
@@ -917,7 +917,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg} balancesVisible={balancesVisible}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
       {view==="settings"&&<SettingsScreen setV={setV} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
-      {view!=="order"&&(
+      {view!=="order"&&view!=="takeaway"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
             <button className={"lurk-nav-button"+(view===n.k?" active":"")} aria-current={view===n.k?"page":undefined} aria-label={n.label} key={n.k} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));if(n.k==="takeaway")openTakeAway();else setV(n.k);}} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
