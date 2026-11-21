@@ -973,6 +973,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
  const [showAdd,setShowAdd]=useState(false);
  const [tableName,setTableName]=useState("");
  const [newTableMemberId,setNewTableMemberId]=useState("");
+ const [newTableCustomerId,setNewTableCustomerId]=useState("");
  const [deleteId,setDeleteId]=useState(null);
  const [editId,setEditId]=useState(null);
  const [editName,setEditName]=useState("");
@@ -988,12 +989,13 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
  }
  function addTable(){
   const member=lurkPlusMembers.find(m=>m.id===newTableMemberId)||null;
-  const clean=tableName.trim()||(member?member.name.trim():"");
-  if(!clean){msg("Enter a table name or select a LURK+ member.");return;}
-  if(tables.some(t=>(t.lbl||"").trim().toLowerCase()===clean.toLowerCase())){msg("A table with this name already exists.");return;}
+  const customer=customers.find(c=>c.id===newTableCustomerId)||null;
+  const clean=tableName.trim()||(customer?customer.name.trim():"")||(member?member.name.trim():"");
+  if(!clean){msg("Enter a table name or select a customer or LURK+ member.");return;}
+  if(tables.some(t=>(t.lbl||"").trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("A table with this name already exists.");return;}
   const id=uid();
-  setTbl(prev=>[...prev,{id,lbl:clean,s:"free",order:[],g:member?.name||"",customerId:null,lurkPlusId:member?.id||null,partialPayments:[]}]);
-  setTableName("");setNewTableMemberId("");setShowAdd(false);msg(member?"Table added · linked to "+member.name+".":"Table added.");
+  setTbl(prev=>[...prev,{id,lbl:clean,s:"free",order:[],g:customer?.name||member?.name||"",customerId:customer?.id||null,lurkPlusId:member?.id||null,partialPayments:[]}]);
+  setTableName("");setNewTableMemberId("");setNewTableCustomerId("");setShowAdd(false);msg(customer?"Table added · linked to "+customer.name+".":member?"Table added · linked to "+member.name+".":"Table added.");
  }
  return <div className="lurk-screen lurk-tables-screen ds-tables lurk-tables-list">
   <header className="ds-page-head"><div><div className="ds-eyebrow">LURK / FLOOR MANAGEMENT</div><h1>Tables</h1></div><button className="ds-button ds-primary-button" onClick={()=>setShowAdd(true)}>＋ Add Table</button></header>
@@ -1024,7 +1026,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
     </div>;
    })}
   </div>
-  {showAdd&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Add Table</h2><label htmlFor="lurk-table-name">Table Name</label><input id="lurk-table-name" autoFocus value={tableName} onChange={e=>setTableName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTable()} placeholder="e.g. MOJO"/><label htmlFor="lurk-new-table-member" style={{display:"block",marginTop:14}}>LURK+ Member (Optional)</label><select id="lurk-new-table-member" value={newTableMemberId} onChange={e=>setNewTableMemberId(e.target.value)} style={{width:"100%",padding:12,margin:"7px 0 16px",border:"1px solid #dfe6dc",borderRadius:10,background:"#fff",color:"#202820"}}><option value="">No member linked</option>{lurkPlusMembers.map(m=><option key={m.id} value={m.id}>{m.name} · {m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" coffee credits":m.unlimited?"Unlimited":fm(m.balance)}</option>)}</select><button className="ds-button ds-primary-button" onClick={addTable}>Add Table</button><button className="lurk-modal-cancel" onClick={()=>{setShowAdd(false);setTableName("");}}>Cancel</button></div></Modal>}
+  {showAdd&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Add Table</h2><label htmlFor="lurk-table-name">Table Name</label><input id="lurk-table-name" autoFocus value={tableName} onChange={e=>setTableName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTable()} placeholder="e.g. MOJO"/><label htmlFor="lurk-new-table-customer" style={{display:"block",marginTop:14}}>Saved Customer (Optional)</label><select id="lurk-new-table-customer" value={newTableCustomerId} onChange={e=>setNewTableCustomerId(e.target.value)} style={{width:"100%",padding:12,margin:"7px 0 14px",border:"1px solid #dfe6dc",borderRadius:10,background:"#fff",color:"#202820"}}><option value="">No customer linked</option>{customers.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select><label htmlFor="lurk-new-table-member" style={{display:"block",marginTop:4}}>LURK+ Member (Optional)</label><select id="lurk-new-table-member" value={newTableMemberId} onChange={e=>setNewTableMemberId(e.target.value)} style={{width:"100%",padding:12,margin:"7px 0 16px",border:"1px solid #dfe6dc",borderRadius:10,background:"#fff",color:"#202820"}}><option value="">No member linked</option>{lurkPlusMembers.map(m=><option key={m.id} value={m.id}>{m.name} · {m.membershipType==="coffee"?(Number(m.coffeeCredits)||0)+" coffee credits":m.unlimited?"Unlimited":fm(m.balance)}</option>)}</select><button className="ds-button ds-primary-button" onClick={addTable}>Add Table</button><button className="lurk-modal-cancel" onClick={()=>{setShowAdd(false);setTableName("");setNewTableMemberId("");setNewTableCustomerId("");}}>Cancel</button></div></Modal>}
   {editId&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">TABLE MANAGEMENT</div><h2>Rename Table</h2><label htmlFor="lurk-edit-table-name">Table Name</label><input id="lurk-edit-table-name" autoFocus value={editName} onChange={e=>setEditName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&saveTableName()}/><button className="ds-button ds-primary-button" onClick={saveTableName}>Save Name</button><button className="lurk-modal-cancel" onClick={()=>{setEditId(null);setEditName("");}}>Cancel</button></div></Modal>}
   {deleteId&&<Confirm title="Delete Table" msg="This table will be removed." onOk={()=>{const t=tables.find(x=>x.id===deleteId);if(t&&(t.s==="o"||(t.order||[]).length)){msg("Close the active order before deleting this table.");setDeleteId(null);return;}setTbl(prev=>prev.filter(x=>x.id!==deleteId));setDeleteId(null);msg("Table deleted.");}} onCancel={()=>setDeleteId(null)}/>}
  </div>;
