@@ -902,7 +902,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV} onLock={onLock} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible}/>}
       {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
       {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
-      {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} setV={setV}/>}
+      {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} customers={customers} setV={setV}/>}
       {view==="salesHistory"&&<SalesHistoryScreen orders={orders} setOrders={setOrd} balancesVisible={balancesVisible} setV={setV}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
@@ -1416,7 +1416,7 @@ function SalesHistoryScreen({orders,setOrders,balancesVisible,setV}){
 }
 
 /* ─── REPORTS ─── */
-function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembers=[],setV}){
+function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembers=[],customers=[],setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):""),...lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date).map(h=>h.date.slice(0,7)))].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
@@ -1511,7 +1511,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
                {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
                 <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#FAFBFA"}}>
                   <div>
-                    <div style={{fontSize:13,color:T.text}}>{o.g||"—"}</div>
+                    <div style={{fontSize:13,color:T.text}}>{o.g||customers.find(c=>c.id===o.customerId)?.name||lurkPlusMembers.find(m=>m.id===o.customerId)?.name||"—"}</div>
                     <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Cash":o.pt==="credit"?"On account":o.pt==="split"?"Cash + Card":"Card"}</div>
                   </div>
                   <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(o.total)}</div>
