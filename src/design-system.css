@@ -2282,3 +2282,15 @@ body{position:static!important}
     line-height: 1.25 !important;
   }
 }
+
+/* FINAL FIX: the app does not render a .lurk-root wrapper, so target the real .lurk-app directly. */
+.lurk-app .lurk-tables-screen.ds-tables .lurk-table-list-row > b {
+  font-size: 20pt !important;
+  line-height: 1.3 !important;
+}
+@media (max-width: 699px) {
+  .lurk-app .lurk-tables-screen.ds-tables .lurk-table-list-row > b {
+    font-size: 20pt !important;
+    line-height: 1.25 !important;
+  }
+}
