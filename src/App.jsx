@@ -1454,9 +1454,9 @@ function printThermalReceipt(order,settings=DEFAULT_PRINTER_SETTINGS){
     w.document.open();
     w.document.write(html);
     w.document.close();
+    w.onafterprint=()=>frame.remove();
     w.focus();
     w.print();
-    w.onafterprint=()=>frame.remove();
     w.setTimeout(()=>{if(frame.isConnected)frame.remove();},60000);
   }catch(error){
     frame.remove();
