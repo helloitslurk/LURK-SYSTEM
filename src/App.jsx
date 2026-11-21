@@ -89,6 +89,8 @@ const HISTORY=[
 {id:"h29",date:"2026-08-02",oa:"2026-08-02T12:00:00Z",ca:"2026-08-02T22:00:00Z",inc:3111,count:7},
 ];
 
+const DEFAULT_PRINTER_SETTINGS={paperWidth:58,businessName:"LURK.",address:"",phone:"",footer:"Thank you for visiting LURK.",showOrderNumber:true,showCustomer:true};
+
 const T={
   bg:"#F7F8F6",bg2:"#FFFFFF",bg3:"#EEF3EE",
   border:"#E4EAE4",border2:"#D4DED4",
@@ -236,6 +238,7 @@ function POSApp({onLock}){
   const[creditEntries,setCreditEntries]=useState([]);
   const[personalDebts,setPersonalDebts]=useState([]);
   const[menu,setMenu]=useState(MENU);
+  const[printerSettings,setPrinterSettings]=useState(DEFAULT_PRINTER_SETTINGS);
   const[day,setDay]=useState(null);
   const[toast,setToast]=useState(null);
   const loaded=useRef(false);
@@ -292,6 +295,8 @@ function POSApp({onLock}){
       const ce=await sbGet("lurk_credit",[]);
       const lp=await sbGet("lurk_plus_members",[]);
       const pd=await sbGet("lurk_personal_debts",null).catch(()=>null);
+      const savedPrinterSettings=await sbGet("lurk_printer_settings",null).catch(()=>null);
+      if(savedPrinterSettings&&typeof savedPrinterSettings==="object")setPrinterSettings({...DEFAULT_PRINTER_SETTINGS,...savedPrinterSettings,paperWidth:58});
       setTbl((Array.isArray(t)?t:[]).map(table=>{
         const legacyName=String(table?.lbl||"").trim();
         if(/^masa\\s*1$/i.test(legacyName)||/^table\\s*0?1$/i.test(legacyName))return {...table,lbl:"MOJO"};
@@ -347,6 +352,7 @@ function POSApp({onLock}){
   useEffect(()=>{save("lurk_credit",creditEntries);},[creditEntries]);
   useEffect(()=>{save("lurk_personal_debts",personalDebts);},[personalDebts]);
   useEffect(()=>{save("lurk_m",menu);},[menu]);
+  useEffect(()=>{save("lurk_printer_settings",printerSettings);},[printerSettings]);
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
 
@@ -910,13 +916,13 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="tables"&&<TablesScreen tables={tables.filter(t=>!t.isTakeAway)} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
       {(view==="order"||view==="takeaway")&&(view==="takeaway"?takeAwayTable:curT)&&<OrderScreen table={view==="takeaway"?takeAwayTable:curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} customers={customers} setV={setV}/>}
-      {view==="salesHistory"&&<SalesHistoryScreen orders={orders} setOrders={setOrd} balancesVisible={balancesVisible} setV={setV}/>}
+      {view==="salesHistory"&&<SalesHistoryScreen orders={orders} setOrders={setOrd} balancesVisible={balancesVisible} setV={setV} printerSettings={printerSettings}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg} balancesVisible={balancesVisible}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
-      {view==="settings"&&<SettingsScreen setV={setV} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
+      {view==="settings"&&<SettingsScreen setV={setV} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible} printerSettings={printerSettings} setPrinterSettings={setPrinterSettings} tables={tables} orders={orders} logs={logs} customers={customers} creditEntries={creditEntries} menu={menu} day={day} personalDebts={personalDebts} setPersonalDebts={setPersonalDebts} setTables={setTbl} setOrders={setOrd} setLogs={setLogs} setCustomers={setCustomers} setCreditEntries={setCreditEntries} setMenu={setMenu} setDay={setDay}/>}
       {view!=="order"&&view!=="takeaway"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
@@ -1362,7 +1368,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
 }
 
 /* ─── SALES HISTORY ─── */
-function SalesHistoryScreen({orders,setOrders,balancesVisible,setV}){
+function SalesHistoryScreen({orders,setOrders,balancesVisible,setV,printerSettings}){
  const [query,setQuery]=useState("");
  const [payment,setPayment]=useState("all");
  const [status,setStatus]=useState("all");
@@ -1417,7 +1423,7 @@ function SalesHistoryScreen({orders,setOrders,balancesVisible,setV}){
   {selected&&<Modal><div className="lurk-history-detail"><div className="lurk-eyebrow">ORDER DETAILS</div><h2>#{String(selected.orderNumber||"").padStart(5,"0")}</h2><p>{selected.date} · {selected.table||"No table"} · {selected.g||"Guest"}</p>
    <div className="lurk-history-detail-lines">{(selected.items||[]).map((item,i)=><div key={item.oid||i}><span>{item.name} × {item.qty}</span><b>{money((Number(item.price)||0)*(Number(item.qty)||0))}</b></div>)}</div>
    <div className="lurk-history-detail-total"><span>Total</span><strong>{money(selected.total)}</strong></div>
-   <button className="ds-button ds-primary-button" onClick={()=>printThermalReceipt(selected)}>Print Receipt</button>
+   <button className="ds-button ds-primary-button" onClick={()=>printThermalReceipt(selected,printerSettings)}>Print Receipt</button>
    {selected.status!=="cancelled"&&<button className="lurk-cancel-order" onClick={()=>cancelOrder(selected)}>Cancel Order</button>}
    <button className="lurk-modal-cancel" onClick={()=>setSelected(null)}>Close</button>
   </div></Modal>}
@@ -1425,37 +1431,38 @@ function SalesHistoryScreen({orders,setOrders,balancesVisible,setV}){
 }
 
 /* ─── REPORTS ─── */
-function printThermalReceipt(order){
-  const esc=value=>String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  const items=(order.items||[]).map(item=>'<div class="item"><span>'+esc(item.name)+' × '+esc(item.qty)+'</span><b>'+money((Number(item.price)||0)*(Number(item.qty)||0))+'</b></div>').join("");
+function printThermalReceipt(order,settings=DEFAULT_PRINTER_SETTINGS){
+  const esc=value=>String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  const config={...DEFAULT_PRINTER_SETTINGS,...(settings||{}),paperWidth:58};
+  const items=(order.items||[]).map(item=>'<div class="item"><span>'+esc(item.name)+' × '+esc(item.qty)+'</span><b>'+esc(fm((Number(item.price)||0)*(Number(item.qty)||0)))+'</b></div>').join("");
+  const business=esc(config.businessName||"LURK.");
+  const address=config.address?'<div class="muted">'+esc(config.address)+'</div>':"";
+  const phone=config.phone?'<div class="muted">'+esc(config.phone)+'</div>':"";
+  const orderNo=config.showOrderNumber?'<div class="id">#'+esc(String(order.orderNumber||"").padStart(5,"0"))+'</div>':"";
+  const customer=config.showCustomer?'<div class="muted">'+esc(order.table||"No table")+' · '+esc(order.g||"Guest")+'</div>':"";
   const html='<!doctype html><html><head><meta charset="utf-8"><title>LURK Receipt</title><style>'+
-    '@page{size:58mm 210mm;margin:2mm}*{box-sizing:border-box}html,body{margin:0!important;padding:0!important;width:54mm!important;min-width:54mm!important;max-width:54mm!important;background:#fff!important;color:#000!important;font-family:Arial,sans-serif;font-size:9pt;line-height:1.3}body{padding:1mm 0!important}.brand{font-size:14pt;font-weight:700;letter-spacing:.08em;margin-bottom:3mm}.muted{font-size:8pt;margin:1mm 0 3mm}.rule{border-top:1px dashed #777;margin:2.5mm 0}.id{font-size:14pt;font-weight:700;margin:2mm 0}.item{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm;padding:1.5mm 0;break-inside:avoid}.item span{flex:1;min-width:0;overflow-wrap:anywhere}.item b{white-space:nowrap}.total{display:flex;justify-content:space-between;font-size:11pt;font-weight:700;margin:3mm 0}.foot{text-align:center;font-size:8pt;margin-top:5mm}'+
-    '</style></head><body><div class="brand">LURK.</div><div class="muted">'+esc(order.date||"")+'</div><div class="id">#'+esc(String(order.orderNumber||"").padStart(5,"0"))+'</div><div class="muted">'+esc(order.table||"No table")+' · '+esc(order.g||"Guest")+'</div><div class="rule"></div>'+items+'<div class="rule"></div><div class="total"><span>Total</span><span>'+esc(money(order.total))+'</span></div><div class="muted">Payment: '+esc(order.pt||"—")+'</div><div class="foot">Thank you for visiting LURK.</div></body></html>';
+    '@page{size:58mm auto;margin:2mm}*{box-sizing:border-box}html,body{margin:0!important;padding:0!important;width:54mm!important;min-width:54mm!important;max-width:54mm!important;background:#fff!important;color:#000!important;font-family:Arial,sans-serif;font-size:9pt;line-height:1.3}body{padding:1mm 0!important}.brand{font-size:15pt;font-weight:800;letter-spacing:.08em;margin-bottom:2mm;text-align:center}.muted{font-size:8pt;margin:1mm 0 2mm;overflow-wrap:anywhere}.rule{border-top:1px dashed #777;margin:2.5mm 0}.id{font-size:14pt;font-weight:700;margin:2mm 0}.item{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm;padding:1.5mm 0;break-inside:avoid}.item span{flex:1;min-width:0;overflow-wrap:anywhere}.item b{white-space:nowrap}.total{display:flex;justify-content:space-between;font-size:11pt;font-weight:700;margin:3mm 0}.foot{text-align:center;font-size:8pt;margin-top:5mm;overflow-wrap:anywhere}'+
+    '</style></head><body><div class="brand">'+business+'</div>'+address+phone+'<div class="muted">'+esc(order.date||"")+'</div>'+orderNo+customer+'<div class="rule"></div>'+items+'<div class="rule"></div><div class="total"><span>Total</span><span>'+esc(fm(order.total))+'</span></div><div class="muted">Payment: '+esc(order.pt||"—")+'</div><div class="foot">'+esc(config.footer||"")+'</div></body></html>';
   const frame=document.createElement("iframe");
   frame.setAttribute("aria-hidden","true");
   frame.title="LURK receipt print";
-  frame.style.cssText="position:fixed;left:-10000px;top:0;width:58mm;height:210mm;border:0;background:#fff;";
-  let printed=false;
-  const cleanup=()=>{try{frame.remove();}catch(e){}};
-  const doPrint=()=>{
-    if(printed)return;
-    printed=true;
-    try{
-      const w=frame.contentWindow;
-      if(!w||!w.document||!w.document.body){printed=false;return;}
-      w.onafterprint=cleanup;
-      w.focus();
-      w.print();
-      w.setTimeout(()=>{if(frame.isConnected)cleanup();},60000);
-    }catch(error){
-      cleanup();
-      window.alert("Receipt printing failed. Please check the printer settings and try again.");
-      console.error("Receipt print failed",error);
-    }
-  };
-  frame.onload=doPrint;
-  frame.srcdoc=html;
-  document.body.appendChild(frame);
+  frame.style.cssText="position:fixed;left:-10000px;top:0;width:58mm;height:1px;border:0;opacity:0;pointer-events:none;";
+  try{
+    document.body.appendChild(frame);
+    const w=frame.contentWindow;
+    if(!w||!w.document)throw new Error("Print frame could not be initialized.");
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
+    w.onafterprint=()=>frame.remove();
+    w.setTimeout(()=>{if(frame.isConnected)frame.remove();},60000);
+  }catch(error){
+    frame.remove();
+    window.alert("Receipt printing failed. Check the browser and printer settings, then try again.");
+    console.error("Receipt print failed",error);
+  }
 }
 function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembers=[],customers=[],setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):""),...lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date).map(h=>h.date.slice(0,7)))].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
@@ -2362,7 +2369,7 @@ function MenuScreen({menu,setMenu,setV}){
  </div>;
 }
 /* ─── SETTINGS ─── */
-function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,logs,customers,creditEntries,menu,day,personalDebts,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay,setPersonalDebts}){
+function SettingsScreen({setV,balancesVisible,setBalancesVisible,printerSettings,setPrinterSettings,tables,orders,logs,customers,creditEntries,menu,day,personalDebts,setTables,setOrders,setLogs,setCustomers,setCreditEntries,setMenu,setDay,setPersonalDebts}){
   const [backupMsg,setBackupMsg]=useState("");
   const [importMsg,setImportMsg]=useState("");
   const [pendingImport,setPendingImport]=useState(null);
@@ -2419,6 +2426,26 @@ function SettingsScreen({setV,balancesVisible,setBalancesVisible,tables,orders,l
         <div className="lurk-settings-preference">
           <div><b>System Preferences</b><small>Show or hide monetary amounts across the POS.</small></div>
           <button onClick={()=>setBalancesVisible(v=>!v)} aria-pressed={!balancesVisible} className={"lurk-amount-toggle "+(!balancesVisible?"is-hidden":"")}>{balancesVisible?"Amounts Visible":"Amounts Hidden"}</button>
+        </div>
+        <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",margin:"20px 0 10px"}}>Receipt & Printer</div>
+        <div style={{background:T.bg2,border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:15,marginBottom:18}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+            <div><div style={{fontSize:14,fontWeight:750,color:T.text}}>Thermal receipt printer</div><div style={{fontSize:12,color:T.textSub,marginTop:4}}>58 mm paper · Continuous roll</div></div>
+            <span style={{fontSize:11,fontWeight:800,color:T.accentL,background:"rgba(52,199,89,.12)",padding:"6px 9px",borderRadius:20}}>58 MM</span>
+          </div>
+          <div style={{fontSize:12,lineHeight:1.5,color:T.textSub,margin:"12px 0"}}>The browser opens its print dialog. Select your installed thermal printer and set the paper size to 58 mm / receipt roll in the printer preferences.</div>
+          <label style={{display:"block",fontSize:11,fontWeight:700,color:T.textSub,marginBottom:5}}>BUSINESS NAME</label>
+          <input value={printerSettings.businessName} onChange={e=>setPrinterSettings(p=>({...p,businessName:e.target.value}))} style={{width:"100%",boxSizing:"border-box",padding:11,marginBottom:10,background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:9}}/>
+          <label style={{display:"block",fontSize:11,fontWeight:700,color:T.textSub,marginBottom:5}}>ADDRESS (OPTIONAL)</label>
+          <input value={printerSettings.address} onChange={e=>setPrinterSettings(p=>({...p,address:e.target.value}))} placeholder="Business address" style={{width:"100%",boxSizing:"border-box",padding:11,marginBottom:10,background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:9}}/>
+          <label style={{display:"block",fontSize:11,fontWeight:700,color:T.textSub,marginBottom:5}}>PHONE (OPTIONAL)</label>
+          <input value={printerSettings.phone} onChange={e=>setPrinterSettings(p=>({...p,phone:e.target.value}))} placeholder="Phone number" style={{width:"100%",boxSizing:"border-box",padding:11,marginBottom:10,background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:9}}/>
+          <label style={{display:"block",fontSize:11,fontWeight:700,color:T.textSub,marginBottom:5}}>RECEIPT FOOTER</label>
+          <input value={printerSettings.footer} onChange={e=>setPrinterSettings(p=>({...p,footer:e.target.value}))} placeholder="Thank you for visiting LURK." style={{width:"100%",boxSizing:"border-box",padding:11,marginBottom:12,background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:9}}/>
+          <label style={{display:"flex",alignItems:"center",gap:9,fontSize:12,color:T.text,margin:"8px 0"}}><input type="checkbox" checked={printerSettings.showOrderNumber} onChange={e=>setPrinterSettings(p=>({...p,showOrderNumber:e.target.checked}))}/> Show order number</label>
+          <label style={{display:"flex",alignItems:"center",gap:9,fontSize:12,color:T.text,margin:"8px 0 14px"}}><input type="checkbox" checked={printerSettings.showCustomer} onChange={e=>setPrinterSettings(p=>({...p,showCustomer:e.target.checked}))}/> Show table and customer</label>
+          <button onClick={()=>printThermalReceipt({date:tod(),orderNumber:1,table:"TEST TABLE",g:"Test Customer",items:[{name:"LATTE",qty:1,price:220},{name:"PURE MATCHA",qty:2,price:285}],total:790,pt:"card"},printerSettings)} style={{width:"100%",padding:13,background:T.accent,color:"#fff",border:0,borderRadius:10,fontWeight:800,cursor:"pointer"}}>Print Test Receipt</button>
+          <div style={{fontSize:11,color:T.textDim,lineHeight:1.5,marginTop:9}}>Settings are saved automatically to this POS account. Test printing does not create an order or change sales records.</div>
         </div>
         <div style={{fontSize:10,fontWeight:700,color:T.textSub,textTransform:"uppercase",letterSpacing:"1.2px",marginBottom:10}}>Management</div>
         <button onClick={()=>setV("menu")} style={{width:"100%",background:T.bg2,border:"0.5px solid rgba(255,255,255,0.07)",borderRadius:14,padding:"16px 14px",cursor:"pointer",textAlign:"left",color:T.text,display:"flex",alignItems:"center",gap:14,marginBottom:10}}>
