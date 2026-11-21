@@ -1822,3 +1822,24 @@ body{position:static!important}
   .lurk-app :where(p,label,td,th,li){font-size:14px!important}
   .lurk-app :where(button){font-size:14px!important}
 }
+
+
+/* Dashboard chart: remove stretched empty space beneath the bars */
+.lurk-dashboard-lower>.lurk-chart-card{
+  align-self:start!important;
+  height:auto!important;
+  min-height:0!important;
+  padding-bottom:15px!important;
+}
+.lurk-dashboard-lower>.lurk-chart-card .lurk-weekly-chart{
+  height:205px!important;
+  min-height:0!important;
+  margin-bottom:0!important;
+}
+@media(min-width:1000px){
+  .lurk-dashboard-lower>.lurk-chart-card{grid-row:auto!important}
+}
+@media(max-width:999px){
+  .lurk-dashboard-lower>.lurk-chart-card{height:auto!important;min-height:0!important}
+  .lurk-dashboard-lower>.lurk-chart-card .lurk-weekly-chart{height:180px!important}
+}
