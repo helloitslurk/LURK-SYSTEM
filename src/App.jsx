@@ -1004,7 +1004,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
   setTableName("");setNewTableMemberId("");setNewTableCustomerId("");setShowAdd(false);msg(customer?"Table added · linked to "+customer.name+".":member?"Table added · linked to "+member.name+".":"Table added.");
  }
  return <div className="lurk-screen lurk-tables-screen ds-tables lurk-tables-list">
-  <header className="ds-page-head lurk-tables-page-head"><button className="ds-button ds-primary-button" onClick={()=>setShowAdd(true)}>＋ Add Table</button></header>
+  <button className="lurk-open-table lurk-add-table-floating" onClick={()=>setShowAdd(true)}>＋ Add Table</button>
   <section className="lurk-table-list-toolbar lurk-table-list-toolbar-simple">
    <span>{visible.length} tables</span>
   </section>
