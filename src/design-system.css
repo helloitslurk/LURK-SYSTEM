@@ -2262,3 +2262,23 @@ body{position:static!important}
   .lurk-root .lurk-app .ds-sales-report .lurk-report-day-meta { font-size: 18px !important; }
   .lurk-root .lurk-app .ds-sales-report .lurk-report-day-amount { font-size: 23px !important; }
 }
+
+
+/* Reports daily records: stretch every day card across the full content width. */
+.lurk-root .lurk-app .ds-sales-report .lurk-report-days-list {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.lurk-root .lurk-app .ds-sales-report .lurk-report-days-list > .lurk-report-day-card {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+.lurk-root .lurk-app .ds-sales-report .lurk-report-days-list > div:first-child {
+  padding-left: 0 !important;
+}
