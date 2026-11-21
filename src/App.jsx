@@ -558,7 +558,6 @@ function POSApp({onLock}){
               <div className="lurk-profile-menu-heading">LURK POS</div>
               <button onClick={()=>{setV("personal");setProfileOpen(false);}}>Personal Finance</button>
               <button onClick={()=>{setV("achievements");setProfileOpen(false);}}>Achievements</button>
-              <button onClick={()=>{setV("menu");setProfileOpen(false);}}>Menu & Products</button>
               <button onClick={()=>{setV("settings");setProfileOpen(false);}}>Settings</button>
               <button onClick={()=>{setProfileOpen(false);onLock();}}>Lock Screen</button>
             </div>}
