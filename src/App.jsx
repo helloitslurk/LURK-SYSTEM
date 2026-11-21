@@ -436,7 +436,7 @@ function POSApp({onLock}){
       return t;
     }));
     msg(moving.reduce((sum,line)=>sum+line.qty,0)+" items "+target.lbl+" moved to the table.");
-    setSel(null);setV("tables");
+    setSel(t.isTakeAway?t.id:null);setV(t.isTakeAway?"takeaway":"tables");
   }
 
   function pay(tid,pt,disc,payments,partial=false){
@@ -481,6 +481,12 @@ function POSApp({onLock}){
   }
 
   const curT=tables.find(t=>t.id===sel);
+  const takeAwayTable=tables.find(t=>t.isTakeAway)||null;
+  function openTakeAway(){
+    let target=tables.find(t=>t.isTakeAway);
+    if(!target){target={id:"lurk-takeaway",lbl:"Take Away",s:"free",order:[],g:"",customerId:null,lurkPlusId:null,partialPayments:[],isTakeAway:true};setTbl(prev=>prev.some(t=>t.isTakeAway)?prev:[...prev,target]);}
+    setSel(target.id);setV("takeaway");
+  }
   const cats=[...new Set(menu.filter(m=>m.on).map(m=>m.cat))];
 
   if(loadError)return(
@@ -507,6 +513,7 @@ function POSApp({onLock}){
     {k:"home",label:"Dashboard",icon:"⌂"},
     {k:"reports",label:"Reports",icon:"≡"},
     {k:"tables",label:"Tables",icon:"⊞"},
+    {k:"takeaway",label:"Take Away",icon:"↗"},
     {k:"lurkPlus",label:"LURK+",icon:"＋"},
   ];
 
@@ -892,7 +899,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
         <div className="lurk-shell-section-label">WORKSPACE</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"tables",label:"Tables",icon:"▦"},{k:"reports",label:"Reports",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"tables",label:"Tables",icon:"▦"},{k:"takeaway",label:"Take Away",icon:"↗"},{k:"reports",label:"Reports",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));if(n.k==="takeaway")openTakeAway();else setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><span className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button type="button" aria-label="Lock screen" onClick={onLock}>⌑</button></div>
       </aside>}
@@ -900,8 +907,8 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       <button type="button" role="status" aria-live="polite" onClick={async()=>{if(saveStatus!=="error")return;const entries=Object.entries(failedWrites.current);if(!entries.length){setSaveStatus("saved");return;}pendingSaves.failed=false;await Promise.all(entries.map(([key,value])=>persistDirect(key,value)));}} style={{position:"absolute",top:12,right:12,zIndex:90,padding:"5px 9px",borderRadius:20,fontSize:10,fontWeight:750,background:saveStatus==="error"?"rgba(255,59,48,.16)":saveStatus==="saving"?"rgba(255,149,0,.16)":"rgba(121,166,106,.13)",color:saveStatus==="error"?T.danger:saveStatus==="saving"?T.warn:T.accentL,border:"1px solid "+(saveStatus==="error"?"rgba(255,59,48,.3)":saveStatus==="saving"?"rgba(255,149,0,.3)":"rgba(52,199,89,.25)" ),cursor:saveStatus==="error"?"pointer":"default"}}>{saveStatus==="error"?"↻ Tekrar dene":saveStatus==="saving"?"Saving…":"Saved"}</button>
 
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV} onLock={onLock} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible}/>}
-      {view==="tables"&&<TablesScreen tables={tables} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
-      {view==="order"&&curT&&<OrderScreen table={curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
+      {view==="tables"&&<TablesScreen tables={tables.filter(t=>!t.isTakeAway)} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
+      {(view==="order"||view==="takeaway")&&(view==="takeaway"?takeAwayTable:curT)&&<OrderScreen table={view==="takeaway"?takeAwayTable:curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
       {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} customers={customers} setV={setV}/>}
       {view==="salesHistory"&&<SalesHistoryScreen orders={orders} setOrders={setOrd} balancesVisible={balancesVisible} setV={setV}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
@@ -913,7 +920,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view!=="order"&&(
         <div className="lurk-bottom-nav" style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"none",background:"rgba(13,13,13,0.97)",backdropFilter:"blur(40px)",borderTop:"0.5px solid rgba(255,255,255,0.08)",display:"flex",zIndex:50}}>
           {NAV.map(n=>(
-            <button className={"lurk-nav-button"+(view===n.k?" active":"")} aria-current={view===n.k?"page":undefined} aria-label={n.label} key={n.k} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));setV(n.k);}} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+            <button className={"lurk-nav-button"+(view===n.k?" active":"")} aria-current={view===n.k?"page":undefined} aria-label={n.label} key={n.k} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));if(n.k==="takeaway")openTakeAway();else setV(n.k);}} style={{flex:1,padding:"10px 0 14px",background:"transparent",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
               <span style={{fontSize:20,lineHeight:1,color:view===n.k?T.accent:T.textDim}}>{n.icon}</span>
               <span style={{fontSize:10,fontWeight:view===n.k?700:400,color:view===n.k?T.accent:T.textDim}}>{n.label}</span>
             </button>
@@ -937,7 +944,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
  const maxDay=Math.max(1,...recentDays.map(d=>d.amount));
  const money=v=>balancesVisible?fm(v):"••••••";
  const total7=recentDays.reduce((sum,d)=>sum+d.amount,0);
- const openTables=tables.filter(t=>t.s==="o");
+ const openTables=tables.filter(t=>t.s==="o"&&!t.isTakeAway);
  return <div className="lurk-screen lurk-home-screen ds-home lurk-dashboard-v2">
   <div className="lurk-dashboard-heading"><div><span className="lurk-eyebrow">LURK COFFEE</span><h1>Dashboard</h1></div><span className={"lurk-open-status "+(day?"is-open":"")}>{day?"Business Open":"Business Closed"}</span></div>
   <section className="lurk-kpi-grid">
@@ -1072,7 +1079,7 @@ function OrderScreen({table,tables,menu,cats,customers,lurkPlusMembers=[],setTab
     <div className="lurk-screen lurk-order-screen ds-order" style={{display:"flex",flexDirection:"column",height:"100dvh",maxHeight:"100dvh",minHeight:0,overflow:"hidden",background:T.bg}}>
       {/* Top bar */}
       <div className="ds-order-header" style={{background:"rgba(13,13,13,0.98)",backdropFilter:"blur(40px)",borderBottom:"0.5px solid rgba(255,255,255,0.08)",padding:"10px 14px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-        <button onClick={()=>{setSel(null);setV("tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}>← Tables</button>
+        <button onClick={()=>{setSel(null);setV(table.isTakeAway?"home":"tables");}} style={{background:"rgba(255,255,255,0.06)",border:"0.5px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:T.textSub,cursor:"pointer",fontSize:13,fontWeight:600}}}>{table.isTakeAway?"← Back":"← Tables"}</button>
         <div style={{flex:1}}>
           <div style={{fontWeight:700,fontSize:15,color:T.text}}>{table.lbl}</div>
           {table.g&&<div style={{fontSize:11,color:T.accentL,fontWeight:600}}>{table.g}</div>}
