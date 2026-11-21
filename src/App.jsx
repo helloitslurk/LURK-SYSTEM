@@ -1433,12 +1433,16 @@ function printThermalReceipt(order){
     '</style></head><body><div class="brand">LURK.</div><div class="muted">'+esc(order.date||"")+'</div><div class="id">#'+esc(String(order.orderNumber||"").padStart(5,"0"))+'</div><div class="muted">'+esc(order.table||"No table")+' · '+esc(order.g||"Guest")+'</div><div class="rule"></div>'+items+'<div class="rule"></div><div class="total"><span>Total</span><span>'+esc(money(order.total))+'</span></div><div class="muted">Payment: '+esc(order.pt||"—")+'</div><div class="foot">Thank you for visiting LURK.</div></body></html>';
   const frame=document.createElement("iframe");
   frame.setAttribute("aria-hidden","true");
-  frame.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none;";
-  document.body.appendChild(frame);
+  frame.title="LURK receipt print";
+  frame.style.cssText="position:fixed;left:-10000px;top:0;width:58mm;height:210mm;border:0;background:#fff;";
+  let printed=false;
   const cleanup=()=>{try{frame.remove();}catch(e){}};
-  frame.onload=()=>{
+  const doPrint=()=>{
+    if(printed)return;
+    printed=true;
     try{
       const w=frame.contentWindow;
+      if(!w||!w.document||!w.document.body){printed=false;return;}
       w.onafterprint=cleanup;
       w.focus();
       w.print();
@@ -1449,8 +1453,9 @@ function printThermalReceipt(order){
       console.error("Receipt print failed",error);
     }
   };
-  const doc=frame.contentDocument;
-  doc.open();doc.write(html);doc.close();
+  frame.onload=doPrint;
+  frame.srcdoc=html;
+  document.body.appendChild(frame);
 }
 function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembers=[],customers=[],setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):""),...lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date).map(h=>h.date.slice(0,7)))].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
