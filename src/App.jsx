@@ -1791,7 +1791,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       fiddle:{category:"fiddle",folder:"FIDDLE III"},
       freedom:{category:"freedom",folder:"FREEDOM PLAN"},
       personal:{category:"personal",folder:"MY DEBTS"}
-    }[newDebtFolder]||(customFolder?{category:"custom",folder:customName}:null);
+    }[newDebtFolder]||(customFolder?{category:"custom",folder:customName}:newDebtFolder.startsWith("existing:")?{category:"custom",folder:newDebtFolder.slice(9)}:null);
     if(!folderConfig){msg("Geçerli bir klasör seç.");return;}
     const resolvedFolder=newDebtFolder.startsWith("existing:")?{category:"custom",folder:newDebtFolder.slice(9)}:folderConfig;
     const record={id,name,total:value,group:"Personal",...resolvedFolder,payments:[],installments:newDebtFolder==="installments"?[{id:"inst-"+Date.now(),label:"1. Taksit",amount:value,paid:0,due:newDebtDue}]:[]};
