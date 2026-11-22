@@ -1955,6 +1955,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
       <div style={{flex:1}}><div style={{fontSize:20,fontWeight:850}}>Personal</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>Personal payment tracker</div></div>
+      <button onClick={()=>setAddDebtOpen(true)} className="pf-add-debt-top-button">+ ADD DEBT</button>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Lock</button>
     </div>
     <div className="pf-command-center" style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
@@ -1974,10 +1975,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </section>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
-      <div className="pf-add-debt-toolbar">
-        <div><b>Yeni borç / ödeme ekle</b><small>Kaydı doğru klasöre yerleştir.</small></div>
-        <button onClick={()=>setAddDebtOpen(true)}>+ ADD DEBT</button>
-      </div>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(renderFolderDebtTile)}</div>
       </section>
