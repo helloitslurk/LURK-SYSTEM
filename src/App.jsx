@@ -1882,7 +1882,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const completedLurkDebts=lurkDebts.filter(d=>remaining(d)<=0);
   const activeInstallmentDebts=installmentDebts.filter(d=>remaining(d)>0);
   const completedInstallmentDebts=installmentDebts.filter(d=>remaining(d)<=0);
-  const completedInstallmentItems=installmentDebts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).map(i=>({debt:d,inst:i})));
   const activeFiddleDebts=fiddleDebts.filter(d=>remaining(d)>0);
   const completedFiddleDebts=fiddleDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
@@ -1920,12 +1919,36 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <div><div className="pf-eyebrow">LURK / PERSONAL FINANCE</div><h1>FINANCIAL FREEDOM</h1><p>Borçlarını yönet, ödemelerini planla, özgürleşme hedefini takip et.</p></div>
         <div className="pf-hero-mark">✳</div>
       </div>
+      <div className="pf-overview-grid">
+        <article className="pf-overview-card pf-overview-main"><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
+        <article className="pf-overview-card"><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
+        <article className="pf-overview-card"><span>BU AYKİ TAKSİTLER</span><strong>{money(currentMonthDue)}</strong><small>{upcoming.filter(x=>(x.inst.due||"").slice(0,7)===currentMonthKey).length} yaklaşan kayıt</small></article>
+      </div>
       <section className="pf-freedom-progress">
         <div className="pf-progress-top"><div><span>✧</span><div><b>Özgürleşme Operasyonu</b><small>Tüm borçların kapanmasına giden yol.</small></div></div><strong>%{progressPct.toFixed(0)}</strong></div>
         <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
         <div className="pf-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
       </section>
-
+      <div className="pf-insight-grid">
+        <section className="pf-insight-card">
+          <div className="pf-section-heading"><div><span>▤</span><b>Borçlarım</b></div><small>{debts.filter(d=>remaining(d)>0).length} aktif</small></div>
+          {debts.filter(d=>remaining(d)>0).slice().sort((a,b)=>remaining(b)-remaining(a)).slice(0,5).map(d=><div className="pf-mini-debt" key={d.id}><div><b>{d.name}</b><small>{d.group==="Business"?"İşletme":"Kişisel"}</small></div><strong>{money(remaining(d))}</strong><div className="pf-mini-track"><i style={{width:pct(d)+"%"}}/></div></div>)}
+          <button className="pf-text-action" onClick={()=>document.getElementById("pf-all-debts")?.scrollIntoView({behavior:"smooth",block:"start"})}>Tüm borçları gör ↓</button>
+        </section>
+        <section className="pf-insight-card">
+          <div className="pf-section-heading"><div><span>▦</span><b>Ödeme Takvimi</b></div><small>Yaklaşan</small></div>
+          {upcoming.length?upcoming.slice(0,4).map((x,index)=><div className="pf-upcoming-row" key={x.debt.id+"-"+x.inst.id}><span className="pf-date-chip">{x.inst.due.slice(8,10)}<small>{new Date(x.inst.due+"T12:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></span><div><b>{x.debt.name}</b><small>{x.inst.label}</small></div><strong>{money(x.amount)}</strong></div>):<p className="pf-empty-note">Kayıtlı yaklaşan taksit bulunmuyor.</p>}
+        </section>
+        <section className="pf-insight-card">
+          <div className="pf-section-heading"><div><span>▥</span><b>Aylık Ödeme Özeti</b></div><small>Son 6 ay</small></div>
+          <div className="pf-trend-chart">{paymentTrend.map(x=><div className="pf-trend-col" key={x.key}><b>{x.value?Math.round(x.value/1000)+"K":"·"}</b><i style={{height:Math.max(4,x.value/trendMax*100)+"%"}}/><small>{x.label}</small></div>)}</div>
+        </section>
+        <section className="pf-insight-card pf-goal-card">
+          <div className="pf-section-heading"><div><span>✧</span><b>Hedefler & Rozetler</b></div><button onClick={()=>setV("achievements")}>Tüm hedefler →</button></div>
+          <div className="pf-goal-emblems"><span>🏁<small>İlk ödeme</small></span><span>🪙<small>Borç azalt</small></span><span>🔒<small>Borçsuz kart</small></span><span>👑<small>Özgürleş</small></span></div>
+          <p>Her ödeme, hedeflerine biraz daha yaklaştırır.</p>
+        </section>
+      </div>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
@@ -1978,30 +2001,34 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showInstallments?"⌃":"⌄"}</div>
         </button>
-        {showInstallments&&<div className="pf-installment-plans">
-          {activeInstallmentDebts.map(d=><section className="pf-plan-row" key={d.id}>
-            <div className="pf-plan-info">
-              <div className="pf-plan-name">{d.name}</div>
-              <div className="pf-plan-meta">{money(d.total)} · {(d.installments||[]).length} taksit</div>
-              <div className="pf-plan-progress"><i style={{width:pct(d)+"%"}}/></div>
-              <div className="pf-plan-paid">%{pct(d).toFixed(0)} · {money(paid(d))} ödendi</div>
-              <div className="pf-plan-actions"><button onClick={()=>openInstallmentEditor(d)}>Planı düzenle</button><button onClick={()=>openDebtEditor(d)}>Düzenle</button></div>
+        {showInstallments&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}> 
+          {activeInstallmentDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
+            <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
+              <div style={{width:76,height:76,borderRadius:"50%",background:"conic-gradient(#54e875 0deg "+(pct(d)/100*360)+"deg,#304638 "+(pct(d)/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}>
+                <div style={{width:60,height:60,borderRadius:"50%",background:"#14231c",display:"grid",placeItems:"center",textAlign:"center"}}>
+                  <div><div style={{fontSize:8,color:"#a9b8ad",fontWeight:700}}>PAID</div><div style={{fontSize:10,fontWeight:900,color:"#70f28a",lineHeight:1.25}}>{money(paid(d))}</div></div>
+                </div>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:9,color:"#b4c4b8"}}>TOTAL DEBT</div>
+                <div style={{fontSize:13,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
+                <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>REMAINING</div>
+                <div style={{fontSize:12,fontWeight:850,color:"#70f28a"}}>{money(remaining(d))}</div>
+                <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} installments paid</div>
+              </div>
             </div>
-            <div className="pf-installment-tiles">
-              {(d.installments||[]).map((inst,index)=>{const isPaid=Number(inst.paid||0)>=Number(inst.amount||0);const dueLeft=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));return <article className={"pf-installment-tile"+(isPaid?" is-paid":"")} key={inst.id}>
-                <div className="pf-tile-state">{isPaid?"✓":"▦"}</div>
-                <b className="pf-tile-label">{inst.label||("T"+(index+1))}</b>
-                <strong>{money(inst.amount)}</strong>
-                <span className="pf-tile-date">{inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Tarih yok"}</span>
-                {isPaid?<div className="pf-tile-complete">ÖDENDİ</div>:<button className="pf-tile-pay" onClick={()=>payInstallment(d,inst)}>PAYMENT</button>}
-                {!isPaid&&Number(inst.paid||0)>0&&<small className="pf-tile-partial">Kalan {money(dueLeft)}</small>}
-              </article>})}
+            <div style={{display:"flex",gap:7,marginTop:9}}>
+              {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Pay Next Installment</button>}
+              <button className="pf-edit-plan-btn" onClick={()=>openInstallmentEditor(d)}>Edit Plan</button><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button>
             </div>
-          </section>)}
-          {completedInstallmentItems.length>0&&<section className="pf-completed-plans">
-            <button className="pf-completed-toggle" onClick={()=>setShowCompletedInstallments(v=>!v)}><span>✓ TAMAMLANAN ÖDEMELER · {completedInstallmentItems.length}</span><span>{showCompletedInstallments?"GİZLE ⌃":"GÖSTER ⌄"}</span></button>
-            {showCompletedInstallments&&<div className="pf-completed-list">{completedInstallmentItems.map(({debt,inst})=><div key={debt.id+"-"+inst.id}><b>{debt.name} · {inst.label}</b><span>{money(inst.amount)} · {inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR"):"Tarih yok"}</span><em>✓ ÖDENDİ</em></div>)}</div>}
-          </section>}
+            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Hide Installments":"View Other Installments"}</button>}
+            {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
+              <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:"#b4c4b8",marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} remaining</div>
+              {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Record Payment</button>}
+            </div>)}
+          </div>)}
+          {completedInstallmentDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedInstallments(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedInstallmentDebts.length}</span><span>{showCompletedInstallments?"Hide ⌃":"Show ⌄"}</span></button>{showCompletedInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedInstallmentDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button></div>)}</div>}</div>}
         </div>}
       </div>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
@@ -2070,6 +2097,9 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>)}
           {completedFreedomDebts.length>0&&<div style={{marginTop:8}}><div style={{fontSize:10,color:"#b4c4b8",fontWeight:800,marginBottom:6}}>COMPLETED · {completedFreedomDebts.length}</div><div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6}}>{completedFreedomDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.08)",minWidth:0}}><div style={{fontSize:10,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{d.name}</div><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button></div>)}</div></div>}
         </div>}
+      </div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:10,marginBottom:12}}>
+        {[{label:"TOTAL DEBT",value:money(originalTotal)},{label:"PAID",value:money(paidTotal)},{label:"REMAINING",value:money(total)},{label:"PAYMENT RATE",value:(originalTotal>0?paidTotal/originalTotal*100:0).toFixed(1).replace(".",",")+"%"}].map((x,i)=><div key={x.label} style={{background:i===0?"linear-gradient(135deg,rgba(52,199,89,.16),"+T.bg2+")":T.bg2,border:"1px solid "+T.border,borderRadius:13,padding:"13px 14px",minWidth:0}}><div style={{fontSize:10,fontWeight:800,color:T.textSub,letterSpacing:.7}}>{x.label}</div><div style={{fontSize:19,fontWeight:900,color:i===1||i===3?T.accent:T.text,marginTop:7,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.value}</div></div>)}
       </div>
       <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:"#b4c4b8",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#b4c4b8",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
