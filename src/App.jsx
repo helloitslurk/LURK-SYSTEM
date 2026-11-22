@@ -1916,21 +1916,21 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const freedomDebts=debts.filter(d=>d.category==="freedom"||freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
-  function renderFolderDebtTile(d){
+  function renderFolderDebtTile(d,lockCompleted=false){
     const isPaid=remaining(d)<=0;
-    return <article key={d.id} className={"pf-installment-tile pf-folder-debt-tile"+(isPaid?" is-paid":"")}>
+    const isLockedComplete=lockCompleted&&isPaid;
+    return <article key={d.id} className={"pf-installment-tile pf-folder-debt-tile"+(isPaid?" is-paid":"")+(isLockedComplete?" is-locked-complete":"")}>
       {isPaid&&<div className="pf-tile-state">✓</div>}
       <b className="pf-tile-label">{d.name}</b>
       <strong>{money(d.total)}</strong>
       <span className="pf-tile-date">{isPaid?"TAMAMLANDI":money(remaining(d))+" KALDI"}</span>
       <div className="pf-folder-debt-progress"><i style={{width:pct(d)+"%"}}/></div>
       <small className="pf-folder-debt-paid">{pct(d).toFixed(0)}% · {money(paid(d))} / {money(d.total)}</small>
-      <div className="pf-folder-debt-actions">
+      {!isLockedComplete&&<div className="pf-folder-debt-actions">
         {!isPaid&&<button className="pf-tile-pay" onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}}>PAYMENT</button>}
         <button className="pf-folder-debt-action" onClick={()=>openDebtEditor(d)}>EDIT</button>
         <button className="pf-folder-debt-action" onClick={()=>setHistoryDebt(d)}>HAREKETLER</button>
-      </div>
-      
+      </div>}
     </article>;
   }
   function reorderVisibleDebts(sourceId,targetId){
@@ -1993,7 +1993,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </section>)}</div>
       </section>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">FIDDLE III</h3>
-        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFiddleDebts,...completedFiddleDebts].map(renderFolderDebtTile)}</div>
+        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFiddleDebts,...completedFiddleDebts].map(d=>renderFolderDebtTile(d,true))}</div>
       </section>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">FREEDOM PLAN</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>
