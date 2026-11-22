@@ -1976,6 +1976,9 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </div>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
+<section className="pf-folder-section"><h3 className="pf-folder-heading">FREEDOM PLAN</h3>
+        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(d=>renderFolderDebtTile(d,false,false))}</div>
+      </section>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(d=>renderFolderDebtTile(d,false,false))}</div>
       </section>
@@ -1997,9 +2000,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </section>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">FIDDLE III</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFiddleDebts,...completedFiddleDebts].map(d=>renderFolderDebtTile(d,true,false))}</div>
-      </section>
-<section className="pf-folder-section"><h3 className="pf-folder-heading">FREEDOM PLAN</h3>
-        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(d=>renderFolderDebtTile(d,false,false))}</div>
       </section>
       {[...new Set(debts.filter(d=>d.category==="custom"&&d.folder).map(d=>d.folder))].map(folder=><section className="pf-folder-section" key={folder}><h3 className="pf-folder-heading">{folder}</h3><div className="pf-installment-tiles pf-folder-debt-tiles">{debts.filter(d=>d.category==="custom"&&d.folder===folder).map(renderFolderDebtTile)}</div></section>)}
 <div className="lurk-personal-debt-list pf-achievement-debt-grid">
