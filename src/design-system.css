@@ -3842,3 +3842,51 @@ html,body,#root{
     gap: 8px !important;
   }
 }
+
+/* The shared Modal panel was narrower than the debt breakdown content.
+   Expand only this dialog's outer panel and constrain the inner content to it. */
+.lurk-modal-backdrop:has(.pf-debt-breakdown-modal){
+  align-items:center!important;
+  justify-content:center!important;
+  padding:16px!important;
+  overflow:hidden!important;
+}
+.lurk-modal-panel:has(.pf-debt-breakdown-modal){
+  width:min(680px,calc(100vw - 32px))!important;
+  max-width:min(680px,calc(100vw - 32px))!important;
+  min-width:0!important;
+  max-height:calc(100dvh - 32px)!important;
+  height:auto!important;
+  margin:0 auto!important;
+  padding:12px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  border-radius:18px!important;
+  box-sizing:border-box!important;
+}
+.lurk-modal-panel:has(.pf-debt-breakdown-modal) .pf-debt-breakdown-modal{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  max-height:none!important;
+  height:auto!important;
+  margin:0!important;
+  padding:18px!important;
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+  box-sizing:border-box!important;
+}
+.lurk-modal-panel:has(.pf-debt-breakdown-modal) .pf-debt-breakdown-modal *{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:700px){
+  .lurk-modal-backdrop:has(.pf-debt-breakdown-modal){padding:10px!important}
+  .lurk-modal-panel:has(.pf-debt-breakdown-modal){
+    width:calc(100vw - 20px)!important;
+    max-width:calc(100vw - 20px)!important;
+    max-height:calc(100dvh - 20px)!important;
+    padding:8px!important;
+  }
+}
