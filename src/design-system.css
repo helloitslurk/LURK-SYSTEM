@@ -3794,3 +3794,51 @@ html,body,#root{
   font-size:10px!important;
   margin-top:2px!important;
 }
+
+/* Debt breakdown popup: fit the viewport width, keep vertical scrolling only. */
+.pf-debt-breakdown-modal{
+  width: min(560px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 40px) !important;
+  padding: 20px !important;
+}
+.pf-debt-breakdown-modal *{
+  box-sizing: border-box !important;
+  min-width: 0;
+}
+.pf-debt-breakdown-modal .pf-breakdown-group-head,
+.pf-debt-breakdown-modal .pf-breakdown-row{
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 12px !important;
+}
+.pf-debt-breakdown-modal .pf-breakdown-row > span{
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+.pf-debt-breakdown-modal .pf-breakdown-row > strong,
+.pf-debt-breakdown-modal .pf-breakdown-group-head > strong{
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+}
+.pf-debt-breakdown-modal .pf-breakdown-total{
+  overflow-wrap: anywhere !important;
+}
+@media(max-width:600px){
+  .pf-debt-breakdown-modal{
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    padding: 16px !important;
+    max-height: calc(100vh - 24px) !important;
+  }
+  .pf-debt-breakdown-modal .pf-breakdown-row,
+  .pf-debt-breakdown-modal .pf-breakdown-group-head{
+    gap: 8px !important;
+  }
+}
