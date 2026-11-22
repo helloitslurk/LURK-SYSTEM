@@ -1969,43 +1969,11 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </div>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
-      <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>{}} aria-expanded={showLurk} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
-            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>◈</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>LURK</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Business expenses · {lurkDebts.length} records</div></div>
-          </div>
-          <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(lurkStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(lurkStats.left)}</div></div>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(lurkStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(lurkStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{lurkStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
-            </div>
-          </div>          
-        </button>
-        {showLurk&&<div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(renderFolderDebtTile)}</div>}
-      </div>
-      <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>{}} aria-expanded={showInstallments} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
-            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>▣</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>Installments</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Separate installment records · {installmentDebts.length} records</div></div>
-          </div>
-          <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(installmentStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(installmentStats.left)}</div></div>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(installmentStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(installmentStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{installmentStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
-            </div>
-          </div>
-          
-        </button>
-        {showInstallments&&<div className="pf-installment-plans">
-          {installmentDebts.map(d=><section className="pf-plan-row" key={d.id}>
+<section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
+        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(renderFolderDebtTile)}</div>
+      </section>
+<section className="pf-folder-section"><h3 className="pf-folder-heading">INSTALLMENTS</h3>
+        <div className="pf-installment-plans">{installmentDebts.map(d=><section className="pf-plan-row" key={d.id}>
             <div className="pf-plan-info">
               <div className="pf-plan-name">{d.name}</div>
               <div className="pf-plan-meta">{money(d.total)} · {(d.installments||[]).length} taksit</div>
@@ -2013,58 +1981,20 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div className="pf-plan-paid">{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length} / {(d.installments||[]).length} taksit tamamlandı · %{pct(d).toFixed(0)}</div>
               <div className="pf-plan-actions"><button onClick={()=>openInstallmentEditor(d)}>Planı düzenle</button><button onClick={()=>openDebtEditor(d)}>Düzenle</button></div>
             </div>
-            <div className="pf-installment-tiles">
-              {(d.installments||[]).map((inst,index)=>{const isPaid=Number(inst.paid||0)>=Number(inst.amount||0);const dueLeft=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));return <article className={"pf-installment-tile"+(isPaid?" is-paid":"")} key={inst.id}>
+            <div className="pf-installment-tiles">{(d.installments||[]).map((inst,index)=>{const isPaid=Number(inst.paid||0)>=Number(inst.amount||0);return <article className={"pf-installment-tile"+(isPaid?" is-paid":"")} key={inst.id}>
                 {isPaid&&<div className="pf-tile-state">✓</div>}
-                <b className="pf-tile-label">{inst.label||((index+1)+". Taksit")}</b>
-                <strong>{money(inst.amount)}</strong>
+                <b className="pf-tile-label">{inst.label||((index+1)+". Taksit")}</b><strong>{money(inst.amount)}</strong>
                 <span className="pf-tile-date">{inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Tarih yok"}</span>
                 {isPaid?<div className="pf-tile-complete">ÖDENDİ</div>:<button className="pf-tile-pay" onClick={()=>payInstallment(d,inst)}>PAYMENT</button>}
-
-              </article>})}
-            </div>
-          </section>)}
-
-        </div>}
-      </div>
-      <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>{}} aria-expanded={showFiddle} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
-            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>🏍️</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FIDDLE III</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>Scooter, maintenance and license expenses · {fiddleDebts.length} records</div></div>
-          </div>
-          <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(fiddleStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(fiddleStats.left)}</div></div>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(fiddleStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(fiddleStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{fiddleStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
-            </div>
-          </div>
-          
-        </button>
-        {showFiddle&&<div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFiddleDebts,...completedFiddleDebts].map(renderFolderDebtTile)}</div>}
-      </div>
-            <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
-        <button onClick={()=>{}} aria-expanded={showFreedom} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
-          <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
-            <div style={{width:44,height:44,borderRadius:13,background:"linear-gradient(145deg,#245b37,#173d27)",display:"grid",placeItems:"center",color:"#70f28a",fontSize:20,flexShrink:0}}>✦</div>
-            <div style={{minWidth:0,fontFamily:"Inter,Helvetica Neue,Arial,sans-serif",textRendering:"optimizeLegibility"}}><div style={{fontSize:17,fontWeight:850,letterSpacing:"-.4px"}}>FREEDOM PLAN</div><div style={{fontSize:11,color:"#a9b8ad",marginTop:3}}>4 records</div></div>
-          </div>
-          <div style={{display:"contents"}}>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>TOTAL DEBT</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.total)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>PAID</div><div style={{fontSize:15,fontWeight:900,color:"#54d783",marginTop:4}}>{money(freedomStats.paid)}</div></div>
-            <div><div style={{fontSize:9,color:"#9aaa9f",fontWeight:800,letterSpacing:".6px"}}>REMAINING</div><div style={{fontSize:15,fontWeight:900,marginTop:4}}>{money(freedomStats.left)}</div></div>
-            <div style={{display:"flex",alignItems:"center",gap:9}}>
-              <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(freedomStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(freedomStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{freedomStats.pct.toFixed(0)}%</div></div>
-              <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
-            </div>
-          </div>
-          
-        </button>
-        {showFreedom&&<div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>}
-      </div>
+              </article>})}</div>
+          </section>)}</div>
+      </section>
+<section className="pf-folder-section"><h3 className="pf-folder-heading">FIDDLE III</h3>
+        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFiddleDebts,...completedFiddleDebts].map(renderFolderDebtTile)}</div>
+      </section>
+<section className="pf-folder-section"><h3 className="pf-folder-heading">FREEDOM PLAN</h3>
+        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>
+      </section>
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:"#b4c4b8",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#b4c4b8",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
         <div style={{display:"flex",gap:5}}>{["All","Personal","Business"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
