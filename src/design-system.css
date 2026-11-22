@@ -2420,3 +2420,71 @@ body{position:static!important}
   .lurk-app .personal-finance.pf-redesign .pf-debt-card > div:first-child > div:first-child > div:first-child { font-size:17px !important; }
   .lurk-app .personal-finance.pf-redesign .pf-debt-card > div:first-child > div:last-child > div:first-child { font-size:15px !important; }
 }
+
+
+/* PERSONAL contrast pass: true black canvas, high-contrast typography, restrained green accents. */
+.lurk-app:has(.personal-finance.pf-redesign) { background:#050706 !important; }
+.lurk-app .personal-finance.pf-redesign {
+  background:#050706 !important;
+  color:#f4f7f4 !important;
+}
+.lurk-app .personal-finance.pf-redesign,
+.lurk-app .personal-finance.pf-redesign * {
+  color:#edf2ed !important;
+}
+.lurk-app .personal-finance.pf-redesign > div:first-child {
+  background:#050706 !important;
+  border-bottom:1px solid #252b26 !important;
+}
+.lurk-app .personal-finance.pf-redesign > div:nth-child(2) {
+  background:#050706 !important;
+}
+.lurk-app .personal-finance.pf-redesign .pf-summary-card,
+.lurk-app .personal-finance.pf-redesign .lurk-folder-debt-row,
+.lurk-app .personal-finance.pf-redesign .pf-debt-card,
+.lurk-app .personal-finance.pf-redesign .pf-kpi-card,
+.lurk-app .personal-finance.pf-redesign > div:nth-child(2) > div[style*="repeat(4"] > div {
+  background:#111512 !important;
+  border-color:#303a32 !important;
+  box-shadow:0 10px 26px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+.lurk-app .personal-finance.pf-redesign .pf-summary-card {
+  background:#101713 !important;
+  border-color:#35513d !important;
+}
+.lurk-app .personal-finance.pf-redesign .pf-summary-card [style*="color: rgb(84, 215, 131)"],
+.lurk-app .personal-finance.pf-redesign .pf-debt-card [style*="color: rgb(112, 217, 139)"],
+.lurk-app .personal-finance.pf-redesign .pf-kpi-card:nth-child(2) > div:last-child,
+.lurk-app .personal-finance.pf-redesign .pf-kpi-card:nth-child(4) > div:last-child {
+  color:#65e58a !important;
+}
+.lurk-app .personal-finance.pf-redesign .pf-summary-card > button > div[style*="display: contents"] > div > div:first-child,
+.lurk-app .personal-finance.pf-redesign .pf-debt-card [style*="fontSize: 9"],
+.lurk-app .personal-finance.pf-redesign .pf-debt-card [style*="fontSize: 10"],
+.lurk-app .personal-finance.pf-redesign .lurk-folder-debt-row [style*="fontSize: 9"],
+.lurk-app .personal-finance.pf-redesign .pf-kpi-card > div:first-child {
+  color:#aab6ac !important;
+}
+.lurk-app .personal-finance.pf-redesign button {
+  color:#f1f5f1 !important;
+}
+.lurk-app .personal-finance.pf-redesign button[style*="background: linear-gradient(100deg"],
+.lurk-app .personal-finance.pf-redesign button[style*="background: rgb(52, 199, 89)"],
+.lurk-app .personal-finance.pf-redesign .ds-primary-button {
+  color:#071109 !important;
+}
+.lurk-app .personal-finance.pf-redesign input,
+.lurk-app .personal-finance.pf-redesign select,
+.lurk-app .personal-finance.pf-redesign textarea {
+  background:#090c0a !important;
+  color:#f4f7f4 !important;
+  border-color:#39453b !important;
+}
+.lurk-app .personal-finance.pf-redesign .pf-edit-btn {
+  color:#e9f0e9 !important;
+  background:#202720 !important;
+  border-color:#3a473c !important;
+}
+@media(max-width:760px) {
+  .lurk-app .personal-finance.pf-redesign { background:#050706 !important; }
+}
