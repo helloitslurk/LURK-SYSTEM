@@ -1882,6 +1882,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const completedLurkDebts=lurkDebts.filter(d=>remaining(d)<=0);
   const activeInstallmentDebts=installmentDebts.filter(d=>remaining(d)>0);
   const completedInstallmentDebts=installmentDebts.filter(d=>remaining(d)<=0);
+  const completedInstallmentItems=installmentDebts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).map(i=>({debt:d,inst:i})));
   const activeFiddleDebts=fiddleDebts.filter(d=>remaining(d)>0);
   const completedFiddleDebts=fiddleDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
@@ -2001,34 +2002,30 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showInstallments?"⌃":"⌄"}</div>
         </button>
-        {showInstallments&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}> 
-          {activeInstallmentDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
-            <div style={{fontSize:11,fontWeight:800,minHeight:30,lineHeight:1.35}}>{d.name}</div>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
-              <div style={{width:76,height:76,borderRadius:"50%",background:"conic-gradient(#54e875 0deg "+(pct(d)/100*360)+"deg,#304638 "+(pct(d)/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}>
-                <div style={{width:60,height:60,borderRadius:"50%",background:"#14231c",display:"grid",placeItems:"center",textAlign:"center"}}>
-                  <div><div style={{fontSize:8,color:"#a9b8ad",fontWeight:700}}>PAID</div><div style={{fontSize:10,fontWeight:900,color:"#70f28a",lineHeight:1.25}}>{money(paid(d))}</div></div>
-                </div>
-              </div>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:9,color:"#b4c4b8"}}>TOTAL DEBT</div>
-                <div style={{fontSize:13,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-                <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>REMAINING</div>
-                <div style={{fontSize:12,fontWeight:850,color:"#70f28a"}}>{money(remaining(d))}</div>
-                <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length}/{(d.installments||[]).length} installments paid</div>
-              </div>
+        {showInstallments&&<div className="pf-installment-plans">
+          {activeInstallmentDebts.map(d=><section className="pf-plan-row" key={d.id}>
+            <div className="pf-plan-info">
+              <div className="pf-plan-name">{d.name}</div>
+              <div className="pf-plan-meta">{money(d.total)} · {(d.installments||[]).length} taksit</div>
+              <div className="pf-plan-progress"><i style={{width:pct(d)+"%"}}/></div>
+              <div className="pf-plan-paid">%{pct(d).toFixed(0)} · {money(paid(d))} ödendi · {money(remaining(d))} kaldı</div>
+              <div className="pf-plan-actions"><button onClick={()=>openInstallmentEditor(d)}>Planı düzenle</button><button onClick={()=>openDebtEditor(d)}>Düzenle</button></div>
             </div>
-            <div style={{display:"flex",gap:7,marginTop:9}}>
-              {(d.installments||[]).some(inst=>Number(inst.paid||0)<Number(inst.amount||0))&&<button onClick={()=>{const next=(d.installments||[]).find(inst=>Number(inst.paid||0)<Number(inst.amount||0));if(next)payInstallment(d,next);}} style={{flex:1,minWidth:0,padding:9,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>＋ Pay Next Installment</button>}
-              <button className="pf-edit-plan-btn" onClick={()=>openInstallmentEditor(d)}>Edit Plan</button><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button>
+            <div className="pf-installment-tiles">
+              {(d.installments||[]).map((inst,index)=>{const isPaid=Number(inst.paid||0)>=Number(inst.amount||0);const dueLeft=Math.max(0,Number(inst.amount||0)-Number(inst.paid||0));return <article className={"pf-installment-tile"+(isPaid?" is-paid":"")} key={inst.id}>
+                <div className="pf-tile-state">{isPaid?"✓":"○"}</div>
+                <b className="pf-tile-label">{inst.label||((index+1)+". Taksit")}</b>
+                <strong>{money(inst.amount)}</strong>
+                <span className="pf-tile-date">{inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"}):"Tarih yok"}</span>
+                {isPaid?<div className="pf-tile-complete">ÖDENDİ</div>:<button className="pf-tile-pay" onClick={()=>payInstallment(d,inst)}>PAYMENT</button>}
+                {!isPaid&&Number(inst.paid||0)>0&&<small className="pf-tile-partial">Kalan {money(dueLeft)}</small>}
+              </article>})}
             </div>
-            {(d.installments||[]).length>0&&<button onClick={()=>setExpanded(p=>({...p,[d.id]:!p[d.id]}))} style={{width:"100%",padding:7,marginTop:5,border:0,background:"transparent",color:T.textSub,fontSize:10}}>{expanded[d.id]?"Hide Installments":"View Other Installments"}</button>}
-            {expanded[d.id]&&(d.installments||[]).map(inst=><div key={inst.id} style={{padding:"7px 0",borderTop:"1px solid "+T.border}}>
-              <div style={{fontSize:10,fontWeight:750}}>{inst.label}</div><div style={{fontSize:9,color:"#b4c4b8",marginTop:2}}>{inst.due} · {money(Math.max(0,Number(inst.amount||0)-Number(inst.paid||0)))} remaining</div>
-              {Number(inst.paid||0)<Number(inst.amount||0)&&<button onClick={()=>payInstallment(d,inst)} style={{padding:"5px 8px",marginTop:5,border:0,borderRadius:6,background:T.accent,color:"#061008",fontSize:9,fontWeight:850}}>Record Payment</button>}
-            </div>)}
-          </div>)}
-          {completedInstallmentDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedInstallments(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedInstallmentDebts.length}</span><span>{showCompletedInstallments?"Hide ⌃":"Show ⌄"}</span></button>{showCompletedInstallments&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedInstallmentDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button></div>)}</div>}</div>}
+          </section>)}
+          {completedInstallmentItems.length>0&&<section className="pf-completed-plans">
+            <button className="pf-completed-toggle" onClick={()=>setShowCompletedInstallments(v=>!v)}><span>✓ TAMAMLANAN ÖDEMELER · {completedInstallmentItems.length}</span><span>{showCompletedInstallments?"GİZLE ⌃":"GÖSTER ⌄"}</span></button>
+            {showCompletedInstallments&&<div className="pf-completed-list">{completedInstallmentItems.map(({debt,inst})=><div key={debt.id+"-"+inst.id}><b>{debt.name} · {inst.label}</b><span>{money(inst.amount)} · {inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR"):"Tarih yok"}</span><em>✓ ÖDENDİ</em></div>)}</div>}
+          </section>}
         </div>}
       </div>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
