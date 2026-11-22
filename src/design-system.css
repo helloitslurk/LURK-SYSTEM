@@ -3381,3 +3381,71 @@ html,body,#root{
   background:linear-gradient(90deg,#9bce35,#c0ed52)!important;
   box-shadow:0 0 8px rgba(174,224,62,.22)!important;
 }
+
+
+/* Personal Finance: unify all debt, installment and plan cards with the dark Edit/header palette. */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section .pf-plan-row{
+  background:linear-gradient(145deg,#344139 0%,#222d26 100%)!important;
+  border:1px solid #46564a!important;
+  color:#f4f7f2!important;
+  box-shadow:0 5px 14px rgba(16,28,19,.14)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile>strong,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile>strong,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-debt-name,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-amount,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-name{
+  color:#ffffff!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-label,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-date,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-paid,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-meta,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-paid,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-amount small,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-total,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress-meta,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment small{
+  color:#c2d0c3!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile.is-paid,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile.is-paid,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card.is-paid{
+  background:linear-gradient(145deg,#3d5140 0%,#293b2d 100%)!important;
+  border:1px solid #8ab96b!important;
+  box-shadow:inset 0 0 0 1px rgba(174,224,124,.10),0 5px 14px rgba(16,28,19,.14)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile .pf-progress-track,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-progress,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress{
+  background:#17231b!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile .pf-progress-track>div,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-progress i,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress>div{
+  background:linear-gradient(90deg,#9bce35,#c0ed52)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-actions .pf-folder-debt-action,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-actions>button,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installments>button{
+  background:#29382e!important;border:1px solid #53644e!important;color:#e3eddf!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-status,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-card-icon{
+  background:#26362b!important;border:1px solid #50624f!important;color:#c5e59b!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installments,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-history{
+  border-color:#4b5b4d!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history>div,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-history>div{
+  color:#e0e9df!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{border-color:#4b5b4d!important}
