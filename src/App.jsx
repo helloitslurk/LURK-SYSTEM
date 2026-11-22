@@ -1882,6 +1882,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const completedLurkDebts=lurkDebts.filter(d=>remaining(d)<=0);
   const activeInstallmentDebts=installmentDebts.filter(d=>remaining(d)>0);
   const completedInstallmentDebts=installmentDebts.filter(d=>remaining(d)<=0);
+  const completedInstallmentItems=installmentDebts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).map(i=>({debt:d,inst:i})));
   const activeFiddleDebts=fiddleDebts.filter(d=>remaining(d)>0);
   const completedFiddleDebts=fiddleDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
@@ -1997,9 +1998,9 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               </article>})}
             </div>
           </section>)}
-          {completedInstallmentDebts.length>0&&<section className="pf-completed-plans">
-            <button className="pf-completed-toggle" onClick={()=>setShowCompletedInstallments(v=>!v)}><span>✓ TAMAMLANAN BORÇLAR · {completedInstallmentDebts.length}</span><span>{showCompletedInstallments?"GİZLE ⌃":"GÖSTER ⌄"}</span></button>
-            {showCompletedInstallments&&<div className="pf-completed-list">{completedInstallmentDebts.map(d=><div key={d.id}><b>{d.name}</b><span>{money(d.total)} · Tamamlandı</span><button onClick={()=>openDebtEditor(d)}>Düzenle</button></div>)}</div>}
+          {completedInstallmentItems.length>0&&<section className="pf-completed-plans">
+            <button className="pf-completed-toggle" onClick={()=>setShowCompletedInstallments(v=>!v)}><span>✓ TAMAMLANAN ÖDEMELER · {completedInstallmentItems.length}</span><span>{showCompletedInstallments?"GİZLE ⌃":"GÖSTER ⌄"}</span></button>
+            {showCompletedInstallments&&<div className="pf-completed-list">{completedInstallmentItems.map(({debt,inst})=><div key={debt.id+"-"+inst.id}><b>{debt.name} · {inst.label}</b><span>{money(inst.amount)} · {inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR"):"Tarih yok"}</span><em>✓ ÖDENDİ</em></div>)}</div>}
           </section>}
         </div>}
         </div>}
