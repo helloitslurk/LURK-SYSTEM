@@ -1996,11 +1996,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
 <section className="pf-folder-section"><h3 className="pf-folder-heading">FREEDOM PLAN</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>
       </section>
-<div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
-        <div className="pf-my-debts-heading" style={{fontSize:15,fontWeight:850,flex:1,color:"#111827"}}>My Debts <span style={{fontSize:11,color:"#68756b",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#68756b",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
-
-      </div>
-      <div className="lurk-personal-debt-list pf-achievement-debt-grid">
+<div className="lurk-personal-debt-list pf-achievement-debt-grid">
         {visibleDebts.map(d=>{const done=remaining(d)<=0;return <article key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className={"lurk-achievement-card pf-personal-achievement-card"+(done?" is-paid":"")} style={{opacity:draggingDebtId===d.id?0.55:1,cursor:"grab"}}>
           <div className="pf-achievement-card-top"><div className="pf-achievement-card-icon">{done?"✓":d.group==="Personal"?"👤":"◈"}</div><span className={"pf-achievement-status"+(done?" is-paid":"")}>{done?"COMPLETED":d.group.toUpperCase()}</span></div>
           <div className="pf-achievement-debt-name">{d.name}</div>
@@ -2019,8 +2015,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           
         </article>})}
       </div>
-      <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ All payment activity</button>
-      {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:"#b4c4b8"}}>{p.historical?"Date not specified":new Date(p.date).toLocaleString("en-US")} · {p.note||p.installmentLabel||"Payment"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:"#b4c4b8"}}>No payment activity yet.</div>}</div>}
     </div>
 {addDebtOpen&&<Modal><div className="lurk-simple-modal pf-add-debt-modal">
       <div className="lurk-eyebrow">NEW FINANCIAL RECORD</div><h2>Yeni borç ekle</h2>
