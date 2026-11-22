@@ -1770,6 +1770,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [debtEditNote,setDebtEditNote]=useState("");
   const [confirmDeleteDebt,setConfirmDeleteDebt]=useState(false);
   const [addDebtOpen,setAddDebtOpen]=useState(false);
+  const [showDebtBreakdown,setShowDebtBreakdown]=useState(false);
   const [newDebtFolder,setNewDebtFolder]=useState("lurk");
   const [newFolderName,setNewFolderName]=useState("");
   const [newDebtName,setNewDebtName]=useState("");
@@ -2011,7 +2012,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </div>
       <section className="pf-personal-summary pf-personal-summary-bottom">
         <div className="pf-personal-metrics">
-          <article><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
+          <article className="pf-total-debt-trigger" role="button" tabIndex={0} onClick={()=>setShowDebtBreakdown(true)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setShowDebtBreakdown(true);}}} aria-label="Toplam kalan borç detaylarını aç"><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt · Detayları gör ↗</small></article>
           <article><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
         </div>
         <section className="pf-personal-progress">
@@ -2021,7 +2022,13 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         </section>
       </section>
     </div>
-{addDebtOpen&&<Modal><div className="lurk-simple-modal pf-add-debt-modal">
+{showDebtBreakdown&&<Modal><div className="lurk-simple-modal pf-debt-breakdown-modal">
+      <div className="lurk-eyebrow">PERSONAL FINANCE · BREAKDOWN</div>
+      <h2>Toplam kalan borç</h2>
+      <div className="pf-breakdown-total">{money(total)}<small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></div>
+      {(()=>{const groups=[{key:"freedom",label:"FREEDOM PLAN",match:d=>d.category==="freedom"||["kyk","hepsifinans","vodafone","hepsiburada-limiti","beliz","ablam","peep"].includes(d.id)||String(d.name||"").toUpperCase().includes("PEEP")},{key:"lurk",label:"LURK",match:d=>d.category==="lurk"},{key:"installment",label:"INSTALLMENTS",match:d=>d.category==="installment"},{key:"fiddle",label:"FIDDLE III",match:d=>d.category==="fiddle"},{key:"custom",label:"ÖZEL KLASÖRLER",match:d=>d.category==="custom"},{key:"other",label:"DİĞER KAYITLAR",match:d=>!["freedom","lurk","installment","fiddle","custom"].includes(d.category)&&!["kyk","hepsifinans","vodafone","hepsiburada-limiti","beliz","ablam","peep"].includes(d.id)&&!String(d.name||"").toUpperCase().includes("PEEP")}];return groups.map(g=>{const items=debts.filter(d=>remaining(d)>0&&g.match(d));const sum=items.reduce((v,d)=>v+remaining(d),0);if(!items.length)return null;return <section className="pf-breakdown-group" key={g.key}><div className="pf-breakdown-group-head"><b>{g.label}</b><strong>{money(sum)}</strong></div>{items.map(d=><div className="pf-breakdown-row" key={d.id}><span>{d.name}{d.category==="custom"&&d.folder?<small>{d.folder}</small>:null}</span><strong>{money(remaining(d))}</strong></div>)}</section>;});})()}
+      <button className="lurk-modal-cancel" onClick={()=>setShowDebtBreakdown(false)}>Kapat</button>
+    </div></Modal>}{addDebtOpen&&<Modal><div className="lurk-simple-modal pf-add-debt-modal">
       <div className="lurk-eyebrow">NEW FINANCIAL RECORD</div><h2>Yeni borç ekle</h2>
       <p className="pf-add-debt-intro">Önce kaydın hangi klasörde görüneceğini seç. Kaydettiğinde ilgili klasöre otomatik yerleşecek.</p>
       <label>Klasör</label>
