@@ -2900,3 +2900,20 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{align-self:stretch}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-summary-card>button[aria-expanded]{cursor:default}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-summary-card>button[aria-expanded]:focus-visible{outline:none}
+
+
+/* Personal Finance folder debt tiles: match the installment tile system */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile{height:auto;min-height:190px;justify-content:flex-start;align-items:stretch;gap:7px;padding:13px 11px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile .pf-tile-label{min-height:30px;line-height:1.25;overflow-wrap:anywhere}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-progress{height:5px;background:#293a30;border-radius:8px;overflow:hidden;width:100%;margin-top:1px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-progress i{display:block;height:100%;background:linear-gradient(90deg,#35c95b,#70f28a);border-radius:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-paid{font-size:9px;color:#b4c4b8;text-align:center;line-height:1.2}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:100%;margin-top:auto}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-actions .pf-tile-pay{grid-column:1/-1;width:100%;min-height:28px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-action{min-width:0;padding:6px 4px;border:1px solid rgba(255,255,255,.12);border-radius:7px;background:#17271f;color:#b5c7b9;font-size:8px;font-weight:800}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile.is-paid{background:linear-gradient(155deg,#24472a,#18351f);border:1px solid #83bf65;box-shadow:inset 0 0 0 1px rgba(164,225,126,.12),0 5px 16px rgba(0,0,0,.14)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile.is-paid .pf-tile-state{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#a9e77a;color:#173018;font-size:17px;align-self:flex-end}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-history{width:100%;max-height:65px;overflow:auto;border-top:1px solid rgba(255,255,255,.12);padding-top:5px;font-size:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-history>div{display:flex;justify-content:space-between;gap:5px;padding:3px 0}
+@media(min-width:1100px){.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tiles{grid-template-columns:repeat(5,minmax(0,1fr))}}
