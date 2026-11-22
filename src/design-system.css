@@ -3732,3 +3732,65 @@ html,body,#root{
     font-size:11px!important;
   }
 }
+
+/* Clickable total balance card and itemized debt breakdown. */
+.personal-finance.pf-redesign .pf-total-debt-trigger{
+  cursor:pointer!important;
+  transition:transform .15s ease,box-shadow .15s ease!important;
+}
+.personal-finance.pf-redesign .pf-total-debt-trigger:hover,
+.personal-finance.pf-redesign .pf-total-debt-trigger:focus-visible{
+  transform:translateY(-2px)!important;
+  box-shadow:0 7px 18px rgba(20,35,25,.18)!important;
+  outline:2px solid #9bce35!important;
+  outline-offset:2px!important;
+}
+.pf-debt-breakdown-modal{
+  width:min(680px,calc(100vw - 32px))!important;
+  max-width:680px!important;
+  max-height:min(82vh,760px)!important;
+  overflow-y:auto!important;
+}
+.pf-breakdown-total{
+  font-size:27px!important;
+  font-weight:850!important;
+  color:#27372d!important;
+  margin:8px 0 18px!important;
+}
+.pf-breakdown-total small{
+  display:block!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  color:#778279!important;
+  margin-top:3px!important;
+}
+.pf-breakdown-group{
+  padding:12px 0!important;
+  border-top:1px solid #e3e9e3!important;
+}
+.pf-breakdown-group-head,.pf-breakdown-row{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:flex-start!important;
+  gap:16px!important;
+}
+.pf-breakdown-group-head{
+  font-size:12px!important;
+  color:#344139!important;
+  margin-bottom:8px!important;
+}
+.pf-breakdown-group-head strong,.pf-breakdown-row strong{
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.pf-breakdown-row{
+  padding:7px 0!important;
+  font-size:12px!important;
+  color:#59665d!important;
+}
+.pf-breakdown-row small{
+  display:block!important;
+  color:#929b94!important;
+  font-size:10px!important;
+  margin-top:2px!important;
+}
