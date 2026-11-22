@@ -3170,3 +3170,13 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .pf-history-modal-row button:hover{
   background:#8e3028!important;color:#ffffff!important;
 }
+
+
+/* Keep the desktop shell canvas light behind the fixed sidebar. */
+.lurk-root{
+  background:#f7f8f6!important;
+  min-height:100vh;
+}
+.lurk-root .lurk-shell-sidebar{
+  background:#ffffff!important;
+}
