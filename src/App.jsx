@@ -1685,13 +1685,53 @@ return [...general,...debtAchievements];
 function AchievementsScreen({debts,setV}){
   const achievements=buildAchievements(debts);
   const unlocked=achievements.filter(a=>a.unlocked).length;
-  return <div className="lurk-screen lurk-achievements-screen" style={{padding:"18px 16px 100px",minHeight:"75vh",boxSizing:"border-box"}}>
-    <style>{" .lurk-achievement-card{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;transform:translateZ(0);position:relative;z-index:0;cursor:default}.lurk-achievement-card:hover{transform:translateY(-4px) scale(1.055);z-index:3;box-shadow:0 10px 24px rgba(0,0,0,.38),0 0 0 1px rgba(255,211,119,.2);border-color:#c3943d!important}.lurk-achievement-card:focus-visible{outline:2px solid #f6d78a;outline-offset:3px}@media(prefers-reduced-motion:reduce){.lurk-achievement-card{transition:none}.lurk-achievement-card:hover{transform:none}}"}</style>
-    <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}><button onClick={()=>setV("home")} style={{background:"none",border:0,color:"#a7b1a8",fontSize:24,cursor:"pointer"}}>←</button><div><div style={{fontSize:22,fontWeight:850}}>Achievements</div><div style={{fontSize:11,color:"#9caa9e",marginTop:3}}>Personal payment milestones</div></div></div>
-    <section style={{background:"linear-gradient(145deg,#211b12,#17150f)",border:"1px solid #55452a",borderRadius:16,padding:16,marginBottom:16}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:12}}><div><div style={{fontSize:16,fontWeight:900,color:"#f6d78a",letterSpacing:".2px"}}>🏅 ACHIEVEMENTS</div><div style={{fontSize:11,color:"#c2b18a",marginTop:4}}>Her ödeme tamamlandığında kendi rozeti açılır</div></div><div style={{fontSize:14,fontWeight:900,color:"#f6d78a",whiteSpace:"nowrap"}}>{unlocked} / {achievements.length}</div></div>
-      <div style={{height:6,background:"#3a3020",borderRadius:10,overflow:"hidden",marginBottom:16}}><div style={{height:"100%",width:(achievements.length?unlocked/achievements.length*100:0)+"%",background:"linear-gradient(90deg,#d6a94d,#ffe6a0)",borderRadius:10,transition:"width .25s"}}/></div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(165px,1fr))",gap:9}}>{achievements.map(a=><div tabIndex={0} key={a.id} className="lurk-achievement-card" title={a.title} style={{minWidth:0,minHeight:62,padding:"11px 10px",borderRadius:11,border:"1px solid "+(a.unlocked?"#8a6b32":"#413a2b"),background:a.unlocked?"linear-gradient(145deg,#3b2e17,#292113)":"rgba(255,255,255,.025)",opacity:a.unlocked?1:.58,display:"flex",alignItems:"center",gap:9,boxSizing:"border-box"}}><div style={{width:36,height:36,flexShrink:0,borderRadius:10,display:"grid",placeItems:"center",fontSize:20,background:a.unlocked?"#59431f":"#302c24",filter:a.unlocked?"none":"grayscale(1)"}}>{a.unlocked?a.icon:"🔒"}</div><div style={{minWidth:0}}><div style={{fontSize:11,fontWeight:850,color:a.unlocked?"#ffe5a4":"#c2bcae",lineHeight:1.3,overflowWrap:"anywhere"}}>{a.title}</div><div style={{fontSize:9,color:a.unlocked?"#d8bd7d":"#898477",marginTop:4}}>{a.unlocked?"BADGE UNLOCKED":"LOCKED"}</div></div></div>)}</div>
+  const descriptions={
+    "general-first-payment":"Personal Finance kaydına ilk ödeme işlemini eklediğinde açılır.",
+    "general-first-installment":"Bir taksitin tutarını tamamen ödediğinde açılır.",
+    "general-debt-free-card":"Herhangi bir borç kaydının kalan bakiyesini sıfırladığında açılır.",
+    "general-first-big-close":"Tek seferde 10.000 TL veya üzeri ödeme yaptığında açılır.",
+    "general-25k":"21 Kasım 2026'dan itibaren toplam 25.000 TL ödeme yaptığında açılır.",
+    "general-50k":"21 Kasım 2026'dan itibaren toplam 50.000 TL ödeme yaptığında açılır.",
+    "general-100k":"21 Kasım 2026'dan itibaren toplam 100.000 TL ödeme yaptığında açılır.",
+    "general-early-payment":"Bir taksiti kayıtlı vade tarihinden önce tamamen ödediğinde açılır.",
+    "general-150k":"21 Kasım 2026'dan itibaren toplam 150.000 TL ödeme yaptığında açılır.",
+    "general-200k":"21 Kasım 2026'dan itibaren toplam 200.000 TL ödeme yaptığında açılır.",
+    "general-250k":"21 Kasım 2026'dan itibaren toplam 250.000 TL ödeme yaptığında açılır.",
+    "general-two-day":"Aynı takvim gününde iki ayrı ödeme kaydı oluşturduğunda açılır.",
+    "general-three-week":"Yedi günlük bir dönem içinde üç ayrı ödeme kaydı oluşturduğunda açılır.",
+    "general-five-month":"Aynı takvim ayı içinde beş ayrı ödeme kaydı oluşturduğunda açılır.",
+    "general-10k-reduction":"Toplam borç bakiyeni 10.000 TL azalttığında açılır.",
+    "general-half-debt":"Toplam kayıtlı borçlarının en az yarısını ödediğinde açılır.",
+    "general-last-debt":"Tüm borç kayıtlarının kalan bakiyesi sıfır olduğunda açılır.",
+    "general-payment-record":"Ödeme geçmişinde yeni bir kişisel ödeme rekoru oluşturduğunda açılır.",
+    "general-small-wins":"Aynı ay içinde üç ayrı taksit ödemesini tamamladığında açılır."
+  };
+  const description=a=>descriptions[a.id]||(a.id.startsWith("installment-")?"Bu taksitin tamamını ödediğinde bu rozet açılır.":a.id.startsWith("debt-")?"Bu borcun kalan bakiyesini tamamen kapattığında bu rozet açılır.":"Bu rozet ilgili ödeme hedefi tamamlandığında açılır.");
+  const general=achievements.filter(a=>a.id.startsWith("general-"));
+  const debtBadges=achievements.filter(a=>!a.id.startsWith("general-"));
+  const renderBadge=a=><article tabIndex={0} key={a.id} className="lurk-achievement-card" style={{minWidth:0,minHeight:184,padding:18,borderRadius:17,border:"1px solid "+(a.unlocked?"rgba(226,184,91,.72)":"rgba(255,255,255,.12)"),background:a.unlocked?"radial-gradient(circle at 18% 0%,rgba(221,176,79,.22),transparent 48%),linear-gradient(145deg,#302719,#191b17)":"linear-gradient(145deg,#20241f,#171a17)",opacity:a.unlocked?1:.82,display:"flex",flexDirection:"column",alignItems:"flex-start",gap:11,boxSizing:"border-box",boxShadow:a.unlocked?"inset 0 1px 0 rgba(255,231,174,.12),0 8px 22px rgba(0,0,0,.18)":"inset 0 1px 0 rgba(255,255,255,.035)"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",gap:8}}>
+      <div style={{width:54,height:54,flexShrink:0,borderRadius:16,display:"grid",placeItems:"center",fontSize:29,background:a.unlocked?"linear-gradient(145deg,#735526,#3e301b)":"#2b302b",border:"1px solid "+(a.unlocked?"#b18a43":"#454b43"),filter:a.unlocked?"drop-shadow(0 4px 8px rgba(0,0,0,.3))":"grayscale(.85)"}}>{a.unlocked?a.icon:"🔒"}</div>
+      <span style={{fontSize:9,fontWeight:900,letterSpacing:".12em",padding:"6px 8px",borderRadius:20,color:a.unlocked?"#f3d58e":"#a3aaa1",background:a.unlocked?"rgba(194,149,62,.16)":"rgba(255,255,255,.06)",border:"1px solid "+(a.unlocked?"rgba(194,149,62,.3)":"rgba(255,255,255,.08)")}}>{a.unlocked?"UNLOCKED":"LOCKED"}</span>
+    </div>
+    <div style={{fontSize:15,fontWeight:900,color:a.unlocked?"#f5dfae":"#e0e4dc",lineHeight:1.3,overflowWrap:"anywhere"}}>{a.title}</div>
+    <div style={{fontSize:12,color:"#b8c0b6",lineHeight:1.55}}>{description(a)}</div>
+  </article>;
+  return <div className="lurk-screen lurk-achievements-screen" style={{padding:"24px clamp(16px,3vw,34px) 110px",minHeight:"75vh",boxSizing:"border-box",maxWidth:1500,margin:"0 auto"}}>
+    <style>{" .lurk-achievement-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;position:relative;z-index:0}.lurk-achievement-card:hover{transform:translateY(-4px);z-index:2;box-shadow:0 14px 30px rgba(0,0,0,.3),0 0 0 1px rgba(255,211,119,.18);border-color:#c3943d!important}.lurk-achievement-card:focus-visible{outline:2px solid #f6d78a;outline-offset:3px}@media(prefers-reduced-motion:reduce){.lurk-achievement-card{transition:none}.lurk-achievement-card:hover{transform:none}}"}</style>
+    <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:24}}><button onClick={()=>setV("home")} style={{background:"none",border:0,color:"#a7b1a8",fontSize:28,cursor:"pointer"}}>←</button><div><div style={{fontSize:27,fontWeight:900,letterSpacing:"-.5px"}}>Achievements</div><div style={{fontSize:13,color:"#9caa9e",marginTop:4}}>Every payment moves you forward.</div></div></div>
+    <section style={{background:"radial-gradient(circle at 90% 0%,rgba(207,165,82,.18),transparent 36%),linear-gradient(145deg,#211b12,#17150f)",border:"1px solid #66512f",borderRadius:20,padding:"22px clamp(16px,3vw,26px)",marginBottom:28,boxShadow:"0 12px 34px rgba(0,0,0,.18)"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:16}}><div><div style={{fontSize:19,fontWeight:950,color:"#f6d78a",letterSpacing:".4px"}}>🏅 YOUR COLLECTION</div><div style={{fontSize:13,color:"#c2b18a",marginTop:6}}>Ödemeler tamamlandıkça yeni rozetler koleksiyonuna eklenir.</div></div><div style={{fontSize:19,fontWeight:950,color:"#f6d78a",whiteSpace:"nowrap"}}>{unlocked} <span style={{color:"#8f8060"}}>/ {achievements.length}</span></div></div>
+      <div style={{height:9,background:"#3a3020",borderRadius:20,overflow:"hidden",marginBottom:6}}><div style={{height:"100%",width:(achievements.length?unlocked/achievements.length*100:0)+"%",background:"linear-gradient(90deg,#b88735,#ffe6a0)",borderRadius:20,transition:"width .3s"}}/></div>
+      <div style={{fontSize:11,color:"#b7a57c",textAlign:"right"}}>{achievements.length?Math.round(unlocked/achievements.length*100):0}% completed</div>
+    </section>
+    <section style={{marginBottom:30}}>
+      <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:10,marginBottom:15}}><div><div style={{fontSize:19,fontWeight:900}}>Milestone badges</div><div style={{fontSize:12,color:"#9caa9e",marginTop:4}}>Genel ödeme hedefleri</div></div><div style={{fontSize:12,color:"#b9c1b8"}}>{general.filter(a=>a.unlocked).length} / {general.length} unlocked</div></div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,245px),1fr))",gap:14}}>{general.map(renderBadge)}</div>
+    </section>
+    <section>
+      <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:10,marginBottom:15}}><div><div style={{fontSize:19,fontWeight:900}}>Debt & installment badges</div><div style={{fontSize:12,color:"#9caa9e",marginTop:4}}>Her borç ve taksit için ayrı kapanış rozeti</div></div><div style={{fontSize:12,color:"#b9c1b8"}}>{debtBadges.filter(a=>a.unlocked).length} / {debtBadges.length} unlocked</div></div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,245px),1fr))",gap:14}}>{debtBadges.map(renderBadge)}</div>
     </section>
   </div>;
 }
