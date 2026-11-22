@@ -3502,3 +3502,7 @@ html,body,#root{
 .lurk-root .lurk-app .pf-plan-actions button{
   background:#29382e!important;border:1px solid #53644e!important;color:#e3eddf!important;
 }
+
+
+/* Completed Fiddle III records are display-only, like paid installment tiles. */
+.lurk-root .lurk-app .pf-folder-debt-tile.is-locked-complete{cursor:default!important;pointer-events:none!important;}
