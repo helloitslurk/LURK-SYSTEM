@@ -2959,3 +2959,95 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history>div{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:9px;color:#d4ddd4}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history small{display:block;color:#9eaa9f;margin-top:2px}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history button{border:0;background:transparent;color:#e58b8b;font-size:8px;font-weight:850}
+
+
+/* PERSONAL FINANCE · restore the original light workspace */
+.lurk-root .lurk-app .personal-finance.pf-redesign{
+  background:#f7f8f6!important;color:#172019!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-hero-heading h1,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-heading,
+.lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts,
+.lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts [style*="color"]{
+  color:#172019!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-hero-heading p{color:#68756b!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-command-center{background:#f7f8f6!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-freedom-progress{
+  background:linear-gradient(135deg,#ffffff,#f0f6ef)!important;
+  border:1px solid #dce7dc!important;box-shadow:0 5px 18px rgba(22,48,26,.06)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-top b,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-foot{color:#344238!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-top small{color:#758176!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-track{background:#e2eae1!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts{background:#f7f8f6!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-heading{
+  color:#26352a!important;border-bottom-color:#e1e8e0!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section .pf-plan-row{
+  background:#fff!important;border:1px solid #e1e8e0!important;
+  box-shadow:0 4px 16px rgba(22,48,26,.045)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-name{color:#1d2a20!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-meta,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-paid{color:#718074!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{border-color:#e4ebe3!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile{
+  background:linear-gradient(155deg,#ffffff,#f5f8f4)!important;
+  border:1px solid #dfe8de!important;color:#26352a!important;
+  box-shadow:0 3px 12px rgba(23,48,27,.055)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile>strong,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile>strong{color:#1c2b20!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-label,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-date,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-paid{color:#68766b!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile.is-paid,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile.is-paid{
+  background:linear-gradient(155deg,#eff9ed,#e4f4e1)!important;border:1px solid #9dce98!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card{
+  background:linear-gradient(145deg,#ffffff,#f7faf6)!important;
+  border:1px solid #dfe8de!important;box-shadow:0 5px 18px rgba(23,48,27,.065)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card:hover{
+  border-color:#9fcca0!important;box-shadow:0 10px 24px rgba(23,48,27,.10)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card.is-paid{
+  background:linear-gradient(145deg,#f1faef,#e8f6e6)!important;border-color:#9dce98!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-card-icon{
+  background:#edf3ec!important;border-color:#dce7db!important;color:#278342!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-status{
+  color:#647267!important;background:#f0f4ef!important;border-color:#e0e8df!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-debt-name,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-amount{color:#1b2920!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-amount small,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-total,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress-meta{color:#68766b!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress{background:#e7eee6!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installments{border-color:#e0e8df!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installments>button{color:#425448!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment{border-color:#e7ede6!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment small{color:#778379!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-actions>button{
+  background:#f1f5f0!important;border-color:#dfe8de!important;color:#425448!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history{border-color:#e2e9e1!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history>div{color:#344238!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history small{color:#778379!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-progress{background:#e6eee5!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-actions .pf-folder-debt-action{
+  background:#f1f5f0!important;border-color:#dfe8de!important;color:#425448!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .lurk-personal-debt-list{
+  display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr))!important;
+  gap:14px!important;align-items:stretch!important;
+}
+@media(max-width:520px){
+ .lurk-root .lurk-app .personal-finance.pf-redesign .lurk-personal-debt-list{grid-template-columns:repeat(1,minmax(0,1fr))!important}
+}
