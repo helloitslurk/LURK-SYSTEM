@@ -2917,3 +2917,11 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-history{width:100%;max-height:65px;overflow:auto;border-top:1px solid rgba(255,255,255,.12);padding-top:5px;font-size:8px}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-history>div{display:flex;justify-content:space-between;gap:5px;padding:3px 0}
 @media(min-width:1100px){.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tiles{grid-template-columns:repeat(5,minmax(0,1fr))}}
+
+
+/* Personal Finance: flat titled sections, no folder-style summary panels */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section{margin:0 0 24px;padding:0;background:transparent;border:0;box-shadow:none}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-heading{margin:0 0 12px;padding:0 0 10px;border-bottom:1px solid rgba(255,255,255,.10);font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.35px;color:#f0f5ef}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section>.pf-installment-tiles{margin-top:0}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section>.pf-installment-plans{display:grid;gap:14px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section .pf-plan-row{border:1px solid rgba(255,255,255,.10);border-radius:13px;background:linear-gradient(145deg,#111d16,#0c1711);padding:14px}
