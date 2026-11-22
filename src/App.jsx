@@ -1779,7 +1779,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   function saveNewDebt(){
     const name=newDebtName.trim();
     const value=Math.round(Number(String(newDebtTotal).replace(",","."))*100)/100;
-    if(!name||!Number.isFinite(value)||value<=0||!/^\\d{4}-\\d{2}-\\d{2}$/.test(newDebtDue)){
+    if(!name||!Number.isFinite(value)||value<=0||!/^\d{4}-\d{2}-\d{2}$/.test(newDebtDue)){
       msg("Borç başlığını, geçerli toplam tutarı ve ödeme tarihini gir.");return;
     }
     const id="debt-"+Date.now();
