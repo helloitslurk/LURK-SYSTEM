@@ -3251,3 +3251,17 @@ html,body,#root{
 .lurk-root .pf-add-debt-modal .ds-primary-button{width:100%;margin-top:18px;min-height:44px}
 .lurk-root .pf-add-debt-modal .lurk-modal-cancel{width:100%;margin-top:6px}
 @media(max-width:560px){.lurk-root .pf-add-debt-toolbar{align-items:flex-start}.lurk-root .pf-add-debt-toolbar>button{white-space:nowrap}}
+
+
+/* Compact Add Debt action in the Personal page header */
+.lurk-root .pf-add-debt-top-button{
+  flex:0 0 auto!important;
+  border:0!important;border-radius:10px!important;
+  padding:9px 14px!important;
+  background:#a8d83c!important;color:#263414!important;
+  font-size:11px!important;font-weight:900!important;
+  letter-spacing:.03em!important;cursor:pointer!important;
+  box-shadow:0 2px 7px rgba(89,125,28,.14)!important;
+}
+.lurk-root .pf-add-debt-top-button:hover{background:#b6e64b!important}
+@media(max-width:480px){.lurk-root .pf-add-debt-top-button{padding:8px 10px!important;font-size:10px!important}}
