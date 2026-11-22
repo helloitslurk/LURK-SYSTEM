@@ -3051,3 +3051,71 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 @media(max-width:520px){
  .lurk-root .lurk-app .personal-finance.pf-redesign .lurk-personal-debt-list{grid-template-columns:repeat(1,minmax(0,1fr))!important}
 }
+
+
+/* PERSONAL FINANCE · finish the light-theme conversion */
+.lurk-root .lurk-app .personal-finance.pf-redesign{
+  background:#f7f8f6!important;color:#172019!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign>div:first-child{
+  background:#ffffff!important;border-bottom:1px solid #e3e9e2!important;
+  color:#243328!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign>div:first-child>div>div:first-child{
+  color:#243328!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign>div:first-child>div>div:last-child{
+  color:#718074!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign>div:first-child>button{
+  color:#536457!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign>div:first-child>button:last-child{
+  background:#f3f6f2!important;border:1px solid #dfe8de!important;color:#425448!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-command-center{
+  background:#f7f8f6!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-hero-heading h1{
+  color:#1c2b20!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-eyebrow{
+  color:#718a70!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-hero-mark{
+  color:#79a66a!important;text-shadow:none!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-overview-card,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-overview-main{
+  background:linear-gradient(145deg,#ffffff,#f4f8f3)!important;
+  border:1px solid #dfe8de!important;
+  box-shadow:0 5px 18px rgba(22,48,26,.06)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-overview-card span{
+  color:#748176!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-overview-card strong,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-overview-main strong{
+  color:#203126!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-overview-card small{
+  color:#7a877c!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-freedom-progress{
+  background:linear-gradient(135deg,#ffffff,#f0f6ef)!important;
+  border:1px solid #dce7dc!important;
+  box-shadow:0 5px 18px rgba(22,48,26,.06)!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-top b,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-foot{
+  color:#344238!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-top small{
+  color:#758176!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-track{
+  background:#e2eae1!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts{
+  background:#f7f8f6!important;
+}
