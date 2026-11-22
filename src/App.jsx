@@ -1956,19 +1956,19 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div className="pf-personal-header-top">
         <button onClick={()=>{setUnlocked(false);setV("home");}} className="pf-personal-back">←</button>
         <div className="pf-personal-title">Personal</div>
+        <div className="pf-personal-summary">
+          <div className="pf-personal-metrics">
+            <article><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
+            <article><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
+          </div>
+          <section className="pf-personal-progress">
+            <div className="pf-personal-progress-top"><b>Özgürleşme Operasyonu</b><strong>%{progressPct.toFixed(0)}</strong></div>
+            <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
+            <div className="pf-personal-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
+          </section>
+        </div>
         <button onClick={()=>setAddDebtOpen(true)} className="pf-add-debt-top-button">+ ADD DEBT</button>
         <button onClick={()=>{setUnlocked(false);setV("home");}} className="pf-personal-lock">Lock</button>
-      </div>
-      <div className="pf-personal-summary">
-        <div className="pf-personal-metrics">
-          <article><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
-          <article><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
-        </div>
-        <section className="pf-personal-progress">
-          <div className="pf-personal-progress-top"><b>Özgürleşme Operasyonu</b><strong>%{progressPct.toFixed(0)}</strong></div>
-          <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
-          <div className="pf-personal-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
-        </section>
       </div>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
