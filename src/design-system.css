@@ -3119,3 +3119,7 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts{
   background:#f7f8f6!important;
 }
+
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-my-debts-heading{
+  color:#172019!important;
+}
