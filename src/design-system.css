@@ -3667,3 +3667,68 @@ html,body,#root{
     grid-template-columns:1fr!important;
   }
 }
+
+/* Personal Finance top actions: remove the empty header band and keep controls safely inside the content edge. */
+.personal-finance.pf-redesign .pf-personal-header-compact{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-header-top{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:nowrap!important;
+  gap:12px!important;
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:8px 28px 8px 16px!important;
+  box-sizing:border-box!important;
+  background:transparent!important;
+}
+.personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-back{
+  margin-right:auto!important;
+  flex:0 0 auto!important;
+}
+.personal-finance.pf-redesign .pf-personal-header-compact .pf-add-debt-top-button,
+.personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-lock{
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:max-content!important;
+  max-width:none!important;
+  margin:0!important;
+  white-space:nowrap!important;
+}
+.personal-finance.pf-redesign .pf-personal-header-compact .pf-add-debt-top-button{
+  padding:10px 14px!important;
+}
+.personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-lock{
+  padding:10px 14px!important;
+}
+@media(max-width:520px){
+  .personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-header-top{
+    gap:8px!important;
+    padding-right:18px!important;
+    padding-left:12px!important;
+  }
+  .personal-finance.pf-redesign .pf-personal-header-compact .pf-add-debt-top-button,
+  .personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-lock{
+    padding:8px 10px!important;
+    font-size:11px!important;
+  }
+}
