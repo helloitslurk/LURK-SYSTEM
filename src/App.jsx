@@ -1959,10 +1959,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Lock</button>
     </div>
     <div className="pf-command-center" style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
-      <div className="pf-hero-heading">
-        <div><div className="pf-eyebrow">LURK / PERSONAL FINANCE</div><h1>FINANCIAL FREEDOM</h1><p>Borçlarını yönet, ödemelerini planla, özgürleşme hedefini takip et.</p></div>
-        <div className="pf-hero-mark">✳</div>
-      </div>
       <div className="pf-overview-grid">
         <article className="pf-overview-card pf-overview-main"><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
         <article className="pf-overview-card"><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
