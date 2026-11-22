@@ -1820,7 +1820,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const movedIds=new Set(["ucuncuoglu","beliz-plan","ruhsat","heyz"]);
     const lurkIds=new Set(["holdon","yemeksepeti","mozaik"]);
     const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","a2"]);
-    const freedomIds=new Set(["vodafone","hepsiburada-limiti","hepsifinans","kyk","beliz","ablam"]);
+    const freedomIds=new Set(["vodafone","hepsiburada-limiti","hepsifinans","kyk","beliz","ablam","peep"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>migratePersonalDebtRecords(prev)
       .filter(d=>!placeholderIds.has(d.id)&&d.id!=="yildiz")
@@ -1834,7 +1834,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         name:d.id==="fiddle"?"Fiddle III Installment":d.id==="fiddle-tyres"?"Tires":d.id==="fiddle-stop"?"Front Indicator Light":d.id==="fiddle-insurance"?"Insurance":d.id==="fiddle-inspection"?"Vehicle Inspection":d.id==="yildiz"?"Driving School":"Driving License · A2 Exam Fee",
         category:"fiddle",
         folder:"FIDDLE III"
-      }:freedomIds.has(d.id)?{...d,category:"freedom",folder:"FREEDOM PLAN"}:d));
+      }:freedomIds.has(d.id)||String(d.name||"").toUpperCase().includes("PEEP")?{...d,category:"freedom",folder:"FREEDOM PLAN"}:d));
   },[unlocked]);
   const money=n=>(Number(n)||0).toLocaleString("en-US",{maximumFractionDigits:2})+" ₺";
   const paid=d=>(d.installments||[]).reduce((s,i)=>s+(Number(i.paid)||0),0)+(d.payments||[]).filter(p=>!p.installmentId).reduce((s,p)=>s+(Number(p.amount)||0),0);
@@ -1910,8 +1910,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const completedFiddleDebts=fiddleDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
   const fiddleStats=folderStats(fiddleDebts);
-  const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti","beliz","ablam"];
-  const freedomDebts=debts.filter(d=>d.category==="freedom"||freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
+  const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti","beliz","ablam","peep"];
+  const freedomDebts=debts.filter(d=>d.category==="freedom"||freedomIds.includes(d.id)||String(d.name||"").toUpperCase().includes("PEEP"));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
   function renderFolderDebtTile(d,lockCompleted=false){
@@ -1940,7 +1940,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const positions=new Map(ordered.map((d,i)=>[d.id,i]));
     setDebts(prev=>prev.map(d=>positions.has(d.id)?{...d,sortOrder:positions.get(d.id)}:d));
   }
-  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&!freedomIds.includes(d.id)&&(filter==="All"||d.group===filter));
+  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&d.category!=="freedom"&&!freedomIds.includes(d.id)&&!String(d.name||"").toUpperCase().includes("PEEP")&&(filter==="All"||d.group===filter));
   const completedPersonalDebts=personalDebtPool.filter(d=>remaining(d)<=0);
   const visibleDebts=personalDebtPool.filter(d=>remaining(d)>0).sort((a,b)=>{
     const ao=a.sortOrder!==undefined?Number(a.sortOrder):null;
