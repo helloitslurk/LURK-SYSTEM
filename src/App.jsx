@@ -1860,6 +1860,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const groupTotal=groupTotals.reduce((sum,g)=>sum+g.value,0)||1;
 
   const upcoming=debts.flatMap(d=>(d.installments||[]).filter(i=>Number(i.paid||0)<Number(i.amount||0)&&i.due).map(i=>({debt:d,inst:i,amount:Number(i.amount||0)-Number(i.paid||0)}))).sort((a,b)=>String(a.inst.due).localeCompare(String(b.inst.due))).slice(0,5);
+  const nowDate=new Date();
+  const currentMonthKey=nowDate.getFullYear()+"-"+String(nowDate.getMonth()+1).padStart(2,"0");
+  const currentMonthDue=debts.flatMap(d=>(d.installments||[]).filter(i=>(i.due||"").slice(0,7)===currentMonthKey&&Number(i.paid||0)<Number(i.amount||0)).map(i=>Math.max(0,Number(i.amount||0)-Number(i.paid||0)))).reduce((sum,v)=>sum+v,0);
+  const paymentTrend=Array.from({length:6},(_,index)=>{const date=new Date(nowDate.getFullYear(),nowDate.getMonth()-5+index,1);const key=date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0");const value=allHistory.filter(p=>p.date&&String(p.date).slice(0,7)===key).reduce((sum,p)=>sum+(Number(p.amount)||0),0);return{key,label:date.toLocaleDateString("tr-TR",{month:"short"}),value};});
+  const trendMax=Math.max(1,...paymentTrend.map(x=>x.value));
+  const progressPct=originalTotal>0?Math.min(100,paidTotal/originalTotal*100):0;
   const lurkOrder=["holdon","yemeksepeti","mozaik"];
   const lurkDebts=debts.filter(d=>d.category==="lurk").sort((a,b)=>lurkOrder.indexOf(a.id)-lurkOrder.indexOf(b.id));
   const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(a.id)-["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(b.id));
@@ -1908,7 +1914,43 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div style={{flex:1}}><div style={{fontSize:20,fontWeight:850}}>Personal</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>Personal payment tracker</div></div>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Lock</button>
     </div>
-    <div style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
+    <div className="pf-command-center" style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
+      <div className="pf-hero-heading">
+        <div><div className="pf-eyebrow">LURK / PERSONAL FINANCE</div><h1>FINANCIAL FREEDOM</h1><p>Borçlarını yönet, ödemelerini planla, özgürleşme hedefini takip et.</p></div>
+        <div className="pf-hero-mark">✳</div>
+      </div>
+      <div className="pf-overview-grid">
+        <article className="pf-overview-card pf-overview-main"><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
+        <article className="pf-overview-card"><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
+        <article className="pf-overview-card"><span>BU AYKİ TAKSİTLER</span><strong>{money(currentMonthDue)}</strong><small>{upcoming.filter(x=>(x.inst.due||"").slice(0,7)===currentMonthKey).length} yaklaşan kayıt</small></article>
+      </div>
+      <section className="pf-freedom-progress">
+        <div className="pf-progress-top"><div><span>✧</span><div><b>Özgürleşme Operasyonu</b><small>Tüm borçların kapanmasına giden yol.</small></div></div><strong>%{progressPct.toFixed(0)}</strong></div>
+        <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
+        <div className="pf-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
+      </section>
+      <div className="pf-insight-grid">
+        <section className="pf-insight-card">
+          <div className="pf-section-heading"><div><span>▤</span><b>Borçlarım</b></div><small>{debts.filter(d=>remaining(d)>0).length} aktif</small></div>
+          {debts.filter(d=>remaining(d)>0).slice().sort((a,b)=>remaining(b)-remaining(a)).slice(0,5).map(d=><div className="pf-mini-debt" key={d.id}><div><b>{d.name}</b><small>{d.group==="Business"?"İşletme":"Kişisel"}</small></div><strong>{money(remaining(d))}</strong><div className="pf-mini-track"><i style={{width:pct(d)+"%"}}/></div></div>)}
+          <button className="pf-text-action" onClick={()=>document.getElementById("pf-all-debts")?.scrollIntoView({behavior:"smooth",block:"start"})}>Tüm borçları gör ↓</button>
+        </section>
+        <section className="pf-insight-card">
+          <div className="pf-section-heading"><div><span>▦</span><b>Ödeme Takvimi</b></div><small>Yaklaşan</small></div>
+          {upcoming.length?upcoming.slice(0,4).map((x,index)=><div className="pf-upcoming-row" key={x.debt.id+"-"+x.inst.id}><span className="pf-date-chip">{x.inst.due.slice(8,10)}<small>{new Date(x.inst.due+"T12:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></span><div><b>{x.debt.name}</b><small>{x.inst.label}</small></div><strong>{money(x.amount)}</strong></div>):<p className="pf-empty-note">Kayıtlı yaklaşan taksit bulunmuyor.</p>}
+        </section>
+        <section className="pf-insight-card">
+          <div className="pf-section-heading"><div><span>▥</span><b>Aylık Ödeme Özeti</b></div><small>Son 6 ay</small></div>
+          <div className="pf-trend-chart">{paymentTrend.map(x=><div className="pf-trend-col" key={x.key}><b>{x.value?Math.round(x.value/1000)+"K":"·"}</b><i style={{height:Math.max(4,x.value/trendMax*100)+"%"}}/><small>{x.label}</small></div>)}</div>
+        </section>
+        <section className="pf-insight-card pf-goal-card">
+          <div className="pf-section-heading"><div><span>✧</span><b>Hedefler & Rozetler</b></div><button onClick={()=>setV("achievements")}>Tüm hedefler →</button></div>
+          <div className="pf-goal-emblems"><span>🏁<small>İlk ödeme</small></span><span>🪙<small>Borç azalt</small></span><span>🔒<small>Borçsuz kart</small></span><span>👑<small>Özgürleş</small></span></div>
+          <p>Her ödeme, hedeflerine biraz daha yaklaştırır.</p>
+        </section>
+      </div>
+    </div>
+    <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowLurk(v=>!v)} aria-expanded={showLurk} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,flex:"1 1 230px",minWidth:190}}>
