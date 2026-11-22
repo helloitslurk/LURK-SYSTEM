@@ -365,7 +365,7 @@ function POSApp({onLock}){
   function closeDay(){
     if(!day)return;
     const closed=orders.filter(o=>o.date===tod()&&!o.partialPayment);
-    const inc=closed.reduce((s,o)=>s+o.total,0);
+    const inc=closed.reduce((s,o)=>s+(o.revenueExcluded?0:Number(o.total)||0),0);
     const cash=closed.reduce((s,o)=>s+paymentAmount(o,"cash"),0);
     const card=closed.reduce((s,o)=>s+paymentAmount(o,"card"),0);
     const log={id:uid(),date:tod(),oa:day.oa,ca:new Date().toISOString(),inc,cash,card,count:closed.length};
@@ -482,7 +482,7 @@ function POSApp({onLock}){
     const orderNumber=Math.max(storedNext,orders.reduce((max,o)=>Math.max(max,Number(o.orderNumber)||0),0)+1);
     try{localStorage.setItem("lurk_next_order_number",String(orderNumber+1));}catch(e){}
     const methodSet=[...new Set(allPayments.map(p=>p.method))];
-    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,subtotal:grossSubtotal,itemDiscount:itemDiscountTotal,orderDiscount:Math.max(0,sub-finalTotal),discount:itemDiscountTotal+Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,discount:Number(o.discount)||0,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
+    const order={id:orderId,orderNumber,date:tod(),status:"completed",total:finalTotal,revenueExcluded:isLurkPlus,subtotal:grossSubtotal,itemDiscount:itemDiscountTotal,orderDiscount:Math.max(0,sub-finalTotal),discount:itemDiscountTotal+Math.max(0,sub-finalTotal),pt:isLurkPlus?"lurkPlus":isCredit?"credit":(methodSet.length>1?"split":(methodSet[0]||pt)),payments:allPayments,g:t.g||"",customerId:t.customerId||null,table:t.lbl,items:t.order.map(o=>({name:o.name,qty:o.qty,price:o.revenueExcluded?0:o.price,discount:Number(o.discount)||0,cat:o.cat,oid:o.oid||uid(),addedAt:o.addedAt||null,revenueExcluded:!!o.revenueExcluded}))};
     paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
@@ -953,9 +953,9 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
  const [hoveredDay,setHoveredDay]=useState(null);
  useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),60000);return()=>clearInterval(timer);},[]);
  const today=tod();
- const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(Number(o.total)||0),0);return{key,date:d,amount,label:d.toLocaleDateString("en-US",{weekday:"short"}),dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
+ const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(o.revenueExcluded?0:(Number(o.total)||0)),0);return{key,date:d,amount,label:d.toLocaleDateString("en-US",{weekday:"short"}),dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
  const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment&&o.status!=="cancelled");
- const todayRevenue=todayOrders.reduce((sum,o)=>sum+(Number(o.total)||0),0);
+ const todayRevenue=todayOrders.reduce((sum,o)=>sum+(o.revenueExcluded?0:(Number(o.total)||0)),0);
  const avgOrder=todayOrders.length?todayRevenue/todayOrders.length:0;
  const maxDay=Math.max(1,...recentDays.map(d=>d.amount));
  const money=v=>balancesVisible?fm(v):"••••••";
@@ -1326,7 +1326,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
   const monthLabel=(m)=>{const [y,mm]=m.split("-").map(Number);return new Date(y,mm-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});};
   const monthOrders=orders.filter(o=>(o.date||"").slice(0,7)===selectedMonth);
   const openOrders=tables.flatMap(t=>(t.order||[]).length?[{date:tod(),total:(t.order||[]).reduce((s,i)=>s+(i.revenueExcluded?0:(Number(i.price)||0)*(Number(i.qty)||0)),0),items:t.order.filter(i=>!i.revenueExcluded)}]:[]);
-  const closedRevenue=monthOrders.reduce((s,o)=>s+(Number(o.total)||0),0);
+  const closedRevenue=monthOrders.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.total)||0)),0);
   const openRevenue=selectedMonth===thisMonth()?openOrders.reduce((s,o)=>s+o.total,0):0;
   const manualCashRevenue=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===selectedMonth).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const revenue=closedRevenue+openRevenue+manualCashRevenue;
@@ -1338,7 +1338,7 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
     productTotals[key].qty+=Number(item.qty)||0;
   }));
   const topProducts=Object.values(productTotals).sort((a,b)=>b.revenue-a.revenue).slice(0,5);
-  const yearRevenue=orders.filter(o=>(o.date||"").startsWith(year+"-")).reduce((s,o)=>s+(Number(o.total)||0),0)+creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").startsWith(year+"-")).reduce((s,e)=>s+(Number(e.amount)||0),0);
+  const yearRevenue=orders.filter(o=>(o.date||"").startsWith(year+"-")).reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.total)||0)),0)+creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").startsWith(year+"-")).reduce((s,e)=>s+(Number(e.amount)||0),0);
   const yearOptions=[...new Set([String(now.getFullYear()),...orders.map(o=>(o.date||"").slice(0,4)).filter(y=>/^\d{4}$/.test(y))])].sort((a,b)=>b.localeCompare(a));
   return(
     <div className="lurk-screen lurk-reports-screen ds-month-review" style={{background:"#090A08",minHeight:"100vh",color:"#F0EBDD"}}>
@@ -1396,7 +1396,7 @@ function SalesHistoryScreen({orders,setOrders,balancesVisible,setV,printerSettin
    (table==="all"||(o.table||"")===table) && (!from||o.date>=from) && (!to||o.date<=to);
  }).sort((a,b)=>(Number(b.orderNumber)||0)-(Number(a.orderNumber)||0)||String(b.date||"").localeCompare(String(a.date||"")));
  const completed=orders.filter(o=>!o.partialPayment&&o.status!=="cancelled");
- const revenue=completed.reduce((sum,o)=>sum+(Number(o.total)||0),0);
+ const revenue=completed.reduce((sum,o)=>sum+(o.revenueExcluded?0:(Number(o.total)||0)),0);
  const tableNames=[...new Set(orders.map(o=>o.table).filter(Boolean))].sort();
  function exportCsv(){
   const data=[["Order ID","Date","Table","Customer","Items","Discount","Total","Payment Method","Status"],...rows.map(o=>["#"+String(o.orderNumber||"").padStart(5,"0"),o.date,o.table||"",o.g||"",(o.items||[]).map(i=>i.name+" x"+i.qty).join(" | "),Number(o.discount)||0,Number(o.total)||0,o.pt||"",o.status==="cancelled"?"Cancelled":"Completed"])];
@@ -1494,7 +1494,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const me=sel+"-"+String(new Date(parseInt(sel.slice(0,4)),parseInt(sel.slice(5,7)),0).getDate()).padStart(2,"0");
   const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
   const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
-  const salesInc=mo.reduce((s,o)=>s+o.total,0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
+  const salesInc=mo.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.total)||0)),0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
   const manualCashTotal=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===sel).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
 
   const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
