@@ -1946,7 +1946,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const positions=new Map(ordered.map((d,i)=>[d.id,i]));
     setDebts(prev=>prev.map(d=>positions.has(d.id)?{...d,sortOrder:positions.get(d.id)}:d));
   }
-  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&d.category!=="freedom"&&!freedomIds.includes(d.id)&&!String(d.name||"").toUpperCase().includes("PEEP")&&(filter==="All"||d.group===filter));
+  const personalDebtPool=debts.filter(d=>d.category!=="lurk"&&d.category!=="installment"&&d.category!=="fiddle"&&d.category!=="freedom"&&d.category!=="custom"&&!freedomIds.includes(d.id)&&!String(d.name||"").toUpperCase().includes("PEEP")&&(filter==="All"||d.group===filter));
   const completedPersonalDebts=personalDebtPool.filter(d=>remaining(d)<=0);
   const visibleDebts=personalDebtPool.filter(d=>remaining(d)>0).sort((a,b)=>{
     const ao=a.sortOrder!==undefined?Number(a.sortOrder):null;
