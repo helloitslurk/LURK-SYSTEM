@@ -1947,26 +1947,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
         <div className="pf-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
       </section>
-      <div className="pf-insight-grid">
-        <section className="pf-insight-card">
-          <div className="pf-section-heading"><div><span>▤</span><b>Borçlarım</b></div><small>{debts.filter(d=>remaining(d)>0).length} aktif</small></div>
-          {debts.filter(d=>remaining(d)>0).slice().sort((a,b)=>remaining(b)-remaining(a)).slice(0,5).map(d=><div className="pf-mini-debt" key={d.id}><div><b>{d.name}</b><small>{d.group==="Business"?"İşletme":"Kişisel"}</small></div><strong>{money(remaining(d))}</strong><div className="pf-mini-track"><i style={{width:pct(d)+"%"}}/></div></div>)}
-          <button className="pf-text-action" onClick={()=>document.getElementById("pf-all-debts")?.scrollIntoView({behavior:"smooth",block:"start"})}>Tüm borçları gör ↓</button>
-        </section>
-        <section className="pf-insight-card">
-          <div className="pf-section-heading"><div><span>▦</span><b>Ödeme Takvimi</b></div><small>Yaklaşan</small></div>
-          {upcoming.length?upcoming.slice(0,4).map((x,index)=><div className="pf-upcoming-row" key={x.debt.id+"-"+x.inst.id}><span className="pf-date-chip">{x.inst.due.slice(8,10)}<small>{new Date(x.inst.due+"T12:00:00").toLocaleDateString("tr-TR",{month:"short"})}</small></span><div><b>{x.debt.name}</b><small>{x.inst.label}</small></div><strong>{money(x.amount)}</strong></div>):<p className="pf-empty-note">Kayıtlı yaklaşan taksit bulunmuyor.</p>}
-        </section>
-        <section className="pf-insight-card">
-          <div className="pf-section-heading"><div><span>▥</span><b>Aylık Ödeme Özeti</b></div><small>Son 6 ay</small></div>
-          <div className="pf-trend-chart">{paymentTrend.map(x=><div className="pf-trend-col" key={x.key}><b>{x.value?Math.round(x.value/1000)+"K":"·"}</b><i style={{height:Math.max(4,x.value/trendMax*100)+"%"}}/><small>{x.label}</small></div>)}</div>
-        </section>
-        <section className="pf-insight-card pf-goal-card">
-          <div className="pf-section-heading"><div><span>✧</span><b>Hedefler & Rozetler</b></div><button onClick={()=>setV("achievements")}>Tüm hedefler →</button></div>
-          <div className="pf-goal-emblems"><span>🏁<small>İlk ödeme</small></span><span>🪙<small>Borç azalt</small></span><span>🔒<small>Borçsuz kart</small></span><span>👑<small>Özgürleş</small></span></div>
-          <p>Her ödeme, hedeflerine biraz daha yaklaştırır.</p>
-        </section>
-      </div>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
