@@ -1940,7 +1940,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <div className="pf-overview-grid">
         <article className="pf-overview-card pf-overview-main"><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
         <article className="pf-overview-card"><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
-        <article className="pf-overview-card"><span>BU AYKİ TAKSİTLER</span><strong>{money(currentMonthDue)}</strong><small>{upcoming.filter(x=>(x.inst.due||"").slice(0,7)===currentMonthKey).length} yaklaşan kayıt</small></article>
+        
       </div>
       <section className="pf-freedom-progress">
         <div className="pf-progress-top"><div><span>✧</span><div><b>Özgürleşme Operasyonu</b><small>Tüm borçların kapanmasına giden yol.</small></div></div><strong>%{progressPct.toFixed(0)}</strong></div>
@@ -1976,12 +1976,12 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>
       </section>
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
-        <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:"#b4c4b8",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#b4c4b8",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
+        <div className="pf-my-debts-heading" style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:"#b4c4b8",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#b4c4b8",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
         <div style={{display:"flex",gap:5}}>{["All","Personal","Business"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
         <button onClick={()=>{const name=window.prompt("Debt / payment name:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total amount (TRY):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Group: Personal or Business","Personal")==="Business"?"Business":"Personal";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
       </div>
       <div className="lurk-personal-debt-list pf-achievement-debt-grid">
-        {[...visibleDebts,...completedPersonalDebts].map(d=>{const done=remaining(d)<=0;return <article key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className={"lurk-achievement-card pf-personal-achievement-card"+(done?" is-paid":"")} style={{opacity:draggingDebtId===d.id?0.55:1,cursor:"grab"}}>
+        {visibleDebts.map(d=>{const done=remaining(d)<=0;return <article key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className={"lurk-achievement-card pf-personal-achievement-card"+(done?" is-paid":"")} style={{opacity:draggingDebtId===d.id?0.55:1,cursor:"grab"}}>
           <div className="pf-achievement-card-top"><div className="pf-achievement-card-icon">{done?"✓":d.group==="Personal"?"👤":"◈"}</div><span className={"pf-achievement-status"+(done?" is-paid":"")}>{done?"COMPLETED":d.group.toUpperCase()}</span></div>
           <div className="pf-achievement-debt-name">{d.name}</div>
           <div className="pf-achievement-amount">{money(remaining(d))}<small>REMAINING</small></div>
