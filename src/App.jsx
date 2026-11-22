@@ -1920,7 +1920,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const freedomDebts=debts.filter(d=>d.category==="freedom"||freedomIds.includes(d.id)||String(d.name||"").toUpperCase().includes("PEEP"));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
-  function renderFolderDebtTile(d,lockCompleted=false){
+  function renderFolderDebtTile(d,lockCompleted=false,showManagementActions=true){
     const isPaid=remaining(d)<=0;
     const isLockedComplete=lockCompleted&&isPaid;
     return <article key={d.id} className={"pf-installment-tile pf-folder-debt-tile"+(isPaid?" is-paid":"")+(isLockedComplete?" is-locked-complete":"")}>
@@ -1932,8 +1932,8 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <small className="pf-folder-debt-paid">{pct(d).toFixed(0)}% · {money(paid(d))} / {money(d.total)}</small>
       {!isLockedComplete&&<div className="pf-folder-debt-actions">
         {!isPaid&&<button className="pf-tile-pay" onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}}>PAYMENT</button>}
-        <button className="pf-folder-debt-action" onClick={()=>openDebtEditor(d)}>EDIT</button>
-        <button className="pf-folder-debt-action" onClick={()=>setHistoryDebt(d)}>HAREKETLER</button>
+        {showManagementActions&&<><button className="pf-folder-debt-action" onClick={()=>openDebtEditor(d)}>EDIT</button>
+        <button className="pf-folder-debt-action" onClick={()=>setHistoryDebt(d)}>HAREKETLER</button></>}
       </div>}
     </article>;
   }
@@ -1977,7 +1977,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
-        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(renderFolderDebtTile)}</div>
+        <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(d=>renderFolderDebtTile(d,false,false))}</div>
       </section>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">INSTALLMENTS</h3>
         <div className="pf-installment-plans">{installmentDebts.map(d=><section className="pf-plan-row" key={d.id}>
