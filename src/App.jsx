@@ -1898,7 +1898,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     if(ao!==null)return -1;if(bo!==null)return 1;
     return remaining(a)-remaining(b);
   });
-  return <div className="lurk-screen personal-finance" style={{paddingBottom:16}}>
+  return <div className="lurk-screen personal-finance pf-redesign" style={{paddingBottom:24}}>
     <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
       <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
       <div style={{flex:1}}><div style={{fontSize:20,fontWeight:850}}>Personal</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>Personal payment tracker</div></div>
