@@ -2774,3 +2774,66 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
  .lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts .pf-summary-card>button>div:nth-child(2){grid-column:1/-1!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
  .lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts .lurk-personal-debt-list .pf-debt-card{grid-template-columns:1fr!important}
 }
+
+
+/* PERSONAL FINANCE · uniform installment tile system */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-command-center{padding:22px clamp(16px,3vw,34px) 8px!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-hero-heading{margin-bottom:18px!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-hero-heading h1{color:#f1f3eb!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-freedom-progress{
+  margin:0 0 20px!important;padding:20px 22px!important;border-radius:18px!important;
+  background:linear-gradient(110deg,#17241a,#101812)!important;border:1px solid rgba(160,194,133,.28)!important
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-track{height:12px!important;background:#2b392e!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-progress-track>div{background:linear-gradient(90deg,#82c94b,#b8e879)!important}
+.lurk-root .lurk-app .personal-finance.pf-redesign #pf-all-debts{padding:0 clamp(16px,3vw,34px) 24px!important}
+.pf-installment-plans{display:flex;flex-direction:column;gap:14px;margin:12px 0 20px}
+.pf-plan-row{
+ display:grid;grid-template-columns:minmax(190px,235px) minmax(0,1fr);gap:18px;align-items:center;
+ padding:16px;border-radius:17px;background:linear-gradient(110deg,#151e17,#101712);
+ border:1px solid rgba(170,194,158,.2);box-shadow:0 8px 22px rgba(0,0,0,.16);min-width:0
+}
+.pf-plan-info{min-width:0;padding:2px 16px 2px 2px;border-right:1px solid rgba(190,208,179,.16)}
+.pf-plan-name{font-size:16px;line-height:1.25;font-weight:900;color:#f0f2e9;letter-spacing:-.3px}
+.pf-plan-meta{font-size:11px;color:#c0cbbd;margin-top:7px;font-weight:650}
+.pf-plan-progress{height:7px;border-radius:10px;background:#303b31;overflow:hidden;margin-top:14px}
+.pf-plan-progress i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#83bf4d,#b9e776)}
+.pf-plan-paid{font-size:10px;color:#b7c4b3;margin-top:7px}
+.pf-plan-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.pf-plan-actions button,.pf-completed-list button{border:1px solid #405143;border-radius:8px;background:#202c22;color:#e2eadd;padding:7px 9px;font-size:10px;font-weight:750}
+.pf-installment-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;min-width:0}
+.pf-installment-tile{
+ min-width:0;min-height:142px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+ gap:6px;padding:12px 9px 10px;border-radius:14px;
+ background:linear-gradient(155deg,#202922,#151d17)!important;
+ border:1px solid #536153!important;color:#f0f2e9!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 5px 14px rgba(0,0,0,.12)
+}
+.pf-tile-state{height:25px;min-width:25px;display:grid;place-items:center;color:#e1e9db;font-size:20px;font-weight:900;line-height:1}
+.pf-tile-label{font-size:13px;color:#f2f4ec!important;font-weight:900;letter-spacing:.3px}
+.pf-installment-tile>strong{font-size:13px;color:#f2f4ec!important;font-weight:850;white-space:nowrap}
+.pf-tile-date{font-size:10px;color:#c1cbbb!important;text-align:center;line-height:1.3;min-height:25px}
+.pf-tile-pay{width:100%;margin-top:auto;padding:8px 6px;border:0;border-radius:20px;background:#a8d83c;color:#14200b;font-size:10px;font-weight:950;letter-spacing:.25px}
+.pf-installment-tile.is-paid{background:linear-gradient(155deg,#1d3020,#17251a)!important;border-color:#527c48!important}
+.pf-installment-tile.is-paid .pf-tile-state{width:27px;height:27px;border-radius:50%;background:#9bdc55;color:#10200d;font-size:18px}
+.pf-installment-tile.is-paid .pf-tile-complete{width:100%;margin-top:auto;padding:8px 5px;border-radius:20px;background:rgba(141,199,82,.14);color:#b9e987;font-size:10px;font-weight:900;text-align:center;letter-spacing:.3px}
+.pf-tile-partial{font-size:9px;color:#e2c982!important;text-align:center}
+.pf-completed-plans{border:1px solid rgba(153,190,130,.24);border-radius:15px;background:linear-gradient(110deg,#17241a,#111812);overflow:hidden;margin-top:8px}
+.pf-completed-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border:0;background:transparent;color:#dce8d5;font-size:11px;font-weight:900;letter-spacing:.4px;text-align:left}
+.pf-completed-toggle span:last-child{color:#a9d875;font-size:10px}
+.pf-completed-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;padding:0 12px 12px}
+.pf-completed-list>div{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:11px 12px;border:1px solid rgba(143,190,113,.2);border-radius:11px;background:#19251b;min-width:0}
+.pf-completed-list b{font-size:11px;color:#edf1e8}
+.pf-completed-list span{font-size:10px;color:#b8c5b4}
+.pf-completed-list em{font-style:normal;font-size:9px;color:#aee27b;font-weight:900}
+@media(max-width:850px){
+ .pf-plan-row{grid-template-columns:1fr;gap:13px}
+ .pf-plan-info{border-right:0;border-bottom:1px solid rgba(190,208,179,.16);padding:0 0 12px}
+ .pf-installment-tiles{grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}
+}
+@media(max-width:520px){
+ .pf-installment-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .pf-installment-tile{min-height:136px;padding:11px 8px}
+ .pf-progress-top b{font-size:14px}
+ .pf-completed-list{grid-template-columns:1fr}
+}
