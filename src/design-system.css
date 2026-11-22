@@ -3123,3 +3123,40 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-my-debts-heading{
   color:#172019!important;
 }
+
+/* Centered payment-history popup */
+.lurk-root .lurk-app .pf-history-modal{
+  width:min(520px,calc(100vw - 36px))!important;
+  max-height:min(76vh,680px)!important;
+  overflow-y:auto!important;
+  box-sizing:border-box;
+}
+.lurk-root .lurk-app .pf-history-modal-list{
+  display:flex;flex-direction:column;gap:0;
+  border:1px solid #e1e8df;border-radius:12px;
+  background:#f8faf7;padding:0 12px;margin:12px 0 16px;
+}
+.lurk-root .lurk-app .pf-history-modal-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 0;border-bottom:1px solid #e5ebe3;
+}
+.lurk-root .lurk-app .pf-history-modal-row:last-child{border-bottom:0}
+.lurk-root .lurk-app .pf-history-modal-row>div{flex:1;min-width:0}
+.lurk-root .lurk-app .pf-history-modal-row b{
+  display:block;color:#243328;font-size:12px;
+}
+.lurk-root .lurk-app .pf-history-modal-row small{
+  display:block;color:#788579;font-size:10px;margin-top:4px;
+}
+.lurk-root .lurk-app .pf-history-modal-row strong{
+  color:#243328;font-size:13px;white-space:nowrap;
+}
+.lurk-root .lurk-app .pf-history-modal-row button{
+  border:1px solid #e2c9c5;background:#fff7f5;color:#a54b40;
+  border-radius:8px;padding:7px 9px;font-size:9px;font-weight:800;
+}
+.lurk-root .lurk-app .pf-history-empty{
+  padding:22px 12px;text-align:center;color:#788579;
+  background:#f8faf7;border:1px solid #e1e8df;border-radius:12px;
+  font-size:12px;margin:12px 0 16px;
+}
