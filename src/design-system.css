@@ -2837,3 +2837,53 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
  .pf-progress-top b{font-size:14px}
  .pf-completed-list{grid-template-columns:1fr}
 }
+
+
+/* Personal Finance · consistent installment tiles */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-plans{display:flex;flex-direction:column;gap:14px;margin:14px 0 20px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-row{
+ display:grid;grid-template-columns:minmax(190px,225px) minmax(0,1fr);gap:16px;align-items:center;
+ padding:16px;border-radius:16px;background:linear-gradient(110deg,#151f18,#101712);
+ border:1px solid rgba(170,194,158,.2);box-shadow:0 8px 22px rgba(0,0,0,.16);min-width:0
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{min-width:0;padding:2px 15px 2px 1px;border-right:1px solid rgba(190,208,179,.16)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-name{font-size:16px;line-height:1.3;font-weight:900;color:#f0f2e9;letter-spacing:-.3px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-meta{font-size:11px;color:#c0cbbd;margin-top:7px;font-weight:650}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-progress{height:7px;border-radius:10px;background:#303b31;overflow:hidden;margin-top:14px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-progress i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#83bf4d,#b9e776)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-paid{font-size:10px;color:#c3cebf;margin-top:7px;line-height:1.45}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-actions button{border:1px solid #405143;border-radius:8px;background:#202c22;color:#e2eadd;padding:8px 10px;font-size:10px;font-weight:750}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;min-width:0}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile{
+ min-width:0;min-height:146px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;
+ padding:12px 9px 10px;border-radius:14px;background:linear-gradient(155deg,#202922,#151d17);
+ border:1px solid #536153;color:#f0f2e9;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 5px 14px rgba(0,0,0,.12)
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-state{height:25px;min-width:25px;display:grid;place-items:center;color:#e1e9db;font-size:21px;font-weight:900;line-height:1}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-label{font-size:12px;color:#f2f4ec;font-weight:900;letter-spacing:.2px;text-align:center;line-height:1.3}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile>strong{font-size:13px;color:#f2f4ec;font-weight:850;white-space:nowrap}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-date{font-size:10px;color:#c1cbbb;text-align:center;line-height:1.35;min-height:25px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-pay{width:100%;margin-top:auto;padding:8px 6px;border:0;border-radius:20px;background:#a8d83c;color:#14200b;font-size:10px;font-weight:950;letter-spacing:.25px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile.is-paid{background:linear-gradient(155deg,#1d3020,#17251a);border-color:#527c48}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile.is-paid .pf-tile-state{width:27px;height:27px;border-radius:50%;background:#9bdc55;color:#10200d;font-size:18px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile.is-paid .pf-tile-complete{width:100%;margin-top:auto;padding:8px 5px;border-radius:20px;background:rgba(141,199,82,.14);color:#b9e987;font-size:10px;font-weight:900;text-align:center;letter-spacing:.3px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-partial{font-size:9px;color:#e2c982;text-align:center}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-plans{border:1px solid rgba(153,190,130,.24);border-radius:15px;background:linear-gradient(110deg,#17241a,#111812);overflow:hidden;margin-top:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border:0;background:transparent;color:#dce8d5;font-size:11px;font-weight:900;letter-spacing:.4px;text-align:left}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-toggle span:last-child{color:#a9d875;font-size:10px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;padding:0 12px 12px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-list>div{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:11px 12px;border:1px solid rgba(143,190,113,.2);border-radius:11px;background:#19251b;min-width:0}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-list b{font-size:11px;color:#edf1e8}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-list span{font-size:10px;color:#b8c5b4}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-list em{font-style:normal;font-size:9px;color:#aee27b;font-weight:900}
+@media(max-width:850px){
+ .lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-row{grid-template-columns:1fr;gap:13px}
+ .lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{border-right:0;border-bottom:1px solid rgba(190,208,179,.16);padding:0 0 12px}
+ .lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tiles{grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}
+}
+@media(max-width:520px){
+ .lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile{min-height:138px;padding:11px 8px}
+ .lurk-root .lurk-app .personal-finance.pf-redesign .pf-completed-list{grid-template-columns:1fr}
+}
