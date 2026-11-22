@@ -1771,6 +1771,30 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [debtEditGroup,setDebtEditGroup]=useState("Personal");
   const [debtEditNote,setDebtEditNote]=useState("");
   const [confirmDeleteDebt,setConfirmDeleteDebt]=useState(false);
+  const [addDebtOpen,setAddDebtOpen]=useState(false);
+  const [newDebtFolder,setNewDebtFolder]=useState("lurk");
+  const [newDebtName,setNewDebtName]=useState("");
+  const [newDebtTotal,setNewDebtTotal]=useState("");
+  const [newDebtDue,setNewDebtDue]=useState("");
+  function saveNewDebt(){
+    const name=newDebtName.trim();
+    const value=Math.round(Number(String(newDebtTotal).replace(",","."))*100)/100;
+    if(!name||!Number.isFinite(value)||value<=0||!/^\\d{4}-\\d{2}-\\d{2}$/.test(newDebtDue)){
+      msg("Borç başlığını, geçerli toplam tutarı ve ödeme tarihini gir.");return;
+    }
+    const id="debt-"+Date.now();
+    const folderConfig={
+      lurk:{category:"lurk",folder:"LURK"},
+      installments:{category:"installment",folder:"INSTALLMENTS"},
+      fiddle:{category:"fiddle",folder:"FIDDLE III"},
+      freedom:{category:"freedom",folder:"FREEDOM PLAN"},
+      personal:{category:"personal",folder:"MY DEBTS"}
+    }[newDebtFolder];
+    const record={id,name,total:value,group:"Personal",...folderConfig,payments:[],installments:newDebtFolder==="installments"?[{id:"inst-"+Date.now(),label:"1. Taksit",amount:value,paid:0,due:newDebtDue}]:[]};
+    setDebts(prev=>[...prev,record]);
+    setAddDebtOpen(false);setNewDebtName("");setNewDebtTotal("");setNewDebtDue("");setNewDebtFolder("lurk");
+    msg(name+" kaydı "+folderConfig.folder+" klasörüne eklendi.");
+  }
   function openDebtEditor(debt){
     setConfirmDeleteDebt(false);
     setEditingDebt(debt);setDebtEditName(debt.name||"");
@@ -1889,7 +1913,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const installmentStats=folderStats(installmentDebts);
   const fiddleStats=folderStats(fiddleDebts);
   const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti"];
-  const freedomDebts=debts.filter(d=>freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
+  const freedomDebts=debts.filter(d=>d.category==="freedom"||freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
   function renderFolderDebtTile(d){
@@ -1950,6 +1974,10 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </section>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
+      <div className="pf-add-debt-toolbar">
+        <div><b>Yeni borç / ödeme ekle</b><small>Kaydı doğru klasöre yerleştir.</small></div>
+        <button onClick={()=>setAddDebtOpen(true)}>+ ADD DEBT</button>
+      </div>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(renderFolderDebtTile)}</div>
       </section>
@@ -1978,7 +2006,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       </section>
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div className="pf-my-debts-heading" style={{fontSize:15,fontWeight:850,flex:1,color:"#111827"}}>My Debts <span style={{fontSize:11,color:"#68756b",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#68756b",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
-        <button onClick={()=>{const name=window.prompt("Debt / payment name:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total amount (TRY):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Group: Personal or Business","Personal")==="Business"?"Business":"Personal";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
+
       </div>
       <div className="lurk-personal-debt-list pf-achievement-debt-grid">
         {visibleDebts.map(d=>{const done=remaining(d)<=0;return <article key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className={"lurk-achievement-card pf-personal-achievement-card"+(done?" is-paid":"")} style={{opacity:draggingDebtId===d.id?0.55:1,cursor:"grab"}}>
@@ -2002,7 +2030,20 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <button onClick={()=>setShowHistory(v=>!v)} style={{width:"100%",padding:11,marginTop:12,background:T.bg3,border:"1px solid "+T.border,borderRadius:10,color:T.text,fontWeight:750,fontSize:11}}>↻ All payment activity</button>
       {showHistory&&<div style={{marginTop:9,background:T.bg2,border:"1px solid "+T.border,borderRadius:12,padding:12}}>{allHistory.length?allHistory.map(p=><div key={p.id} style={{padding:"8px 0",borderBottom:"1px solid "+T.border,display:"flex",justifyContent:"space-between",gap:8}}><div><div style={{fontSize:11,fontWeight:750}}>{p.debtName}</div><div style={{fontSize:9,color:"#b4c4b8"}}>{p.historical?"Date not specified":new Date(p.date).toLocaleString("en-US")} · {p.note||p.installmentLabel||"Payment"}</div></div><div style={{fontSize:11,color:T.accent,fontWeight:850}}>{money(p.amount)}</div></div>):<div style={{fontSize:11,color:"#b4c4b8"}}>No payment activity yet.</div>}</div>}
     </div>
-{historyDebt&&<Modal><div className="lurk-simple-modal pf-history-modal"><div className="lurk-eyebrow">PAYMENT HISTORY</div><h2>{historyDebt.name}</h2><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Recorded payments for this debt</div>{(()=>{const entries=[...(historyDebt.payments||[]).map(p=>({...p,kind:"payment"})),...(historyDebt.installments||[]).filter(i=>Number(i.paid)>0).map(i=>({id:i.id,amount:i.paid,date:i.paidDate||i.date,note:i.label||"Installment",installmentLabel:i.label,kind:"installment"}))].sort((a,b)=>(b.date||"").localeCompare(a.date||""));return entries.length?<div className="pf-history-modal-list">{entries.map(p=><div key={p.id} className="pf-history-modal-row"><div><b>{p.installmentLabel||p.note||"Payment"}</b><small>{p.historical?"Tarih belirtilmemiş":p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Tarih yok"}</small></div><strong>{money(p.amount)}</strong>{p.kind==="payment"&&!p.historical&&<button onClick={()=>reversePayment(historyDebt,p)}>GERİ AL</button>}</div>)}</div>:<div className="pf-history-empty">Bu borç için henüz kayıtlı ödeme bulunmuyor.</div>})()}<button className="lurk-modal-cancel" onClick={()=>setHistoryDebt(null)}>Kapat</button></div></Modal>}{editingDebt&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">PAYMENT CARD</div><h2>Edit Payment</h2><label>Card Name</label><input autoFocus value={debtEditName} onChange={e=>setDebtEditName(e.target.value)} placeholder="Payment name"/><label style={{display:"block",marginTop:12}}>Total Amount (TRY)</label><input type="number" min={paid(editingDebt)} step="0.01" value={debtEditTotal} onChange={e=>setDebtEditTotal(e.target.value)} placeholder="Total amount"/><label style={{display:"block",marginTop:12}}>Group</label><select value={debtEditGroup} onChange={e=>setDebtEditGroup(e.target.value)}><option value="Personal">Personal</option><option value="Business">Business</option></select><label style={{display:"block",marginTop:12}}>Note</label><textarea value={debtEditNote} onChange={e=>setDebtEditNote(e.target.value)} placeholder="Optional note"/><button className="ds-button ds-primary-button" onClick={saveDebtEdit}>Save Changes</button><button className="lurk-modal-cancel" onClick={()=>{setEditingDebt(null);setConfirmDeleteDebt(false);}}>Cancel</button><button type="button" className="pf-delete-card-btn" onClick={()=>setConfirmDeleteDebt(true)}>Delete Payment Card</button>{confirmDeleteDebt&&<div className="pf-delete-confirm"><div className="pf-delete-confirm-title">Delete this payment card?</div><p>This permanently removes the card and its payment history. This action cannot be undone.</p><div className="pf-delete-confirm-actions"><button onClick={()=>setConfirmDeleteDebt(false)}>Keep Card</button><button onClick={deleteEditedDebt}>Delete Permanently</button></div></div>}</div></Modal>}{editingInstallment&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Installment Plan</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{editingInstallment.name}</div>
+{addDebtOpen&&<Modal><div className="lurk-simple-modal pf-add-debt-modal">
+      <div className="lurk-eyebrow">NEW FINANCIAL RECORD</div><h2>Yeni borç ekle</h2>
+      <p className="pf-add-debt-intro">Önce kaydın hangi klasörde görüneceğini seç. Kaydettiğinde ilgili klasöre otomatik yerleşecek.</p>
+      <label>Klasör</label>
+      <select value={newDebtFolder} onChange={e=>setNewDebtFolder(e.target.value)}>
+        <option value="lurk">LURK</option><option value="installments">INSTALLMENTS</option><option value="fiddle">FIDDLE III</option><option value="freedom">FREEDOM PLAN</option><option value="personal">MY DEBTS</option>
+      </select>
+      <label>Borç başlığı</label><input autoFocus value={newDebtName} onChange={e=>setNewDebtName(e.target.value)} placeholder="Örn. Telefon taksiti"/>
+      <label>Toplam tutar (₺)</label><input type="number" min="0.01" step="0.01" value={newDebtTotal} onChange={e=>setNewDebtTotal(e.target.value)} placeholder="Örn. 12500"/>
+      <label>Ödeme tarihi</label><input type="date" value={newDebtDue} onChange={e=>setNewDebtDue(e.target.value)}/>
+      {newDebtFolder==="installments"&&<div className="pf-add-debt-hint">INSTALLMENTS klasöründe bu kayıt, girdiğin tutar ve tarihle tek bir taksit kutucuğu olarak oluşturulacak. Sonradan Planı Düzenle ile taksit sayısını artırabilirsin.</div>}
+      <button className="ds-button ds-primary-button" onClick={saveNewDebt}>Kaydı oluştur</button>
+      <button className="lurk-modal-cancel" onClick={()=>setAddDebtOpen(false)}>Vazgeç</button>
+    </div></Modal>}{historyDebt&&<Modal><div className="lurk-simple-modal pf-history-modal"><div className="lurk-eyebrow">PAYMENT HISTORY</div><h2>{historyDebt.name}</h2><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>Recorded payments for this debt</div>{(()=>{const entries=[...(historyDebt.payments||[]).map(p=>({...p,kind:"payment"})),...(historyDebt.installments||[]).filter(i=>Number(i.paid)>0).map(i=>({id:i.id,amount:i.paid,date:i.paidDate||i.date,note:i.label||"Installment",installmentLabel:i.label,kind:"installment"}))].sort((a,b)=>(b.date||"").localeCompare(a.date||""));return entries.length?<div className="pf-history-modal-list">{entries.map(p=><div key={p.id} className="pf-history-modal-row"><div><b>{p.installmentLabel||p.note||"Payment"}</b><small>{p.historical?"Tarih belirtilmemiş":p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Tarih yok"}</small></div><strong>{money(p.amount)}</strong>{p.kind==="payment"&&!p.historical&&<button onClick={()=>reversePayment(historyDebt,p)}>GERİ AL</button>}</div>)}</div>:<div className="pf-history-empty">Bu borç için henüz kayıtlı ödeme bulunmuyor.</div>})()}<button className="lurk-modal-cancel" onClick={()=>setHistoryDebt(null)}>Kapat</button></div></Modal>}{editingDebt&&<Modal><div className="lurk-simple-modal"><div className="lurk-eyebrow">PAYMENT CARD</div><h2>Edit Payment</h2><label>Card Name</label><input autoFocus value={debtEditName} onChange={e=>setDebtEditName(e.target.value)} placeholder="Payment name"/><label style={{display:"block",marginTop:12}}>Total Amount (TRY)</label><input type="number" min={paid(editingDebt)} step="0.01" value={debtEditTotal} onChange={e=>setDebtEditTotal(e.target.value)} placeholder="Total amount"/><label style={{display:"block",marginTop:12}}>Group</label><select value={debtEditGroup} onChange={e=>setDebtEditGroup(e.target.value)}><option value="Personal">Personal</option><option value="Business">Business</option></select><label style={{display:"block",marginTop:12}}>Note</label><textarea value={debtEditNote} onChange={e=>setDebtEditNote(e.target.value)} placeholder="Optional note"/><button className="ds-button ds-primary-button" onClick={saveDebtEdit}>Save Changes</button><button className="lurk-modal-cancel" onClick={()=>{setEditingDebt(null);setConfirmDeleteDebt(false);}}>Cancel</button><button type="button" className="pf-delete-card-btn" onClick={()=>setConfirmDeleteDebt(true)}>Delete Payment Card</button>{confirmDeleteDebt&&<div className="pf-delete-confirm"><div className="pf-delete-confirm-title">Delete this payment card?</div><p>This permanently removes the card and its payment history. This action cannot be undone.</p><div className="pf-delete-confirm-actions"><button onClick={()=>setConfirmDeleteDebt(false)}>Keep Card</button><button onClick={deleteEditedDebt}>Delete Permanently</button></div></div>}</div></Modal>}{editingInstallment&&<Modal><div style={{fontSize:18,fontWeight:850,marginBottom:5}}>Installment Plan</div><div style={{fontSize:12,color:T.textSub,marginBottom:14}}>{editingInstallment.name}</div>
   <label style={{fontSize:11,color:T.textSub}}>Total debt (TRY)</label><input type="number" min="0.01" step="0.01" value={installmentTotal} onChange={e=>setInstallmentTotal(e.target.value)} placeholder="e.g. 24000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
   <label style={{fontSize:11,color:T.textSub}}>Amount per installment (TRY)</label><input type="number" min="0.01" step="0.01" value={installmentAmount} onChange={e=>setInstallmentAmount(e.target.value)} placeholder="e.g. 4000" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
   <label style={{fontSize:11,color:T.textSub}}>Number of installments</label><input type="number" min="1" max="120" step="1" value={installmentCount} onChange={e=>setInstallmentCount(e.target.value)} placeholder="e.g. 6" style={{width:"100%",padding:12,marginTop:5,marginBottom:10,borderRadius:9,border:"1px solid "+T.border,background:T.bg,color:T.text,boxSizing:"border-box"}}/>
