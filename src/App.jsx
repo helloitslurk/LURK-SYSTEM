@@ -1976,8 +1976,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>
       </section>
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
-        <div className="pf-my-debts-heading" style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:"#b4c4b8",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#b4c4b8",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
-        <div style={{display:"flex",gap:5}}>{["All","Personal","Business"].map(x=><button key={x} onClick={()=>setFilter(x)} style={{padding:"7px 11px",borderRadius:18,border:"1px solid "+(filter===x?T.accent:T.border),background:filter===x?"rgba(52,199,89,.14)":T.bg2,color:filter===x?T.accent:T.textSub,fontWeight:750,fontSize:10}}>{x}</button>)}</div>
+        <div className="pf-my-debts-heading" style={{fontSize:15,fontWeight:850,flex:1,color:"#111827"}}>My Debts <span style={{fontSize:11,color:"#68756b",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#68756b",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
         <button onClick={()=>{const name=window.prompt("Debt / payment name:");if(!name?.trim())return;const totalValue=Number(window.prompt("Total amount (TRY):"));if(!Number.isFinite(totalValue)||totalValue<=0)return;const group=window.prompt("Group: Personal or Business","Personal")==="Business"?"Business":"Personal";setDebts(prev=>[...prev,{id:"debt-"+Date.now(),group,name:name.trim(),total:totalValue,payments:[],installments:[]}]);}} style={{padding:"8px 12px",borderRadius:9,border:0,background:T.accent,color:"#061008",fontWeight:850,fontSize:11}}>+ Add Debt</button>
       </div>
       <div className="lurk-personal-debt-list pf-achievement-debt-grid">
