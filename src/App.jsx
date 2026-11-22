@@ -1325,13 +1325,14 @@ function MonthReviewScreen({orders,tables,creditEntries=[],setV}){
   const [year,setYear]=useState(String(now.getFullYear()));
   const monthLabel=(m)=>{const [y,mm]=m.split("-").map(Number);return new Date(y,mm-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});};
   const monthOrders=orders.filter(o=>(o.date||"").slice(0,7)===selectedMonth);
+  const isNovemberLurkPlusOrder=o=>selectedMonth==="2026-11"&&(o.pt==="lurkPlus"||(Array.isArray(o.payments)&&o.payments.some(p=>p.method==="lurkPlus")));
   const openOrders=tables.flatMap(t=>(t.order||[]).length?[{date:tod(),total:(t.order||[]).reduce((s,i)=>s+(i.revenueExcluded?0:(Number(i.price)||0)*(Number(i.qty)||0)),0),items:t.order.filter(i=>!i.revenueExcluded)}]:[]);
-  const closedRevenue=monthOrders.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.total)||0)),0);
+  const closedRevenue=monthOrders.reduce((s,o)=>s+((o.revenueExcluded||isNovemberLurkPlusOrder(o))?0:(Number(o.total)||0)),0);
   const openRevenue=selectedMonth===thisMonth()?openOrders.reduce((s,o)=>s+o.total,0):0;
   const manualCashRevenue=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===selectedMonth).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
   const revenue=closedRevenue+openRevenue+manualCashRevenue;
   const productTotals={};
-  [...monthOrders,...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{
+  [...monthOrders.filter(o=>!isNovemberLurkPlusOrder(o)),...(selectedMonth===thisMonth()?openOrders:[])].forEach(o=>(o.items||[]).forEach(item=>{
     const key=(item.name||"Product").trim();
     if(!productTotals[key])productTotals[key]={name:key,revenue:0,qty:0};
     productTotals[key].revenue+=(Number(item.price)||0)*(Number(item.qty)||0);
@@ -1494,7 +1495,8 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const me=sel+"-"+String(new Date(parseInt(sel.slice(0,4)),parseInt(sel.slice(5,7)),0).getDate()).padStart(2,"0");
   const mo=orders.filter(o=>o.date&&o.date>=ms&&o.date<=me);
   const ml2=logs.filter(l=>l.date&&l.date>=ms&&l.date<=me);
-  const salesInc=mo.reduce((s,o)=>s+(o.revenueExcluded?0:(Number(o.total)||0)),0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
+  const isNovemberLurkPlusOrder=o=>sel==="2026-11"&&(o.pt==="lurkPlus"||(Array.isArray(o.payments)&&o.payments.some(p=>p.method==="lurkPlus")));
+  const salesInc=mo.reduce((s,o)=>s+((o.revenueExcluded||isNovemberLurkPlusOrder(o))?0:(Number(o.total)||0)),0)||ml2.reduce((s,l)=>s+(l.inc||0),0);
   const manualCashTotal=creditEntries.filter(e=>e.type==="manual_cash"&&(e.date||"").slice(0,7)===sel).reduce((sum,e)=>sum+(Number(e.amount)||0),0);
 
   const monthLedger=creditEntries.filter(e=>(e.date||"").slice(0,7)===sel);
@@ -1508,7 +1510,7 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
   const totalCard=mo.reduce((s,o)=>s+paymentAmount(o,"card"),0)+monthLedger.filter(e=>e.type==="payment"&&e.method==="card").reduce((s,e)=>s+(Number(e.amount)||0),0)+topupCard;
   const dayMap={};
   lurkPlusTopups.forEach(e=>{const d=(e.date||"").slice(0,10);if(!d)return;if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};dayMap[d].inc+=(Number(e.amount)||0);if(!dayMap[d].topups)dayMap[d].topups=[];dayMap[d].topups.push(e);});
-  mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);dayMap[o.date].inc+=o.total;});
+  mo.forEach(o=>{if(!dayMap[o.date])dayMap[o.date]={date:o.date,orders:[],inc:0};dayMap[o.date].orders.push(o);if(!isNovemberLurkPlusOrder(o))dayMap[o.date].inc+=Number(o.total)||0;});
   ml2.forEach(l=>{if(!dayMap[l.date])dayMap[l.date]={date:l.date,orders:[],inc:l.inc||0,log:l};else{if(!dayMap[l.date].inc)dayMap[l.date].inc=l.inc||0;dayMap[l.date].log=l;}});
   monthLedger.filter(e=>e.type==="manual_cash"&&e.date).forEach(e=>{const d=e.date.slice(0,10);if(!dayMap[d])dayMap[d]={date:d,orders:[],inc:0};dayMap[d].inc+=(Number(e.amount)||0);if(!dayMap[d].manualCash)dayMap[d].manualCash=[];dayMap[d].manualCash.push(e);});
   const days=Object.values(dayMap).sort((a,b)=>b.date.localeCompare(a.date));
