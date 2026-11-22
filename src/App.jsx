@@ -1607,7 +1607,6 @@ const PERSONAL_DEBT_SEED=[
   {id:"fiddle-stop",group:"Personal",name:"Fiddle III · Front indicator light",total:200,note:"Estimated",payments:[],installments:[]},
   {id:"fiddle-inspection",group:"Personal",name:"Fiddle III · Muayene",total:1500,note:"Estimated",payments:[],installments:[]},
   {id:"fiddle-insurance",group:"Personal",name:"Fiddle III · Sigorta",total:3500,note:"Estimated",payments:[],installments:[]},
-  {id:"yildiz",group:"Personal",name:"Yildiz Driving School",total:13000,payments:[],installments:[]},
   {id:"a2",group:"Personal",name:"A2 Exam Fee",total:2000,payments:[],installments:[]},
   {id:"beliz-plan",group:"Personal",name:"Beliz Installment",total:72000,note:"Installment 1 completed; TRY 3,000 paid toward installment 2, TRY 5,000 remaining.",payments:[{id:"beliz-paid-1",amount:3000,date:"2026-10-27",note:"2. installment previously paid for installment ",installmentId:"beliz-2"}],installments:[
     {id:"beliz-2",label:"2. Installment",amount:8000,due:"2026-11-05",paid:3000},
@@ -1654,7 +1653,6 @@ d=get("ucuncuoglu");if(d){d.total=130000;d.installments=Array.from({length:9},(_
 d=get("fiddle");if(d){d.name="Fiddle III Installment";d.total=55000;setPaid("fiddle",20000);}
 d=get("fiddle-insurance");if(d){d.name="Insurance";d.total=11500;}
 d=get("fiddle-inspection");if(d){d.name="Vehicle Inspection";d.total=1500;}
-d=ensure("yildiz",{id:"yildiz",group:"Personal",name:"DRIVING SCHOOL",total:15000});d.name="DRIVING SCHOOL";d.total=15000;
 d=get("hepsiburada-limiti");if(d){d.name="HEPSİBURADA LİMİTİ";d.total=22000;setPaid("hepsiburada-limiti",16285);}
 d=get("hepsifinans");if(d){d.name="HEPSİFİNANS";d.total=56500;}
 d=get("vodafone");if(d){d.name="VODAFONE";d.total=23856;}
@@ -1822,10 +1820,10 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     const movedIds=new Set(["ucuncuoglu","beliz-plan","ruhsat","heyz"]);
     const lurkIds=new Set(["holdon","yemeksepeti","mozaik"]);
     const fiddleIds=new Set(["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","a2"]);
-    const freedomIds=new Set(["vodafone","hepsiburada-limiti","hepsifinans","kyk","yildiz"]);
+    const freedomIds=new Set(["vodafone","hepsiburada-limiti","hepsifinans","kyk","beliz","ablam"]);
     const placeholderIds=new Set(["lurk-installment-annem","lurk-installment-ucuncuoglu","lurk-installment-beliz"]);
     setDebts(prev=>migratePersonalDebtRecords(prev)
-      .filter(d=>!placeholderIds.has(d.id))
+      .filter(d=>!placeholderIds.has(d.id)&&d.id!=="yildiz")
       .map(d=>movedIds.has(d.id)?{
         ...d,
         name:d.id==="ruhsat"?"Annem Ruhsat Installmenti":d.id==="ucuncuoglu"?"Ucuncuoglu Real Estate":d.id==="beliz-plan"?"Beliz Installment":"Heyz Installment",
@@ -1894,7 +1892,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const lurkOrder=["holdon","yemeksepeti","mozaik"];
   const lurkDebts=debts.filter(d=>d.category==="lurk"&&d.id!=="holdon").sort((a,b)=>lurkOrder.indexOf(a.id)-lurkOrder.indexOf(b.id));
   const installmentDebts=debts.filter(d=>d.category==="installment").sort((a,b)=>["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(a.id)-["beliz-plan","ruhsat","ucuncuoglu","heyz"].indexOf(b.id));
-  const fiddleOrder=["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","yildiz","a2"];
+  const fiddleOrder=["fiddle","fiddle-tyres","fiddle-stop","fiddle-insurance","fiddle-inspection","a2"];
   const fiddleDebts=debts.filter(d=>d.category==="fiddle").sort((a,b)=>fiddleOrder.indexOf(a.id)-fiddleOrder.indexOf(b.id));
   const folderStats=list=>{
     const total=list.reduce((sum,d)=>sum+(Number(d.total)||0),0);
@@ -1912,7 +1910,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const completedFiddleDebts=fiddleDebts.filter(d=>remaining(d)<=0);
   const installmentStats=folderStats(installmentDebts);
   const fiddleStats=folderStats(fiddleDebts);
-  const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti"];
+  const freedomIds=["kyk","hepsifinans","vodafone","hepsiburada-limiti","beliz","ablam"];
   const freedomDebts=debts.filter(d=>d.category==="freedom"||freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
