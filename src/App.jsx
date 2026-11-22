@@ -1952,23 +1952,24 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     return remaining(a)-remaining(b);
   });
   return <div className="lurk-screen personal-finance pf-redesign" style={{paddingBottom:24}}>
-    <div style={{padding:"16px 18px 12px",borderBottom:"1px solid "+T.border,display:"flex",alignItems:"center",gap:12}}>
-      <button onClick={()=>{setUnlocked(false);setV("home");}} style={{background:"none",border:0,color:T.textSub,fontSize:22}}>←</button>
-      <div style={{flex:1}}><div style={{fontSize:20,fontWeight:850}}>Personal</div><div style={{fontSize:11,color:T.textSub,marginTop:3}}>Personal payment tracker</div></div>
-      <button onClick={()=>setAddDebtOpen(true)} className="pf-add-debt-top-button">+ ADD DEBT</button>
-      <button onClick={()=>{setUnlocked(false);setV("home");}} style={{padding:"8px 12px",background:T.bg3,color:T.text,border:"1px solid "+T.border,borderRadius:10,fontSize:11}}>Lock</button>
-    </div>
-    <div className="pf-command-center" style={{padding:16,width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
-      <div className="pf-overview-grid">
-        <article className="pf-overview-card pf-overview-main"><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
-        <article className="pf-overview-card"><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
-        
+    <div className="pf-personal-header">
+      <div className="pf-personal-header-top">
+        <button onClick={()=>{setUnlocked(false);setV("home");}} className="pf-personal-back">←</button>
+        <div className="pf-personal-title">Personal</div>
+        <button onClick={()=>setAddDebtOpen(true)} className="pf-add-debt-top-button">+ ADD DEBT</button>
+        <button onClick={()=>{setUnlocked(false);setV("home");}} className="pf-personal-lock">Lock</button>
       </div>
-      <section className="pf-freedom-progress">
-        <div className="pf-progress-top"><div><span>✧</span><div><b>Özgürleşme Operasyonu</b><small>Tüm borçların kapanmasına giden yol.</small></div></div><strong>%{progressPct.toFixed(0)}</strong></div>
-        <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
-        <div className="pf-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
-      </section>
+      <div className="pf-personal-summary">
+        <div className="pf-personal-metrics">
+          <article><span>TOPLAM KALAN BORÇ</span><strong>{money(total)}</strong><small>{debts.filter(d=>remaining(d)>0).length} aktif kayıt</small></article>
+          <article><span>TOPLAM ÖDENEN</span><strong>{money(paidTotal)}</strong><small>Kaydedilen tüm ödemeler</small></article>
+        </div>
+        <section className="pf-personal-progress">
+          <div className="pf-personal-progress-top"><b>Özgürleşme Operasyonu</b><strong>%{progressPct.toFixed(0)}</strong></div>
+          <div className="pf-progress-track"><div style={{width:progressPct+"%"}}/></div>
+          <div className="pf-personal-progress-foot"><span>{money(paidTotal)} ödendi</span><span>{money(originalTotal)} toplam borç</span></div>
+        </section>
+      </div>
     </div>
     <div id="pf-all-debts" style={{padding:"0 16px 16px",width:"100%",maxWidth:"none",margin:0,boxSizing:"border-box"}}>
 <section className="pf-folder-section"><h3 className="pf-folder-heading">LURK</h3>
