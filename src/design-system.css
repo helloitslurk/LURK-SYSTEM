@@ -3506,3 +3506,71 @@ html,body,#root{
 
 /* Completed Fiddle III records are display-only, like paid installment tiles. */
 .lurk-root .lurk-app .pf-folder-debt-tile.is-locked-complete{cursor:default!important;pointer-events:none!important;}
+
+
+/* Personal Finance: unified compact card system across every debt folder */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tiles,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tiles{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));
+  gap:9px;
+  align-items:stretch;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile{
+  min-width:0;
+  min-height:108px;
+  height:auto;
+  gap:4px;
+  padding:9px 9px 8px;
+  border-radius:11px;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-label{
+  min-height:0;
+  font-size:11px;
+  line-height:1.2;
+  letter-spacing:.15px;
+  overflow-wrap:anywhere;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tile>strong,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tile>strong{
+  font-size:12px;
+  line-height:1.2;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-date{
+  min-height:0;
+  font-size:9px;
+  line-height:1.2;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-tile-pay,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-actions .pf-tile-pay{
+  min-height:25px;
+  padding:5px 6px;
+  font-size:9px;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-progress{margin-top:2px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-paid{font-size:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-actions{gap:4px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-action{padding:5px 3px;font-size:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-row{
+  grid-template-columns:minmax(155px,205px) minmax(0,1fr);
+  gap:12px;
+  padding:11px;
+  border-radius:13px;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{
+  padding:2px 10px 2px 1px;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-name{font-size:13px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-meta{font-size:10px;margin-top:4px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-progress{height:5px;margin-top:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-paid{font-size:9px;margin-top:4px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-actions{gap:5px;margin-top:7px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-actions button{padding:5px 7px;font-size:9px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-plans{gap:9px;margin:8px 0 14px}
+@media(max-width:680px){
+  .lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-row{grid-template-columns:minmax(0,1fr);gap:9px}
+  .lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{border-right:0;border-bottom:1px solid rgba(190,208,179,.16);padding:0 0 8px}
+  .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tiles,
+  .lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+}
