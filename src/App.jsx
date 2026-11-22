@@ -1966,7 +1966,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div style={{width:48,height:48,borderRadius:"50%",background:"conic-gradient(#54d783 0deg "+(lurkStats.pct/100*360)+"deg,rgba(255,255,255,.12) "+(lurkStats.pct/100*360)+"deg 360deg)",display:"grid",placeItems:"center",flexShrink:0}}><div style={{width:38,height:38,borderRadius:"50%",background:"#102019",display:"grid",placeItems:"center",fontSize:10,fontWeight:900}}>{lurkStats.pct.toFixed(0)}%</div></div>
               <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
-          </div>          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showLurk?"⌃":"⌄"}</div>
+          </div>          
         </button>
         {showLurk&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
           {activeLurkDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
@@ -2000,7 +2000,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>
-          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showInstallments?"⌃":"⌄"}</div>
+          
         </button>
         {showInstallments&&<div className="pf-installment-plans">
           {installmentDebts.map(d=><section className="pf-plan-row" key={d.id}>
@@ -2040,7 +2040,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>
-          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFiddle?"⌃":"⌄"}</div>
+          
         </button>
         {showFiddle&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
           {activeFiddleDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
@@ -2074,7 +2074,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div style={{fontSize:9,color:"#a9b8ad",fontWeight:800,whiteSpace:"nowrap"}}>PAYMENT RATE</div>
             </div>
           </div>
-          <div style={{fontSize:15,color:T.textSub,fontWeight:800,marginLeft:"auto"}}>{showFreedom?"⌃":"⌄"}</div>
+          
         </button>
         {showFreedom&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
           {activeFreedomDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
