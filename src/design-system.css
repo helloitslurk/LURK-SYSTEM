@@ -2488,3 +2488,68 @@ body{position:static!important}
 @media(max-width:760px) {
   .lurk-app .personal-finance.pf-redesign { background:#050706 !important; }
 }
+
+
+/* Expanded Personal folder rows: force readable foreground colors on every nested label/value. */
+.personal-finance.pf-redesign .lurk-folder-debt-row {
+  background:#151a16 !important;
+  border:1px solid #3b473d !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:first-child {
+  color:#f4f7f4 !important;
+  font-size:16px !important;
+  font-weight:850 !important;
+  letter-spacing:.1px !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(2),
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(4) > span,
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(7) {
+  color:#b8c4ba !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(3) {
+  color:#f5f7f5 !important;
+  font-size:17px !important;
+  font-weight:850 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(4) > b {
+  color:#a6ecb6 !important;
+  font-size:15px !important;
+  font-weight:900 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(7) {
+  font-size:11px !important;
+  line-height:1.45 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row button:not(:first-child) {
+  color:#f0f4f0 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row button:first-child {
+  color:#071109 !important;
+  font-weight:900 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row .pf-edit-btn {
+  color:#f0f4f0 !important;
+  background:#242d26 !important;
+  border:1px solid #465448 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row [style*="borderTop"] {
+  color:#e9eee9 !important;
+}
+.personal-finance.pf-redesign .lurk-folder-debt-row [style*="borderTop"] span {
+  color:#d0d9d1 !important;
+}
+@media(max-width:760px) {
+  .personal-finance.pf-redesign .lurk-folder-debt-row {
+    padding:16px !important;
+    border-radius:15px !important;
+  }
+  .personal-finance.pf-redesign .lurk-folder-debt-row > div:first-child {
+    font-size:17px !important;
+  }
+  .personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(3) {
+    font-size:18px !important;
+  }
+  .personal-finance.pf-redesign .lurk-folder-debt-row > div:nth-child(4) > b {
+    font-size:16px !important;
+  }
+}
