@@ -2925,3 +2925,37 @@ html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-r
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section>.pf-installment-tiles{margin-top:0}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section>.pf-installment-plans{display:grid;gap:14px}
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-section .pf-plan-row{border:1px solid rgba(255,255,255,.10);border-radius:13px;background:linear-gradient(145deg,#111d16,#0c1711);padding:14px}
+
+
+/* Personal Finance: achievement-inspired cards across the full debt page */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-debt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr));gap:14px;align-items:stretch}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card{min-width:0;min-height:250px;padding:18px;border-radius:17px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(145deg,#20241f,#171a17);display:flex;flex-direction:column;align-items:stretch;gap:11px;box-sizing:border-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;position:relative}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card:hover{transform:translateY(-3px);border-color:rgba(226,184,91,.5);box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card.is-paid{background:radial-gradient(circle at 18% 0%,rgba(121,211,133,.16),transparent 48%),linear-gradient(145deg,#203327,#17231b);border-color:rgba(112,217,139,.65)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-card-icon{width:48px;height:48px;flex-shrink:0;border-radius:15px;display:grid;place-items:center;font-size:25px;background:#2b302b;border:1px solid #454b43;color:#a7e9b5}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-achievement-card.is-paid .pf-achievement-card-icon{background:#a9e77a;border-color:#a9e77a;color:#173018;font-weight:950}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-status{font-size:9px;font-weight:900;letter-spacing:.12em;padding:6px 8px;border-radius:20px;color:#a3aaa1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-status.is-paid{color:#a9e77a;background:rgba(112,217,139,.12);border-color:rgba(112,217,139,.28)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-debt-name{font-size:15px;font-weight:900;color:#e0e4dc;line-height:1.3;overflow-wrap:anywhere;min-height:38px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-amount{font-size:23px;font-weight:950;letter-spacing:-.5px;color:#f4f5ef;display:flex;flex-direction:column;gap:2px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-amount small{font-size:9px;letter-spacing:.1em;color:#aab4aa;font-weight:800}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-total{font-size:10px;color:#b8c0b6;font-weight:750}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress{height:7px;background:rgba(255,255,255,.09);border-radius:10px;overflow:hidden}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress i{display:block;height:100%;background:linear-gradient(90deg,#248a3d,#5bd77b);border-radius:10px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress-meta{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:#b8c0b6;font-weight:800}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-progress-meta b{color:#70d98b}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installments{border:1px solid rgba(255,255,255,.09);border-radius:9px;padding:5px 8px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installments>button{width:100%;padding:5px 0;background:transparent;border:0;color:#c4d0c5;text-align:left;font-size:9px;font-weight:850}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid rgba(255,255,255,.07)}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment>div{min-width:0;display:flex;flex-direction:column;gap:3px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment b{font-size:9px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment small{font-size:8px;color:#aab4aa}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-installment>button{padding:5px 7px;border:0;border-radius:6px;background:#34c759;color:#061008;font-size:8px;font-weight:900}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-actions>button{min-width:0;padding:9px 6px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.045);color:#c2cec3;font-size:8px;font-weight:900}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-actions>.pf-achievement-pay{grid-column:1/-1;background:linear-gradient(100deg,#34c759,#2dbb50);border:0;color:#061008;font-size:10px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history{border-top:1px solid rgba(255,255,255,.10);padding-top:6px;display:grid;gap:5px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history>div{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:9px;color:#d4ddd4}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history small{display:block;color:#9eaa9f;margin-top:2px}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-achievement-history button{border:0;background:transparent;color:#e58b8b;font-size:8px;font-weight:850}
