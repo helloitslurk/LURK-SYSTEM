@@ -3225,3 +3225,29 @@ html,body,#root{
   .lurk-root-collapsed .lurk-shell-sidebar{width:62px!important;padding:18px 9px!important}
   .lurk-root-collapsed .lurk-app{padding-left:62px!important}
 }
+
+
+/* Folder-aware Add Debt flow */
+.lurk-root .pf-add-debt-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  margin:0 0 18px;padding:14px 16px;border:1px solid #e2e9df;
+  border-radius:14px;background:#fff;box-shadow:0 3px 12px rgba(25,45,28,.04);
+}
+.lurk-root .pf-add-debt-toolbar>div{display:flex;flex-direction:column;gap:3px}
+.lurk-root .pf-add-debt-toolbar b{font-size:13px;color:#1f2b21}
+.lurk-root .pf-add-debt-toolbar small{font-size:11px;color:#748075}
+.lurk-root .pf-add-debt-toolbar>button{
+  border:0;border-radius:10px;padding:10px 15px;background:#a8d83c;
+  color:#263414;font-size:11px;font-weight:900;letter-spacing:.03em;cursor:pointer;
+}
+.lurk-root .pf-add-debt-modal{width:min(460px,calc(100vw - 32px));max-height:82vh;overflow:auto;box-sizing:border-box}
+.lurk-root .pf-add-debt-modal .pf-add-debt-intro{font-size:12px;line-height:1.5;color:#718071;margin:0 0 16px}
+.lurk-root .pf-add-debt-modal label{display:block;margin:13px 0 6px;font-size:11px;font-weight:800;color:#455347}
+.lurk-root .pf-add-debt-modal input,.lurk-root .pf-add-debt-modal select{
+  display:block;width:100%;min-height:43px;padding:10px 12px;box-sizing:border-box;
+  border:1px solid #dce5da;border-radius:10px;background:#fff;color:#202a22;font:inherit;font-size:13px;
+}
+.lurk-root .pf-add-debt-modal .pf-add-debt-hint{margin:12px 0;padding:10px 12px;border-radius:9px;background:#f2f6ec;color:#596b4c;font-size:11px;line-height:1.5}
+.lurk-root .pf-add-debt-modal .ds-primary-button{width:100%;margin-top:18px;min-height:44px}
+.lurk-root .pf-add-debt-modal .lurk-modal-cancel{width:100%;margin-top:6px}
+@media(max-width:560px){.lurk-root .pf-add-debt-toolbar{align-items:flex-start}.lurk-root .pf-add-debt-toolbar>button{white-space:nowrap}}
