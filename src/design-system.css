@@ -2553,3 +2553,22 @@ body{position:static!important}
     font-size:16px !important;
   }
 }
+
+
+/* Verified correction: reduce the actual table row font-size by 10 CSS pixels.
+   20pt was 26.67px; the new target is 16.67px. High-specificity selectors override older mobile rules. */
+html body .lurk-root .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row,
+html body .lurk-root .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row > b,
+html body .lurk-root .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row > span,
+html body .lurk-root .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row > strong,
+html body .lurk-root .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row .lurk-status,
+html body .lurk-root .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row .lurk-open-table,
+html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row,
+html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row > b,
+html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row > span,
+html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row > strong,
+html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row .lurk-status,
+html body .lurk-app .lurk-screen.lurk-tables-screen.ds-tables .lurk-table-list-row .lurk-open-table {
+  font-size: 16.67px !important;
+  line-height: 1.25 !important;
+}
