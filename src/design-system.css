@@ -3574,3 +3574,23 @@ html,body,#root{
   .lurk-root .lurk-app .personal-finance.pf-redesign .pf-folder-debt-tiles,
   .lurk-root .lurk-app .personal-finance.pf-redesign .pf-installment-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 }
+
+/* Personal Finance header shell: extend the same dark green-slate card palette behind the title and summary cards. */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-header{
+  background:linear-gradient(145deg,#344139 0%,#222d26 100%)!important;
+  border:1px solid #46564a!important;
+  border-radius:16px!important;
+  box-shadow:0 5px 14px rgba(16,28,19,.14)!important;
+  margin:10px 16px 14px!important;
+  overflow:hidden!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-header-top{
+  background:transparent!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-title{
+  color:#f4f7f2!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-back,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-lock{
+  color:#e3eddf!important;
+}
