@@ -953,9 +953,11 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
  const [hoveredDay,setHoveredDay]=useState(null);
  useEffect(()=>{const timer=setInterval(()=>setClock(new Date()),60000);return()=>clearInterval(timer);},[]);
  const today=tod();
- const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(o.revenueExcluded?0:(Number(o.total)||0)),0);return{key,date:d,amount,label:d.toLocaleDateString("en-US",{weekday:"short"}),dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
+ const isNovemberLurkPlusOrder=o=>String(o.date||"").slice(0,7)==="2026-11"&&(o.pt==="lurkPlus"||(Array.isArray(o.payments)&&o.payments.some(p=>p.method==="lurkPlus")));
+ const revenueExcluded=o=>!!o.revenueExcluded||isNovemberLurkPlusOrder(o);
+ const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(revenueExcluded(o)?0:(Number(o.total)||0)),0);return{key,date:d,amount,label:d.toLocaleDateString("en-US",{weekday:"short"}),dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
  const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment&&o.status!=="cancelled");
- const todayRevenue=todayOrders.reduce((sum,o)=>sum+(o.revenueExcluded?0:(Number(o.total)||0)),0);
+ const todayRevenue=todayOrders.reduce((sum,o)=>sum+(revenueExcluded(o)?0:(Number(o.total)||0)),0);
  const avgOrder=todayOrders.length?todayRevenue/todayOrders.length:0;
  const maxDay=Math.max(1,...recentDays.map(d=>d.amount));
  const money=v=>balancesVisible?fm(v):"••••••";
