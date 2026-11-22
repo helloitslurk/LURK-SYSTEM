@@ -2283,7 +2283,7 @@ body{position:static!important}
   }
 }
 
-/* Tables page: set every visible table-row text element to 20pt on desktop and mobile.
+/* Tables page: set every visible table-row text element to calc(20pt - 10px) on desktop and mobile.
    The app has no .lurk-root wrapper, so scope directly to .lurk-app. */
 .lurk-app .lurk-tables-screen.ds-tables .lurk-table-list-row,
 .lurk-app .lurk-tables-screen.ds-tables .lurk-table-list-row > b,
