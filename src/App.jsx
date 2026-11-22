@@ -1771,6 +1771,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const [confirmDeleteDebt,setConfirmDeleteDebt]=useState(false);
   const [addDebtOpen,setAddDebtOpen]=useState(false);
   const [newDebtFolder,setNewDebtFolder]=useState("lurk");
+  const [newFolderName,setNewFolderName]=useState("");
   const [newDebtName,setNewDebtName]=useState("");
   const [newDebtTotal,setNewDebtTotal]=useState("");
   const [newDebtDue,setNewDebtDue]=useState("");
@@ -1781,16 +1782,21 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       msg("Borç başlığını, geçerli toplam tutarı ve ödeme tarihini gir.");return;
     }
     const id="debt-"+Date.now();
+    const customFolder=newDebtFolder==="custom";
+    const customName=newFolderName.trim().toUpperCase();
+    if(customFolder&&!customName){msg("Yeni klasör adını gir.");return;}
     const folderConfig={
       lurk:{category:"lurk",folder:"LURK"},
       installments:{category:"installment",folder:"INSTALLMENTS"},
       fiddle:{category:"fiddle",folder:"FIDDLE III"},
       freedom:{category:"freedom",folder:"FREEDOM PLAN"},
       personal:{category:"personal",folder:"MY DEBTS"}
-    }[newDebtFolder];
-    const record={id,name,total:value,group:"Personal",...folderConfig,payments:[],installments:newDebtFolder==="installments"?[{id:"inst-"+Date.now(),label:"1. Taksit",amount:value,paid:0,due:newDebtDue}]:[]};
+    }[newDebtFolder]||(customFolder?{category:"custom",folder:customName}:null);
+    if(!folderConfig){msg("Geçerli bir klasör seç.");return;}
+    const resolvedFolder=newDebtFolder.startsWith("existing:")?{category:"custom",folder:newDebtFolder.slice(9)}:folderConfig;
+    const record={id,name,total:value,group:"Personal",...resolvedFolder,payments:[],installments:newDebtFolder==="installments"?[{id:"inst-"+Date.now(),label:"1. Taksit",amount:value,paid:0,due:newDebtDue}]:[]};
     setDebts(prev=>[...prev,record]);
-    setAddDebtOpen(false);setNewDebtName("");setNewDebtTotal("");setNewDebtDue("");setNewDebtFolder("lurk");
+    setAddDebtOpen(false);setNewDebtName("");setNewDebtTotal("");setNewDebtDue("");setNewDebtFolder("lurk");setNewFolderName("");
     msg(name+" kaydı "+folderConfig.folder+" klasörüne eklendi.");
   }
   function openDebtEditor(debt){
@@ -1996,6 +2002,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
 <section className="pf-folder-section"><h3 className="pf-folder-heading">FREEDOM PLAN</h3>
         <div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>
       </section>
+      {[...new Set(debts.filter(d=>d.category==="custom"&&d.folder).map(d=>d.folder))].map(folder=><section className="pf-folder-section" key={folder}><h3 className="pf-folder-heading">{folder}</h3><div className="pf-installment-tiles pf-folder-debt-tiles">{debts.filter(d=>d.category==="custom"&&d.folder===folder).map(renderFolderDebtTile)}</div></section>)}
 <div className="lurk-personal-debt-list pf-achievement-debt-grid">
         {visibleDebts.map(d=>{const done=remaining(d)<=0;return <article key={d.id} draggable onDragStart={e=>{setDraggingDebtId(d.id);e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",d.id);}} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();reorderVisibleDebts(draggingDebtId||e.dataTransfer.getData("text/plain"),d.id);setDraggingDebtId(null);}} onDragEnd={()=>setDraggingDebtId(null)} className={"lurk-achievement-card pf-personal-achievement-card"+(done?" is-paid":"")} style={{opacity:draggingDebtId===d.id?0.55:1,cursor:"grab"}}>
           <div className="pf-achievement-card-top"><div className="pf-achievement-card-icon">{done?"✓":d.group==="Personal"?"👤":"◈"}</div><span className={"pf-achievement-status"+(done?" is-paid":"")}>{done?"COMPLETED":d.group.toUpperCase()}</span></div>
@@ -2021,8 +2028,11 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
       <p className="pf-add-debt-intro">Önce kaydın hangi klasörde görüneceğini seç. Kaydettiğinde ilgili klasöre otomatik yerleşecek.</p>
       <label>Klasör</label>
       <select value={newDebtFolder} onChange={e=>setNewDebtFolder(e.target.value)}>
-        <option value="lurk">LURK</option><option value="installments">INSTALLMENTS</option><option value="fiddle">FIDDLE III</option><option value="freedom">FREEDOM PLAN</option><option value="personal">MY DEBTS</option>
+        <option value="lurk">LURK</option><option value="installments">INSTALLMENTS</option><option value="fiddle">FIDDLE III</option><option value="freedom">FREEDOM PLAN</option>
+        {[...new Set(debts.filter(d=>d.category==="custom"&&d.folder).map(d=>d.folder))].map(folder=><option key={folder} value={"existing:"+folder}>{folder}</option>)}
+        <option value="custom">+ YENİ KLASÖR OLUŞTUR</option>
       </select>
+      {newDebtFolder==="custom"&&<><label>Yeni klasör adı</label><input value={newFolderName} onChange={e=>setNewFolderName(e.target.value)} placeholder="Örn. EV GİDERLERİ"/></>}
       <label>Borç başlığı</label><input autoFocus value={newDebtName} onChange={e=>setNewDebtName(e.target.value)} placeholder="Örn. Telefon taksiti"/>
       <label>Toplam tutar (₺)</label><input type="number" min="0.01" step="0.01" value={newDebtTotal} onChange={e=>setNewDebtTotal(e.target.value)} placeholder="Örn. 12500"/>
       <label>Ödeme tarihi</label><input type="date" value={newDebtDue} onChange={e=>setNewDebtDue(e.target.value)}/>
