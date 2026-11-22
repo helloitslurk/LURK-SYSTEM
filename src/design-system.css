@@ -3349,3 +3349,35 @@ html,body,#root{
  .lurk-root .pf-personal-title{grid-column:2!important}
  .lurk-root .pf-personal-metrics article span{font-size:8px!important}
 }
+
+
+/* Personal header financial widgets: match the deep green/slate palette of the Edit popup. */
+.lurk-root .lurk-app .pf-personal-metrics article,
+.lurk-root .lurk-app .pf-personal-progress{
+  background:linear-gradient(145deg,#344139 0%,#222d26 100%)!important;
+  border:1px solid #46564a!important;
+  box-shadow:0 5px 14px rgba(16,28,19,.14)!important;
+}
+.lurk-root .lurk-app .pf-personal-metrics article span{
+  color:#c2d0c3!important;font-weight:850!important;
+}
+.lurk-root .lurk-app .pf-personal-metrics article strong{
+  color:#ffffff!important;text-shadow:0 1px 1px rgba(0,0,0,.12)!important;
+}
+.lurk-root .lurk-app .pf-personal-metrics article small,
+.lurk-root .lurk-app .pf-personal-progress-foot{
+  color:#c2cec3!important;
+}
+.lurk-root .lurk-app .pf-personal-progress-top b{
+  color:#f3f7f1!important;
+}
+.lurk-root .lurk-app .pf-personal-progress-top strong{
+  color:#b8e34a!important;font-weight:900!important;
+}
+.lurk-root .lurk-app .pf-personal-progress .pf-progress-track{
+  background:#17231b!important;border:1px solid #53644e!important;
+}
+.lurk-root .lurk-app .pf-personal-progress .pf-progress-track>div{
+  background:linear-gradient(90deg,#9bce35,#c0ed52)!important;
+  box-shadow:0 0 8px rgba(174,224,62,.22)!important;
+}
