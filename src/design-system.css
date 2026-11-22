@@ -3449,3 +3449,56 @@ html,body,#root{
   color:#e0e9df!important;
 }
 .lurk-root .lurk-app .personal-finance.pf-redesign .pf-plan-info{border-color:#4b5b4d!important}
+
+
+/* HARD OVERRIDE: all Personal debt tiles use the same palette as the working header cards. */
+.lurk-root .lurk-app .pf-folder-debt-tile,
+.lurk-root .lurk-app .pf-installment-tile,
+.lurk-root .lurk-app .pf-personal-achievement-card,
+.lurk-root .lurk-app .pf-plan-row{
+  background:linear-gradient(145deg,#344139 0%,#222d26 100%)!important;
+  background-color:#28352d!important;
+  border:1px solid #526456!important;
+  color:#f4f7f2!important;
+  box-shadow:0 5px 14px rgba(16,28,19,.18)!important;
+}
+.lurk-root .lurk-app .pf-folder-debt-tile .pf-tile-label,
+.lurk-root .lurk-app .pf-installment-tile .pf-tile-label,
+.lurk-root .lurk-app .pf-installment-tile>strong,
+.lurk-root .lurk-app .pf-folder-debt-tile>strong,
+.lurk-root .lurk-app .pf-plan-name,
+.lurk-root .lurk-app .pf-achievement-debt-name,
+.lurk-root .lurk-app .pf-achievement-amount{
+  color:#fff!important;
+}
+.lurk-root .lurk-app .pf-folder-debt-tile .pf-tile-date,
+.lurk-root .lurk-app .pf-installment-tile .pf-tile-date,
+.lurk-root .lurk-app .pf-folder-debt-paid,
+.lurk-root .lurk-app .pf-plan-meta,
+.lurk-root .lurk-app .pf-plan-paid,
+.lurk-root .lurk-app .pf-achievement-total,
+.lurk-root .lurk-app .pf-achievement-amount small,
+.lurk-root .lurk-app .pf-achievement-progress-meta{
+  color:#c2d0c3!important;
+}
+.lurk-root .lurk-app .pf-folder-debt-progress,
+.lurk-root .lurk-app .pf-achievement-progress,
+.lurk-root .lurk-app .pf-installment-tile .pf-progress-track{
+  background:#17231b!important;
+}
+.lurk-root .lurk-app .pf-folder-debt-progress i,
+.lurk-root .lurk-app .pf-achievement-progress i,
+.lurk-root .lurk-app .pf-installment-tile .pf-progress-track>div{
+  background:linear-gradient(90deg,#9bce35,#c0ed52)!important;
+}
+.lurk-root .lurk-app .pf-folder-debt-tile.is-paid,
+.lurk-root .lurk-app .pf-installment-tile.is-paid,
+.lurk-root .lurk-app .pf-personal-achievement-card.is-paid{
+  background:linear-gradient(145deg,#3d5140 0%,#293b2d 100%)!important;
+  border-color:#8ab96b!important;
+}
+.lurk-root .lurk-app .pf-folder-debt-actions .pf-folder-debt-action,
+.lurk-root .lurk-app .pf-achievement-actions>button,
+.lurk-root .lurk-app .pf-plan-actions button{
+  background:#29382e!important;border:1px solid #53644e!important;color:#e3eddf!important;
+}
