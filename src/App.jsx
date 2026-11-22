@@ -1891,6 +1891,23 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
   const freedomDebts=debts.filter(d=>freedomIds.includes(d.id));  const activeFreedomDebts=freedomDebts.filter(d=>remaining(d)>0);
   const completedFreedomDebts=freedomDebts.filter(d=>remaining(d)<=0);
   const freedomStats=folderStats(freedomDebts);
+  function renderFolderDebtTile(d){
+    const isPaid=remaining(d)<=0;
+    return <article key={d.id} className={"pf-installment-tile pf-folder-debt-tile"+(isPaid?" is-paid":"")}>
+      {isPaid&&<div className="pf-tile-state">✓</div>}
+      <b className="pf-tile-label">{d.name}</b>
+      <strong>{money(d.total)}</strong>
+      <span className="pf-tile-date">{isPaid?"TAMAMLANDI":money(remaining(d))+" KALDI"}</span>
+      <div className="pf-folder-debt-progress"><i style={{width:pct(d)+"%"}}/></div>
+      <small className="pf-folder-debt-paid">{pct(d).toFixed(0)}% · {money(paid(d))} / {money(d.total)}</small>
+      <div className="pf-folder-debt-actions">
+        {!isPaid&&<button className="pf-tile-pay" onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}}>PAYMENT</button>}
+        <button className="pf-folder-debt-action" onClick={()=>openDebtEditor(d)}>EDIT</button>
+        <button className="pf-folder-debt-action" onClick={()=>setShowHistory(v=>!v)}>HAREKETLER</button>
+      </div>
+      {showHistory&&(d.payments||[]).length>0&&<div className="pf-folder-debt-history">{(d.payments||[]).map(p=><div key={p.id}><span>{p.note||"Payment"} · {p.date?new Date(p.date).toLocaleDateString("tr-TR"):"Tarih yok"}</span><b>{money(p.amount)}</b></div>)}</div>}
+    </article>;
+  }
   function reorderVisibleDebts(sourceId,targetId){
     if(!sourceId||!targetId||sourceId===targetId)return;
     const ordered=visibleDebts.slice();
@@ -1968,22 +1985,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             </div>
           </div>          
         </button>
-        {showLurk&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
-          {activeLurkDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
-            <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
-            <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>TOTAL AMOUNT</div>
-            <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:"#b4c4b8"}}>REMAINING</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
-            <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
-            <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
-            <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
-            </div>
-            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {new Date(p.date).toLocaleDateString("en-US")}</span><b>{money(p.amount)}</b></div>)}</div>}
-          </div>)}
-          {completedLurkDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedLurk(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedLurkDebts.length}</span><span>{showCompletedLurk?"Hide ⌃":"Show ⌄"}</span></button>{showCompletedLurk&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedLurkDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button></div>)}</div>}</div>}
-        </div>}
+        {showLurk&&<div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeLurkDebts,...completedLurkDebts].map(renderFolderDebtTile)}</div>}
       </div>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>{}} aria-expanded={showInstallments} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
@@ -2042,22 +2044,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           
         </button>
-        {showFiddle&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
-          {activeFiddleDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
-            <div style={{fontSize:11,fontWeight:800,minHeight:28,lineHeight:1.35}}>{d.name}</div>
-            <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>TOTAL AMOUNT</div>
-            <div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:"#b4c4b8"}}>REMAINING</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
-            <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
-            <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
-            <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
-            </div>
-            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {new Date(p.date).toLocaleDateString("en-US")}</span><b>{money(p.amount)}</b></div>)}</div>}
-          </div>)}
-          {completedFiddleDebts.length>0&&<div style={{gridColumn:"1 / -1"}}><button onClick={()=>setShowCompletedFiddle(v=>!v)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 11px",borderRadius:9,border:"1px solid rgba(255,255,255,.08)",background:"rgba(255,255,255,.025)",color:"#9aaa9f",fontSize:10,fontWeight:800,textAlign:"left"}}><span>TAMAMLANANLAR · {completedFiddleDebts.length}</span><span>{showCompletedFiddle?"Hide ⌃":"Show ⌄"}</span></button>{showCompletedFiddle&&<div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6,marginTop:6}}>{completedFiddleDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",opacity:.72,minWidth:0}}><div style={{minWidth:0}}><div style={{fontSize:10,fontWeight:750,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div><div style={{fontSize:9,color:"#70c98b",marginTop:2}}>Completed</div></div><b style={{fontSize:10,color:"#70c98b",whiteSpace:"nowrap"}}>✓ {money(d.total)}</b><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button></div>)}</div>}</div>}
-        </div>}
+        {showFiddle&&<div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFiddleDebts,...completedFiddleDebts].map(renderFolderDebtTile)}</div>}
       </div>
             <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>{}} aria-expanded={showFreedom} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
@@ -2076,21 +2063,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
           </div>
           
         </button>
-        {showFreedom&&<div className="lurk-folder-debt-list" style={{display:"grid",gridTemplateColumns:"1fr",gap:8,marginTop:12}}>
-          {activeFreedomDebts.map(d=><div key={d.id} className="lurk-folder-debt-row" style={{background:"linear-gradient(145deg,#171f1a,#121a15)",border:"1px solid rgba(255,255,255,.10)",borderRadius:13,padding:"12px 14px",minWidth:0}}>
-            <div style={{fontSize:16,fontWeight:900,textTransform:"uppercase",fontFamily:"Helvetica Neue,Helvetica,Arial,sans-serif"}}>{d.name}</div>
-            <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>TOTAL AMOUNT</div><div style={{fontSize:14,fontWeight:900,marginTop:2}}>{money(d.total)}</div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,marginTop:5}}><span style={{fontSize:9,color:"#b4c4b8"}}>REMAINING</span><b style={{fontSize:12,color:T.accent}}>{money(remaining(d))}</b></div>
-            <div style={{height:5,background:"#293a30",borderRadius:8,overflow:"hidden",marginTop:8}}><div style={{height:"100%",width:pct(d)+"%",background:"linear-gradient(90deg,#35c95b,#70f28a)",borderRadius:8}}/></div>
-            <div style={{fontSize:9,color:"#b4c4b8",marginTop:5}}>{pct(d).toFixed(0)}% paid · {money(paid(d))} / {money(d.total)}</div>
-            <div style={{display:"flex",gap:6,marginTop:9}}>
-              {remaining(d)>0&&<button onClick={()=>{setPaymentFor(d);setAmount("");setNotee("");}} style={{flex:1,padding:8,borderRadius:8,border:0,background:"linear-gradient(100deg,#54e875,#2dc957)",color:"#06200d",fontSize:10,fontWeight:900}}>+ Payment</button>}
-              <button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button><button onClick={()=>setShowHistory(v=>!v)} style={{padding:"8px 9px",borderRadius:8,border:"1px solid "+T.border,background:"#17271f",color:"#b5c7b9",fontSize:9}}>Hareketler</button>
-            </div>
-            {showHistory&&<div style={{marginTop:7,borderTop:"1px solid "+T.border,paddingTop:6}}>{(d.payments||[]).map(p=><div key={p.id} style={{display:"flex",justifyContent:"space-between",gap:6,padding:"4px 0",fontSize:9}}><span>{p.note||"Payment"} · {p.date?new Date(p.date).toLocaleDateString("en-US"):"Date not specified"}</span><b>{money(p.amount)}</b></div>)}</div>}
-          </div>)}
-          {completedFreedomDebts.length>0&&<div style={{marginTop:8}}><div style={{fontSize:10,color:"#b4c4b8",fontWeight:800,marginBottom:6}}>COMPLETED · {completedFreedomDebts.length}</div><div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:6}}>{completedFreedomDebts.map(d=><div key={d.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"8px 10px",borderRadius:9,background:"rgba(255,255,255,.035)",border:"1px solid rgba(255,255,255,.08)",minWidth:0}}><div style={{fontSize:10,fontWeight:750,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{d.name}</div><button className="pf-edit-btn" onClick={()=>openDebtEditor(d)}>Edit</button></div>)}</div></div>}
-        </div>}
+        {showFreedom&&<div className="pf-installment-tiles pf-folder-debt-tiles">{[...activeFreedomDebts,...completedFreedomDebts].map(renderFolderDebtTile)}</div>}
       </div>
 <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10,flexWrap:"wrap"}}>
         <div style={{fontSize:15,fontWeight:850,flex:1}}>My Debts <span style={{fontSize:11,color:"#b4c4b8",fontWeight:500}}>({visibleDebts.length})</span><div style={{fontSize:9,color:"#b4c4b8",fontWeight:500,marginTop:2}}>Drag cards to reorder them</div></div>
