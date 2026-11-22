@@ -1986,7 +1986,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
               <div className="pf-plan-meta">{money(d.total)} · {(d.installments||[]).length} taksit</div>
               <div className="pf-plan-progress"><i style={{width:pct(d)+"%"}}/></div>
               <div className="pf-plan-paid">{(d.installments||[]).filter(i=>Number(i.paid||0)>=Number(i.amount||0)).length} / {(d.installments||[]).length} taksit tamamlandı · %{pct(d).toFixed(0)}</div>
-              <div className="pf-plan-actions"><button onClick={()=>openInstallmentEditor(d)}>Planı düzenle</button><button onClick={()=>openDebtEditor(d)}>Düzenle</button></div>
             </div>
             <div className="pf-installment-tiles">{(d.installments||[]).map((inst,index)=>{const isPaid=Number(inst.paid||0)>=Number(inst.amount||0);return <article className={"pf-installment-tile"+(isPaid?" is-paid":"")} key={inst.id}>
                 {isPaid&&<div className="pf-tile-state">✓</div>}
