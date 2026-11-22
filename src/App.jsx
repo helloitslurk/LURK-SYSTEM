@@ -2003,7 +2003,6 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
             {showCompletedInstallments&&<div className="pf-completed-list">{completedInstallmentItems.map(({debt,inst})=><div key={debt.id+"-"+inst.id}><b>{debt.name} · {inst.label}</b><span>{money(inst.amount)} · {inst.due?new Date(inst.due+"T12:00:00").toLocaleDateString("tr-TR"):"Tarih yok"}</span><em>✓ ÖDENDİ</em></div>)}</div>}
           </section>}
         </div>}
-        </div>}
       </div>
       <div className="pf-summary-card" style={{background:"linear-gradient(145deg,#102019,#0c1712)",border:"1px solid #294638",borderRadius:14,padding:14,marginBottom:16}}>
         <button onClick={()=>setShowFiddle(v=>!v)} aria-expanded={showFiddle} style={{width:"100%",display:"grid",gridTemplateColumns:"minmax(260px,1.7fr) repeat(3,minmax(110px,1fr)) minmax(150px,auto) 18px",alignItems:"center",columnGap:18,textAlign:"left",background:"transparent",border:0,padding:0,color:T.text,cursor:"pointer",flexWrap:"wrap"}}>
