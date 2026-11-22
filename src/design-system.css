@@ -3616,3 +3616,54 @@ html,body,#root{
 .personal-finance.pf-redesign .pf-personal-lock{
   color:#e3eddf!important;
 }
+
+/* Personal Finance final layout: compact top actions, financial overview at the bottom. */
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-header-compact{
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  margin:0 16px 8px!important;
+  padding:8px 0!important;
+  overflow:visible!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-header-top{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:40px!important;
+  background:transparent!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-header-compact .pf-add-debt-top-button{
+  grid-column:3!important;
+  justify-self:end!important;
+  margin-left:0!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-header-compact .pf-personal-lock{
+  grid-column:4!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-summary-bottom{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(260px,1.2fr)!important;
+  gap:10px!important;
+  align-items:stretch!important;
+  margin:18px 0 8px!important;
+  padding:0!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-summary-bottom .pf-personal-metrics{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-summary-bottom .pf-personal-metrics article,
+.lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-summary-bottom .pf-personal-progress{
+  min-height:76px!important;
+  border-radius:12px!important;
+  padding:12px!important;
+}
+@media(max-width:720px){
+  .lurk-root .lurk-app .personal-finance.pf-redesign .pf-personal-summary-bottom{
+    grid-template-columns:1fr!important;
+  }
+}
