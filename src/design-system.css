@@ -3909,3 +3909,111 @@ html,body,#root{
     z-index: 2;
   }
 }
+
+
+/* Personal Finance: centered enlarged view for payment tiles. */
+.personal-finance.pf-redesign .pf-installment-tile,
+.personal-finance.pf-redesign .pf-folder-debt-tile,
+.personal-finance.pf-redesign .pf-personal-achievement-card {
+  cursor: zoom-in;
+}
+.personal-finance.pf-redesign .pf-folder-debt-tile.is-locked-complete {
+  pointer-events: auto !important;
+  cursor: zoom-in !important;
+}
+.pf-tile-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  box-sizing: border-box;
+  background: rgba(5, 9, 6, .76);
+  backdrop-filter: blur(7px);
+  animation: pfTileBackdropIn .18s ease-out both;
+}
+.pf-tile-modal {
+  position: relative;
+  width: min(460px, 100%);
+  max-height: min(84vh, 760px);
+  overflow-y: auto;
+  padding: 48px 24px 24px;
+  box-sizing: border-box;
+  border: 1px solid rgba(151, 190, 128, .28);
+  border-radius: 22px;
+  background: linear-gradient(155deg, #1c241d, #111713);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .52);
+  animation: pfTileModalIn .22s cubic-bezier(.2, .75, .25, 1) both;
+}
+.pf-tile-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  color: #f2f4ec;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pf-tile-modal .pf-tile-expanded {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  padding: 24px;
+  gap: 14px;
+  box-sizing: border-box;
+  cursor: default;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.pf-tile-modal .pf-installment-tile.pf-tile-expanded {
+  min-height: 290px;
+  align-items: stretch;
+  justify-content: space-between;
+}
+.pf-tile-modal .pf-folder-debt-tile.pf-tile-expanded {
+  min-height: 310px;
+}
+.pf-tile-modal .pf-tile-expanded .pf-tile-label,
+.pf-tile-modal .pf-tile-expanded .pf-achievement-debt-name {
+  font-size: 20px;
+  line-height: 1.35;
+}
+.pf-tile-modal .pf-tile-expanded > strong,
+.pf-tile-modal .pf-achievement-amount {
+  font-size: 28px;
+}
+.pf-tile-modal .pf-tile-expanded .pf-tile-date,
+.pf-tile-modal .pf-folder-debt-paid,
+.pf-tile-modal .pf-achievement-total,
+.pf-tile-modal .pf-achievement-progress-meta {
+  font-size: 12px;
+}
+.pf-tile-expanded-meta {
+  margin-top: 4px;
+  color: #b8c8b8;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.pf-tile-modal .pf-tile-pay,
+.pf-tile-modal .pf-folder-debt-action,
+.pf-tile-modal .pf-achievement-actions button {
+  min-height: 42px;
+  font-size: 12px;
+}
+@keyframes pfTileBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pfTileModalIn {
+  from { opacity: 0; transform: translateY(12px) scale(.975); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
