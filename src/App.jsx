@@ -1,5 +1,6 @@
 // Production deployment sync: customer form, day controls, and neutral table styling.
 import{useState,useEffect,useRef}from"react";
+import AspenPortal from "./AspenPortal.jsx";
 import "./design-system.css";
 import { createKeyedWriteQueue } from "./writeQueue.js";
 import { validateMenuItemInput } from "./menuValidation.js";
@@ -226,6 +227,7 @@ function POSApp({onLock}){
   const failedWrites=useRef({});
   const paymentInProgress=useRef(false);
   const[view,setV]=useState("home");
+  const[aspenData,setAspenData]=useState({tracks:[]});
   const[sidebarCollapsed,setSidebarCollapsed]=useState(false);
   const[balancesVisible,setBalancesVisible]=useState(()=>{try{return localStorage.getItem("lurk_amounts_visible")!=="false";}catch(e){return true;}});
   const[notifications,setNotifications]=useState(()=>{try{return JSON.parse(localStorage.getItem("lurk_notifications")||"[]");}catch(e){return [];}});
@@ -301,6 +303,8 @@ function POSApp({onLock}){
       const lp=await sbGet("lurk_plus_members",[]);
       const pd=await sbGet("lurk_personal_debts",null).catch(()=>null);
       const savedPrinterSettings=await sbGet("lurk_printer_settings",null).catch(()=>null);
+      const savedAspenData=await sbGet("aspen_portal_v1",null).catch(()=>null);
+      setAspenData(savedAspenData&&typeof savedAspenData==="object"&&Array.isArray(savedAspenData.tracks)?savedAspenData:{tracks:[]});
       if(savedPrinterSettings&&typeof savedPrinterSettings==="object")setPrinterSettings({...DEFAULT_PRINTER_SETTINGS,...savedPrinterSettings,paperWidth:58});
       setTbl((Array.isArray(t)?t:[]).map(table=>{
         const legacyName=String(table?.lbl||"").trim();
@@ -358,6 +362,7 @@ function POSApp({onLock}){
   useEffect(()=>{save("lurk_personal_debts",personalDebts);},[personalDebts]);
   useEffect(()=>{save("lurk_m",menu);},[menu]);
   useEffect(()=>{save("lurk_printer_settings",printerSettings);},[printerSettings]);
+  useEffect(()=>{save("aspen_portal_v1",aspenData);},[aspenData]);
 
   function msg(m){setToast(m);setTimeout(()=>setToast(null),2500);}
 
@@ -526,6 +531,7 @@ function POSApp({onLock}){
     {k:"tables",label:"Tables",icon:"⊞"},
     {k:"takeaway",label:"Take Away",icon:"↗"},
     {k:"lurkPlus",label:"LURK+",icon:"＋"},
+    {k:"aspenPortal",label:"Aspen Portal",icon:"♫"},
   ];
 
   return(
@@ -538,7 +544,7 @@ function POSApp({onLock}){
         </div>
         <div className="lurk-shell-section-label">{sidebarCollapsed?"MENU":"WORKSPACE"}</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"},{k:"achievements",label:"Achievements",icon:"🏅"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"reports",label:"Reports",icon:"▤"},{k:"tables",label:"Tables",icon:"▦"},{k:"lurkPlus",label:"LURK+",icon:"✳"}, {k:"aspenPortal",label:"Aspen Portal",icon:"♫"},{k:"achievements",label:"Achievements",icon:"🏅"}].map(n=><button key={n.k} className={view===n.k?"active":""} onClick={()=>setV(n.k)} aria-current={view===n.k?"page":undefined} title={sidebarCollapsed?n.label:undefined}><span className="lurk-shell-nav-icon">{n.icon}</span><span className="lurk-shell-nav-label">{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><i className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button onClick={onLock} aria-label="Lock screen">⌑</button></div>
       </aside>
@@ -557,6 +563,7 @@ function POSApp({onLock}){
             {profileOpen&&<div className="lurk-profile-menu">
               <div className="lurk-profile-menu-heading">LURK POS</div>
               <button onClick={()=>{setV("personal");setProfileOpen(false);}}>Personal Finance</button>
+              <button onClick={()=>{setV("aspenPortal");setProfileOpen(false);}}>Aspen Portal</button>
               <button onClick={()=>{setV("achievements");setProfileOpen(false);}}>Achievements</button>
               <button onClick={()=>{setV("settings");setProfileOpen(false);}}>Settings</button>
               <button onClick={()=>{setProfileOpen(false);onLock();}}>Lock Screen</button>
@@ -914,7 +921,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
         <div className="lurk-shell-brand"><img src="/lurk-logo.svg" alt="LURK"/><span>POS</span></div>
         <div className="lurk-shell-section-label">WORKSPACE</div>
         <nav className="lurk-shell-nav">
-          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"tables",label:"Tables",icon:"▦"},{k:"takeaway",label:"Take Away",icon:"↗"},{k:"reports",label:"Reports",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));if(n.k==="takeaway")openTakeAway();else setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
+          {[{k:"home",label:"Dashboard",icon:"⌂"},{k:"tables",label:"Tables",icon:"▦"},{k:"takeaway",label:"Take Away",icon:"↗"},{k:"reports",label:"Reports",icon:"▤"},{k:"customers",label:"Customers",icon:"♙"},{k:"lurkPlus",label:"LURK+",icon:"✳"}, {k:"aspenPortal",label:"Aspen Portal",icon:"♫"}].map(n=><button key={n.k} type="button" className={view===n.k?"active":""} onClick={()=>{if(view==="personal"&&n.k!=="personal")window.dispatchEvent(new Event("lurk-personal-leave"));if(n.k==="takeaway")openTakeAway();else setV(n.k);}}><span className="lurk-shell-nav-icon">{n.icon}</span><span>{n.label}</span>{view===n.k&&<i/>}</button>)}
         </nav>
         <div className="lurk-shell-sidebar-footer"><span className={day?"online-dot":"offline-dot"}/><div><b>LURK Coffee</b><small>{day?"Business open":"Business closed"}</small></div><button type="button" aria-label="Lock screen" onClick={onLock}>⌑</button></div>
       </aside>}
@@ -929,6 +936,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
       {view==="personal"&&<PersonalFinanceScreen debts={personalDebts} setDebts={setPersonalDebts} setV={setV} msg={msg}/>}
+      {view==="aspenPortal"&&<AspenPortal data={aspenData} setData={setAspenData} onExit={()=>setV("home")}/>}
       {view==="achievements"&&<AchievementsScreen debts={personalDebts} setV={setV}/>}
       {view==="customers"&&<CustomersScreen orders={orders} customers={customers} setCustomers={setCustomers} setV={setV} msg={msg} balancesVisible={balancesVisible}/>}
       {view==="menu"&&<MenuScreen menu={menu} setMenu={setMenu} setV={setV}/>}
@@ -1958,6 +1966,7 @@ function PersonalFinanceScreen({debts,setDebts,setV,msg}){
     return remaining(a)-remaining(b);
   });
   return <div className="lurk-screen personal-finance pf-redesign" style={{paddingBottom:24}}>
+    <button type="button" onClick={()=>setV("aspenPortal")} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:14,width:"calc(100% - 32px)",maxWidth:1180,margin:"18px auto 0",padding:"16px 18px",border:"1px solid #35443A",borderRadius:15,background:"linear-gradient(110deg,#151D17,#101411)",color:"#F2F5EF",textAlign:"left",cursor:"pointer"}}><span><span style={{display:"block",fontSize:10,fontWeight:900,letterSpacing:2,color:"#A9E86B"}}>ASPEN B4</span><span style={{display:"block",fontSize:15,fontWeight:900,marginTop:5}}>Aspen Portal</span><span style={{display:"block",fontSize:11,color:"#98A397",marginTop:4}}>Personal music career workspace ↗</span></span><span style={{fontSize:25,color:"#B8F36B"}}>♫</span></button>
     <div className="pf-personal-header pf-personal-header-compact">
       <div className="pf-personal-header-top">
         <button onClick={()=>{setUnlocked(false);setV("home");}} className="pf-personal-back">←</button>
