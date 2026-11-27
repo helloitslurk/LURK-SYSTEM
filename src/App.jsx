@@ -486,7 +486,7 @@ function POSApp({onLock}){
     paymentInProgress.current=true;setTimeout(()=>{paymentInProgress.current=false;},900);
     setOrd(prev=>[order,...prev]);
     if(isCredit&&finalTotal>0)setCreditEntries(prev=>[{id:uid(),customerId:t.customerId,customerName:t.g||"",type:"debt",amount:finalTotal,method:"credit",date:new Date().toISOString(),orderId,note:"Adisyon veresiye"},...prev]);
-    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],partialPayments:[],s:"free",g:"",customerId:null,lurkPlusId:null}:tb));
+    setTbl(prev=>prev.map(tb=>tb.id===tid?{...tb,order:[],partialPayments:[],s:"free",paidClosed:!tb.isTakeAway,g:"",customerId:null,lurkPlusId:null,oa:null}:tb));
     msg(isLurkPlus?"LURK+ order closed · "+fm(finalTotal):isCredit?"On account kaydedildi · "+fm(finalTotal):"Payment received · "+fm(finalTotal));
     setSel(null);setV("tables");
   }
@@ -924,7 +924,7 @@ html,body,#root{width:100%;max-width:100%;margin:0;overflow-x:hidden}
       {view==="home"&&<HomeScreen tables={tables} orders={orders} logs={logs} day={day} openDay={openDay} closeDay={closeDay} setV={setV} onLock={onLock} balancesVisible={balancesVisible} setBalancesVisible={setBalancesVisible}/>}
       {view==="tables"&&<TablesScreen tables={tables.filter(t=>!t.isTakeAway)} customers={customers} lurkPlusMembers={lurkPlusMembers} setTbl={setTbl} setCustomers={setCustomers} setV={setV} setSel={setSel} msg={msg}/>}
       {(view==="order"||view==="takeaway")&&(view==="takeaway"?takeAwayTable:curT)&&<OrderScreen table={view==="takeaway"?takeAwayTable:curT} tables={tables} menu={menu} cats={cats} customers={customers} lurkPlusMembers={lurkPlusMembers} setTableCustomer={setTableCustomer} addItem={addItem} chQ={chQ} pay={pay} moveTableOrder={moveTableOrder} setTbl={setTbl} setV={setV} setSel={setSel}/>}
-      {view==="reports"&&<ReportsScreen orders={orders} logs={logs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} customers={customers} setV={setV}/>}
+      {view==="reports"&&<ReportsScreen orders={orders} setOrders={setOrd} logs={logs} setLogs={setLogs} creditEntries={creditEntries} setCreditEntries={setCreditEntries} lurkPlusMembers={lurkPlusMembers} customers={customers} setV={setV}/>}
       {view==="salesHistory"&&<SalesHistoryScreen orders={orders} setOrders={setOrd} balancesVisible={balancesVisible} setV={setV} printerSettings={printerSettings}/>}
       {view==="monthReview"&&<MonthReviewScreen orders={orders} tables={tables} creditEntries={creditEntries} setV={setV}/>}
       {view==="lurkPlus"&&<LurkPlusScreen members={lurkPlusMembers} setMembers={setLurkPlusMembers} msg={msg} setV={setV}/>}
@@ -963,6 +963,10 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
  const money=v=>balancesVisible?fm(v):"••••••";
  const total7=recentDays.reduce((sum,d)=>sum+d.amount,0);
  const openTables=tables.filter(t=>t.s==="o"&&!t.isTakeAway);
+ const monthKey=thisMonth();
+ const productTotals=new Map();
+ orders.filter(o=>String(o.date||"").slice(0,7)===monthKey&&!o.partialPayment&&o.status!=="cancelled").forEach(o=>(o.items||[]).forEach(item=>{const name=String(item.name||"").trim();const qty=Math.max(0,Number(item.qty)||0);if(!name||!qty)return;const key=name.toLocaleLowerCase("tr-TR");const current=productTotals.get(key)||{name,qty:0};current.qty+=qty;productTotals.set(key,current);}));
+ const topProducts=[...productTotals.values()].sort((a,b)=>b.qty-a.qty||a.name.localeCompare(b.name,"tr")).slice(0,10);
  return <div className="lurk-screen lurk-home-screen ds-home lurk-dashboard-v2">
   <div className="lurk-dashboard-heading"><div><span className="lurk-eyebrow">LURK COFFEE</span><h1>Dashboard</h1></div><span className={"lurk-open-status "+(day?"is-open":"")}>{day?"Business Open":"Business Closed"}</span></div>
   <section className="lurk-kpi-grid">
@@ -983,6 +987,7 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
    </article>
    <article className="lurk-kpi-card lurk-kpi-primary lurk-weekly-total"><span>Last 7 Days Revenue</span><strong>{money(total7)}</strong><small>Automatically updated</small></article>
    <article className="lurk-ops-card"><div><span>Open Tables</span><strong>{openTables.length}</strong></div><button onClick={()=>setV("tables")}>View Tables <b>↗</b></button><div className="lurk-day-action"><span>{day?"Business is open":"Business is closed"}</span><button onClick={day?closeDay:openDay}>{day?"Close Day":"Start Day"}</button></div></article>
+   <article className="lurk-chart-card" style={{gridColumn:"1 / -1"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,marginBottom:12}}><div><h2 style={{margin:0}}>TOP 10 BEST-SELLING PRODUCTS</h2><small style={{color:"#7c887f",fontSize:10}}>This month · Live sales count</small></div><span style={{fontSize:9,fontWeight:800,color:"#168d35",background:"#e8f5e9",borderRadius:20,padding:"6px 9px"}}>LIVE</span></div>{topProducts.length?<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,230px),1fr))",gap:"0 18px"}}>{topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderTop:"1px solid #edf0ec",minWidth:0}}><span style={{width:25,height:25,flexShrink:0,display:"grid",placeItems:"center",borderRadius:8,background:i<3?"#e5f3e6":"#f1f4f1",color:i<3?"#168d35":"#68756b",fontSize:10,fontWeight:900}}>{i+1}</span><span style={{fontSize:12,fontWeight:750,color:"#253229",flex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</span><b style={{fontSize:12,color:"#168d35",whiteSpace:"nowrap"}}>{p.qty} pcs</b></div>)}</div>:<div style={{padding:"18px 0",fontSize:12,color:"#7c887f"}}>No completed sales this month yet.</div>}</article>
   </section>
  </div>;
 }
@@ -997,7 +1002,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
  const [editName,setEditName]=useState("");
  const [actionId,setActionId]=useState(null);
  const [filter,setFilter]=useState("all");
- const visible=tables.filter(t=>filter==="all"||(filter==="occupied"?t.s==="o":t.s!=="o"));
+ const visible=tables.filter(t=>!t.paidClosed&&(filter==="all"||(filter==="occupied"?t.s==="o":t.s!=="o")));
  function saveTableName(){
   const clean=editName.trim();
   if(!clean){msg("Enter a table name.");return;}
@@ -1010,7 +1015,7 @@ function TablesScreen({tables,customers=[],lurkPlusMembers=[],setTbl,setCustomer
   const customer=customers.find(c=>c.id===newTableCustomerId)||null;
   const clean=tableName.trim()||(customer?customer.name.trim():"")||(member?member.name.trim():"");
   if(!clean){msg("Enter a table name or select a customer or LURK+ member.");return;}
-  if(tables.some(t=>(t.lbl||"").trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"))){msg("A table with this name already exists.");return;}
+  const existing=tables.find(t=>(t.lbl||"").trim().toLocaleLowerCase("tr-TR")===clean.toLocaleLowerCase("tr-TR"));if(existing){if(existing.paidClosed){setTbl(prev=>prev.map(t=>t.id===existing.id?{...t,paidClosed:false,s:"free",order:[],g:customer?.name||member?.name||"",customerId:customer?.id||null,lurkPlusId:member?.id||null,partialPayments:[],oa:null}:t));setTableName("");setNewTableMemberId("");setNewTableCustomerId("");setShowAdd(false);msg("Table reopened · "+clean);return;}msg("A table with this name already exists.");return;}
   const id=uid();
   setTbl(prev=>[...prev,{id,lbl:clean,s:"free",order:[],g:customer?.name||member?.name||"",customerId:customer?.id||null,lurkPlusId:member?.id||null,partialPayments:[]}]);
   setTableName("");setNewTableMemberId("");setNewTableCustomerId("");setShowAdd(false);msg(customer?"Table added · linked to "+customer.name+".":member?"Table added · linked to "+member.name+".":"Table added.");
@@ -1477,12 +1482,23 @@ function printThermalReceipt(order,settings=DEFAULT_PRINTER_SETTINGS){
     console.error("Receipt print failed",error);
   }
 }
-function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembers=[],customers=[],setV}){
+function ReportsScreen({orders,setOrders,logs,setLogs,creditEntries,setCreditEntries,lurkPlusMembers=[],customers=[],setV}){
   const months=[...new Set([...orders.map(o=>o.date?o.date.slice(0,7):""),...logs.map(l=>l.date?l.date.slice(0,7):""),...creditEntries.map(e=>e.date?e.date.slice(0,7):""),...lurkPlusMembers.flatMap(m=>(m.history||[]).filter(h=>h.type==="topup"&&h.date).map(h=>h.date.slice(0,7)))].filter(Boolean))].sort((a,b)=>b.localeCompare(a));
   const now=thisMonth();
   const[sel,setSel]=useState(months[0]||now);
   const[exp,setExp]=useState(null);
+  const[actionOrderId,setActionOrderId]=useState(null);
   function ml(m){const[y,mo]=m.split("-");return new Date(y,parseInt(mo)-1).toLocaleDateString("en-US",{month:"long",year:"numeric"});}
+  function deleteAdisyon(order){
+    const orderLabel="#"+String(order.orderNumber||"").padStart(5,"0");
+    if(!window.confirm("Delete adisyon "+orderLabel+"? This will permanently remove it from sales and recalculate reports."))return;
+    const excluded=!!order.revenueExcluded||(String(order.date||"").slice(0,7)==="2026-11"&&(order.pt==="lurkPlus"||(Array.isArray(order.payments)&&order.payments.some(p=>p.method==="lurkPlus"))));
+    const revenue=excluded?0:(Number(order.total)||0);
+    const cash=paymentAmount(order,"cash");const card=paymentAmount(order,"card");
+    setOrders(prev=>prev.filter(o=>o.id!==order.id));
+    setLogs(prev=>prev.map(log=>log.date===order.date?{...log,inc:Math.max(0,(Number(log.inc)||0)-revenue),cash:Math.max(0,(Number(log.cash)||0)-cash),card:Math.max(0,(Number(log.card)||0)-card),count:Math.max(0,(Number(log.count)||0)-1)}:log));
+    setActionOrderId(null);msg("Adisyon "+orderLabel+" deleted. Reports updated.");
+  }
   function addManualCash(){const name=window.prompt("Name of the person making the payment:");if(name===null||!name.trim())return;const raw=window.prompt(name.trim()+"Cash amount received for ");if(raw===null)return;const amount=Math.round(Number(raw.replace(",","."))*100)/100;if(!Number.isFinite(amount)||amount<=0){window.alert("Enter a valid amount.");return;}const date=new Date().toISOString();setCreditEntries(prev=>[{id:"manual-cash-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),type:"manual_cash",method:"cash",customerName:name.trim(),amount,date,note:"Manual cash collection"},...prev]);}
   function exportMonthCsv(){
     const headers=["Date","Table","Customer","Subtotal","Discount","Total","Cash","Card","On account","Payment Method","Productler"];
@@ -1571,12 +1587,12 @@ function ReportsScreen({orders,logs,creditEntries,setCreditEntries,lurkPlusMembe
               {isExp&&(day.topups||[]).map((e,i)=><div key={"lurkplus-topup-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F5F8ED"}}><div><div style={{fontSize:13,color:T.text}}>{e.memberName||"LURK+ member"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>LURK+ balance top-up · {e.method==="card"?"Card":"Cash"}</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
               {isExp&&(day.manualCash||[]).map((e,i)=><div key={"manual-cash-"+i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#F1F7F1"}}><div><div style={{fontSize:13,color:T.text}}>{e.customerName||"Manual collection"}</div><div style={{fontSize:11,color:T.textSub,marginTop:1}}>Manual cash collection</div></div><div style={{fontSize:13,fontWeight:700,color:T.accentL}}>{fm(e.amount)}</div></div>)}
                {isExp&&day.orders.filter(o=>!o.partialPayment).length>0&&day.orders.filter(o=>!o.partialPayment).map((o,i)=>(
-                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"10px 20px",borderTop:"1px solid #E8EEE8",background:"#FAFBFA"}}>
-                  <div>
+                <div key={o.id||i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,padding:"10px 14px 10px 20px",borderTop:"1px solid #E8EEE8",background:"#FAFBFA",position:"relative"}}>
+                  <div style={{minWidth:0,flex:1}}>
                     <div style={{fontSize:13,color:T.text}}>{o.g||customers.find(c=>c.id===o.customerId)?.name||lurkPlusMembers.find(m=>m.id===o.customerId)?.name||"—"}</div>
-                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>{o.pt==="cash"?"Cash":o.pt==="credit"?"On account":o.pt==="split"?"Cash + Card":"Card"}</div>
+                    <div style={{fontSize:11,color:T.textSub,marginTop:1}}>#{String(o.orderNumber||"").padStart(5,"0")} · {o.table||"No table"} · {o.pt==="cash"?"Cash":o.pt==="credit"?"On account":o.pt==="split"?"Cash + Card":o.pt==="lurkPlus"?"LURK+":"Card"}</div>
                   </div>
-                  <div style={{fontSize:13,fontWeight:600,color:T.text}}>{fm(o.total)}</div>
+                  <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}><div style={{fontSize:13,fontWeight:700,color:T.text}}>{fm(o.total)}</div><div style={{position:"relative"}}><button aria-label={"More options for order "+String(o.orderNumber||"")} onClick={()=>setActionOrderId(actionOrderId===o.id?null:o.id)} style={{width:30,height:30,border:"1px solid #dfe7df",borderRadius:8,background:"#fff",color:"#4d5b50",fontSize:18,lineHeight:1,cursor:"pointer"}}>⋯</button>{actionOrderId===o.id&&<div style={{position:"absolute",right:0,top:"calc(100% + 4px)",zIndex:20,minWidth:150,padding:5,background:"#fff",border:"1px solid #e0e7e0",borderRadius:9,boxShadow:"0 8px 24px #17201920"}}><button onClick={()=>deleteAdisyon(o)} style={{display:"block",width:"100%",padding:"9px 10px",border:0,borderRadius:6,background:"#fff2f1",color:"#c63b32",fontSize:11,fontWeight:800,textAlign:"left",cursor:"pointer"}}>⌫ Delete adisyon</button></div>}</div></div>
                 </div>
               ))}
             </div>
