@@ -955,13 +955,13 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
  const today=tod();
  const isNovemberLurkPlusOrder=o=>String(o.date||"").slice(0,7)==="2026-11"&&(o.pt==="lurkPlus"||(Array.isArray(o.payments)&&o.payments.some(p=>p.method==="lurkPlus")));
  const revenueExcluded=o=>!!o.revenueExcluded||isNovemberLurkPlusOrder(o);
- const recentDays=Array.from({length:7},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-6+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(revenueExcluded(o)?0:(Number(o.total)||0)),0);return{key,date:d,amount,label:d.toLocaleDateString("en-US",{weekday:"short"}),dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
+ const recentDays=Array.from({length:30},(_,i)=>{const d=new Date(clock.getFullYear(),clock.getMonth(),clock.getDate()-29+i),key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const amount=orders.filter(o=>o.date===key&&!o.partialPayment&&o.status!=="cancelled").reduce((sum,o)=>sum+(revenueExcluded(o)?0:(Number(o.total)||0)),0);return{key,date:d,amount,label:d.getDate()%2===1?String(d.getDate()):"",dateLabel:d.toLocaleDateString("en-US",{day:"numeric",month:"short"})};});
  const todayOrders=orders.filter(o=>o.date===today&&!o.partialPayment&&o.status!=="cancelled");
  const todayRevenue=todayOrders.reduce((sum,o)=>sum+(revenueExcluded(o)?0:(Number(o.total)||0)),0);
  const avgOrder=todayOrders.length?todayRevenue/todayOrders.length:0;
  const maxDay=Math.max(1,...recentDays.map(d=>d.amount));
  const money=v=>balancesVisible?fm(v):"••••••";
- const total7=recentDays.reduce((sum,d)=>sum+d.amount,0);
+ const total30=recentDays.reduce((sum,d)=>sum+d.amount,0);
  const openTables=tables.filter(t=>t.s==="o"&&!t.isTakeAway);
  const monthKey=thisMonth();
  const productTotals=new Map();
@@ -976,16 +976,16 @@ function HomeScreen({tables,orders,logs,day,openDay,closeDay,setV,onLock,balance
   </section>
   <section className="lurk-dashboard-lower">
    <article className="lurk-chart-card">
-    <h2>SALES OVER THE LAST 7 DAYS</h2>
-    <div className="lurk-weekly-chart" role="group" aria-label="Sales over the last seven days">
+    <h2>SALES OVER THE LAST 30 DAYS</h2>
+    <div style={{overflowX:"auto",overflowY:"hidden",paddingBottom:4}}><div className="lurk-weekly-chart" role="group" aria-label="Sales over the last thirty days" style={{minWidth:850,gap:4}}>
      {recentDays.map(d=><button key={d.key} className={"lurk-weekly-bar-wrap "+(hoveredDay===d.key?"is-active":"")} onMouseEnter={()=>setHoveredDay(d.key)} onMouseLeave={()=>setHoveredDay(null)} onFocus={()=>setHoveredDay(d.key)} onBlur={()=>setHoveredDay(null)} onClick={()=>setHoveredDay(hoveredDay===d.key?null:d.key)} aria-label={d.dateLabel+", "+money(d.amount)}>
       {hoveredDay===d.key&&<span className="lurk-chart-tooltip"><b>{d.dateLabel}</b><strong>{money(d.amount)}</strong></span>}
       <span className="lurk-chart-value">{money(d.amount).replace(" TL","")}</span><span className="lurk-weekly-bar" style={{height:Math.max(5,(d.amount/maxDay)*100)+"%"}}/>
       <small>{d.label}</small>
      </button>)}
-    </div>
+    </div></div>
    </article>
-   <article className="lurk-kpi-card lurk-kpi-primary lurk-weekly-total"><span>Last 7 Days Revenue</span><strong>{money(total7)}</strong><small>Automatically updated</small></article>
+   <article className="lurk-kpi-card lurk-kpi-primary lurk-weekly-total"><span>Last 30 Days Revenue</span><strong>{money(total30)}</strong><small>Automatically updated</small></article>
    <article className="lurk-ops-card"><div><span>Open Tables</span><strong>{openTables.length}</strong></div><button onClick={()=>setV("tables")}>View Tables <b>↗</b></button><div className="lurk-day-action"><span>{day?"Business is open":"Business is closed"}</span><button onClick={day?closeDay:openDay}>{day?"Close Day":"Start Day"}</button></div></article>
    <article className="lurk-chart-card" style={{gridColumn:"1 / -1"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,marginBottom:12}}><div><h2 style={{margin:0}}>TOP 10 BEST-SELLING PRODUCTS</h2><small style={{color:"#7c887f",fontSize:10}}>This month · Live sales count</small></div><span style={{fontSize:9,fontWeight:800,color:"#168d35",background:"#e8f5e9",borderRadius:20,padding:"6px 9px"}}>LIVE</span></div>{topProducts.length?<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,230px),1fr))",gap:"0 18px"}}>{topProducts.map((p,i)=><div key={p.name} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderTop:"1px solid #edf0ec",minWidth:0}}><span style={{width:25,height:25,flexShrink:0,display:"grid",placeItems:"center",borderRadius:8,background:i<3?"#e5f3e6":"#f1f4f1",color:i<3?"#168d35":"#68756b",fontSize:10,fontWeight:900}}>{i+1}</span><span style={{fontSize:12,fontWeight:750,color:"#253229",flex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</span><b style={{fontSize:12,color:"#168d35",whiteSpace:"nowrap"}}>{p.qty} pcs</b></div>)}</div>:<div style={{padding:"18px 0",fontSize:12,color:"#7c887f"}}>No completed sales this month yet.</div>}</article>
   </section>
