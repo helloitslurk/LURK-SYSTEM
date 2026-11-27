@@ -1496,6 +1496,7 @@ function ReportsScreen({orders,setOrders,logs,setLogs,creditEntries,setCreditEnt
     const revenue=excluded?0:(Number(order.total)||0);
     const cash=paymentAmount(order,"cash");const card=paymentAmount(order,"card");
     setOrders(prev=>prev.filter(o=>o.id!==order.id));
+    setCreditEntries(prev=>prev.filter(entry=>entry.orderId!==order.id));
     setLogs(prev=>prev.map(log=>log.date===order.date?{...log,inc:Math.max(0,(Number(log.inc)||0)-revenue),cash:Math.max(0,(Number(log.cash)||0)-cash),card:Math.max(0,(Number(log.card)||0)-card),count:Math.max(0,(Number(log.count)||0)-1)}:log));
     setActionOrderId(null);msg("Adisyon "+orderLabel+" deleted. Reports updated.");
   }
